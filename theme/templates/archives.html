@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 <section id="content" class="body">
-<h1>Archives for {{ SITENAME }}</h1>
+<h1>Tags</h1>
+<ul>
+{% for tag, articles in tags|sort %}
+    <li><a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a> ({{ articles|count }})</li>
+{% endfor %}
+</ul>
 
+<h1>Posts</h1>
 <dl>
 {% for article in dates %}
     <dt>{{ article.locale_date }}</dt>
