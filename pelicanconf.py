@@ -7,6 +7,7 @@ SITENAME = 'Giampaolo Rodola'
 SITESUBTITLE = 'Python enthusiast, core developer, psutil author'
 SITEURL = ''
 TWITTER_USERNAME = 'grodola'
+THEME = 'theme'
 
 PATH = 'content'
 
