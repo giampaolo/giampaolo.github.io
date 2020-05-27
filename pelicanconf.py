@@ -4,11 +4,13 @@ from __future__ import unicode_literals
 
 AUTHOR = 'Giampaolo Rodola'
 SITENAME = 'Giampaolo Rodola'
+SITESUBTITLE = 'Python enthusiast, core developer, psutil author'
 SITEURL = ''
+TWITTER_USERNAME = 'grodola'
 
 PATH = 'content'
 
-TIMEZONE = 'Europe/Paris'
+TIMEZONE = 'Europe/Rome'
 
 DEFAULT_LANG = 'en'
 
@@ -19,17 +21,23 @@ TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
-# Blogroll
-LINKS = (('Pelican', 'http://getpelican.com/'),
-         ('Python.org', 'http://python.org/'),
-         ('Jinja2', 'http://jinja.pocoo.org/'),
-         ('You can modify those links in your config file', '#'),)
-
 # Social widget
-SOCIAL = (('You can add links in your config file', '#'),
-          ('Another social link', '#'),)
+SOCIAL = (
+    ('github', 'http://github.com/giampaolo'),
+    ('linkedin', 'https://www.linkedin.com/in/grodola/'),
+    ('twitter', 'https://twitter.com/grodola'),
+)
 
-DEFAULT_PAGINATION = 10
+DEFAULT_PAGINATION = 5
+
+# --- menu
+
+DISPLAY_CATEGORIES_ON_MENU = False
+DISPLAY_PAGES_ON_MENU = False
+MENUITEMS = (
+    ('About', '/pages/about.html'),
+    ('Blog', '/category/blog.html'),
+)
 
 # Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True
+# RELATIVE_URLS = True
