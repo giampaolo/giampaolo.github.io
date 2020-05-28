@@ -2,7 +2,7 @@ Real process memory and environ in Python
 #########################################
 
 :date: 2016-02-17
-:tags: psutil
+:tags: psutil, memory, python, process, system
 
 New psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll just get straight to the point and describe what's new.
 
