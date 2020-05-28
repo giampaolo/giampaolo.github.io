@@ -2,7 +2,7 @@ psutil NetBSD support
 #####################
 
 :date: 2016-02-25
-:tags: psutil, bsd
+:tags: psutil, bsd, netbsd
 
 Roughly two months have passed since I last announced `psutil`_ added support for OpenBSD platforms. Today I am happy to announce we also have NetBSD support! This was contributed by `Thomas Klausner <https://github.com/0-wiz-0>`_, `Ryo Onodera <https://github.com/ryoon>`_ and myself in PR `#570 <https://github.com/giampaolo/psutil/pull/557>`_.
 
