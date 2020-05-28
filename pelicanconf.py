@@ -48,3 +48,10 @@ ARTICLE_SAVE_AS = 'blog/{date:%Y}/{slug}.html'
 
 # Uncomment following line if you want document-relative URLs when developing
 # RELATIVE_URLS = True
+
+# static paths will be copied without parsing their contents
+STATIC_PATHS = [
+    'static',
+]
+
+DIRECT_TEMPLATES = ['index', 'tags', 'categories', 'archives']
