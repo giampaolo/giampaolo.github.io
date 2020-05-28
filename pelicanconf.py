@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- #
+
+"""Useful urls:
+
+- EXTRA_PATH_METADATA: https://stackoverflow.com/a/44209338
+"""
+
 from __future__ import unicode_literals
 
 AUTHOR = 'Giampaolo Rodola'
@@ -55,3 +61,8 @@ STATIC_PATHS = [
 ]
 
 DIRECT_TEMPLATES = ['index', 'tags', 'categories', 'archives']
+
+
+# EXTRA_PATH_METADATA = {
+#     'content/static/me-chicago.jpg': {'path': 'me-chicago.jpg'},
+# }

@@ -1,6 +1,15 @@
 About
 #####
 
+.. raw:: html
+
+    <div style="float:right; padding:10px">
+        <a href="/static/me-chicago.jpg">
+        <img alt="me at Chicago in 2016" src="/static/me-chicago.jpg" style="width:200px; height:220px" />
+        </a>
+        <br />
+    </div>
+
 My name is Giampaolo Rodola. I'm a passionate Python developer who loves writing open source libraries for fun. I'm mostly known for being the author of `psutil`_. Below is a list of my contribution to the world.
 
 Talks
