@@ -58,11 +58,15 @@ ARTICLE_SAVE_AS = 'blog/{date:%Y}/{slug}.html'
 # static paths will be copied without parsing their contents
 STATIC_PATHS = [
     'static',
+    'images',
+    'extra',
 ]
+
+EXTRA_PATH_METADATA = {
+    'extra/favicon.ico': {'path': 'favicon.ico'},
+}
+
 
 DIRECT_TEMPLATES = ['index', 'tags', 'categories', 'archives']
 
-
-# EXTRA_PATH_METADATA = {
-#     'content/static/me-chicago.jpg': {'path': 'me-chicago.jpg'},
-# }
+# DEFAULT_DATE_FORMAT = ('%d %b %Y')
