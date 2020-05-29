@@ -4,8 +4,8 @@ About
 .. raw:: html
 
     <div style="float:right; padding:10px">
-        <a href="/static/me-chicago.jpg">
-        <img alt="me at Chicago in 2016" src="/static/me-chicago.jpg" style="width:200px; height:220px" />
+        <a href="/images/me-chicago.jpg">
+        <img alt="me at Chicago in 2016" src="/images/me-chicago.jpg" style="width:200px; height:220px" />
         </a>
         <br />
     </div>

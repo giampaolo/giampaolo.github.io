@@ -134,22 +134,36 @@ div.note {
 }
 
 /* Tables */
-table {margin: .5em auto 1.5em auto; width: 98%;}
+table {
+	margin: .5em auto 1.5em auto;
+	width: 98%;
 
-	/* Thead */
-	thead th {padding: .5em .4em; text-align: left;}
-	thead td {}
+}
 
-	/* Tbody */
-	tbody td {padding: .5em .4em;}
-	tbody th {}
+table, th, td {
+  border: 1px solid #eaecef;
+}
 
-	tbody .alt td {}
-	tbody .alt th {}
 
-	/* Tfoot */
-	tfoot th {}
-	tfoot td {}
+/* Thead */
+thead th {
+	padding: .5em .4em; text-align: left;
+	background: #eaecef;
+}
+thead td {
+}
+
+/* Tbody */
+tbody td {padding: .5em .4em;}
+tbody th {
+}
+
+tbody .alt td {}
+tbody .alt th {}
+
+/* Tfoot */
+tfoot th {}
+tfoot td {}
 
 /* HTML5 tags */
 header, section, footer,
