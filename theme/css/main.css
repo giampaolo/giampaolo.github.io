@@ -19,8 +19,9 @@
 body {
     background: #F5F4EF;
     color: #000305;
-    font-size: 87.5%; /* Base font size: 14px */
+    font-size: 16px; /* Base font size: 14px */
     font-family: 'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
     line-height: 1.429;
     margin: 0;
     padding: 0;
@@ -38,8 +39,10 @@ h6 {font-size: 1em}		/* 14px */
 h1, h2, h3, h4, h5, h6 {
 	font-weight: 400;
 	line-height: 1.1;
+	margin-top: .8em;
 	margin-bottom: .8em;
     font-family: 'Yanone Kaffeesatz', arial, serif;
+    border-bottom: 1px solid #eaecef;
 }
 
 h3, h4, h5, h6 { margin-top: .8em; }
@@ -84,8 +87,10 @@ ol {
 	margin: 0em 0 0 1.5em;
 }
 
-li { margin-top: 0.5em;
-     margin-bottom: 1em; }
+li {
+	margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
 
 .post-info {
     float:right;
@@ -104,7 +109,13 @@ dl {margin: 0 0 1.5em 0;}
 dt {font-weight: bold;}
 dd {margin-left: 1.5em;}
 
-pre{background-color:  rgb(238, 238, 238); padding: 10px; margin: 10px; overflow: auto;}
+pre{
+	background-color:  rgb(238, 238, 238);
+	padding: 10px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	overflow: auto;
+}
 
 /* Quotes */
 blockquote {
@@ -123,22 +134,36 @@ div.note {
 }
 
 /* Tables */
-table {margin: .5em auto 1.5em auto; width: 98%;}
+table {
+	margin: .5em auto 1.5em auto;
+	width: 98%;
 
-	/* Thead */
-	thead th {padding: .5em .4em; text-align: left;}
-	thead td {}
+}
 
-	/* Tbody */
-	tbody td {padding: .5em .4em;}
-	tbody th {}
+table, th, td {
+  border: 1px solid #eaecef;
+}
 
-	tbody .alt td {}
-	tbody .alt th {}
 
-	/* Tfoot */
-	tfoot th {}
-	tfoot td {}
+/* Thead */
+thead th {
+	padding: .5em .4em; text-align: left;
+	background: #eaecef;
+}
+thead td {
+}
+
+/* Tbody */
+tbody td {padding: .5em .4em;}
+tbody th {
+}
+
+tbody .alt td {}
+tbody .alt th {}
+
+/* Tfoot */
+tfoot th {}
+tfoot td {}
 
 /* HTML5 tags */
 header, section, footer,
