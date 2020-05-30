@@ -34,16 +34,29 @@ Contributions to python-dev
 
 Being that Python is an important part of my every day life I'm happy to contribute back every time I get the chance. Starting from year `2010 <https://mail.python.org/pipermail/python-committers/2010-April/000891.html>`_ I've been given commit access against Python code repository. My contributions are mainly focused against the Python standard library. Amongst others:
 
-* `BPO-336761 <https://bugs.python.org/issue33671>`_ efficient zero-copy for shtuil.copy* functions,
-* os.sendfile()
-* socket.sendfile()
-* ftplib's FTPS support
-* shutil.disk_usage()
-* os.get/setpriority()
-* signal constant enums
-* Solaris /dev/poll support
-
-I'm the current maintainer of ftplib, smtpd, asyncore and asynchat modules. I'm also occasionally active on the python bug tracker and participate in discussions on python-dev and python-ideas mailing lists, mainly as a lurker.
++----------+------------------------+-----------------------------------------------------------+
+| BPO      | Module / API           | Description                                               |
++==========+========================+===========================================================+
+| `33671`_ | `shutil`_              | faster file copy with zero-copy syscalls                  |
+|          |                        | (`pycon china talk`_)                                     |
++----------+------------------------+-----------------------------------------------------------+
+| `4080`_  | `unittest`_            | unittest timings                                          |
++----------+------------------------+-----------------------------------------------------------+
+| `10882`_ | `os.sendfile`_         | expose sendfile() syscall                                 |
++----------+------------------------+-----------------------------------------------------------+
+| `17552`_ | `socket.sendfile`_     | sendfile() high-level wrapper                             |
++----------+------------------------+-----------------------------------------------------------+
+| `2054`_  | `ftplib.TLS_FTP`_      | FTP over SSL support                                      |
++----------+------------------------+-----------------------------------------------------------+
+| `12442`_ | `shutil.disk_usage`_   | disk usage "df" style                                     |
++----------+------------------------+-----------------------------------------------------------+
+| `10784`_ | `os.getpriority`_,     | get/set process priority                                  |
+|          | `os.setpriority`_      |                                                           |
++----------+------------------------+-----------------------------------------------------------+
+| `21076`_ | `signal`_              | signal module constant enums                              |
++----------+------------------------+-----------------------------------------------------------+
+| `18931`_ | `selectors`_           | Solaris /dev/poll support                                 |
++----------+------------------------+-----------------------------------------------------------+
 
 Python recipes
 --------------
@@ -51,37 +64,54 @@ Python recipes
 Whatever is not big enough to become an actual project I usually turn into an independent recipe.
 Here's the ones I like the most:
 
-* Log / directory watcher
-* IPv4/IPv6 agnostic server
-* socket.sendfile()
-* disk usage
-* wait for PID
-* named constant type
-* bytes-to-human corverter
-* handle exit context manager
+* `Log / directory watcher <http://code.activestate.com/recipes/577968-log-watcher-tail-f-log/?in=user-4178764>`__
+* `IPv4/v6 agnostic server <http://code.activestate.com/recipes/578504-server-supporting-ipv4-and-ipv6/?in=user-4178764>`__
+* `socket.sendfile() <https://code.activestate.com/recipes/578889-socketsendfile/>`__ (backport of `BPO-17552 <https://bugs.python.org/issue17552>`__)
+* `disk usage <http://code.activestate.com/recipes/577972-disk-usage/?in=user-4178764>`__ (backport of `BPO-12442 <http://bugs.python.org/issue12442>`__)
+* `wait for PID <http://code.activestate.com/recipes/578022-wait-for-pid-and-check-for-pid-existance-posix/?in=user-4178764>`__
+* `bytes-to-human corverter <http://code.activestate.com/recipes/578019-bytes-to-human-human-to-bytes-converter/?in=user-4178764>`__
+* `handle exit context manager <blog/2016/how-to-always-execute-exit-functions-in-python/>`__
 
 Abandoned projects
 ------------------
 
-These are from when I started moving my first steps with Python. Listed here mainly for historical / nostalgic reasons. =)
+These are from when I started moving my first steps with Python in 2005. Listed here mainly for historical / nostalgic reasons. =)
 
-* soicmp: a remote shell using ICMP protocol instead of TCP
-* pypk: a port knocker based on libpcap
-* pftpd: this is the ancestor of pyftpdlib, a multi thread based FTP server. Back then I still didn't know threads are evil. =)
-
-Like my work?
--------------
-
-All the stuff I work on is MIT licensed meaning you can do whatever you want with it. Except from small occasional donations I've never directly earned money out of my projects. If you think my work is worth your money consider making me a donation via paypal or write me a recommendation on Linkedin. If you're interested in psutil updates you can follow me on Twitter or search for #psutil.
+* `soicmp`_: a remote shell using ICMP protocol instead of TCP
+* `pypk`_: a port knocker based on libpcap
+* pftpd: this is the ancestor of `pyftpdlib`_ (web site is lost), a thread-based FTP server.
 
 Contacts
 --------
 
-* Mail: XXX
-* Twitter: XXX
-* Linkedin: XXX
+* mail: g.rodola@gmail.com
+* github: http://github.com/giampaolo
+* twitter: https://twitter.com/grodola
+* linkedin: https://www.linkedin.com/in/grodola/
 
 .. _`psutil`: https://github.com/giampaolo/psutil
 .. _`pyftpdlib`: https://github.com/giampaolo/pyftpdlib
 .. _`pysendfile`: https://github.com/giampaolo/pysendfile
+.. _`33671`: https://bugs.python.org/issue33671
+.. _`10882`: https://bugs.python.org/issue10882
+.. _`17552`: https://bugs.python.org/issue17552
+.. _`2054`: https://bugs.python.org/issue2054
+.. _`10784`: https://bugs.python.org/issue10784
+.. _`21076`: https://bugs.python.org/issue21076
+.. _`18931`: https://bugs.python.org/issue18931
+.. _`12442`: http://bugs.python.org/issue12442
+.. _`4080`: https://bugs.python.org/issue4080
+.. _`pycon china talk`: static/efficient-io-with-zerocopy-syscalls.pdf
+.. _`shutil`: https://docs.python.org/3/library/shutil.html#shutil-platform-dependent-efficient-copy-operations
+.. _`os.sendfile`: https://docs.python.org/3/library/os.html#os.sendfile
+.. _`socket.sendfile`: https://docs.python.org/3/library/socket.html#socket.sendfile
+.. _`ftplib.TLS_FTP`: https://docs.python.org/3/library/ftplib.html#ftplib.FTP_TLS
+.. _`os.getpriority`: https://docs.python.org/3/library/os.html#os.getpriority
+.. _`os.setpriority`: https://docs.python.org/3/library/os.html#os.setpriority
+.. _`signal`: https://docs.python.org/3/library/signal.html
+.. _`unittest`: https://docs.python.org/3/library/unittest.html
+.. _`selectors`: https://docs.python.org/3/library/selectors.html
+.. _`soicmp`: http://soicmp.sourceforge.net/
+.. _`pypk`: https://sourceforge.net/projects/pypk/
+.. _`shutil.disk_usage`: https://docs.python.org/3/library/shutil.html?highlight=ftplib#shutil.disk_usage
 
