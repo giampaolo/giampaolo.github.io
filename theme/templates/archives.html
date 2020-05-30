@@ -2,19 +2,23 @@
 {% block content %}
 <section id="content" class="body">
 <h1>Tags</h1>
-<ul>
+<div id="tag-list">
 {% for tag, articles in tags|sort %}
-    <li><a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a> ({{ articles|count }})</li>
+    <a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a> ({{ articles|count }}),
 {% endfor %}
-</ul>
+</div>
 
 <h1>Posts</h1>
 {% for year, date_year in dates|groupby( 'date.year' )|sort(reverse=True) %}
     <h3>{{ year }}</h3>
-    <ul class="list-group" id="archive">
+    <ul>
     {% for year, articles in date_year|groupby( 'date.year' )|sort(reverse=True) %}
         {% for article in articles %}
-            <li><a>{{ article.date.strftime('%b %d')  }}</a>: <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></li>
+            <li>
+            <a>{{ article.date.strftime('%b')  }}</a>: <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a>
+             —
+            {% for tag in article.tags|sort %}<i>{{ tag }}, </i>{% endfor %}
+            </li>
         {% endfor %}
     {% endfor %}
     </ul>
