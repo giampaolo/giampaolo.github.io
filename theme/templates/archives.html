@@ -4,7 +4,7 @@
 <h1>Tags</h1>
 <div id="tag-list">
 {% for tag, articles in tags|sort %}
-    <a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a> ({{ articles|count }}),
+    <a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a> ({{ articles|count }}){% if not loop.last %},{% endif %}
 {% endfor %}
 </div>
 
@@ -17,7 +17,9 @@
             <li>
             <a>{{ article.date.strftime('%b')  }}</a>: <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a>
              —
-            {% for tag in article.tags|sort %}<i>{{ tag }}, </i>{% endfor %}
+            {% for tag in article.tags|sort %}
+                <i>{{ tag }}</i>{% if not loop.last %},{% endif %}
+            {% endfor %}
             </li>
         {% endfor %}
     {% endfor %}
