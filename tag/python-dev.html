@@ -9,18 +9,23 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+                <h1><a href="/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
                 <nav><ul>
                     <li><a href="/">Blog</a></li>
-                    <li><a href="/archives.html">Archives</a></li>
-                    <li><a href="/pages/donate.html">Donate</a></li>
-                    <li><a href="/pages/about.html">About</a></li>
+                    <li><a href="/archives">Archives</a></li>
+                    <li><a href="/donate">Donate</a></li>
+                    <li><a href="/about">About</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+            <section id="content" class="body">
+                <ol id="posts-list" class="hfeed" start="4">
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2014/python-and-sendfile/" rel="bookmark"
+                       title="Permalink to Python and sendfile">Python and sendfile</a></h1>
+            </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/blog/2014/python-and-sendfile/">Python and sendfile</a></h1>
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2014-06-13T00:00:00+02:00">
                 created: Fri 13 June 2014
@@ -41,229 +46,10 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info --><p><a class="reference external" href="http://linux.die.net/man/2/sendfile">sendfile(2)</a> is a UNIX system call which provides a &quot;zero-copy&quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, sendfile(2) is more efficient than the combination of &quot;file.read()&quot; and &quot;socket.send()&quot;, which requires transferring data to and from user space.  This copying of the data twice imposes some performance and resource penalties which sendfile(2) syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of <a class="reference external" href="http://linux.die.net/man/2/read">read(2)</a> / <a class="reference external" href="http://linux.die.net/man/2/write">write(2)</a> system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how sendfile(2) works is available <a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/">here</a>, but long story short is that sending a file with sendfile() is usually <a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark">twice as fast</a> than using plain <a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send">socket.send()</a>. Typical applications which can benefit from using sendfile() are FTP and HTTP servers.</p>
-<div class="section" id="socket-sendfile">
-<h2>socket.sendfile()</h2>
-<p>I recently contributed a patch for Python's socket module which adds a high-level <a class="reference external" href="https://docs.python.org/3.5/library/socket.html#socket.socket.sendfile">socket.sendfile()</a> method (see full discussion at <a class="reference external" href="http://bugs.python.org/issue17552">BPO-17552</a>). socket.sendfile() will transmit a file until EOF is reached by attempting to use <a class="reference external" href="https://docs.python.org/3/library/os.html#os.sendfile">os.sendfile()</a>, if available, else it falls back on using plain socket.send(). Internally, it takes care of handling socket timeouts and provides two optional parameters to move the file offset or to send only a limited amount of bytes. I came up with this idea because getting all of that right is a bit tricky, so a generic wrapper seemed to be convenient to have. socket.sendfile() will make its appearance in Python 3.5.</p>
-</div>
-<div class="section" id="sendfile-and-python">
-<h2>sendfile and Python</h2>
-<p>sendfile(2) made its first appearance into the Python stdlib kind of late: Python 3.3. It was contributed by Ross Lagerwall and me in <a class="reference external" href="http://bugs.python.org/issue10882">BPO-10882</a>. Since the patch didn't make it into python 2.X and I wanted to <a class="reference external" href="https://code.google.com/p/pyftpdlib/issues/detail?id=152">use sendfile() in pyftpdlib</a> I later decided to release it as a stand alone module working with older (2.5+) Python versions (see <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> project). Starting with version 3.5, Python will hopefully start using sendfile() more extensively, in details:</p>
-<ul class="simple">
-<li><a class="reference external" href="http://bugs.python.org/issue13564">BPO-13563: ftplib</a></li>
-<li><a class="reference external" href="http://bugs.python.org/issue13559">BPO-13559: httplib</a></li>
-<li>asyncio: there are some plans for this even though no actual patch yet, see <a class="reference external" href="https://groups.google.com/d/msg/python-tulip/i4OHlIkExsA/eqaK5fzEfCAJ">discussion</a> and <a class="reference external" href="http://bugs.python.org/issue17552#msg217099">BDFL involvement</a>.</li>
-</ul>
-<p>Also, Windows provides something similar to sendfile(2): <a class="reference external" href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms740565(v=vs.85).aspx">TransmitFile</a>. Now that socket.sendfile() is in place it seems natural to add support for it as well (see <a class="reference external" href="http://bugs.python.org/issue21721">BPO-21721</a>).</p>
-</div>
-<div class="section" id="backport-to-python-2-6-and-2-7">
-<h2>Backport to Python 2.6 and 2.7</h2>
-<p>For those of you who are interested in using socket.sendfile() with older Python 2.6 and 2.7 versions here's a backport. It requires <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> module to be installed. Full code including tests is hosted <a class="reference external" href="https://code.activestate.com/recipes/578889-socketsendfile/">here</a>.</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This is a backport of socket.sendfile() for Python 2.6 and 2.7.</span>
-<span class="sd">socket.sendfile() will be included in Python 3.5:</span>
-<span class="sd">http://bugs.python.org/issue17552</span>
-<span class="sd">Usage:</span>
-
-<span class="sd">&gt;&gt;&gt; import socket</span>
-<span class="sd">&gt;&gt;&gt; file = open(&quot;somefile.bin&quot;, &quot;rb&quot;)</span>
-<span class="sd">&gt;&gt;&gt; sock = socket.create_connection((&quot;localhost&quot;, 8021))</span>
-<span class="sd">&gt;&gt;&gt; sendfile(sock, file)</span>
-<span class="sd">42319283</span>
-<span class="sd">&gt;&gt;&gt;</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">errno</span>
-<span class="kn">import</span> <span class="nn">io</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">select</span>
-<span class="kn">import</span> <span class="nn">socket</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="nb">memoryview</span>  <span class="c1"># py 2.7 only</span>
-<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
-    <span class="nb">memoryview</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
-
-<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;posix&#39;</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">sendfile</span> <span class="k">as</span> <span class="nn">pysendfile</span>  <span class="c1"># requires &quot;pip install pysendfile&quot;</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">pysendfile</span> <span class="o">=</span> <span class="kc">None</span>
-
-
-<span class="n">_RETRY</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="n">errno</span><span class="o">.</span><span class="n">EAGAIN</span><span class="p">,</span> <span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="n">errno</span><span class="o">.</span><span class="n">EWOULDBLOCK</span><span class="p">,</span>
-                    <span class="n">errno</span><span class="o">.</span><span class="n">EINPROGRESS</span><span class="p">))</span>
-
-
-<span class="k">class</span> <span class="nc">_GiveupOnSendfile</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-
-<span class="k">if</span> <span class="n">pysendfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
-    <span class="k">def</span> <span class="nf">_sendfile_use_sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">_check_sendfile_params</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
-        <span class="n">sockno</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">fileno</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">UnsupportedOperation</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">_GiveupOnSendfile</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>  <span class="c1"># not a regular file</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">fsize</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fstat</span><span class="p">(</span><span class="n">fileno</span><span class="p">)</span><span class="o">.</span><span class="n">st_size</span>
-        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">_GiveupOnSendfile</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>  <span class="c1"># not a regular file</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">fsize</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>  <span class="c1"># empty file</span>
-        <span class="n">blocksize</span> <span class="o">=</span> <span class="n">fsize</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">count</span> <span class="k">else</span> <span class="n">count</span>
-
-        <span class="n">timeout</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">gettimeout</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">timeout</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;non-blocking sockets are not supported&quot;</span><span class="p">)</span>
-        <span class="c1"># poll/select have the advantage of not requiring any</span>
-        <span class="c1"># extra file descriptor, contrarily to epoll/kqueue</span>
-        <span class="c1"># (also, they require a single syscall).</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="s1">&#39;poll&#39;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">timeout</span> <span class="o">*=</span> <span class="mi">1000</span>
-            <span class="n">pollster</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
-            <span class="n">pollster</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">sockno</span><span class="p">,</span> <span class="n">select</span><span class="o">.</span><span class="n">POLLOUT</span><span class="p">)</span>
-
-            <span class="k">def</span> <span class="nf">wait_for_fd</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">pollster</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span> <span class="o">==</span> <span class="p">[]:</span>
-                    <span class="k">raise</span> <span class="n">socket</span><span class="o">.</span><span class="n">_socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">(</span><span class="s1">&#39;timed out&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># call select() once in order to solicit ValueError in</span>
-            <span class="c1"># case we run out of fds</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([],</span> <span class="p">[</span><span class="n">sockno</span><span class="p">],</span> <span class="p">[],</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">_GiveupOnSendfile</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-
-            <span class="k">def</span> <span class="nf">wait_for_fd</span><span class="p">():</span>
-                <span class="n">fds</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([],</span> <span class="p">[</span><span class="n">sockno</span><span class="p">],</span> <span class="p">[],</span> <span class="n">timeout</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">fds</span> <span class="o">==</span> <span class="p">([],</span> <span class="p">[],</span> <span class="p">[]):</span>
-                    <span class="k">raise</span> <span class="n">socket</span><span class="o">.</span><span class="n">_socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">(</span><span class="s1">&#39;timed out&#39;</span><span class="p">)</span>
-
-        <span class="n">total_sent</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># localize variable access to minimize overhead</span>
-        <span class="n">os_sendfile</span> <span class="o">=</span> <span class="n">pysendfile</span><span class="o">.</span><span class="n">sendfile</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
-                    <span class="n">wait_for_fd</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">count</span><span class="p">:</span>
-                    <span class="n">blocksize</span> <span class="o">=</span> <span class="n">count</span> <span class="o">-</span> <span class="n">total_sent</span>
-                    <span class="k">if</span> <span class="n">blocksize</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="k">break</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">sent</span> <span class="o">=</span> <span class="n">os_sendfile</span><span class="p">(</span><span class="n">sockno</span><span class="p">,</span> <span class="n">fileno</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">blocksize</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="ow">in</span> <span class="n">_RETRY</span><span class="p">:</span>
-                        <span class="c1"># Block until the socket is ready to send some</span>
-                        <span class="c1"># data; avoids hogging CPU resources.</span>
-                        <span class="n">wait_for_fd</span><span class="p">()</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">total_sent</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="c1"># We can get here for different reasons, the main</span>
-                            <span class="c1"># one being &#39;file&#39; is not a regular mmap(2)-like</span>
-                            <span class="c1"># file, in which case we&#39;ll fall back on using</span>
-                            <span class="c1"># plain send().</span>
-                            <span class="k">raise</span> <span class="n">_GiveupOnSendfile</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                        <span class="k">raise</span> <span class="n">err</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">sent</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="k">break</span>  <span class="c1"># EOF</span>
-                    <span class="n">offset</span> <span class="o">+=</span> <span class="n">sent</span>
-                    <span class="n">total_sent</span> <span class="o">+=</span> <span class="n">sent</span>
-            <span class="k">return</span> <span class="n">total_sent</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">total_sent</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;seek&#39;</span><span class="p">):</span>
-                <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">_sendfile_use_sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">_GiveupOnSendfile</span><span class="p">(</span>
-            <span class="s2">&quot;sendfile() not available on this platform&quot;</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_sendfile_use_send</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">_check_sendfile_params</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">sock</span><span class="o">.</span><span class="n">gettimeout</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;non-blocking sockets are not supported&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">offset</span><span class="p">:</span>
-        <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
-    <span class="n">blocksize</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="mi">8192</span><span class="p">)</span> <span class="k">if</span> <span class="n">count</span> <span class="k">else</span> <span class="mi">8192</span>
-    <span class="n">total_sent</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="c1"># localize variable access to minimize overhead</span>
-    <span class="n">file_read</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span>
-    <span class="n">sock_send</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">send</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">count</span><span class="p">:</span>
-                <span class="n">blocksize</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">count</span> <span class="o">-</span> <span class="n">total_sent</span><span class="p">,</span> <span class="n">blocksize</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">blocksize</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">break</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="nb">memoryview</span><span class="p">(</span><span class="n">file_read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">))</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
-                <span class="k">break</span>  <span class="c1"># EOF</span>
-            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">sent</span> <span class="o">=</span> <span class="n">sock_send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="ow">in</span> <span class="n">_RETRY</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="k">raise</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">total_sent</span> <span class="o">+=</span> <span class="n">sent</span>
-                    <span class="k">if</span> <span class="n">sent</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">sent</span><span class="p">:]</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">break</span>
-        <span class="k">return</span> <span class="n">total_sent</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">total_sent</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;seek&#39;</span><span class="p">):</span>
-            <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span> <span class="o">+</span> <span class="n">total_sent</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_check_sendfile_params</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-    <span class="k">if</span> <span class="s1">&#39;b&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file should be opened in binary mode&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">sock</span><span class="o">.</span><span class="n">type</span> <span class="o">&amp;</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;only SOCK_STREAM type sockets are supported&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;count must be a positive integer (got </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;count must be a positive integer (got </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
-
-
-<span class="k">def</span> <span class="nf">sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;sendfile(sock, file[, offset[, count]]) -&gt; sent</span>
-
-<span class="sd">    Send a *file* over a connected socket *sock* until EOF is</span>
-<span class="sd">    reached by using high-performance sendfile(2) and return the</span>
-<span class="sd">    total number of bytes which were sent.</span>
-<span class="sd">    *file* must be a regular file object opened in binary mode.</span>
-<span class="sd">    If sendfile() is not available (e.g. Windows) or file is</span>
-<span class="sd">    not a regular file socket.send() will be used instead.</span>
-<span class="sd">    *offset* tells from where to start reading the file.</span>
-<span class="sd">    If specified, *count* is the total number of bytes to transmit</span>
-<span class="sd">    as opposed to sending the file until EOF is reached.</span>
-<span class="sd">    File position is updated on return or also in case of error in</span>
-<span class="sd">    which case file.tell() can be used to figure out the number of</span>
-<span class="sd">    bytes which were sent.</span>
-<span class="sd">    The socket must be of SOCK_STREAM type.</span>
-<span class="sd">    Non-blocking sockets are not supported.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_sendfile_use_sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
-    <span class="k">except</span> <span class="n">_GiveupOnSendfile</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_sendfile_use_send</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
-</pre></div>
-</div>
-                </article>
-            </aside><!-- /#featured -->
+</footer><!-- /.post-info -->            <p><a class="reference external" href="http://linux.die.net/man/2/sendfile">sendfile(2)</a> is a UNIX system call which provides a &quot;zero-copy&quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, sendfile(2) is more efficient than the combination of &quot;file.read()&quot; and &quot;socket.send()&quot;, which requires …</p>
+            <a class="readmore" href="/blog/2014/python-and-sendfile/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
         <section id="extras" class="body">
                 <div class="social">
                         <h2>social</h2>

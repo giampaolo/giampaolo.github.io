@@ -9,24 +9,23 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+                <h1><a href="/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
                 <nav><ul>
                     <li><a href="/">Blog</a></li>
-                    <li><a href="/archives.html">Archives</a></li>
-                    <li><a href="/pages/donate.html">Donate</a></li>
-                    <li><a href="/pages/about.html">About</a></li>
+                    <li><a href="/archives">Archives</a></li>
+                    <li><a href="/donate">Donate</a></li>
+                    <li><a href="/about">About</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+            <section id="content" class="body">
+                <ol id="posts-list" class="hfeed" start="4">
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2016/psutil-550-is-twice-as-fast/" rel="bookmark"
+                       title="Permalink to psutil 5.5.0 is twice as fast">psutil 5.5.0 is twice as fast</a></h1>
+            </header>
 
-                <section id="content" class="body">
-                    <ol id="posts-list" class="hfeed" start="4">
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2016/psutil-550-is-twice-as-fast/" rel="bookmark"
-                           title="Permalink to psutil 5.5.0 is twice as fast">psutil 5.5.0 is twice as fast</a></h1>
-                </header>
-
-                <div class="entry-content">
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-11-06T00:00:00+01:00">
                 created: Sun 06 November 2016
@@ -47,18 +46,17 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->                <p>OK, this is a big one. Starting from psutil 5.0.0 you can query multiple Process information around twice as fast than with previous versions (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/799">original ticket</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot">updated doc</a>). It took me 7 months, 108 commits and a massive refactoring of psutil internals (here is the <a class="reference external" href="https://github.com/giampaolo/psutil/pull/937/files">big …</a></p>
-                <a class="readmore" href="/blog/2016/psutil-550-is-twice-as-fast/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
+</footer><!-- /.post-info -->            <p>OK, this is a big one. Starting from psutil 5.0.0 you can query multiple Process information around twice as fast than with previous versions (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/799">original ticket</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot">updated doc</a>). It took me 7 months, 108 commits and a massive refactoring of psutil internals (here is the <a class="reference external" href="https://github.com/giampaolo/psutil/pull/937/files">big …</a></p>
+            <a class="readmore" href="/blog/2016/psutil-550-is-twice-as-fast/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2016/psutil-440-improved-linux-memory-metrics/" rel="bookmark"
+                       title="Permalink to psutil 4.4.0: improved Linux memory metrics">psutil 4.4.0: improved Linux memory metrics</a></h1>
+            </header>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2016/psutil-440-improved-linux-memory-metrics/" rel="bookmark"
-                           title="Permalink to psutil 4.4.0: improved Linux memory metrics">psutil 4.4.0: improved Linux memory metrics</a></h1>
-                </header>
-
-                <div class="entry-content">
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-10-23T00:00:00+02:00">
                 created: Sun 23 October 2016
@@ -76,21 +74,20 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->                <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. Main highlights of this release are more accurate memory metrics on Linux and different OSX fixes. Here goes.</p>
+</footer><!-- /.post-info -->            <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. Main highlights of this release are more accurate memory metrics on Linux and different OSX fixes. Here goes.</p>
 <div class="section" id="linux-virtual-memory">
 <h2>Linux virtual memory</h2>
 <p>This new release sets a milestone regarding <tt class="docutils literal">virtual_memory()</tt> metrics on Linux which are now calculated way <a class="reference external" href="https://github.com/giampaolo/psutil/issues/887">more precisely</a> (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/890/files">commit</a>). Across the years different …</p></div>
-                <a class="readmore" href="/blog/2016/psutil-440-improved-linux-memory-metrics/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
+            <a class="readmore" href="/blog/2016/psutil-440-improved-linux-memory-metrics/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2016/psutil-420-windows-services-in-python/" rel="bookmark"
+                       title="Permalink to psutil 4.2.0: Windows services in Python">psutil 4.2.0: Windows services in Python</a></h1>
+            </header>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2016/psutil-420-windows-services-in-python/" rel="bookmark"
-                           title="Permalink to psutil 4.2.0: Windows services in Python">psutil 4.2.0: Windows services in Python</a></h1>
-                </header>
-
-                <div class="entry-content">
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-05-15T00:00:00+02:00">
                 created: Sun 15 May 2016
@@ -108,23 +105,22 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->                <p>New <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> 4.2.0 is out. The main feature of this release is the support for Windows services:</p>
+</footer><!-- /.post-info -->            <p>New <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> 4.2.0 is out. The main feature of this release is the support for Windows services:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">win_service_iter</span><span class="p">())</span>
 <span class="p">[</span><span class="o">&lt;</span><span class="n">WindowsService</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;AeLookupSvc&#39;</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;Application Experience&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">38850096</span><span class="o">&gt;</span><span class="p">,</span>
  <span class="o">&lt;</span><span class="n">WindowsService</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ALG&#39;</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;Application Layer Gateway Service&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">38850128</span><span class="o">&gt;</span><span class="p">,</span>
  <span class="o">&lt;</span><span class="n">WindowsService</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;APNMCP&#39;</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;Ask Update Service&#39;</span><span class="p">)</span> <span class="n">at …</span></pre></div>
-                <a class="readmore" href="/blog/2016/psutil-420-windows-services-in-python/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
+            <a class="readmore" href="/blog/2016/psutil-420-windows-services-in-python/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2016/psutil-netbsd-support/" rel="bookmark"
+                       title="Permalink to psutil NetBSD support">psutil NetBSD support</a></h1>
+            </header>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2016/psutil-netbsd-support/" rel="bookmark"
-                           title="Permalink to psutil NetBSD support">psutil NetBSD support</a></h1>
-                </header>
-
-                <div class="entry-content">
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-02-25T00:00:00+01:00">
                 created: Thu 25 February 2016
@@ -142,21 +138,20 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->                <p>Roughly two months have passed since I last announced <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> added support for OpenBSD platforms. Today I am happy to announce we also have NetBSD support! This was contributed by <a class="reference external" href="https://github.com/0-wiz-0">Thomas Klausner</a>, <a class="reference external" href="https://github.com/ryoon">Ryo Onodera</a> and myself in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">#570</a>.</p>
+</footer><!-- /.post-info -->            <p>Roughly two months have passed since I last announced <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> added support for OpenBSD platforms. Today I am happy to announce we also have NetBSD support! This was contributed by <a class="reference external" href="https://github.com/0-wiz-0">Thomas Klausner</a>, <a class="reference external" href="https://github.com/ryoon">Ryo Onodera</a> and myself in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">#570</a>.</p>
 <div class="section" id="differences-with-freebsd-and-openbsd">
 <h2>Differences with FreeBSD (and OpenBSD)</h2>
 <p>NetBSD implementation has similar limitations as …</p></div>
-                <a class="readmore" href="/blog/2016/psutil-netbsd-support/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
+            <a class="readmore" href="/blog/2016/psutil-netbsd-support/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2016/real-process-memory-and-environ-in-python/" rel="bookmark"
+                       title="Permalink to Real process memory and environ in Python">Real process memory and environ in Python</a></h1>
+            </header>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2016/real-process-memory-and-environ-in-python/" rel="bookmark"
-                           title="Permalink to Real process memory and environ in Python">Real process memory and environ in Python</a></h1>
-                </header>
-
-                <div class="entry-content">
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-02-17T00:00:00+01:00">
                 created: Wed 17 February 2016
@@ -174,13 +169,13 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->                <p>New psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll just get straight to the point and describe what's new.</p>
+</footer><!-- /.post-info -->            <p>New psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll just get straight to the point and describe what's new.</p>
 <div class="section" id="real-process-memory-info">
 <h2>&quot;Real&quot; process memory info</h2>
 <p>Determining how much memory a process <strong>really</strong> uses is not an easy matter (see <a class="reference external" href="https://lwn.net/Articles/230975/">this</a> and <a class="reference external" href="http://bmaurer.blogspot.it/2006/03/memory-usage-with-smaps.html">this</a>). RSS (Resident Set …</p></div>
-                <a class="readmore" href="/blog/2016/real-process-memory-and-environ-in-python/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
+            <a class="readmore" href="/blog/2016/real-process-memory-and-environ-in-python/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="/author/giampaolo-rodola.html">&laquo;</a>

@@ -9,18 +9,23 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+                <h1><a href="/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
                 <nav><ul>
                     <li><a href="/">Blog</a></li>
-                    <li><a href="/archives.html">Archives</a></li>
-                    <li><a href="/pages/donate.html">Donate</a></li>
-                    <li><a href="/pages/about.html">About</a></li>
+                    <li><a href="/archives">Archives</a></li>
+                    <li><a href="/donate">Donate</a></li>
+                    <li><a href="/about">About</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+            <section id="content" class="body">
+                <ol id="posts-list" class="hfeed" start="4">
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2019/system-load-average-on-windows-in-python/" rel="bookmark"
+                       title="Permalink to System load average on Windows in Python">System load average on Windows in Python</a></h1>
+            </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/blog/2019/system-load-average-on-windows-in-python/">System load average on Windows in Python</a></h1>
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2019-05-29T00:00:00+02:00">
                 created: Wed 29 May 2019
@@ -40,44 +45,17 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info --><p>New <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.6.2 release implements an emulation of <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getloadavg">os.getloadavg()</a> on Windows which was kindly <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1485">contributed by Ammar Askar</a> who originally implemented it for <a class="reference external" href="https://github.com/python/cpython/pull/8357/files">cPython's test suite</a>. This idea has been floating around for quite a while. The first proposal dates back to <a class="reference external" href="https://code.google.com/archive/p/psutil/issues/139">2010</a>, when psutil was still hosted on Google Code, and it popped up <a class="reference external" href="https://github.com/giampaolo/psutil/issues?utf8=%E2%9C%93&amp;q=getloadavg">multiple times</a> throughout the years. There was/is a bunch of info on internet mentioning the bits with which it's theoretically possible to do this (the so called System Processor Queue Length), but I couldn't find any real implementation. A <a class="reference external" href="https://www.google.com/search?client=ubuntu&amp;hs=2EI&amp;channel=fs&amp;ei=LafCXO2ZE8PKswX9kY-wAw&amp;q=windows+load+average&amp;oq=windows+load+average&amp;gs_l=psy-ab.3..0j0i22i30l7.12536.13873..14008...0.0..0.482.2591.4-6......0....1..gws-wiz.......0i71j0i131.37ys3SB25pE">Google search</a> tells there is quite some demand for this, but very few tools out there providing this natively (the only one I could find is this <a class="reference external" href="https://blog.sflow.com/2011/02/windows-load-average.html">sFlowTrend</a> tool and <a class="reference external" href="https://www.zabbix.com/forum/zabbix-help/50423-windows-cpu-load">Zabbix</a>), so I'm very happy this finally landed into psutil / Python.</p>
-<div class="section" id="other-improvements-and-bugfixes-in-psutil-5-6-2">
-<h2>Other improvements and bugfixes in psutil 5.6.2</h2>
-<p>The full list is <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#562">here</a> but I would like to mention a couple:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">1476</a>: the possibility to set process' high I/O priority on Windows</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">1458</a>: colorized test output. I admit nobody will use this directly but it's very cool and I'm porting it to a bunch of other projects I work on (e.g. pyftpdlib). Also, perhaps this could be a good candidate for a small module to put on PYPI which can also include some functionalities taken from pytest and which I'm gradually re-implementing in unittest module amongst which:<ul>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1478">1478</a>: re-running failed tests</li>
-<li>display test timings/durations: this is something I'm contributing to cPython, see <a class="reference external" href="https://bugs.python.org/issue4080">BPO-4080</a> and and <a class="reference external" href="https://github.com/python/cpython/pull/12271/files">PR-12271</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="section" id="about-me">
-<h2>About me</h2>
-<p>I'm currently in China (Shenzhen) for a mix of vacation and work, and I will likely take a break from Open Source for a while (likely 2.5 months, during which I will also go to Philippines and Japan - I love Asia ;-)).</p>
-</div>
-<div class="section" id="external">
-<h2>External</h2>
-<ul class="simple">
-<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/bhji0m/new_psutil_562_with_load_average_emulation_on/">Reddit</a></li>
-<li><a class="reference external" href="https://news.ycombinator.com/newest">Hacker News</a></li>
-</ul>
-</div>
-                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->            <p>New <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.6.2 release implements an emulation of <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getloadavg">os.getloadavg()</a> on Windows which was kindly <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1485">contributed by Ammar Askar</a> who originally implemented it for <a class="reference external" href="https://github.com/python/cpython/pull/8357/files">cPython's test suite</a>. This idea has been floating around for quite a while. The first proposal dates back to <a class="reference external" href="https://code.google.com/archive/p/psutil/issues/139">2010</a>, when psutil was still …</p>
+            <a class="readmore" href="/blog/2019/system-load-average-on-windows-in-python/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2019/psutil-560-and-process-parents/" rel="bookmark"
+                       title="Permalink to psutil 5.6.0 and process parents">psutil 5.6.0 and process parents</a></h1>
+            </header>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2019/psutil-560-and-process-parents/" rel="bookmark"
-                           title="Permalink to psutil 5.6.0 and process parents">psutil 5.6.0 and process parents</a></h1>
-                </header>
-
-                <div class="entry-content">
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2019-03-05T00:00:00+01:00">
                 created: Tue 05 March 2019
@@ -94,19 +72,18 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->                <p>Hello world =)</p>
+</footer><!-- /.post-info -->            <p>Hello world =)</p>
 <p>It was a long time since my last blog post (over 1 year and a half). During this time I moved between Italy, Prague and Shenzhen (China), and also contributed a couple of nice patches for Python I want to blog about when Python 3.8 will be …</p>
-                <a class="readmore" href="/blog/2019/psutil-560-and-process-parents/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
+            <a class="readmore" href="/blog/2019/psutil-560-and-process-parents/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2017/psutil-540-and-aix-support/" rel="bookmark"
+                       title="Permalink to psutil 5.4.0 and AIX support">psutil 5.4.0 and AIX support</a></h1>
+            </header>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2017/psutil-540-and-aix-support/" rel="bookmark"
-                           title="Permalink to psutil 5.4.0 and AIX support">psutil 5.4.0 and AIX support</a></h1>
-                </header>
-
-                <div class="entry-content">
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-10-12T00:00:00+02:00">
                 created: Thu 12 October 2017
@@ -124,18 +101,17 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->                <p>After a long time <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> finally adds support for a brand new exotic platform: AIX! Honestly I am not sure how many AIX Python users are out there (I suppose not many) but still, here it is. For this we have to thank Arnon Yaari who started working on the …</p>
-                <a class="readmore" href="/blog/2017/psutil-540-and-aix-support/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
+</footer><!-- /.post-info -->            <p>After a long time <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> finally adds support for a brand new exotic platform: AIX! Honestly I am not sure how many AIX Python users are out there (I suppose not many) but still, here it is. For this we have to thank Arnon Yaari who started working on the …</p>
+            <a class="readmore" href="/blog/2017/psutil-540-and-aix-support/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2017/psutil-530-and-full-unicode-support/" rel="bookmark"
+                       title="Permalink to psutil 5.3.0 and full unicode support">psutil 5.3.0 and full unicode support</a></h1>
+            </header>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2017/psutil-530-and-full-unicode-support/" rel="bookmark"
-                           title="Permalink to psutil 5.3.0 and full unicode support">psutil 5.3.0 and full unicode support</a></h1>
-                </header>
-
-                <div class="entry-content">
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-09-03T00:00:00+02:00">
                 created: Sun 03 September 2017
@@ -153,18 +129,17 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->                <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.3.0 is finally out. This release is a major one, as it includes tons of improvements and bugfixes, probably like no other previous release. It is interesting to notice how huge the <a class="reference external" href="https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket">diff</a> between 5.2.2 and 5.3.0 is. This is due to the …</p>
-                <a class="readmore" href="/blog/2017/psutil-530-and-full-unicode-support/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.3.0 is finally out. This release is a major one, as it includes tons of improvements and bugfixes, probably like no other previous release. It is interesting to notice how huge the <a class="reference external" href="https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket">diff</a> between 5.2.2 and 5.3.0 is. This is due to the …</p>
+            <a class="readmore" href="/blog/2017/psutil-530-and-full-unicode-support/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2017/psutil-511-system-temperature-battery-and-cpu-frequency/" rel="bookmark"
+                       title="Permalink to psutil 5.1.1 system temperature, battery and CPU frequency">psutil 5.1.1 system temperature, battery and CPU frequency</a></h1>
+            </header>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2017/psutil-511-system-temperature-battery-and-cpu-frequency/" rel="bookmark"
-                           title="Permalink to psutil 5.1.1 system temperature, battery and CPU frequency">psutil 5.1.1 system temperature, battery and CPU frequency</a></h1>
-                </header>
-
-                <div class="entry-content">
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-02-01T00:00:00+01:00">
                 created: Wed 01 February 2017
@@ -181,15 +156,15 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->                <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> release. Main highlights of this release are sensors-related APIs.</p>
+</footer><!-- /.post-info -->            <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> release. Main highlights of this release are sensors-related APIs.</p>
 <div class="section" id="temperatures">
 <h2>Temperatures</h2>
 <p>It is now possible to retrieve hardware temperatures. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/962/files">here</a>. Unfortunately this is Linux only. I couldn't manage to implement this on other platforms mainly for two reasons:</p>
 <ul class="simple">
 <li>On Windows it is hard …</li></ul></div>
-                <a class="readmore" href="/blog/2017/psutil-511-system-temperature-battery-and-cpu-frequency/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
+            <a class="readmore" href="/blog/2017/psutil-511-system-temperature-battery-and-cpu-frequency/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
     Page 1 / 4

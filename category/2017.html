@@ -9,18 +9,23 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+                <h1><a href="/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
                 <nav><ul>
                     <li><a href="/">Blog</a></li>
-                    <li><a href="/archives.html">Archives</a></li>
-                    <li><a href="/pages/donate.html">Donate</a></li>
-                    <li><a href="/pages/about.html">About</a></li>
+                    <li><a href="/archives">Archives</a></li>
+                    <li><a href="/donate">Donate</a></li>
+                    <li><a href="/about">About</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+            <section id="content" class="body">
+                <ol id="posts-list" class="hfeed" start="4">
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2017/psutil-540-and-aix-support/" rel="bookmark"
+                       title="Permalink to psutil 5.4.0 and AIX support">psutil 5.4.0 and AIX support</a></h1>
+            </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/blog/2017/psutil-540-and-aix-support/">psutil 5.4.0 and AIX support</a></h1>
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-10-12T00:00:00+02:00">
                 created: Thu 12 October 2017
@@ -38,31 +43,17 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info --><p>After a long time <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> finally adds support for a brand new exotic platform: AIX! Honestly I am not sure how many AIX Python users are out there (I suppose not many) but still, here it is. For this we have to thank Arnon Yaari who started working on the porting a <a class="reference external" href="https://github.com/giampaolo/psutil/issues/605">couple of years ago</a>. To be honest I was skeptical at first because AIX is the only platform which I cannot virtualize and test on my laptop so that made me a bit nervous but Arnon did a very good job. The final <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1123">PR</a> is huge, it required a considerable amount of work on his part and a review process of over 140 messages which were exchanged between me and him over the course of over 1 month during which I was travelling through China. The final result is very good, basically (almost) all original unit tests pass and the quality of the submitted code is awesome which (I must say) is kind of unusual for an external contribution like this one. Kudos to you Arnon! ;-)</p>
-<p>Other than AIX support, release 5.4.0 also includes a couple of important bug fixes for sensors_temperatures() and sensors_fans() functions on Linux and the fix of a bug on OSX which could cause a segmentation fault when using Process.open_files(). Complete list of bugfixes is <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#540">here</a>.</p>
-<p>In terms of future contributions for exotic and still unsupported platforms it is worth mentioning a (still incomplete) PR for <a class="reference external" href="https://github.com/giampaolo/psutil/pull/998">Cygwin</a> which looks promising and <a class="reference external" href="https://github.com/giampaolo/psutil/pull/845">Mingw32</a> compiler support on Windows. It looks like psutil is gradually getting to a point where the addition of new functionalities is becoming more rare, so it is good that support for new platforms happens now when the API is mature and stable. Future development in this direction can also include Android and (hopefully) IOS support. Now <em>that</em> would be really awesome to have! =)</p>
-<p>Stay tuned.</p>
-<div class="section" id="external-links">
-<h2>External links</h2>
-<ul class="simple">
-<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/75wsfu/psutil_540_with_aix_support_is_out/">Reddit</a></li>
-<li><a class="reference external" href="http://grodola.blogspot.com/2017/10/psutil-540-with-aix-support-is-out.html">HackerNews</a></li>
-</ul>
-</div>
-                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->            <p>After a long time <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> finally adds support for a brand new exotic platform: AIX! Honestly I am not sure how many AIX Python users are out there (I suppose not many) but still, here it is. For this we have to thank Arnon Yaari who started working on the …</p>
+            <a class="readmore" href="/blog/2017/psutil-540-and-aix-support/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2017/psutil-530-and-full-unicode-support/" rel="bookmark"
+                       title="Permalink to psutil 5.3.0 and full unicode support">psutil 5.3.0 and full unicode support</a></h1>
+            </header>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2017/psutil-530-and-full-unicode-support/" rel="bookmark"
-                           title="Permalink to psutil 5.3.0 and full unicode support">psutil 5.3.0 and full unicode support</a></h1>
-                </header>
-
-                <div class="entry-content">
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-09-03T00:00:00+02:00">
                 created: Sun 03 September 2017
@@ -80,18 +71,17 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->                <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.3.0 is finally out. This release is a major one, as it includes tons of improvements and bugfixes, probably like no other previous release. It is interesting to notice how huge the <a class="reference external" href="https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket">diff</a> between 5.2.2 and 5.3.0 is. This is due to the …</p>
-                <a class="readmore" href="/blog/2017/psutil-530-and-full-unicode-support/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.3.0 is finally out. This release is a major one, as it includes tons of improvements and bugfixes, probably like no other previous release. It is interesting to notice how huge the <a class="reference external" href="https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket">diff</a> between 5.2.2 and 5.3.0 is. This is due to the …</p>
+            <a class="readmore" href="/blog/2017/psutil-530-and-full-unicode-support/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
+        <li><article class="hentry">
+            <header>
+                <h1><a href="/blog/2017/psutil-511-system-temperature-battery-and-cpu-frequency/" rel="bookmark"
+                       title="Permalink to psutil 5.1.1 system temperature, battery and CPU frequency">psutil 5.1.1 system temperature, battery and CPU frequency</a></h1>
+            </header>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2017/psutil-511-system-temperature-battery-and-cpu-frequency/" rel="bookmark"
-                           title="Permalink to psutil 5.1.1 system temperature, battery and CPU frequency">psutil 5.1.1 system temperature, battery and CPU frequency</a></h1>
-                </header>
-
-                <div class="entry-content">
+            <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-02-01T00:00:00+01:00">
                 created: Wed 01 February 2017
@@ -108,15 +98,15 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->                <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> release. Main highlights of this release are sensors-related APIs.</p>
+</footer><!-- /.post-info -->            <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> release. Main highlights of this release are sensors-related APIs.</p>
 <div class="section" id="temperatures">
 <h2>Temperatures</h2>
 <p>It is now possible to retrieve hardware temperatures. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/962/files">here</a>. Unfortunately this is Linux only. I couldn't manage to implement this on other platforms mainly for two reasons:</p>
 <ul class="simple">
 <li>On Windows it is hard …</li></ul></div>
-                <a class="readmore" href="/blog/2017/psutil-511-system-temperature-battery-and-cpu-frequency/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
+            <a class="readmore" href="/blog/2017/psutil-511-system-temperature-battery-and-cpu-frequency/">read more</a>
+            </div><!-- /.entry-content -->
+        </article></li>
                 </ol><!-- /#posts-list -->
                 </section><!-- /#content -->
         <section id="extras" class="body">

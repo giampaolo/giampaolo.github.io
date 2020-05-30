@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>About</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+                <nav><ul>
+                    <li><a href="/">Blog</a></li>
+                    <li><a href="/archives">Archives</a></li>
+                    <li><a href="/donate">Donate</a></li>
+                    <li><a href="/about">About</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+    <h1 class="entry-title">About</h1>
+    
+    <div style="float:right; padding:10px">
+    <a href="/images/me-chicago.jpg">
+    <img alt="me at Chicago in 2016" src="/images/me-chicago.jpg" style="width:220px; height:220px" />
+    </a>
+    <br />
+</div><p>My name is Giampaolo Rodola. I'm a passionate Python developer who loves writing open source libraries for fun. I'm mostly known for being the author of <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a>. Below is a list of my contribution to the world.</p>
+<div class="section" id="talks">
+<h2>Talks</h2>
+<ul class="simple">
+<li><a class="reference external" href="static/efficient-io-with-zerocopy-syscalls.pdf">2019, Pycon China, Shanghai, Efficient I/O with zero-copy syscalls</a></li>
+</ul>
+</div>
+<div class="section" id="interviews">
+<h2>Interviews</h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.blog.pythonlibrary.org/2017/10/09/pydev-of-the-week-giampaolo-rodola/">2017, Pydev of the week</a></li>
+</ul>
+</div>
+<div class="section" id="open-source-projects">
+<h2>Open source projects</h2>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a>: a cross-platform library for retrieving information on running processes and system utilization (CPU, memory, disks, network) in Python which works on Linux, Windows, OSX, FreeBSD and Solaris.  (2008 - now)</li>
+<li><a class="reference external" href="https://github.com/giampaolo/pyftpdlib">pyftpdlib</a>: a very fast, asynchronous, pure-python FTP server.  (2006 - now)</li>
+<li><a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a>: a binding to sendfile(2) syscall which lets you send a file twice as fast as with a common socket.  (2011 - now)</li>
+</ul>
+</div>
+<div class="section" id="contributions-to-python-dev">
+<h2>Contributions to python-dev</h2>
+<p>Being that Python is an important part of my every day life I'm happy to contribute back every time I get the chance. Starting from year <a class="reference external" href="https://mail.python.org/pipermail/python-committers/2010-April/000891.html">2010</a> I've been given commit access against Python code repository. My contributions are mainly focused against the Python standard library. Amongst others:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="26%" />
+<col width="63%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">BPO</th>
+<th class="head">Module / API</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><a class="reference external" href="https://bugs.python.org/issue33671">33671</a></td>
+<td><a class="reference external" href="https://docs.python.org/3/library/shutil.html#shutil-platform-dependent-efficient-copy-operations">shutil</a></td>
+<td>faster file copy with zero-copy syscalls
+(<a class="reference external" href="static/efficient-io-with-zerocopy-syscalls.pdf">pycon china talk</a>)</td>
+</tr>
+<tr><td><a class="reference external" href="https://bugs.python.org/issue4080">4080</a></td>
+<td><a class="reference external" href="https://docs.python.org/3/library/unittest.html">unittest</a></td>
+<td>unittest timings</td>
+</tr>
+<tr><td><a class="reference external" href="https://bugs.python.org/issue10882">10882</a></td>
+<td><a class="reference external" href="https://docs.python.org/3/library/os.html#os.sendfile">os.sendfile</a></td>
+<td>expose sendfile() syscall</td>
+</tr>
+<tr><td><a class="reference external" href="https://bugs.python.org/issue17552">17552</a></td>
+<td><a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.sendfile">socket.sendfile</a></td>
+<td>sendfile() high-level wrapper</td>
+</tr>
+<tr><td><a class="reference external" href="https://bugs.python.org/issue2054">2054</a></td>
+<td><a class="reference external" href="https://docs.python.org/3/library/ftplib.html#ftplib.FTP_TLS">ftplib.TLS_FTP</a></td>
+<td>FTP over SSL support</td>
+</tr>
+<tr><td><a class="reference external" href="http://bugs.python.org/issue12442">12442</a></td>
+<td><a class="reference external" href="https://docs.python.org/3/library/shutil.html?highlight=ftplib#shutil.disk_usage">shutil.disk_usage</a></td>
+<td>disk usage &quot;df&quot; style</td>
+</tr>
+<tr><td><a class="reference external" href="https://bugs.python.org/issue10784">10784</a></td>
+<td><a class="reference external" href="https://docs.python.org/3/library/os.html#os.getpriority">os.getpriority</a>,
+<a class="reference external" href="https://docs.python.org/3/library/os.html#os.setpriority">os.setpriority</a></td>
+<td>get/set process priority</td>
+</tr>
+<tr><td><a class="reference external" href="https://bugs.python.org/issue21076">21076</a></td>
+<td><a class="reference external" href="https://docs.python.org/3/library/signal.html">signal</a></td>
+<td>signal module constant enums</td>
+</tr>
+<tr><td><a class="reference external" href="https://bugs.python.org/issue18931">18931</a></td>
+<td><a class="reference external" href="https://docs.python.org/3/library/selectors.html">selectors</a></td>
+<td>Solaris /dev/poll support</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="python-recipes">
+<h2>Python recipes</h2>
+<p>Whatever is not big enough to become an actual project I usually turn into an independent recipe.
+Here's the ones I like the most:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://code.activestate.com/recipes/577968-log-watcher-tail-f-log/?in=user-4178764">Log / directory watcher</a></li>
+<li><a class="reference external" href="http://code.activestate.com/recipes/578504-server-supporting-ipv4-and-ipv6/?in=user-4178764">IPv4/v6 agnostic server</a></li>
+<li><a class="reference external" href="https://code.activestate.com/recipes/578889-socketsendfile/">socket.sendfile()</a> (backport of <a class="reference external" href="https://bugs.python.org/issue17552">BPO-17552</a>)</li>
+<li><a class="reference external" href="http://code.activestate.com/recipes/577972-disk-usage/?in=user-4178764">disk usage</a> (backport of <a class="reference external" href="http://bugs.python.org/issue12442">BPO-12442</a>)</li>
+<li><a class="reference external" href="http://code.activestate.com/recipes/578022-wait-for-pid-and-check-for-pid-existance-posix/?in=user-4178764">wait for PID</a></li>
+<li><a class="reference external" href="http://code.activestate.com/recipes/578019-bytes-to-human-human-to-bytes-converter/?in=user-4178764">bytes-to-human corverter</a></li>
+<li><a class="reference external" href="blog/2016/how-to-always-execute-exit-functions-in-python/">handle exit context manager</a></li>
+</ul>
+</div>
+<div class="section" id="abandoned-projects">
+<h2>Abandoned projects</h2>
+<p>These are from when I started moving my first steps with Python in 2005. Listed here mainly for historical / nostalgic reasons. =)</p>
+<ul class="simple">
+<li><a class="reference external" href="http://soicmp.sourceforge.net/">soicmp</a>: a remote shell using ICMP protocol instead of TCP</li>
+<li><a class="reference external" href="https://sourceforge.net/projects/pypk/">pypk</a>: a port knocker based on libpcap</li>
+<li>pftpd: this is the ancestor of <a class="reference external" href="https://github.com/giampaolo/pyftpdlib">pyftpdlib</a> (web site is lost), a thread-based FTP server.</li>
+</ul>
+</div>
+<div class="section" id="contacts">
+<h2>Contacts</h2>
+<ul class="simple">
+<li>mail: <a class="reference external" href="mailto:g.rodola&#64;gmail.com">g.rodola&#64;gmail.com</a></li>
+<li>github: <a class="reference external" href="http://github.com/giampaolo">http://github.com/giampaolo</a></li>
+<li>twitter: <a class="reference external" href="https://twitter.com/grodola">https://twitter.com/grodola</a></li>
+<li>linkedin: <a class="reference external" href="https://www.linkedin.com/in/grodola/">https://www.linkedin.com/in/grodola/</a></li>
+</ul>
+</div>
+
+</section>
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/giampaolo">github</a></li>
+                            <li><a href="https://www.linkedin.com/in/grodola/">linkedin</a></li>
+                            <li><a href="https://twitter.com/grodola">twitter</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+            <!--
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address>
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+            -->
+        </footer>
+
+</body>
+</html>
