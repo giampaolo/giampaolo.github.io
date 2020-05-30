@@ -5,7 +5,7 @@ About
 
     <div style="float:right; padding:10px">
         <a href="/images/me-chicago.jpg">
-        <img alt="me at Chicago in 2016" src="/images/me-chicago.jpg" style="width:200px; height:220px" />
+        <img alt="me at Chicago in 2016" src="/images/me-chicago.jpg" style="width:220px; height:220px" />
         </a>
         <br />
     </div>
@@ -15,12 +15,12 @@ My name is Giampaolo Rodola. I'm a passionate Python developer who loves writing
 Talks
 -----
 
-* `Efficient I/O with zero-copy syscalls <(https://drive.google.com/file/d/1-_oKFyFicTQQiJ-BzNmFo7iCsSkPnbYn>`_ (Pycon China 2019)
+* `2019, Pycon China, Shanghai, Efficient I/O with zero-copy syscalls <static/efficient-io-with-zerocopy-syscalls.pdf>`_
 
 Interviews
 ----------
 
-* `2017 <https://www.blog.pythonlibrary.org/2017/10/09/pydev-of-the-week-giampaolo-rodola/>`_
+* `2017, Pydev of the week <https://www.blog.pythonlibrary.org/2017/10/09/pydev-of-the-week-giampaolo-rodola/>`_
 
 Open source projects
 --------------------
