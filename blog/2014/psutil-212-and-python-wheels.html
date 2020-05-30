@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>psutil 2.1.2 and Python wheels</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+                <nav><ul>
+                    <li><a href="/">Blog</a></li>
+                    <li><a href="/archives.html">Archives</a></li>
+                    <li><a href="/pages/donate.html">Donate</a></li>
+                    <li><a href="/pages/about.html">About</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/blog/2014/psutil-212-and-python-wheels/" rel="bookmark"
+           title="Permalink to psutil 2.1.2 and Python wheels">psutil 2.1.2 and Python wheels</a></h1>
+    </header>
+
+    <div class="entry-content">
+      <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate to the project. The main new &quot;feature&quot; of this release is that other than the exe files, Windows users can now also benefit of <a class="reference external" href="http://pythonwheels.com/">Python wheels</a> (full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/505">here</a>) which are available on PYPI. Frankly I don't know much about the new wheels packaging system but long story short is that Windows users can now install psutil via pip and therefore also include it as a dependency into requirements.txt. Other than this 2.1.2 can basically be considered a bug-fix release, including some important fixes amongst which:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/506">#506</a>: restored Python 2.4 compatibility</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/340">#340</a>: Process.get_open_files() no longer hangs on Windows (this was a very old and high-priority issue)</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/501">#501</a>: disk_io_counters() may return negative values on Windows</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/504">#504</a>: (Linux) couldn't build RPM packages via setup.py</li>
+</ul>
+<p>The list of all fixes can be found <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">here</a>. For the next release I plan to drop support for Python 2.4 and 2.5 and hopefully network interfaces information similarly to <a class="reference external" href="https://github.com/giampaolo/psutil/issues/376">ifconfig</a>.</p>
+
+<footer class="post-info">
+        <abbr class="published" title="2014-09-21T00:00:00+02:00">
+                created: Sun 21 September 2014
+        </abbr>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <p>tags:
+        <a href="/tag/psutil.html">psutil</a>
+        <a href="/tag/wheels.html">wheels</a>
+        <a href="/tag/travel.html">travel</a>
+    </p>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/giampaolo">github</a></li>
+                            <li><a href="https://www.linkedin.com/in/grodola/">linkedin</a></li>
+                            <li><a href="https://twitter.com/grodola">twitter</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+            <!--
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address>
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+            -->
+        </footer>
+
+</body>
+</html>

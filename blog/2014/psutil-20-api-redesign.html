@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>psutil 2.0 API redesign</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+                <nav><ul>
+                    <li><a href="/">Blog</a></li>
+                    <li><a href="/archives.html">Archives</a></li>
+                    <li><a href="/pages/donate.html">Donate</a></li>
+                    <li><a href="/pages/about.html">About</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/blog/2014/psutil-20-api-redesign/" rel="bookmark"
+           title="Permalink to psutil 2.0 API redesign">psutil 2.0 API redesign</a></h1>
+    </header>
+
+    <div class="entry-content">
+      <p>This my second blog post is going to be about <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is to serve as an official reference which describes how you should port your existent code base. In doing so I will also explain why I decided to make these changes. Despite many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten but I think this is for the better and it needed to be done, hopefully for the first and last time. OK, here we go now.</p>
+<div class="section" id="module-constants-turned-into-functions">
+<h2>Module constants turned into functions</h2>
+<p><strong>What changed</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Old name</th>
+<th class="head">Replacement</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>psutil.BOOT_TIME</td>
+<td>psutil.boot_time()</td>
+</tr>
+<tr><td>psutil.NUM_CPUS</td>
+<td>psutil.cpu_count()</td>
+</tr>
+<tr><td>psutil.TOTAL_PHYMEM</td>
+<td>psutil.virtual_memory().total</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why I did it</strong></p>
+<p>I already talked about this more extensively in this <a class="reference external" href="../../2013/making-constants-part-of-your-api-is-evil/">blog post</a>. In short: other than introducing unnecessary slowdowns, calculating a module level constant at import time is dangerous because in case of error the whole app will crash. Also, the represented values may be subject to change (think about the system clock) but the constant cannot be updated.
+Thanks to this hack accessing the old constants still works and produces a DeprecationWarning.</p>
+</div>
+<div class="section" id="module-functions-renamings">
+<h2>Module functions renamings</h2>
+<p><strong>What changed</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="44%" />
+<col width="56%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Old name</th>
+<th class="head">Replacement</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>psutil.get_boot_time()</td>
+<td>psutil.boot_time()</td>
+</tr>
+<tr><td>psutil.get_pid_list()</td>
+<td>psutil.pids()</td>
+</tr>
+<tr><td>psutil.get_users()</td>
+<td>psutil.users()</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why I did it</strong></p>
+<p>They were the only module level functions having a <tt class="docutils literal">get_</tt> prefix. All others do not.</p>
+</div>
+<div class="section" id="process-class-methods-renamings">
+<h2>Process class' methods renamings</h2>
+<p>All methods lost their <tt class="docutils literal">get_</tt> and <tt class="docutils literal">set_</tt> prefixes. A single method can now be used for both getting and setting (if a value is passed). Assuming p = psutil.Process():</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="46%" />
+<col width="54%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Old name</th>
+<th class="head">Replacement</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>p.get_children()</td>
+<td>p.children()</td>
+</tr>
+<tr><td>p.get_connections()</td>
+<td>p.connections()</td>
+</tr>
+<tr><td>p.get_cpu_affinity()</td>
+<td>p.cpu_affinity()</td>
+</tr>
+<tr><td>p.get_cpu_percent()</td>
+<td>p.cpu_percent()</td>
+</tr>
+<tr><td>p.get_cpu_times()</td>
+<td>p.cpu_times()</td>
+</tr>
+<tr><td>p.get_io_counters()</td>
+<td>p.io_counters()</td>
+</tr>
+<tr><td>p.get_ionice()</td>
+<td>p.ionice()</td>
+</tr>
+<tr><td>p.get_memory_info()</td>
+<td>p.memory_info()</td>
+</tr>
+<tr><td>p.get_ext_memory_info()</td>
+<td>p.memory_info_ex()</td>
+</tr>
+<tr><td>p.get_memory_maps()</td>
+<td>p.memory_maps()</td>
+</tr>
+<tr><td>p.get_memory_percent()</td>
+<td>p.memory_percent()</td>
+</tr>
+<tr><td>p.get_nice()</td>
+<td>p.nice()</td>
+</tr>
+<tr><td>p.get_num_ctx_switches()</td>
+<td>p.num_ctx_switches()</td>
+</tr>
+<tr><td>p.get_num_fds()</td>
+<td>p.num_fds()</td>
+</tr>
+<tr><td>p.get_num_threads()</td>
+<td>p.num_threads()</td>
+</tr>
+<tr><td>p.get_open_files()</td>
+<td>p.open_files()</td>
+</tr>
+<tr><td>p.get_rlimit()</td>
+<td>p.rlimit()</td>
+</tr>
+<tr><td>p.get_threads()</td>
+<td>p.threads()</td>
+</tr>
+<tr><td>p.getcwd()</td>
+<td>p.cwd()</td>
+</tr>
+</tbody>
+</table>
+<p>...as for set_* methods:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="44%" />
+<col width="56%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Old name</th>
+<th class="head">Replacement</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>p.set_cpu_affinity()</td>
+<td>p.cpu_affinity(cpus)</td>
+</tr>
+<tr><td>p.set_ionice()</td>
+<td>p.ionice(ioclass, value=None)</td>
+</tr>
+<tr><td>p.set_nice()</td>
+<td>p.nice(value)</td>
+</tr>
+<tr><td>p.set_rlimit()</td>
+<td>p.rlimit(resource, limits=None)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why I did it</strong></p>
+<p>I wanted to be consistent with system-wide module level functions which have no <tt class="docutils literal">get_</tt> prefix. After I got rid of <tt class="docutils literal">get_</tt> prefixes removing also <tt class="docutils literal">set_</tt> seemed natural and helped diminish the number of methods.</p>
+</div>
+<div class="section" id="process-properties-are-now-methods">
+<h2>Process properties are now methods</h2>
+<p><strong>What changed</strong></p>
+<p>Assuming p = psutil.Process():</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="44%" />
+<col width="56%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Old name</th>
+<th class="head">Replacement</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>p.cmdline</td>
+<td>p.cmdline()</td>
+</tr>
+<tr><td>p.create_time</td>
+<td>p.create_time()</td>
+</tr>
+<tr><td>p.exe</td>
+<td>p.exe()</td>
+</tr>
+<tr><td>p.gids</td>
+<td>p.gids()</td>
+</tr>
+<tr><td>p.name</td>
+<td>p.name()</td>
+</tr>
+<tr><td>p.parent</td>
+<td>p.parent()</td>
+</tr>
+<tr><td>p.ppid</td>
+<td>p.ppid()</td>
+</tr>
+<tr><td>p.status</td>
+<td>p.status()</td>
+</tr>
+<tr><td>p.uids</td>
+<td>p.uids()</td>
+</tr>
+<tr><td>p.username</td>
+<td>p.username()</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why I did it</strong></p>
+<p>Different reasons:</p>
+<ul class="simple">
+<li>Having a mixed API which uses both properties and methods for no particular reason is confusing and messy as you don't know whether to use &quot;()&quot; or not (see <a class="reference external" href="https://code.google.com/p/psutil/source/browse/test/test_psutil.py?name=release-0.7.0#1716">here</a>).</li>
+<li>It is usually expected from a property to not perform many computations internally whereas psutil actually invokes a function every time it is accessed. This has two drawbacks:
+* you may get an exception just by accessing the property (e.g. &quot;p.name&quot; may raise NoSuchProcess or AccessDenied)
+* you may erroneously think properties are cached but this is true only for name, exe, and create_time.</li>
+</ul>
+</div>
+<div class="section" id="cpu-percent-intervals">
+<h2>CPU percent intervals</h2>
+<p><strong>What changed</strong></p>
+<p>The timeout parameter of <cite>cpu_percent*</cite> functions now defaults to 0.0 instead of 0.1. The functions affected are:</p>
+<ul class="simple">
+<li>psutil.Process.cpu_percent()</li>
+<li>psutil.cpu_percent()</li>
+<li>psutil.cpu_times_percent()</li>
+</ul>
+<p><strong>Why I did it</strong></p>
+<p>I originally set 0.1 as the default timeout because in order to get a meaningful percent value you need to wait some time.
+Having an API which &quot;sleeps&quot; by default is risky though, because it's easy to forget it does so. That is particularly problematic when calling cpu_percent() for all processes: it's very easy to forget about specifying timeout=0 resulting in dramatic slowdowns which are hard to spot. For example, this code snippet might take different seconds to complete depending on the number of active processes:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="c1"># this will be slow</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
+<span class="o">...</span>    <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="section" id="migration-strategy">
+<h2>Migration strategy</h2>
+<p>Except for Process properties (name, exe, cmdline, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long you start the interpreter with the &quot;-Wd&quot; option. This will enable deprecation warnings which were <a class="reference external" href="http://bugs.python.org/issue7319">silenced in Python 2.7</a> (IMHO, from a developer standpoint this was a bad decision).</p>
+<pre class="literal-block">
+giampaolo&#64;ubuntu:/tmp$ python -Wd
+Python 2.7.3 (default, Sep 26 2013, 20:03:06)
+[GCC 4.6.3] on linux2
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import psutil
+&gt;&gt;&gt; psutil.get_pid_list()
+__main__:1: DeprecationWarning: psutil.get_pid_list is deprecated; use psutil.pids() instead
+[1, 2, 3, 6, 7, 13, ...]
+&gt;&gt;&gt;
+&gt;&gt;&gt;
+&gt;&gt;&gt; p = psutil.Process()
+&gt;&gt;&gt; p.get_cpu_times()
+__main__:1: DeprecationWarning: get_cpu_times() is deprecated; use cpu_times() instead
+pcputimes(user=0.08, system=0.03)
+&gt;&gt;&gt;
+</pre>
+<p>If you have a solid test suite you can run tests and fix the warnings one by one.
+As for the the Process properties which were turned into methods it's more difficult because whereas psutil 1.2.1 returns the actual value, psutil 2.0.0 will return the bound method:</p>
+<div class="highlight"><pre><span></span><span class="c1"># psutil 1.2.1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
+<span class="s1">&#39;python&#39;</span>
+<span class="o">&gt;&gt;&gt;</span>
+
+<span class="c1"># psutil 2.0.0</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Process</span><span class="o">.</span><span class="n">name</span> <span class="n">of</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">19816</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">139845631328144</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span>
+</pre></div>
+<p>What I would recommend if you want to drop support with 1.2.1 is to grep for &quot;.name&quot;, &quot;.exe&quot; etc. and just replace them with &quot;.exe()&quot; and &quot;.name()&quot; one by one.
+If on the other hand you want to write a code which works with both versions I see two possibilities:</p>
+<ul class="simple">
+<li>#1 check version info, like this:</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">PSUTIL2</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">name</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">()</span> <span class="k">if</span> <span class="n">PSUTIL2</span> <span class="k">else</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">exe</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">exe</span><span class="p">()</span> <span class="k">if</span> <span class="n">PSUTIL2</span> <span class="k">else</span> <span class="n">p</span><span class="o">.</span><span class="n">exe</span>
+</pre></div>
+<ul class="simple">
+<li>#2 get rid of all &quot;.name&quot;, &quot;.exe&quot; occurrences you have in your code and use as_dict() instead:</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pinfo</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;exe&quot;</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pinfo</span>
+<span class="p">{</span><span class="s1">&#39;exe&#39;</span><span class="p">:</span> <span class="s1">&#39;/usr/bin/python2.7&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">name</span> <span class="o">=</span> <span class="n">pinfo</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">exe</span> <span class="o">=</span> <span class="n">pinfo</span><span class="p">[</span><span class="s1">&#39;exe&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="new-features-introduced-in-2-0-0">
+<h2>New features introduced in 2.0.0</h2>
+<p>Ok, enough with the bad news. =) psutil 2.0.0 is not only about code breakage. I also had the chance to integrate a bunch of interesting features.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427">#427</a>: you're now able to distinguish between the number of logical and physical CPUs:</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
+<span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># physical cores only</span>
+<span class="mi">2</span>
+</pre></div>
+<ul class="simple">
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=452">#452</a>: process classes are now hashable and can be checked for equality. That means you can use Process objects with sets (finally!).</li>
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447">#447</a>: psutil.wait_procs() &quot;timeout&quot; parameter is now optional</li>
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=461">#461</a>: functions returning namedtuples are now pickle-able</li>
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=459">#459</a>: a Makefile is now available to automatize repetitive tasks such as build, install, running tests etc. There's also a make.bat for Windows.</li>
+<li>introduced unittest2 module as a requirement for running tests</li>
+</ul>
+</div>
+
+<footer class="post-info">
+        <abbr class="published" title="2014-01-11T00:00:00+01:00">
+                created: Sat 11 January 2014
+        </abbr>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <p>tags:
+        <a href="/tag/psutil.html">psutil</a>
+        <a href="/tag/api-design.html">api-design</a>
+    </p>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/giampaolo">github</a></li>
+                            <li><a href="https://www.linkedin.com/in/grodola/">linkedin</a></li>
+                            <li><a href="https://twitter.com/grodola">twitter</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+            <!--
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address>
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+            -->
+        </footer>
+
+</body>
+</html>

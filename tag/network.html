@@ -11,7 +11,7 @@
         <header id="banner" class="body">
                 <h1><a href="/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
                 <nav><ul>
-                    <li><a href="/">Home</a></li>
+                    <li><a href="/">Blog</a></li>
                     <li><a href="/archives.html">Archives</a></li>
                     <li><a href="/pages/donate.html">Donate</a></li>
                     <li><a href="/pages/about.html">About</a></li>
@@ -20,319 +20,285 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/blog/2015/psutil-30-aka-how-i-reimplemented-ifconfig-in-python/">psutil 3.0, aka how I reimplemented ifconfig in Python</a></h1>
+                    <h1 class="entry-title"><a href="/blog/2014/python-and-sendfile/">Python and sendfile</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2015-06-13T00:00:00+02:00">
-                created: Sat 13 June 2015
+        <abbr class="published" title="2014-06-13T00:00:00+02:00">
+                created: Fri 13 June 2014
         </abbr>
 <!--
         <address class="vcard author">
                 By                         <a class="url fn" href="/author/giampaolo-rodola.html">Giampaolo Rodola</a>
         </address>
 -->
-<p>tags: <a href="/tag/psutil.html">psutil</a> <a href="/tag/network.html">network</a> <a href="/tag/python.html">python</a> <a href="/tag/travel.html">travel</a> <a href="/tag/personal.html">personal</a> </p>
+    <p>tags:
+        <a href="/tag/python.html">python</a>
+        <a href="/tag/python-dev.html">python-dev</a>
+        <a href="/tag/sendfile.html">sendfile</a>
+        <a href="/tag/zerocopy.html">zerocopy</a>
+        <a href="/tag/network.html">network</a>
+    </p>
+
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info --><p>Here we are. It's been a long time since my last blog post and my last <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally had the chance to meet my friend <a class="reference external" href="http://jayloden.com/software.htm">Jay Loden</a> in person. <a class="reference external" href="https://fbcdn-sphotos-h-a.akamaihd.net/hphotos-ak-xta1/t31.0-8/11263024_10153285412879890_759604551146752808_o.jpg">Jay and I</a> originally started working on psutil together <a class="reference external" href="https://groups.google.com/forum/#!topic/psutil-dev/fj8DQ3lGFH4">7 years ago</a>.</p>
-<div>
-    <a href="/images/me-with-jay.jpg">
-    <img src="/images/me-with-jay.jpg" style="width:750px; height:500px" />
-    </a>
-</div><p>Back then I didn't know any C (and I still am a terrible C developer) so he's been crucial to develop the initial psutil skeleton including OSX and Windows support. I'm back home now (but not for long ;-)), so I finally have some time to write this blog post and tell you about the new psutil release. Let's see what happened.</p>
-<div class="section" id="net-if-addrs">
-<h2>net_if_addrs()</h2>
-<p>In a few words, we're now able to list network interface addresses similarly to &quot;ifconfig&quot; command on UNIX:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pprint</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_if_addrs</span><span class="p">())</span>
-<span class="p">{</span><span class="s1">&#39;ethernet0&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">snic</span><span class="p">(</span><span class="n">family</span><span class="o">=&lt;</span><span class="n">AddressFamily</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">:</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">,</span>
-                    <span class="n">address</span><span class="o">=</span><span class="s1">&#39;10.0.0.4&#39;</span><span class="p">,</span>
-                    <span class="n">netmask</span><span class="o">=</span><span class="s1">&#39;255.0.0.0&#39;</span><span class="p">,</span>
-                    <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;10.255.255.255&#39;</span><span class="p">),</span>
-               <span class="n">snic</span><span class="p">(</span><span class="n">family</span><span class="o">=&lt;</span><span class="n">AddressFamily</span><span class="o">.</span><span class="n">AF_PACKET</span><span class="p">:</span> <span class="mi">17</span><span class="o">&gt;</span><span class="p">,</span>
-                    <span class="n">address</span><span class="o">=</span><span class="s1">&#39;9c:eb:e8:0b:05:1f&#39;</span><span class="p">,</span>
-                    <span class="n">netmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;ff:ff:ff:ff:ff:ff&#39;</span><span class="p">)],</span>
- <span class="s1">&#39;localhost&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">snic</span><span class="p">(</span><span class="n">family</span><span class="o">=&lt;</span><span class="n">AddressFamily</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">:</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">,</span>
-                    <span class="n">address</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
-                    <span class="n">netmask</span><span class="o">=</span><span class="s1">&#39;255.0.0.0&#39;</span><span class="p">,</span>
-                    <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">),</span>
-               <span class="n">snic</span><span class="p">(</span><span class="n">family</span><span class="o">=&lt;</span><span class="n">AddressFamily</span><span class="o">.</span><span class="n">AF_PACKET</span><span class="p">:</span> <span class="mi">17</span><span class="o">&gt;</span><span class="p">,</span>
-                    <span class="n">address</span><span class="o">=</span><span class="s1">&#39;00:00:00:00:00:00&#39;</span><span class="p">,</span>
-                    <span class="n">netmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;00:00:00:00:00:00&#39;</span><span class="p">)]}</span>
-</pre></div>
-<p>This is limited to AF_INET (IPv4), AF_INET6 (IPv6) and AF_LINK (ETHERNET) address families. If you want something more poweful (e.g. AF_BLUETOOTH) you can take a look at <a class="reference external" href="https://pypi.python.org/pypi/netifaces/">netifaces</a> extension. And here's the code which does these tricks on POSIX and Windows:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L151">POSIX</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L2907">Windows</a></li>
-</ul>
-<p>Also, here's some <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_if_addrs">doc</a>.</p>
+</footer><!-- /.post-info --><p><a class="reference external" href="http://linux.die.net/man/2/sendfile">sendfile(2)</a> is a UNIX system call which provides a &quot;zero-copy&quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, sendfile(2) is more efficient than the combination of &quot;file.read()&quot; and &quot;socket.send()&quot;, which requires transferring data to and from user space.  This copying of the data twice imposes some performance and resource penalties which sendfile(2) syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of <a class="reference external" href="http://linux.die.net/man/2/read">read(2)</a> / <a class="reference external" href="http://linux.die.net/man/2/write">write(2)</a> system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how sendfile(2) works is available <a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/">here</a>, but long story short is that sending a file with sendfile() is usually <a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark">twice as fast</a> than using plain <a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send">socket.send()</a>. Typical applications which can benefit from using sendfile() are FTP and HTTP servers.</p>
+<div class="section" id="socket-sendfile">
+<h2>socket.sendfile()</h2>
+<p>I recently contributed a patch for Python's socket module which adds a high-level <a class="reference external" href="https://docs.python.org/3.5/library/socket.html#socket.socket.sendfile">socket.sendfile()</a> method (see full discussion at <a class="reference external" href="http://bugs.python.org/issue17552">BPO-17552</a>). socket.sendfile() will transmit a file until EOF is reached by attempting to use <a class="reference external" href="https://docs.python.org/3/library/os.html#os.sendfile">os.sendfile()</a>, if available, else it falls back on using plain socket.send(). Internally, it takes care of handling socket timeouts and provides two optional parameters to move the file offset or to send only a limited amount of bytes. I came up with this idea because getting all of that right is a bit tricky, so a generic wrapper seemed to be convenient to have. socket.sendfile() will make its appearance in Python 3.5.</p>
 </div>
-<div class="section" id="net-if-stats">
-<h2>net_if_stats()</h2>
-<p>This will return a bunch of information about network interface cards:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pprint</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_if_stats</span><span class="p">())</span>
-<span class="p">{</span><span class="s1">&#39;ethernet&#39;</span><span class="mi">0</span><span class="p">:</span> <span class="n">snicstats</span><span class="p">(</span><span class="n">isup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                        <span class="n">duplex</span><span class="o">=&lt;</span><span class="n">NicDuplex</span><span class="o">.</span><span class="n">NIC_DUPLEX_FULL</span><span class="p">:</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">,</span>
-                        <span class="n">speed</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-                        <span class="n">mtu</span><span class="o">=</span><span class="mi">1500</span><span class="p">),</span>
- <span class="s1">&#39;localhost&#39;</span><span class="p">:</span> <span class="n">snicstats</span><span class="p">(</span><span class="n">isup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                        <span class="n">duplex</span><span class="o">=&lt;</span><span class="n">NicDuplex</span><span class="o">.</span><span class="n">NIC_DUPLEX_UNKNOWN</span><span class="p">:</span> <span class="mi">0</span><span class="o">&gt;</span><span class="p">,</span>
-                        <span class="n">speed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                        <span class="n">mtu</span><span class="o">=</span><span class="mi">65536</span><span class="p">)}</span>
-</pre></div>
-<p>Again, here's the code for each platform:</p>
+<div class="section" id="sendfile-and-python">
+<h2>sendfile and Python</h2>
+<p>sendfile(2) made its first appearance into the Python stdlib kind of late: Python 3.3. It was contributed by Ross Lagerwall and me in <a class="reference external" href="http://bugs.python.org/issue10882">BPO-10882</a>. Since the patch didn't make it into python 2.X and I wanted to <a class="reference external" href="https://code.google.com/p/pyftpdlib/issues/detail?id=152">use sendfile() in pyftpdlib</a> I later decided to release it as a stand alone module working with older (2.5+) Python versions (see <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> project). Starting with version 3.5, Python will hopefully start using sendfile() more extensively, in details:</p>
 <ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L3057">Windows</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_linux.c#L474">Linux</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L229">OSX &amp; FreeBSD</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_sunos.c#L1153">SunOS</a></li>
+<li><a class="reference external" href="http://bugs.python.org/issue13564">BPO-13563: ftplib</a></li>
+<li><a class="reference external" href="http://bugs.python.org/issue13559">BPO-13559: httplib</a></li>
+<li>asyncio: there are some plans for this even though no actual patch yet, see <a class="reference external" href="https://groups.google.com/d/msg/python-tulip/i4OHlIkExsA/eqaK5fzEfCAJ">discussion</a> and <a class="reference external" href="http://bugs.python.org/issue17552#msg217099">BDFL involvement</a>.</li>
 </ul>
-<p>...and the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_if_stats">doc</a>.</p>
+<p>Also, Windows provides something similar to sendfile(2): <a class="reference external" href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms740565(v=vs.85).aspx">TransmitFile</a>. Now that socket.sendfile() is in place it seems natural to add support for it as well (see <a class="reference external" href="http://bugs.python.org/issue21721">BPO-21721</a>).</p>
 </div>
-<div class="section" id="enums">
-<h2>Enums</h2>
-<p><a class="reference external" href="https://docs.python.org/3/library/enum.html">Enums</a> are a nice new feature introduced in Python 3.4. Very briefly (or at least, this is what I appreciate the most about them), they help you write an API with human-readable constants. If you use Python 2 you'll see something like this:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">IOPRIO_CLASS_IDLE</span>
-<span class="mi">3</span>
-</pre></div>
-<p>On Python 3.4 you'll see a more informative:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">IOPRIO_CLASS_IDLE</span>
-<span class="o">&lt;</span><span class="n">IOPriority</span><span class="o">.</span><span class="n">IOPRIO_CLASS_IDLE</span><span class="p">:</span> <span class="mi">3</span><span class="o">&gt;</span>
-</pre></div>
-<p>They are backward compatible, meaning if you're sending serialized data produced with psutil through the network you can safely use comparison operators and so on. The psutil APIs returning enums (on Python &gt;=3.4) are:</p>
-<ul class="simple">
-<li>psutil.net_connections() (the address families):</li>
-<li>psutil.Process.connections() (same as above)</li>
-<li>psutil.net_if_stats()  (all <tt class="docutils literal">NIC_DUPLEX_*</tt> constants)</li>
-<li>psutil.Process.nice() on Windows (for all the <tt class="docutils literal">*_PRIORITY_CLASS</tt> constants)</li>
-<li>psutil.Process.ionice() on Linux (for all the <tt class="docutils literal">IOPRIO_CLASS_*</tt> constants)</li>
-</ul>
-<p>All the other existing constants remained plain strings (<tt class="docutils literal">STATUS_*</tt>) or integers (<tt class="docutils literal">CONN_*</tt>).</p>
-</div>
-<div class="section" id="zombie-processes">
-<h2>Zombie processes</h2>
-<p>This is a big one. The full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/428">here</a> but basically the support for <a class="reference external" href="http://askubuntu.com/a/48625">zombie processes</a> on UNIX was <a class="reference external" href="https://github.com/giampaolo/psutil/issues/428">broken</a> (except on Linux, and Windows doesn't have zombie processes). Up until psutil 2.X we could instantiate a zombie process:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">pid</span> <span class="o">=</span> <span class="n">create_zombie</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
-</pre></div>
-<p>...but every time we queried it we got a NoSuchProcess exception:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
-  <span class="n">File</span> <span class="s2">&quot;psutil/__init__.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">374</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_init</span>
-    <span class="k">raise</span> <span class="n">NoSuchProcess</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
-<span class="n">psutil</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">:</span> <span class="n">no</span> <span class="n">process</span> <span class="n">found</span> <span class="k">with</span> <span class="n">pid</span> <span class="mi">123</span>
-</pre></div>
-<p>That was misleading though because the PID technically still existed:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">pid_exists</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">)</span>
-<span class="kc">True</span>
-</pre></div>
-<p>Furthermore, depending on what platform you were on, certain process stats could still be queried (instead of raising NoSuchProcess):</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cmdline</span><span class="p">()</span>
-<span class="p">[</span><span class="s1">&#39;python&#39;</span><span class="p">]</span>
-</pre></div>
-<p>Also process_iter() did not return zombie processes at all. This was probably the worst aspect because being able to identify them is an important use case, as they signal an issue with process: if a parent process spawns a child, terminates it (via kill()), but doesn't wait() for it it will create a zombie. Long story short, the way this changed in psutil 3.0 is that:</p>
-<ul class="simple">
-<li>we now have a new ZombieProcess exception, raised every time we're not able to query a process because it's a zombie</li>
-<li>it is raised instead of NoSuchProcess (which was incorrect and misleading)</li>
-<li>it is still backward compatible (meaning you won't have to change your old code) because it inherits from NoSuchProcess</li>
-<li>process_iter() finally works, meaning you can safely identify zombie processes like this:</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">psutil</span>
-<span class="n">zombies</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
+<div class="section" id="backport-to-python-2-6-and-2-7">
+<h2>Backport to Python 2.6 and 2.7</h2>
+<p>For those of you who are interested in using socket.sendfile() with older Python 2.6 and 2.7 versions here's a backport. It requires <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> module to be installed. Full code including tests is hosted <a class="reference external" href="https://code.activestate.com/recipes/578889-socketsendfile/">here</a>.</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This is a backport of socket.sendfile() for Python 2.6 and 2.7.</span>
+<span class="sd">socket.sendfile() will be included in Python 3.5:</span>
+<span class="sd">http://bugs.python.org/issue17552</span>
+<span class="sd">Usage:</span>
+
+<span class="sd">&gt;&gt;&gt; import socket</span>
+<span class="sd">&gt;&gt;&gt; file = open(&quot;somefile.bin&quot;, &quot;rb&quot;)</span>
+<span class="sd">&gt;&gt;&gt; sock = socket.create_connection((&quot;localhost&quot;, 8021))</span>
+<span class="sd">&gt;&gt;&gt; sendfile(sock, file)</span>
+<span class="sd">42319283</span>
+<span class="sd">&gt;&gt;&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">select</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="nb">memoryview</span>  <span class="c1"># py 2.7 only</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="nb">memoryview</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;posix&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sendfile</span> <span class="k">as</span> <span class="nn">pysendfile</span>  <span class="c1"># requires &quot;pip install pysendfile&quot;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">pysendfile</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="n">_RETRY</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="n">errno</span><span class="o">.</span><span class="n">EAGAIN</span><span class="p">,</span> <span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="n">errno</span><span class="o">.</span><span class="n">EWOULDBLOCK</span><span class="p">,</span>
+                    <span class="n">errno</span><span class="o">.</span><span class="n">EINPROGRESS</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">_GiveupOnSendfile</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">if</span> <span class="n">pysendfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">_sendfile_use_sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">_check_sendfile_params</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+        <span class="n">sockno</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fileno</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">UnsupportedOperation</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_GiveupOnSendfile</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>  <span class="c1"># not a regular file</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fsize</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fstat</span><span class="p">(</span><span class="n">fileno</span><span class="p">)</span><span class="o">.</span><span class="n">st_size</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_GiveupOnSendfile</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>  <span class="c1"># not a regular file</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fsize</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>  <span class="c1"># empty file</span>
+        <span class="n">blocksize</span> <span class="o">=</span> <span class="n">fsize</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">count</span> <span class="k">else</span> <span class="n">count</span>
+
+        <span class="n">timeout</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">gettimeout</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">timeout</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;non-blocking sockets are not supported&quot;</span><span class="p">)</span>
+        <span class="c1"># poll/select have the advantage of not requiring any</span>
+        <span class="c1"># extra file descriptor, contrarily to epoll/kqueue</span>
+        <span class="c1"># (also, they require a single syscall).</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="s1">&#39;poll&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">timeout</span> <span class="o">*=</span> <span class="mi">1000</span>
+            <span class="n">pollster</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
+            <span class="n">pollster</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">sockno</span><span class="p">,</span> <span class="n">select</span><span class="o">.</span><span class="n">POLLOUT</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">wait_for_fd</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">pollster</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span> <span class="o">==</span> <span class="p">[]:</span>
+                    <span class="k">raise</span> <span class="n">socket</span><span class="o">.</span><span class="n">_socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">(</span><span class="s1">&#39;timed out&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># call select() once in order to solicit ValueError in</span>
+            <span class="c1"># case we run out of fds</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([],</span> <span class="p">[</span><span class="n">sockno</span><span class="p">],</span> <span class="p">[],</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">_GiveupOnSendfile</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">wait_for_fd</span><span class="p">():</span>
+                <span class="n">fds</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([],</span> <span class="p">[</span><span class="n">sockno</span><span class="p">],</span> <span class="p">[],</span> <span class="n">timeout</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">fds</span> <span class="o">==</span> <span class="p">([],</span> <span class="p">[],</span> <span class="p">[]):</span>
+                    <span class="k">raise</span> <span class="n">socket</span><span class="o">.</span><span class="n">_socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">(</span><span class="s1">&#39;timed out&#39;</span><span class="p">)</span>
+
+        <span class="n">total_sent</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># localize variable access to minimize overhead</span>
+        <span class="n">os_sendfile</span> <span class="o">=</span> <span class="n">pysendfile</span><span class="o">.</span><span class="n">sendfile</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
+                    <span class="n">wait_for_fd</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">count</span><span class="p">:</span>
+                    <span class="n">blocksize</span> <span class="o">=</span> <span class="n">count</span> <span class="o">-</span> <span class="n">total_sent</span>
+                    <span class="k">if</span> <span class="n">blocksize</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">break</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">sent</span> <span class="o">=</span> <span class="n">os_sendfile</span><span class="p">(</span><span class="n">sockno</span><span class="p">,</span> <span class="n">fileno</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">blocksize</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="ow">in</span> <span class="n">_RETRY</span><span class="p">:</span>
+                        <span class="c1"># Block until the socket is ready to send some</span>
+                        <span class="c1"># data; avoids hogging CPU resources.</span>
+                        <span class="n">wait_for_fd</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">total_sent</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="c1"># We can get here for different reasons, the main</span>
+                            <span class="c1"># one being &#39;file&#39; is not a regular mmap(2)-like</span>
+                            <span class="c1"># file, in which case we&#39;ll fall back on using</span>
+                            <span class="c1"># plain send().</span>
+                            <span class="k">raise</span> <span class="n">_GiveupOnSendfile</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="n">err</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">sent</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">break</span>  <span class="c1"># EOF</span>
+                    <span class="n">offset</span> <span class="o">+=</span> <span class="n">sent</span>
+                    <span class="n">total_sent</span> <span class="o">+=</span> <span class="n">sent</span>
+            <span class="k">return</span> <span class="n">total_sent</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">total_sent</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;seek&#39;</span><span class="p">):</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_sendfile_use_sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">_GiveupOnSendfile</span><span class="p">(</span>
+            <span class="s2">&quot;sendfile() not available on this platform&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_sendfile_use_send</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">_check_sendfile_params</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sock</span><span class="o">.</span><span class="n">gettimeout</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;non-blocking sockets are not supported&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">offset</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+    <span class="n">blocksize</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="mi">8192</span><span class="p">)</span> <span class="k">if</span> <span class="n">count</span> <span class="k">else</span> <span class="mi">8192</span>
+    <span class="n">total_sent</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># localize variable access to minimize overhead</span>
+    <span class="n">file_read</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span>
+    <span class="n">sock_send</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">send</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span><span class="p">()</span> <span class="o">==</span> <span class="n">psutil</span><span class="o">.</span><span class="n">STATUS_ZOMBIE</span><span class="p">:</span>
-            <span class="n">zombies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-    <span class="k">except</span> <span class="n">NoSuchProcess</span><span class="p">:</span>
-        <span class="k">pass</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">count</span><span class="p">:</span>
+                <span class="n">blocksize</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">count</span> <span class="o">-</span> <span class="n">total_sent</span><span class="p">,</span> <span class="n">blocksize</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">blocksize</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="nb">memoryview</span><span class="p">(</span><span class="n">file_read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">break</span>  <span class="c1"># EOF</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">sent</span> <span class="o">=</span> <span class="n">sock_send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="ow">in</span> <span class="n">_RETRY</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">raise</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">total_sent</span> <span class="o">+=</span> <span class="n">sent</span>
+                    <span class="k">if</span> <span class="n">sent</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">sent</span><span class="p">:]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">break</span>
+        <span class="k">return</span> <span class="n">total_sent</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">total_sent</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;seek&#39;</span><span class="p">):</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span> <span class="o">+</span> <span class="n">total_sent</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_check_sendfile_params</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s1">&#39;b&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file should be opened in binary mode&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sock</span><span class="o">.</span><span class="n">type</span> <span class="o">&amp;</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;only SOCK_STREAM type sockets are supported&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;count must be a positive integer (got </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;count must be a positive integer (got </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;sendfile(sock, file[, offset[, count]]) -&gt; sent</span>
+
+<span class="sd">    Send a *file* over a connected socket *sock* until EOF is</span>
+<span class="sd">    reached by using high-performance sendfile(2) and return the</span>
+<span class="sd">    total number of bytes which were sent.</span>
+<span class="sd">    *file* must be a regular file object opened in binary mode.</span>
+<span class="sd">    If sendfile() is not available (e.g. Windows) or file is</span>
+<span class="sd">    not a regular file socket.send() will be used instead.</span>
+<span class="sd">    *offset* tells from where to start reading the file.</span>
+<span class="sd">    If specified, *count* is the total number of bytes to transmit</span>
+<span class="sd">    as opposed to sending the file until EOF is reached.</span>
+<span class="sd">    File position is updated on return or also in case of error in</span>
+<span class="sd">    which case file.tell() can be used to figure out the number of</span>
+<span class="sd">    bytes which were sent.</span>
+<span class="sd">    The socket must be of SOCK_STREAM type.</span>
+<span class="sd">    Non-blocking sockets are not supported.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_sendfile_use_sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">_GiveupOnSendfile</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_sendfile_use_send</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
 </pre></div>
-</div>
-<div class="section" id="removal-of-deprecated-apis">
-<h2>Removal of deprecated APIs</h2>
-<p>This is another big one, probably the biggest. In a previous blog post I already talked about deprecated APIs. What I did back then (January 2014) was to rename and officially deprecate different APIs and provide aliases for them so that people wouldn't yell at me because I broke their existent code. The most interesting deprecation was certainly the one affecting module constants and the hack which was used in order to provide &quot;module properties&quot;. With this new release I decided to get rid of all those aliases. I'm sure this will cause problems but hey! This is a new major release, right? =). Plus the amount of crap which was removed is impressive (see the <a class="reference external" href="https://github.com/giampaolo/psutil/commit/ab211934af0acf99091e4cd534fc5bbe7fd3b233">commit</a>). Here's the old aliases which are now gone for good (or bad, depending on how much headache they will cause you):</p>
-</div>
-<div class="section" id="removed-module-functions-and-constants">
-<h2>Removed module functions and constants</h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="48%" />
-<col width="52%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Already deprecated name</th>
-<th class="head">New name</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>psutil.BOOT_TIME()</td>
-<td>psutil.boot_time()</td>
-</tr>
-<tr><td>psutil.NUM_CPUS()</td>
-<td>psutil.cpu_count()</td>
-</tr>
-<tr><td>psutil.TOTAL_PHYMEM()</td>
-<td>psutil.virtual_memory().total</td>
-</tr>
-<tr><td>psutil.avail_phymem()</td>
-<td>psutil.virtual_memory().free</td>
-</tr>
-<tr><td>psutil.avail_virtmem()</td>
-<td>psutil.swap_memory().free</td>
-</tr>
-<tr><td>psutil.cached_phymem()</td>
-<td>psutil.virtual_memory().cached</td>
-</tr>
-<tr><td>psutil.get_pid_list()</td>
-<td>psutil.pids().cached</td>
-</tr>
-<tr><td>psutil.get_process_list()</td>
-<td>&nbsp;</td>
-</tr>
-<tr><td>psutil.get_users()</td>
-<td>psutil.users()</td>
-</tr>
-<tr><td>psutil.network_io_counters()</td>
-<td>psutil.net_io_counters()</td>
-</tr>
-<tr><td>psutil.phymem_buffers()</td>
-<td>psutil.virtual_memory().buffers</td>
-</tr>
-<tr><td>psutil.phymem_usage()</td>
-<td>psutil.virtual_memory()</td>
-</tr>
-<tr><td>psutil.total_virtmem()</td>
-<td>psutil.swap_memory().total</td>
-</tr>
-<tr><td>psutil.used_virtmem()</td>
-<td>psutil.swap_memory().used</td>
-</tr>
-<tr><td>psutil.used_phymem()</td>
-<td>psutil.virtual_memory().used</td>
-</tr>
-<tr><td>psutil.virtmem_usage()</td>
-<td>psutil.swap_memory()</td>
-</tr>
-</tbody>
-</table>
-<p>Process methods (assuming p = psutil.Process()):</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="48%" />
-<col width="52%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Already deprecated name</th>
-<th class="head">New name</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>p.get_children()</td>
-<td>p.children()</td>
-</tr>
-<tr><td>p.get_connections()</td>
-<td>p.connections()</td>
-</tr>
-<tr><td>p.get_cpu_affinity()</td>
-<td>p.cpu_affinity()</td>
-</tr>
-<tr><td>p.get_cpu_percent()</td>
-<td>p.cpu_percent()</td>
-</tr>
-<tr><td>p.get_cpu_times()</td>
-<td>p.cpu_times()</td>
-</tr>
-<tr><td>p.get_io_counters()</td>
-<td>p.io_counters()</td>
-</tr>
-<tr><td>p.get_ionice()</td>
-<td>p.ionice()</td>
-</tr>
-<tr><td>p.get_memory_info()</td>
-<td>p.memory_info()</td>
-</tr>
-<tr><td>p.get_ext_memory_info()</td>
-<td>p.memory_info_ex()</td>
-</tr>
-<tr><td>p.get_memory_maps()</td>
-<td>p.memory_maps()</td>
-</tr>
-<tr><td>p.get_memory_percent()</td>
-<td>p.memory_percent()</td>
-</tr>
-<tr><td>p.get_nice()</td>
-<td>p.nice()</td>
-</tr>
-<tr><td>p.get_num_ctx_switches()</td>
-<td>p.num_ctx_switches()</td>
-</tr>
-<tr><td>p.get_num_fds()</td>
-<td>p.num_fds()</td>
-</tr>
-<tr><td>p.get_num_threads()</td>
-<td>p.num_threads()</td>
-</tr>
-<tr><td>p.get_open_files()</td>
-<td>p.open_files()</td>
-</tr>
-<tr><td>p.get_rlimit()</td>
-<td>p.rlimit()</td>
-</tr>
-<tr><td>p.get_threads()</td>
-<td>p.threads()</td>
-</tr>
-<tr><td>p.getcwd()</td>
-<td>p.cwd()</td>
-</tr>
-<tr><td>p.set_cpu_affinity()</td>
-<td>p.cpu_affinity()</td>
-</tr>
-<tr><td>p.set_ionice()</td>
-<td>p.ionice()</td>
-</tr>
-<tr><td>p.set_nice()</td>
-<td>p.nice()</td>
-</tr>
-<tr><td>p.set_rlimit()</td>
-<td>p.rlimit()</td>
-</tr>
-</tbody>
-</table>
-<p>If your code suddenly breaks with AttributeError after you upgraded psutil it means you were using one of those deprecated aliases. In that case just take a look at the table above and rename stuff in accordance.</p>
-</div>
-<div class="section" id="bug-fixes">
-<h2>Bug fixes</h2>
-<p>I fixed a lot of stuff (full list <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">here</a>), but here's the list of things which I think are worth mentioning:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/512">#512</a>: [FreeBSD] fix segfault in net_connections().</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/593">#593</a>: [FreeBSD] Process.memory_maps() segfaults.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/606">#606</a>: Process.parent() may swallow NoSuchProcess exceptions.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/614">#614</a>: [Linux]: cpu_count(logical=False) return the number of physical CPUs instead of physical cores.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/628">#628</a>: [Linux] Process.name() truncates process name in case it contains spaces or parentheses.</li>
-</ul>
-</div>
-<div class="section" id="ease-of-development">
-<h2>Ease of development</h2>
-<p>These are not enhancements you will directly benefit from but I put some effort into making my life easier every time I work on psutil.</p>
-<ul class="simple">
-<li>I care about psutil code being fully <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8</a> compliant so I added a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/.git-pre-commit">pre-commit</a> GIT hook which runs <a class="reference external" href="https://pypi.python.org/pypi/flake8">flake8</a> on every commit and rejects it if the coding style is not compliant. The way I install this is via <a class="reference external" href="https://github.com/giampaolo/psutil/blob/82da82a6bb94ed5c6faf9d762ef4ad0fec18f01b/Makefile#L108)">make install-git-hooks</a>.</li>
-<li>I added a <tt class="docutils literal">make <span class="pre">install-dev-deps</span></tt> command which installs all deps and stuff which is useful for testing (ipdb, coverage, etc).</li>
-<li>A new <tt class="docutils literal">make coverage</tt> command which runs <a class="reference external" href="http://nedbatchelder.com/code/coverage/">coverage</a>. With this I discovered some of parts in the code which weren't covered by tests and I fixed that.</li>
-<li>I started using <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/tox.ini">tox</a> to easily test psutil against all supported Python versions (from 2.6 to 3.4) in one shot.</li>
-<li>I <a class="reference external" href="https://github.com/giampaolo/psutil/issues/629">reorganized tests</a> so that now they can be easily executed with py.test and nose (before, only unittest runner was fully supported)</li>
-</ul>
-</div>
-<div class="section" id="final-words">
-<h2>Final words</h2>
-<p>I must say I'm pretty satisfied with how psutil is going and the satisfaction I still get every time I work on it. Right now it gets almost <a class="reference external" href="https://pypi.python.org/pypi/psutil#downloads">800.000 download a month</a>, which is pretty great for a Python library. As of right now I consider psutil almost &quot;completed&quot; in terms of features, meaning I'm basically running out of ideas on what I should add next (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/TODO">TODO</a>). From now on the future development will probably focus on adding support for more exotic platforms (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/562">OpenBSD</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">NetBSD</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/355">Android</a>). There also have been some discussions on python-ideas mailing list about <a class="reference external" href="https://mail.python.org/pipermail//python-ideas/2014-October/029835.html">including psutil into Python stdlib</a> but, assuming that will ever happen, it's still far away in the future as it would require a lot of time which I currently don't have. That should be all. I hope you will all enjoy this new release.</p>
 </div>
                 </article>
             </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/blog/2014/reimplementing-netstat-in-python/" rel="bookmark"
+                           title="Permalink to Reimplementing netstat in Python">Reimplementing netstat in Python</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-03-10T00:00:00+01:00">
+                created: Mon 10 March 2014
+        </abbr>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <p>tags:
+        <a href="/tag/python.html">python</a>
+        <a href="/tag/network.html">network</a>
+    </p>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->                <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.0 is out and with it I finally managed to implement something I've been wanting to have for a long time: netstat-like functionalities (see <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=387">ticket</a>). Similarly to &quot;netstat -antp&quot; on UNIX you can now list system-wide connections in pure python and also determine <strong>what process (PID) is …</strong></p>
+                <a class="readmore" href="/blog/2014/reimplementing-netstat-in-python/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="social">
                         <h2>social</h2>
