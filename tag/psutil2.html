@@ -22,6 +22,104 @@
                     <ol id="posts-list" class="hfeed" start="4">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="/blog/2016/psutil-550-is-twice-as-fast/" rel="bookmark"
+                           title="Permalink to psutil 5.5.0 is twice as fast">psutil 5.5.0 is twice as fast</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-11-06T00:00:00+01:00">
+                created: Sun 06 November 2016
+        </abbr>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <p>tags:
+        <a href="/tag/psutil.html">psutil</a>
+        <a href="/tag/performance.html">performance</a>
+        <a href="/tag/macos.html">macos</a>
+        <a href="/tag/bsd.html">bsd</a>
+        <a href="/tag/sunos.html">sunos</a>
+    </p>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->                <p>OK, this is a big one. Starting from psutil 5.0.0 you can query multiple Process information around twice as fast than with previous versions (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/799">original ticket</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot">updated doc</a>). It took me 7 months, 108 commits and a massive refactoring of psutil internals (here is the <a class="reference external" href="https://github.com/giampaolo/psutil/pull/937/files">big …</a></p>
+                <a class="readmore" href="/blog/2016/psutil-550-is-twice-as-fast/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/blog/2016/psutil-440-improved-linux-memory-metrics/" rel="bookmark"
+                           title="Permalink to psutil 4.4.0: improved Linux memory metrics">psutil 4.4.0: improved Linux memory metrics</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-10-23T00:00:00+02:00">
+                created: Sun 23 October 2016
+        </abbr>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <p>tags:
+        <a href="/tag/psutil.html">psutil</a>
+        <a href="/tag/memory.html">memory</a>
+    </p>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->                <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. Main highlights of this release are more accurate memory metrics on Linux and different OSX fixes. Here goes.</p>
+<div class="section" id="linux-virtual-memory">
+<h2>Linux virtual memory</h2>
+<p>This new release sets a milestone regarding <tt class="docutils literal">virtual_memory()</tt> metrics on Linux which are now calculated way <a class="reference external" href="https://github.com/giampaolo/psutil/issues/887">more precisely</a> (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/890/files">commit</a>). Across the years different …</p></div>
+                <a class="readmore" href="/blog/2016/psutil-440-improved-linux-memory-metrics/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/blog/2016/psutil-420-windows-services-in-python/" rel="bookmark"
+                           title="Permalink to psutil 4.2.0: Windows services in Python">psutil 4.2.0: Windows services in Python</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-05-15T00:00:00+02:00">
+                created: Sun 15 May 2016
+        </abbr>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <p>tags:
+        <a href="/tag/psutil.html">psutil</a>
+        <a href="/tag/windows.html">windows</a>
+    </p>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->                <p>New <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> 4.2.0 is out. The main feature of this release is the support for Windows services:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">win_service_iter</span><span class="p">())</span>
+<span class="p">[</span><span class="o">&lt;</span><span class="n">WindowsService</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;AeLookupSvc&#39;</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;Application Experience&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">38850096</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">WindowsService</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ALG&#39;</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;Application Layer Gateway Service&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">38850128</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">WindowsService</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;APNMCP&#39;</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;Ask Update Service&#39;</span><span class="p">)</span> <span class="n">at …</span></pre></div>
+                <a class="readmore" href="/blog/2016/psutil-420-windows-services-in-python/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="/blog/2016/psutil-netbsd-support/" rel="bookmark"
                            title="Permalink to psutil NetBSD support">psutil NetBSD support</a></h1>
                 </header>
@@ -81,98 +179,6 @@
 <h2>&quot;Real&quot; process memory info</h2>
 <p>Determining how much memory a process <strong>really</strong> uses is not an easy matter (see <a class="reference external" href="https://lwn.net/Articles/230975/">this</a> and <a class="reference external" href="http://bmaurer.blogspot.it/2006/03/memory-usage-with-smaps.html">this</a>). RSS (Resident Set …</p></div>
                 <a class="readmore" href="/blog/2016/real-process-memory-and-environ-in-python/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2015/psutil-openbsd-support/" rel="bookmark"
-                           title="Permalink to psutil OpenBSD support">psutil OpenBSD support</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-11-25T00:00:00+01:00">
-                created: Wed 25 November 2015
-        </abbr>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <p>tags:
-        <a href="/tag/psutil.html">psutil</a>
-        <a href="/tag/bsd.html">bsd</a>
-    </p>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->                <p>OK, this is a big one: starting from version 3.3.0 (released just now) <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> will officially support OpenBSD platforms. This was contributed by <a class="reference external" href="https://github.com/landryb">Landry Breuil</a> (thanks dude!) and myself in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/615">PR-615</a>. The interesting parts of the code changes are this and this.</p>
-<div class="section" id="differences-with-freebsd">
-<h2>Differences with FreeBSD</h2>
-<p>As expected, OpenBSD …</p></div>
-                <a class="readmore" href="/blog/2015/psutil-openbsd-support/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2015/psutil-30-aka-how-i-reimplemented-ifconfig-in-python/" rel="bookmark"
-                           title="Permalink to psutil 3.0, aka how I reimplemented ifconfig in Python">psutil 3.0, aka how I reimplemented ifconfig in Python</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-06-13T00:00:00+02:00">
-                created: Sat 13 June 2015
-        </abbr>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <p>tags:
-        <a href="/tag/psutil.html">psutil</a>
-        <a href="/tag/travel.html">travel</a>
-        <a href="/tag/personal.html">personal</a>
-    </p>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->                <p>Here we are. It's been a long time since my last blog post and my last <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally …</p>
-                <a class="readmore" href="/blog/2015/psutil-30-aka-how-i-reimplemented-ifconfig-in-python/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/blog/2014/psutil-212-and-python-wheels/" rel="bookmark"
-                           title="Permalink to psutil 2.1.2 and Python wheels">psutil 2.1.2 and Python wheels</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2014-09-21T00:00:00+02:00">
-                created: Sun 21 September 2014
-        </abbr>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <p>tags:
-        <a href="/tag/psutil.html">psutil</a>
-        <a href="/tag/wheels.html">wheels</a>
-        <a href="/tag/travel.html">travel</a>
-    </p>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->                <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate …</p>
-                <a class="readmore" href="/blog/2014/psutil-212-and-python-wheels/">read more</a>
                 </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
