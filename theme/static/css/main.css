@@ -110,8 +110,10 @@ dt {font-weight: bold;}
 dd {margin-left: 1.5em;}
 
 pre{
-	background-color:  rgb(238, 238, 238);
-	padding: 10px;
+	border-radius: 3px;
+	border: 1px solid #ac9;
+	background-color: #eeffcc;
+	padding: 5px;
 	margin-top: 20px;
 	margin-bottom: 20px;
 	overflow: auto;
@@ -150,6 +152,7 @@ table, th, td {
 thead th {
 	padding: .5em .4em; text-align: left;
 	background: #eaecef;
+	border: 1px solid grey;
 }
 thead td {
 }
@@ -220,6 +223,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	#banner nav {
 		background: #000305;
 		font-size: 1.143em;
+		font-family: 'Lucida Grande', Arial, sans-serif;
 		height: 40px;
 		line-height: 30px;
 		margin: 0 auto 2em auto;

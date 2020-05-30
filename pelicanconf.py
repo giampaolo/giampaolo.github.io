@@ -14,11 +14,8 @@ SITESUBTITLE = 'Python enthusiast, core developer, psutil author'
 SITEURL = ''
 TWITTER_USERNAME = 'grodola'
 THEME = 'theme'
-
 PATH = 'content'
-
 TIMEZONE = 'Europe/Rome'
-
 DEFAULT_LANG = 'en'
 
 # Feed generation is usually not desired when developing
@@ -28,14 +25,12 @@ TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
-# Social widget
+# --- social widget
 SOCIAL = (
     ('github', 'http://github.com/giampaolo'),
     ('linkedin', 'https://www.linkedin.com/in/grodola/'),
     ('twitter', 'https://twitter.com/grodola'),
 )
-
-DEFAULT_PAGINATION = 5
 
 # --- menu
 
@@ -44,16 +39,24 @@ DISPLAY_PAGES_ON_MENU = False
 MENUITEMS = (
     ('Blog', '/'),
     ('Archives', '/archives'),
-    ('Donate', '/pages/donate'),
-    ('About', '/pages/about'),
+    ('Donate', '/donate'),
+    ('About', '/about'),
 )
+
+# --- blog
 
 ARTICLE_PATHS = ['blog']
 ARTICLE_URL = 'blog/{date:%Y}/{slug}/'
-ARTICLE_SAVE_AS = 'blog/{date:%Y}/{slug}'
+ARTICLE_SAVE_AS = 'blog/{date:%Y}/{slug}.html'
+DEFAULT_PAGINATION = 5
 
-# Uncomment following line if you want document-relative URLs when developing
-# RELATIVE_URLS = True
+# --- pages
+
+PAGE_PATHS = ['']
+PAGE_URL = '{slug}/'
+PAGE_SAVE_AS = '{slug}/index.html'
+
+# ---paths
 
 # static paths will be copied without parsing their contents
 STATIC_PATHS = [
@@ -61,12 +64,12 @@ STATIC_PATHS = [
     'images',
     'extra',
 ]
-
 EXTRA_PATH_METADATA = {
     'extra/favicon.ico': {'path': 'favicon.ico'},
 }
-
-
 DIRECT_TEMPLATES = ['index', 'tags', 'categories', 'archives']
 
 # DEFAULT_DATE_FORMAT = ('%d %b %Y')
+
+# Uncomment following line if you want document-relative URLs when developing
+# RELATIVE_URLS = True

@@ -2,8 +2,7 @@ Goodbye Google Code, I am moving to GitHub
 ##########################################
 
 :date: 2014-05-26
-:tags: python
-
+:tags: rant
 
 8 years ago I started hosting my first open source project (`pyftpdlib <https://code.google.com/p/pyftpdlib/>`__) on Google Code and I later ended up also hosting `psutil <https://code.google.com/p/psutil/>`__ and `pysendfile <https://code.google.com/p/pysendfile/>`__. Back then GC had just been released and similarly to other Google products I appreciated the clean and minimalistic interface, the excellent bug tracker and the freedom to choose between different revision control systems (SVN, GIT and Mercurial, which is my favourite one). Unfortunately as the years passed Google completely lost interest in maintaining GC to the point that now GC can basically be considered an `abandoned project <https://groups.google.com/forum/#!topic/google-code-hosting/PEhNMdtBGt4>`__.  If you take a look at `GC bug tracker <https://code.google.com/p/support/issues/list>`__ you can see literally hundreds of issues which have been open for years, even some apparently easy ones such as `#60 <https://code.google.com/p/support/issues/detail?id=60>`__ and `#919 <https://code.google.com/p/support/issues/detail?id=919>`__. The lack of interest from Google is absolutely astonishing and it is the main reason why I ultimately decided to change. After at least a couple of years of thinking about migrating to github I finally bite the bullet and as of today psutil is now `hosted on github <https://github.com/giampaolo/psutil>`__ (update: now also `pyftpdlib <https://github.com/giampaolo/pyftpdlib>`__ and `pysendfile <https://github.com/giampaolo/pysendfile>`__).
 
