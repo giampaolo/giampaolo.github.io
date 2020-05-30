@@ -2,7 +2,7 @@ psutil OpenBSD support
 ######################
 
 :date: 2015-11-25
-:tags: psutil, bsd, openbsd
+:tags: psutil, bsd
 
 OK, this is a big one: starting from version 3.3.0 (released just now) `psutil <https://github.com/giampaolo/psutil>`__ will officially support OpenBSD platforms. This was contributed by `Landry Breuil <https://github.com/landryb>`__ (thanks dude!) and myself in `PR-615 <https://github.com/giampaolo/psutil/pull/615>`__. The interesting parts of the code changes are this and this.
 

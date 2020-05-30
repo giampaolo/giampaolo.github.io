@@ -2,7 +2,7 @@ psutil 4.2.0: Windows services in Python
 ########################################
 
 :date: 2016-05-15
-:tags: psutil, python, windows, windows-service
+:tags: psutil, windows
 
 New `psutil <https://github.com/giampaolo/psutil>`__ 4.2.0 is out. The main feature of this release is the support for Windows services:
 

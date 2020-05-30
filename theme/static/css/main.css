@@ -21,7 +21,7 @@ body {
     color: #000305;
     font-size: 16px; /* Base font size: 14px */
     font-family: 'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+/*    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;*/
     line-height: 1.429;
     margin: 0;
     padding: 0;
@@ -88,8 +88,8 @@ ol {
 }
 
 li {
-	margin-top: 0.5em;
-    margin-bottom: 0.5em;
+	margin-top: 0.2em;
+    margin-bottom: 0.2em;
 }
 
 .post-info {
@@ -115,6 +115,7 @@ pre{
 	margin-top: 20px;
 	margin-bottom: 20px;
 	overflow: auto;
+	font-size: 90%;
 }
 
 /* Quotes */
@@ -196,7 +197,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 *****************/
 #banner {
 	margin: 0 auto;
-	padding: 2.5em 0 0 0;
 }
 
 	/* Banner */

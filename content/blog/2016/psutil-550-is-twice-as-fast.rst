@@ -2,7 +2,7 @@ psutil 5.5.0 is twice as fast
 #############################
 
 :date: 2016-11-06
-:tags: psutil, python, performance, macos, bsd, sunos
+:tags: psutil, performance, macos, bsd, sunos
 
 OK, this is a big one. Starting from psutil 5.0.0 you can query multiple Process information around twice as fast than with previous versions (see `original ticket <https://github.com/giampaolo/psutil/issues/799>`__ and `updated doc <https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot>`__). It took me 7 months, 108 commits and a massive refactoring of psutil internals (here is the `big commit <https://github.com/giampaolo/psutil/pull/937/files>`__), and I can safely say this is one of the best improvements and long standing issues which have been addressed in a major psutil release. Here goes.
 

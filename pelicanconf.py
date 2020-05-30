@@ -42,7 +42,7 @@ DEFAULT_PAGINATION = 5
 DISPLAY_CATEGORIES_ON_MENU = False
 DISPLAY_PAGES_ON_MENU = False
 MENUITEMS = (
-    ('Home', '/'),
+    ('Blog', '/'),
     ('Archives', '/archives.html'),
     ('Donate', '/pages/donate.html'),
     ('About', '/pages/about.html'),
