@@ -43,14 +43,14 @@ DISPLAY_CATEGORIES_ON_MENU = False
 DISPLAY_PAGES_ON_MENU = False
 MENUITEMS = (
     ('Blog', '/'),
-    ('Archives', '/archives.html'),
-    ('Donate', '/pages/donate.html'),
-    ('About', '/pages/about.html'),
+    ('Archives', '/archives'),
+    ('Donate', '/pages/donate'),
+    ('About', '/pages/about'),
 )
 
 ARTICLE_PATHS = ['blog']
 ARTICLE_URL = 'blog/{date:%Y}/{slug}/'
-ARTICLE_SAVE_AS = 'blog/{date:%Y}/{slug}.html'
+ARTICLE_SAVE_AS = 'blog/{date:%Y}/{slug}'
 
 # Uncomment following line if you want document-relative URLs when developing
 # RELATIVE_URLS = True
