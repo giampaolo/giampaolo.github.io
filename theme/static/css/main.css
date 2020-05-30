@@ -17,7 +17,7 @@
 /***** Global *****/
 /* Body */
 body {
-    background: #F5F4EF;
+    background: #eaecef;
     color: #000305;
     font-size: 16px; /* Base font size: 14px */
     font-family: 'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -144,7 +144,8 @@ table {
 }
 
 table, th, td {
-  border: 1px solid #eaecef;
+	border: 1px solid #eaecef;
+	border-radius: 3px;
 }
 
 
@@ -261,6 +262,10 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 		border-bottom-left-radius: 5px;
 		-moz-border-radius-bottomleft: 5px;
 		-webkit-border-bottom-left-radius: 5px;
+	}
+
+	#banner h1 {
+		margin-bottom: -3px;
 	}
 
 /*
