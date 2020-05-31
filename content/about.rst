@@ -10,7 +10,7 @@ About
         <br />
     </div>
 
-My name is Giampaolo Rodola. I'm a passionate Python developer who loves writing open source libraries for fun. I'm mostly known for being the author of `psutil`_. Below is a list of my contribution to the world.
+My name is Giampaolo Rodola. I'm a passionate Python developer who loves writing open source libraries for fun. I'm mostly known for being the author of `psutil`_. I am also a senior consultant and freelancer. Below is a list of my contribution to the world.
 
 Talks
 -----

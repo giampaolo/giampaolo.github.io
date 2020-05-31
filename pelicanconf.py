@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*- #
-
-"""Useful urls:
-
-- EXTRA_PATH_METADATA: https://stackoverflow.com/a/44209338
-"""
-
-from __future__ import unicode_literals
+#!/usr/bin/env python3
 
 AUTHOR = 'Giampaolo Rodola'
 SITENAME = 'Giampaolo Rodola'
