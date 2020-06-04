@@ -45,8 +45,9 @@ DEFAULT_PAGINATION = 5
 # --- pages
 
 PAGE_PATHS = ['']
-PAGE_URL = '{slug}/'
-PAGE_SAVE_AS = '{slug}/index.html'
+PAGE_URL = '{slug}'
+PAGE_SAVE_AS = '{slug}.html'
+
 
 # ---paths
 
@@ -55,10 +56,13 @@ STATIC_PATHS = [
     'static',
     'images',
     'extra',
+    'extra/CNAME',
 ]
 
 EXTRA_PATH_METADATA = {
     'extra/favicon.ico': {'path': 'favicon.ico'},
+    'extra/htaccess': {'path': '.htaccess'},
+    'extra/CNAME': {'path': 'CNAME'},
 }
 DIRECT_TEMPLATES = ['index', 'tags', 'categories', 'archives']
 
