@@ -38,7 +38,7 @@ MENUITEMS = (
 # --- blog
 
 ARTICLE_PATHS = ['blog']
-ARTICLE_URL = 'blog/{date:%Y}/{slug}/'
+ARTICLE_URL = 'blog/{date:%Y}/{slug}'
 ARTICLE_SAVE_AS = 'blog/{date:%Y}/{slug}.html'
 DEFAULT_PAGINATION = 5
 
