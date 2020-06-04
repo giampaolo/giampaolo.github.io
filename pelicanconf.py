@@ -48,7 +48,6 @@ PAGE_PATHS = ['']
 PAGE_URL = '{slug}'
 PAGE_SAVE_AS = '{slug}.html'
 
-
 # ---paths
 
 # static paths will be copied without parsing their contents

@@ -4,7 +4,7 @@
 <h1>Tags</h1>
 <div id="tag-list">
 {% for tag, articles in tags|sort %}
-    <a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a> ({{ articles|count }}){% if not loop.last %},{% endif %}
+    <a href="{{ SITEURL }}/{{ tag.url.rstrip('.html') }}">{{ tag }}</a> ({{ articles|count }}){% if not loop.last %},{% endif %}
 {% endfor %}
 </div>
 
