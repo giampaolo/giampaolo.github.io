@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /
+
+# Check if request is for an actual file, serve the file
+RewriteRule ^([^\.]+)$ $1.html [NC,L]
+
+# Catch request to HTML file, remove extension
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([^\ ]+)\.html
+RewriteRule ^/?(.*)\.html$ /$1 [L,R=301]
