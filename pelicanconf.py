@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import functools
 
 AUTHOR = 'Giampaolo Rodola'
 SITENAME = 'Giampaolo Rodola'
@@ -48,6 +49,10 @@ PAGE_PATHS = ['']
 PAGE_URL = '{slug}'
 PAGE_SAVE_AS = '{slug}.html'
 
+# --- tags
+
+TAG_SAVE_AS = 'tags/{slug}.html'
+TAG_URL = 'tags/{slug}'
 
 # ---paths
 
@@ -70,3 +75,8 @@ DIRECT_TEMPLATES = ['index', 'tags', 'categories', 'archives']
 
 # Uncomment following line if you want document-relative URLs when developing
 # RELATIVE_URLS = True
+
+JINJA_FILTERS = {
+    'sort_by_tags': functools.partial(sorted, key=lambda tags: len(tags[1]),
+                                      reverse=True)
+}
