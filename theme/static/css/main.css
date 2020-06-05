@@ -55,6 +55,10 @@ a img {border: 0px; text-decoration: none;}
 a:link, a:visited {
 	color: #C74350;
 	padding: 0 1px;
+	text-decoration: none;
+}
+
+a:hover {
 	text-decoration: underline;
 }
 
@@ -318,7 +322,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	color: #444;
 	display: block;
 	border-bottom: 1px solid #F4E3E3;
-	text-decoration: none;
 	padding: .3em .25em;
 }
 
