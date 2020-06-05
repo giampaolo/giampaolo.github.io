@@ -57,12 +57,6 @@ a:link, a:visited {
 	padding: 0 1px;
 	text-decoration: underline;
 }
-a:hover, a:active {
-	background-color: #C74350;
-	color: #fff;
-	text-decoration: none;
-	text-shadow: 1px 1px 1px #333;
-}
 
 h1 a:hover {
     background-color: inherit
@@ -327,8 +321,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	text-decoration: none;
 	padding: .3em .25em;
 }
-
-#extras a:hover, #extras a:active {color: #fff;}
 
 	/* Blogroll */
 	#extras .blogroll {
