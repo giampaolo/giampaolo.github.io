@@ -92,8 +92,9 @@ li {
 
 .post-info {
     float:right;
-    margin:10px;
-    padding:5px;
+    margin-top:-5px;
+    margin-bottom:10px;
+    padding-bottom:5px;
 }
 
 .post-info p{
@@ -431,8 +432,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 .hentry {
 	display: block;
 	clear: both;
-	border-bottom: 1px solid #eee;
-	padding: 1.5em 0;
 }
 li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 #content > .hentry {padding: 1em 0;}
