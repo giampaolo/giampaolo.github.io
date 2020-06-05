@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Giampaolo Rodola - performance</title>
+        <title>Giampaolo Rodola - sendfile</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
         <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -22,14 +22,14 @@
                 <ol id="posts-list" class="hfeed" start="4">
         <li><article class="hentry">
             <header>
-                <h1><a href="/blog/2016/psutil-550-is-twice-as-fast" rel="bookmark"
-                       title="Permalink to psutil 5.5.0 is twice as fast">psutil 5.5.0 is twice as fast</a></h1>
+                <h1><a href="/blog/2014/python-and-sendfile" rel="bookmark"
+                       title="Permalink to Python and sendfile">Python and sendfile</a></h1>
             </header>
 
             <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2016-11-06T00:00:00+01:00">
-                created: Sun 06 November 2016
+        <abbr class="published" title="2014-06-13T00:00:00+02:00">
+                created: Fri 13 June 2014
         </abbr>
 <!--
         <address class="vcard author">
@@ -37,18 +37,18 @@
         </address>
 -->
     <p>tags:
-        <a href="/tag/psutil.html">psutil</a>
-        <a href="/tag/performance.html">performance</a>
-        <a href="/tag/macos.html">macos</a>
-        <a href="/tag/bsd.html">bsd</a>
-        <a href="/tag/sunos.html">sunos</a>
+        <a href="/tags/python">python</a>
+        <a href="/tags/python-dev">python-dev</a>
+        <a href="/tags/sendfile">sendfile</a>
+        <a href="/tags/zerocopy">zerocopy</a>
+        <a href="/tags/network">network</a>
     </p>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>OK, this is a big one. Starting from psutil 5.0.0 you can query multiple Process information around twice as fast than with previous versions (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/799">original ticket</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot">updated doc</a>). It took me 7 months, 108 commits and a massive refactoring of psutil internals (here is the <a class="reference external" href="https://github.com/giampaolo/psutil/pull/937/files">big …</a></p>
-            <a class="readmore" href="/blog/2016/psutil-550-is-twice-as-fast">read more</a>
+</footer><!-- /.post-info -->            <p><a class="reference external" href="http://linux.die.net/man/2/sendfile">sendfile(2)</a> is a UNIX system call which provides a &quot;zero-copy&quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, sendfile(2) is more efficient than the combination of &quot;file.read()&quot; and &quot;socket.send()&quot;, which requires …</p>
+            <a class="readmore" href="/blog/2014/python-and-sendfile">read more</a>
             </div><!-- /.entry-content -->
         </article></li>
         <section id="extras" class="body">

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Giampaolo Rodola - travel</title>
+        <title>Giampaolo Rodola - python</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
         <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -22,14 +22,14 @@
                 <ol id="posts-list" class="hfeed" start="4">
         <li><article class="hentry">
             <header>
-                <h1><a href="/blog/2019/system-load-average-on-windows-in-python" rel="bookmark"
-                       title="Permalink to System load average on Windows in Python">System load average on Windows in Python</a></h1>
+                <h1><a href="/blog/2016/how-to-always-execute-exit-functions-in-python" rel="bookmark"
+                       title="Permalink to How to always execute exit functions in Python">How to always execute exit functions in Python</a></h1>
             </header>
 
             <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2019-05-29T00:00:00+02:00">
-                created: Wed 29 May 2019
+        <abbr class="published" title="2016-02-12T00:00:00+01:00">
+                created: Fri 12 February 2016
         </abbr>
 <!--
         <address class="vcard author">
@@ -37,29 +37,28 @@
         </address>
 -->
     <p>tags:
-        <a href="/tag/psutil.html">psutil</a>
-        <a href="/tag/windows.html">windows</a>
-        <a href="/tag/unittest.html">unittest</a>
-        <a href="/tag/travel.html">travel</a>
+        <a href="/tags/python">python</a>
     </p>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>New <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.6.2 release implements an emulation of <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getloadavg">os.getloadavg()</a> on Windows which was kindly <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1485">contributed by Ammar Askar</a> who originally implemented it for <a class="reference external" href="https://github.com/python/cpython/pull/8357/files">cPython's test suite</a>. This idea has been floating around for quite a while. The first proposal dates back to <a class="reference external" href="https://code.google.com/archive/p/psutil/issues/139">2010</a>, when psutil was still …</p>
-            <a class="readmore" href="/blog/2019/system-load-average-on-windows-in-python">read more</a>
+</footer><!-- /.post-info -->            <p><em>...or why atexit.register() and signal.signal() are evil</em></p>
+<ul class="simple">
+<li><strong>UPDATE (2016-02-13)</strong>: this recipe no longer handles SIGINT, SIGQUIT and SIGABRT as aliases for &quot;application exit&quot; because it was a bad idea. It only handles SIGTERM. Also it no longer support Windows because signal.signal() implementation is too different than POSIX …</li></ul>
+            <a class="readmore" href="/blog/2016/how-to-always-execute-exit-functions-in-python">read more</a>
             </div><!-- /.entry-content -->
         </article></li>
         <li><article class="hentry">
             <header>
-                <h1><a href="/blog/2017/psutil-530-and-full-unicode-support" rel="bookmark"
-                       title="Permalink to psutil 5.3.0 and full unicode support">psutil 5.3.0 and full unicode support</a></h1>
+                <h1><a href="/blog/2014/python-and-sendfile" rel="bookmark"
+                       title="Permalink to Python and sendfile">Python and sendfile</a></h1>
             </header>
 
             <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2017-09-03T00:00:00+02:00">
-                created: Sun 03 September 2017
+        <abbr class="published" title="2014-06-13T00:00:00+02:00">
+                created: Fri 13 June 2014
         </abbr>
 <!--
         <address class="vcard author">
@@ -67,27 +66,30 @@
         </address>
 -->
     <p>tags:
-        <a href="/tag/psutil.html">psutil</a>
-        <a href="/tag/travel.html">travel</a>
+        <a href="/tags/python">python</a>
+        <a href="/tags/python-dev">python-dev</a>
+        <a href="/tags/sendfile">sendfile</a>
+        <a href="/tags/zerocopy">zerocopy</a>
+        <a href="/tags/network">network</a>
     </p>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.3.0 is finally out. This release is a major one, as it includes tons of improvements and bugfixes, probably like no other previous release. It is interesting to notice how huge the <a class="reference external" href="https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket">diff</a> between 5.2.2 and 5.3.0 is. This is due to the …</p>
-            <a class="readmore" href="/blog/2017/psutil-530-and-full-unicode-support">read more</a>
+</footer><!-- /.post-info -->            <p><a class="reference external" href="http://linux.die.net/man/2/sendfile">sendfile(2)</a> is a UNIX system call which provides a &quot;zero-copy&quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, sendfile(2) is more efficient than the combination of &quot;file.read()&quot; and &quot;socket.send()&quot;, which requires …</p>
+            <a class="readmore" href="/blog/2014/python-and-sendfile">read more</a>
             </div><!-- /.entry-content -->
         </article></li>
         <li><article class="hentry">
             <header>
-                <h1><a href="/blog/2015/psutil-30-aka-how-i-reimplemented-ifconfig-in-python" rel="bookmark"
-                       title="Permalink to psutil 3.0, aka how I reimplemented ifconfig in Python">psutil 3.0, aka how I reimplemented ifconfig in Python</a></h1>
+                <h1><a href="/blog/2014/reimplementing-netstat-in-python" rel="bookmark"
+                       title="Permalink to Reimplementing netstat in Python">Reimplementing netstat in Python</a></h1>
             </header>
 
             <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2015-06-13T00:00:00+02:00">
-                created: Sat 13 June 2015
+        <abbr class="published" title="2014-03-10T00:00:00+01:00">
+                created: Mon 10 March 2014
         </abbr>
 <!--
         <address class="vcard author">
@@ -95,28 +97,27 @@
         </address>
 -->
     <p>tags:
-        <a href="/tag/psutil.html">psutil</a>
-        <a href="/tag/travel.html">travel</a>
-        <a href="/tag/personal.html">personal</a>
+        <a href="/tags/python">python</a>
+        <a href="/tags/network">network</a>
     </p>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>Here we are. It's been a long time since my last blog post and my last <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally …</p>
-            <a class="readmore" href="/blog/2015/psutil-30-aka-how-i-reimplemented-ifconfig-in-python">read more</a>
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.0 is out and with it I finally managed to implement something I've been wanting to have for a long time: netstat-like functionalities (see <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=387">ticket</a>). Similarly to &quot;netstat -antp&quot; on UNIX you can now list system-wide connections in pure python and also determine <strong>what process (PID) is …</strong></p>
+            <a class="readmore" href="/blog/2014/reimplementing-netstat-in-python">read more</a>
             </div><!-- /.entry-content -->
         </article></li>
         <li><article class="hentry">
             <header>
-                <h1><a href="/blog/2014/psutil-212-and-python-wheels" rel="bookmark"
-                       title="Permalink to psutil 2.1.2 and Python wheels">psutil 2.1.2 and Python wheels</a></h1>
+                <h1><a href="/blog/2013/making-constants-part-of-your-api-is-evil" rel="bookmark"
+                       title="Permalink to Making constants part of your API is evil">Making constants part of your API is evil</a></h1>
             </header>
 
             <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2014-09-21T00:00:00+02:00">
-                created: Sun 21 September 2014
+        <abbr class="published" title="2013-12-21T00:00:00+01:00">
+                created: Sat 21 December 2013
         </abbr>
 <!--
         <address class="vcard author">
@@ -124,16 +125,15 @@
         </address>
 -->
     <p>tags:
-        <a href="/tag/psutil.html">psutil</a>
-        <a href="/tag/wheels.html">wheels</a>
-        <a href="/tag/travel.html">travel</a>
+        <a href="/tags/python">python</a>
+        <a href="/tags/api-design">api-design</a>
     </p>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate …</p>
-            <a class="readmore" href="/blog/2014/psutil-212-and-python-wheels">read more</a>
+</footer><!-- /.post-info -->            <p>One of the initial features which were included in <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> since day one (5 years ago) were system's boot time, number of CPUs and total physical memory. These metrics have one thing in common: they are (apparently) not supposed to change over time. That is why we (me and <a class="reference external" href="http://www.jayloden.com/">Jay …</a></p>
+            <a class="readmore" href="/blog/2013/making-constants-part-of-your-api-is-evil">read more</a>
             </div><!-- /.entry-content -->
         </article></li>
                 </ol><!-- /#posts-list -->

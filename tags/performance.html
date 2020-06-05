@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Giampaolo Rodola - rant</title>
+        <title>Giampaolo Rodola - performance</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
         <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -22,14 +22,14 @@
                 <ol id="posts-list" class="hfeed" start="4">
         <li><article class="hentry">
             <header>
-                <h1><a href="/blog/2014/goodbye-google-code-i-am-moving-to-github" rel="bookmark"
-                       title="Permalink to Goodbye Google Code, I am moving to GitHub">Goodbye Google Code, I am moving to GitHub</a></h1>
+                <h1><a href="/blog/2016/psutil-550-is-twice-as-fast" rel="bookmark"
+                       title="Permalink to psutil 5.5.0 is twice as fast">psutil 5.5.0 is twice as fast</a></h1>
             </header>
 
             <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2014-05-26T00:00:00+02:00">
-                created: Mon 26 May 2014
+        <abbr class="published" title="2016-11-06T00:00:00+01:00">
+                created: Sun 06 November 2016
         </abbr>
 <!--
         <address class="vcard author">
@@ -37,14 +37,18 @@
         </address>
 -->
     <p>tags:
-        <a href="/tag/rant.html">rant</a>
+        <a href="/tags/psutil">psutil</a>
+        <a href="/tags/performance">performance</a>
+        <a href="/tags/macos">macos</a>
+        <a href="/tags/bsd">bsd</a>
+        <a href="/tags/sunos">sunos</a>
     </p>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>8 years ago I started hosting my first open source project (<a class="reference external" href="https://code.google.com/p/pyftpdlib/">pyftpdlib</a>) on Google Code and I later ended up also hosting <a class="reference external" href="https://code.google.com/p/psutil/">psutil</a> and <a class="reference external" href="https://code.google.com/p/pysendfile/">pysendfile</a>. Back then GC had just been released and similarly to other Google products I appreciated the clean and minimalistic interface, the excellent bug tracker and …</p>
-            <a class="readmore" href="/blog/2014/goodbye-google-code-i-am-moving-to-github">read more</a>
+</footer><!-- /.post-info -->            <p>OK, this is a big one. Starting from psutil 5.0.0 you can query multiple Process information around twice as fast than with previous versions (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/799">original ticket</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot">updated doc</a>). It took me 7 months, 108 commits and a massive refactoring of psutil internals (here is the <a class="reference external" href="https://github.com/giampaolo/psutil/pull/937/files">big …</a></p>
+            <a class="readmore" href="/blog/2016/psutil-550-is-twice-as-fast">read more</a>
             </div><!-- /.entry-content -->
         </article></li>
         <section id="extras" class="body">
