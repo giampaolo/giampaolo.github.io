@@ -35,6 +35,7 @@ MENUITEMS = (
     ('Blog', '/'),
     ('Archives', '/archives'),
     ('Donate', '/donate'),
+    ('Supporters', '/supporters'),
     ('About', '/about'),
 )
 
@@ -43,7 +44,7 @@ MENUITEMS = (
 ARTICLE_PATHS = ['blog']
 ARTICLE_URL = 'blog/{date:%Y}/{slug}'
 ARTICLE_SAVE_AS = 'blog/{date:%Y}/{slug}.html'
-DEFAULT_PAGINATION = 5
+DEFAULT_PAGINATION = 10
 
 # --- pages
 

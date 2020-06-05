@@ -85,9 +85,9 @@ Contacts
 --------
 
 * mail: g.rodola@gmail.com
-* github: http://github.com/giampaolo
-* twitter: https://twitter.com/grodola
-* linkedin: https://www.linkedin.com/in/grodola/
+* `github <http://github.com/giampaolo>`__
+* `twitter <https://twitter.com/grodola>`__
+* `linkedin <https://www.linkedin.com/in/grodola/>`__
 
 .. _`psutil`: https://github.com/giampaolo/psutil
 .. _`pyftpdlib`: https://github.com/giampaolo/pyftpdlib
