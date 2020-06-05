@@ -3,8 +3,8 @@
 <section id="content" class="body">
 <h1>Tags</h1>
 <div id="tag-list">
-{% for tag, articles in tags|sort %}
-    <a href="{{ SITEURL }}/{{ tag.url.rstrip('.html') }}">{{ tag }}</a> ({{ articles|count }}){% if not loop.last %},{% endif %}
+{% for tag, articles in tags|sort_by_tags %}
+    <a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a> ({{ articles|count }}){% if not loop.last %},{% endif %}
 {% endfor %}
 </div>
 
