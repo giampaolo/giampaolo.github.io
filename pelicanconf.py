@@ -17,8 +17,10 @@ CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
+GOOGLE_ANALYTICS = "UA-164357405-2"
 
 # --- social widget
+
 SOCIAL = (
     ('github', 'http://github.com/giampaolo'),
     ('linkedin', 'https://www.linkedin.com/in/grodola/'),
@@ -80,3 +82,6 @@ JINJA_FILTERS = {
     'sort_by_tags': functools.partial(sorted, key=lambda tags: len(tags[1]),
                                       reverse=True)
 }
+
+FEED_ALL_ATOM = 'feeds/all.atom.xml'
+CATEGORY_FEED_ATOM = 'feeds/{slug}.atom.xml'
