@@ -49,6 +49,11 @@ PAGE_PATHS = ['']
 PAGE_URL = '{slug}'
 PAGE_SAVE_AS = '{slug}.html'
 
+# --- tags
+
+TAG_SAVE_AS = 'tags/{slug}.html'
+TAG_URL = 'tags/{slug}'
+
 # ---paths
 
 # static paths will be copied without parsing their contents

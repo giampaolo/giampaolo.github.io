@@ -7,3 +7,6 @@ RewriteRule ^([^\.]+)$ $1.html [NC,L]
 # Catch request to HTML file, remove extension
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([^\ ]+)\.html
 RewriteRule ^/?(.*)\.html$ /$1 [L,R=301]
+
+RewriteRule "^((tags|categories)/[^/]+)\.html$" $1 [NE,END,R=301,E=permacache:1]
+RewriteRule "^((tags|categories)/.+)" $1.html [NE,END]
