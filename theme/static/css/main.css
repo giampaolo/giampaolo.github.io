@@ -212,11 +212,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 		margin: 0 0 .6em .2em;
 		text-decoration: none;
 	}
-	#banner h1 a:hover, #banner h1 a:active {
-		background: none;
-		color: #C74350;
-		text-shadow: none;
-	}
 
 	#banner h1 strong {font-size: 0.36em; font-weight: normal;}
 
@@ -318,7 +313,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 #extras {margin: 0 auto 3em auto; overflow: hidden;}
 
 #extras ul {list-style: none; margin: 0;}
-#extras li {border-bottom: 1px solid #fff;}
 #extras h2 {
 	color: #C74350;
 	font-size: 1.429em;
@@ -349,6 +343,29 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 		float: right;
 		width: 175px;
 	}
+
+	/* Feeds */
+	#extras .feeds {
+		float: right;
+		margin-top: 2px;
+	}
+
+	#extras .feeds li {
+		width: 185px;
+	}
+
+	#extras .feeds a {
+		padding-left: 25px;
+	}
+
+	.feeds a[type$='atom+xml'], .feeds a[type$='rss+xml'] {
+		background-image: url('../images/icons/rss.png');
+		background-repeat: no-repeat;
+		background-position: 3px 6px;
+	}
+
+
+	/* --- */
 
 	#extras div[class='social'] a {
 		background-repeat: no-repeat;
