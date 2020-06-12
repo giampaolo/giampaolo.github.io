@@ -1,12 +1,29 @@
 Supporters
 ##########
 
+I’m grateful to the following individuals and organizations for their recurring support which enables me to build free and open source software like `psutil`_
+and `pyftpdlib`_ for the benefit of all.
+
+Sponsors
+========
+
+.. raw:: html
+
+    <div style="background-color:#4B5168; width:228px; height:42px">
+        <a href="https://tidelift.com/subscription/pkg/pypi-psutil?utm_source=pypi-psutil&utm_medium=referral&utm_campaign=readme">
+        <img alt="me at Chicago in 2016" src="/images/tidelift-logo.svg" />
+        </a>
+        <br />
+    </div>
+
 One-time donations
 ==================
 
 +------------------------+--------------------------+-------------------------+--------+
 | Name / Company         | Project                  | Country                 | Amount |
 +========================+==========================+=========================+========+
+| `multicraft.org`_      | `pyftpdlib`_, `psutil`_  | Burgdorf, Switzerland   |   250€ |
++------------------------+--------------------------+-------------------------+--------+
 | `smartfile.com`_       | `pyftpdlib`_             | Indianapolis, USA       |   228€ |
 +------------------------+--------------------------+-------------------------+--------+
 | Kim Gräsman            | `psutil`_                | Malmo, Sweden           |   100€ |
@@ -18,6 +35,8 @@ One-time donations
 | Remi Chateauneu        | `psutil`_                | London, UK              |    45€ |
 +------------------------+--------------------------+-------------------------+--------+
 | Olivier Grisel         | `psutil`_                | Paris, France           |    40€ |
++------------------------+--------------------------+-------------------------+--------+
+| Praveen Bhamidipati    | `pyftpdlib`_, `psutil`_  | Bellevue, USA           |    20€ |
 +------------------------+--------------------------+-------------------------+--------+
 | Willem de Groot        | `psutil`_                | Netherlands             |    20€ |
 +------------------------+--------------------------+-------------------------+--------+
@@ -41,13 +60,15 @@ One-time donations
 +------------------------+--------------------------+-------------------------+--------+
 | Amit Kulkarni          | `psutil`_                | Santa Clara, USA        |    10€ |
 +------------------------+--------------------------+-------------------------+--------+
-| Praveen Bhamidipati    | `psutil`_                | Bellevue, USA           |    10€ |
-+------------------------+--------------------------+-------------------------+--------+
 | Alexander Kaftan       | `psutil`_                | Augsburg Germany        |    10€ |
 +------------------------+--------------------------+-------------------------+--------+
 | Andrew Bays            | `psutil`_                | Maynard, USA            |    10€ |
 +------------------------+--------------------------+-------------------------+--------+
 | Carver Koella          | `psutil`_                | Pittsburgh, USA         |    10€ |
++------------------------+--------------------------+-------------------------+--------+
+| Kristjan Võrk          | `pyftpdlib`_             | Tallin, Estonia         |    10€ |
++------------------------+--------------------------+-------------------------+--------+
+| HTB Industries         | `pyftpdlib`_             | Willow Springs, USA     |    10€ |
 +------------------------+--------------------------+-------------------------+--------+
 | Brett Harris           | `psutil`_                | Melbourne, Australia    |     5€ |
 +------------------------+--------------------------+-------------------------+--------+
@@ -78,8 +99,7 @@ One-time donations
 | Michael Klose          | `psutil`_                | Köthensdorf, Germany    |     1€ |
 +------------------------+--------------------------+-------------------------+--------+
 
-Kristjan Võrk
-
 .. _`smartfile.com`: https://www.smartfile.com/
+.. _`multicraft.org`: https://www.multicraft.org
 .. _`psutil`: https://github.com/giampaolo/psutil
 .. _`pyftpdlib`: https://github.com/giampaolo/pyftpdlib
