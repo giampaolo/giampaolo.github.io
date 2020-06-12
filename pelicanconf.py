@@ -32,7 +32,7 @@ SOCIAL = (
 DISPLAY_CATEGORIES_ON_MENU = False
 DISPLAY_PAGES_ON_MENU = False
 MENUITEMS = (
-    ('Blog', '/'),
+    ('Blog', '/archives'),
     ('Archives', '/archives'),
     ('Donate', '/donate'),
     ('Supporters', '/supporters'),

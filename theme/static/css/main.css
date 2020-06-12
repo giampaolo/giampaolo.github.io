@@ -21,7 +21,7 @@ body {
     color: #000305;
     font-size: 16px; /* Base font size: 14px */
     font-family: 'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-/*    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;*/
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
     line-height: 1.429;
     margin: 0;
     padding: 0;
@@ -45,6 +45,7 @@ h1, h2, h3, h4, h5, h6 {
     border-bottom: 1px solid #eaecef;
 }
 
+
 h3, h4, h5, h6 { margin-top: .8em; }
 
 hr { border: 2px solid #EEEEEE; }
@@ -53,7 +54,7 @@ hr { border: 2px solid #EEEEEE; }
 a {outline: 0;}
 a img {border: 0px; text-decoration: none;}
 a:link, a:visited {
-	color: #C74350;
+	color: #2980B9;
 	padding: 0 1px;
 	text-decoration: none;
 }
@@ -151,8 +152,7 @@ table, th, td {
 /* Thead */
 thead th {
 	padding: .5em .4em; text-align: left;
-	background: #eaecef;
-	border: 1px solid grey;
+	/* background: #eaecef; */
 }
 thead td {
 }
@@ -243,7 +243,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	}
 	#banner nav a:hover, #banner nav a:active,
 	#banner nav .active a:link, #banner nav .active a:visited {
-		background: #C74451;
+		background: #2980B9;
 		color: #fff;
 		text-shadow: none !important;
 	}
@@ -285,7 +285,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 }
 #featured figure img {display: block; float: right;}
 
-#featured h2 {color: #C74451; font-size: 1.714em; margin-bottom: 0.333em;}
+#featured h2 {color: #2980B9; font-size: 1.714em; margin-bottom: 0.333em;}
 #featured h3 {font-size: 1.429em; margin-bottom: .5em;}
 
 #featured h3 a:link, #featured h3 a:visited {color: #000305; text-decoration: none;}
@@ -313,7 +313,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 
 #extras ul {list-style: none; margin: 0;}
 #extras h2 {
-	color: #C74350;
+	color: #2980B9;
 	font-size: 1.429em;
 	margin-bottom: .25em;
 	padding: 0 3px;

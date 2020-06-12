@@ -22,15 +22,15 @@ Interviews
 
 * `2017, Pydev of the week <https://www.blog.pythonlibrary.org/2017/10/09/pydev-of-the-week-giampaolo-rodola/>`_
 
-Open source projects
---------------------
+Projects
+--------
 
 * `psutil`_: a cross-platform library for retrieving information on running processes and system utilization (CPU, memory, disks, network) in Python which works on Linux, Windows, OSX, FreeBSD and Solaris.  (2008 - now)
 * `pyftpdlib`_: a very fast, asynchronous, pure-python FTP server.  (2006 - now)
 * `pysendfile`_: a binding to sendfile(2) syscall which lets you send a file twice as fast as with a common socket.  (2011 - now)
 
-Contributions to python-dev
----------------------------
+python-dev contributions
+------------------------
 
 Being that Python is an important part of my every day life I'm happy to contribute back every time I get the chance. Starting from year `2010 <https://mail.python.org/pipermail/python-committers/2010-April/000891.html>`_ I've been given commit access against Python code repository. My contributions are mainly focused against the Python standard library. Amongst others:
 
