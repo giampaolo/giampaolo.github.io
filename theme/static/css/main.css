@@ -92,13 +92,22 @@ li {
 }
 
 .post-info {
-    float:right;
-    margin-top:-5px;
+ 	text-align: right;
+    border-top:1px solid #eaecef;
     margin-bottom:10px;
+    padding-top:5px;
     padding-bottom:5px;
+    margin-border: 1px solid grey;
 }
 
-.post-info p{
+#posts-list .post-info {
+	text-align: left;
+    border-top:0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.post-info p {
     margin-top: 1px;
     margin-bottom: 1px;
 }
@@ -510,3 +519,17 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 
 	#add-comment input[type='submit'] {float: right; margin: 0 .5em;}
 	#add-comment * {margin-bottom: .5em;}
+
+/* hide disqus footer */
+#disqus_thread {
+    position: relative;
+}
+#disqus_thread:after {
+    content: "";
+    display: block;
+    height: 55px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background: white;
+}
