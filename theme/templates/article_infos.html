@@ -1,12 +1,10 @@
 <footer class="post-info">
-        <abbr class="published" title="{{ article.date.isoformat() }}">
-                {{ article.locale_date }}
-        </abbr>
+        <a class="published" title="{{ article.date.isoformat() }}">
+        Created: {{ article.locale_date }},
+        </a>
         {% if article.modified %}
-		<br />
-        <abbr class="modified" title="{{ article.modified.isoformat() }}">
-                updated: {{ article.locale_modified }}
-        </abbr>
+                <a class="modified" title="{{ article.modified.isoformat() }}">
+                Updated on: {{ article.locale_modified }},</a>
         {% endif %}
 <!--
         {% if article.authors %}

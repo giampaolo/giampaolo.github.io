@@ -4,7 +4,7 @@ import functools
 AUTHOR = 'Giampaolo Rodola'
 SITENAME = 'Giampaolo Rodola'
 SITESUBTITLE = 'Python enthusiast, core developer, psutil author'
-SITEURL = ''
+SITEURL = 'http://127.0.0.1:8000'
 TWITTER_USERNAME = 'grodola'
 THEME = 'theme'
 PATH = 'content'
@@ -33,7 +33,7 @@ SOCIAL = (
 DISPLAY_CATEGORIES_ON_MENU = False
 DISPLAY_PAGES_ON_MENU = False
 MENUITEMS = (
-    ('Blog', '/archives'),
+    ('Blog', '/'),
     ('Archives', '/archives'),
     ('Donate', '/donate'),
     ('Supporters', '/supporters'),
@@ -45,7 +45,7 @@ MENUITEMS = (
 ARTICLE_PATHS = ['blog']
 ARTICLE_URL = 'blog/{date:%Y}/{slug}'
 ARTICLE_SAVE_AS = 'blog/{date:%Y}/{slug}.html'
-DEFAULT_PAGINATION = 10
+DEFAULT_PAGINATION = 5
 
 # --- pages
 
@@ -84,4 +84,3 @@ JINJA_FILTERS = {
     'sort_by_tags': functools.partial(sorted, key=lambda tags: len(tags[1]),
                                       reverse=True)
 }
-
