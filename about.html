@@ -55,8 +55,8 @@
 <table border="1" class="docutils">
 <colgroup>
 <col width="11%" />
-<col width="26%" />
-<col width="63%" />
+<col width="27%" />
+<col width="62%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">BPO</th>
@@ -70,6 +70,10 @@
 <td>faster file copy with zero-copy syscalls
 (<a class="reference external" href="static/efficient-io-with-zerocopy-syscalls.pdf">pycon china talk</a>)</td>
 </tr>
+<tr><td><a class="reference external" href="https://bugs.python.org/issue33695">33695</a></td>
+<td><a class="reference external" href="https://docs.python.org/3/library/shutil.html#shutil-platform-dependent-efficient-copy-operations">shutil</a></td>
+<td>faster file copy by using os.scandir + caching</td>
+</tr>
 <tr><td><a class="reference external" href="https://bugs.python.org/issue4080">4080</a></td>
 <td><a class="reference external" href="https://docs.python.org/3/library/unittest.html">unittest</a></td>
 <td>unittest timings</td>
@@ -79,8 +83,12 @@
 <td>expose sendfile() syscall</td>
 </tr>
 <tr><td><a class="reference external" href="https://bugs.python.org/issue17552">17552</a></td>
-<td><a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.sendfile">socket.sendfile</a></td>
+<td><a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.sendfile">socket.sendfile</a></td>
 <td>sendfile() high-level wrapper</td>
+</tr>
+<tr><td><a class="reference external" href="https://bugs.python.org/issue17561">17561</a></td>
+<td><a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.create_server">socket.create_server</a></td>
+<td>utility function for dual-stack IPv4/6 TCP servers</td>
 </tr>
 <tr><td><a class="reference external" href="https://bugs.python.org/issue2054">2054</a></td>
 <td><a class="reference external" href="https://docs.python.org/3/library/ftplib.html#ftplib.FTP_TLS">ftplib.TLS_FTP</a></td>
