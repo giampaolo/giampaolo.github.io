@@ -28,5 +28,4 @@ External
 --------
 
 * `Reddit <https://www.reddit.com/r/Python/comments/bhji0m/new_psutil_562_with_load_average_emulation_on/>`__
-* `Hacker News <https://news.ycombinator.com/newest>`__
 
