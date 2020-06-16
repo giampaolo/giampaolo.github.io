@@ -13,7 +13,7 @@
     <header id="banner" class="body">
         <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
         <nav><ul>
-            <li><a href="/archives">Blog</a></li>
+            <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
             <li><a href="/donate">Donate</a></li>
             <li><a href="/supporters">Supporters</a></li>
@@ -29,7 +29,22 @@
     </header>
 
     <div class="entry-content">
-      <p>One of the initial features which were included in <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> since day one (5 years ago) were system's boot time, number of CPUs and total physical memory. These metrics have one thing in common: they are (apparently) not supposed to change over time. That is why we (me and <a class="reference external" href="http://www.jayloden.com/">Jay</a>) decided that exposing them as module constants calculated at import time was the way to go.</p>
+<footer class="post-info">
+        <a class="published" title="2013-12-21T00:00:00+01:00">
+        Created: 21 Dec 2013,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->      <p>One of the initial features which were included in <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> since day one (5 years ago) were system's boot time, number of CPUs and total physical memory. These metrics have one thing in common: they are (apparently) not supposed to change over time. That is why we (me and <a class="reference external" href="http://www.jayloden.com/">Jay</a>) decided that exposing them as module constants calculated at import time was the way to go.</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">NUM_CPUS</span>
 <span class="mi">2</span>
@@ -89,26 +104,9 @@ For this I have to thank <a class="reference external" href="http://www.dr-josia
 <p>You can put this at the bottom of your module and you'll have fully working module constants (tested on Python from 2.4 to 3.4)!</p>
 <p>EDIT: the only reason I applied this hack is to turn the old constants into aliases pointing to the newly introduced functions and produce a deprecation warning. That aside I can't think of a case where the use of a module property would be justified.</p>
 
-<footer class="post-info">
-        <abbr class="published" title="2013-12-21T00:00:00+01:00">
-                Sat 21 December 2013
-        </abbr>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <p>tags:
-        <a href="https://gmpy.dev/tags/python">python</a>
-        <a href="https://gmpy.dev/tags/api-design">api-design</a>
-    </p>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->    </div><!-- /.entry-content -->
+    </div><!-- /.entry-content -->
     <div class="comments">
-      <h2>Comments !</h2>
+      <h2>Comments</h2>
       <div id="disqus_thread"></div>
       <script type="text/javascript">
         var disqus_shortname = 'gmpy-dev';
@@ -136,6 +134,7 @@ For this I have to thank <a class="reference external" href="http://www.dr-josia
             </ul>
         </div><!-- /.social -->
 
+    </div>
         <div class="feeds">
             <h2>feeds</h2>
             <ul>

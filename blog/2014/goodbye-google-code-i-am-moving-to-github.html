@@ -13,7 +13,7 @@
     <header id="banner" class="body">
         <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
         <nav><ul>
-            <li><a href="/archives">Blog</a></li>
+            <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
             <li><a href="/donate">Donate</a></li>
             <li><a href="/supporters">Supporters</a></li>
@@ -29,7 +29,22 @@
     </header>
 
     <div class="entry-content">
-      <p>8 years ago I started hosting my first open source project (<a class="reference external" href="https://code.google.com/p/pyftpdlib/">pyftpdlib</a>) on Google Code and I later ended up also hosting <a class="reference external" href="https://code.google.com/p/psutil/">psutil</a> and <a class="reference external" href="https://code.google.com/p/pysendfile/">pysendfile</a>. Back then GC had just been released and similarly to other Google products I appreciated the clean and minimalistic interface, the excellent bug tracker and the freedom to choose between different revision control systems (SVN, GIT and Mercurial, which is my favourite one). Unfortunately as the years passed Google completely lost interest in maintaining GC to the point that now GC can basically be considered an <a class="reference external" href="https://groups.google.com/forum/#!topic/google-code-hosting/PEhNMdtBGt4">abandoned project</a>.  If you take a look at <a class="reference external" href="https://code.google.com/p/support/issues/list">GC bug tracker</a> you can see literally hundreds of issues which have been open for years, even some apparently easy ones such as <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=60">#60</a> and <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=919">#919</a>. The lack of interest from Google is absolutely astonishing and it is the main reason why I ultimately decided to change. After at least a couple of years of thinking about migrating to github I finally bite the bullet and as of today psutil is now <a class="reference external" href="https://github.com/giampaolo/psutil">hosted on github</a> (update: now also <a class="reference external" href="https://github.com/giampaolo/pyftpdlib">pyftpdlib</a> and <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a>).</p>
+<footer class="post-info">
+        <a class="published" title="2014-05-26T00:00:00+02:00">
+        Created: 26 May 2014,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/rant">rant</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->      <p>8 years ago I started hosting my first open source project (<a class="reference external" href="https://code.google.com/p/pyftpdlib/">pyftpdlib</a>) on Google Code and I later ended up also hosting <a class="reference external" href="https://code.google.com/p/psutil/">psutil</a> and <a class="reference external" href="https://code.google.com/p/pysendfile/">pysendfile</a>. Back then GC had just been released and similarly to other Google products I appreciated the clean and minimalistic interface, the excellent bug tracker and the freedom to choose between different revision control systems (SVN, GIT and Mercurial, which is my favourite one). Unfortunately as the years passed Google completely lost interest in maintaining GC to the point that now GC can basically be considered an <a class="reference external" href="https://groups.google.com/forum/#!topic/google-code-hosting/PEhNMdtBGt4">abandoned project</a>.  If you take a look at <a class="reference external" href="https://code.google.com/p/support/issues/list">GC bug tracker</a> you can see literally hundreds of issues which have been open for years, even some apparently easy ones such as <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=60">#60</a> and <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=919">#919</a>. The lack of interest from Google is absolutely astonishing and it is the main reason why I ultimately decided to change. After at least a couple of years of thinking about migrating to github I finally bite the bullet and as of today psutil is now <a class="reference external" href="https://github.com/giampaolo/psutil">hosted on github</a> (update: now also <a class="reference external" href="https://github.com/giampaolo/pyftpdlib">pyftpdlib</a> and <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a>).</p>
 <div class="section" id="what-i-will-miss-the-most-about-gc">
 <h2>What I will miss the most about GC</h2>
 <p>First of all I must say that despite the unfortunate situation of GC I'm also sad for abandoning it. It started as a really great hosting platform, and it still has some peculiar aspects which I know I will be missing. In order of importance:</p>
@@ -56,25 +71,9 @@
 <p>For those of you who are interested in knowing how I did it, here goes: as for moving the issue from GC bug tracker to github's I used <a class="reference external" href="https://github.com/arthur-debert/google-code-issues-migrator">this tool</a>. I managed to preserve the issue IDs but unfortunately not the real owners nor the real issue dates, which kind of sucks. As for migrating the code from mercurial to git I just used <a class="reference external" href="http://stackoverflow.com/a/16037861/376587">this</a>. The Mercurial -&gt; GIT transition was perfect and I also managed to preserve the original Mercurial named branches and tags, which for me it was crucial. In conclusion, psutil is a 5 years, medium sized  project with hundreds of issues: the transition in this case is definitively possible but not painless so if you plan on migrating, the sooner you do it the better.</p>
 </div>
 
-<footer class="post-info">
-        <abbr class="published" title="2014-05-26T00:00:00+02:00">
-                Mon 26 May 2014
-        </abbr>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <p>tags:
-        <a href="https://gmpy.dev/tags/rant">rant</a>
-    </p>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->    </div><!-- /.entry-content -->
+    </div><!-- /.entry-content -->
     <div class="comments">
-      <h2>Comments !</h2>
+      <h2>Comments</h2>
       <div id="disqus_thread"></div>
       <script type="text/javascript">
         var disqus_shortname = 'gmpy-dev';
@@ -102,6 +101,7 @@
             </ul>
         </div><!-- /.social -->
 
+    </div>
         <div class="feeds">
             <h2>feeds</h2>
             <ul>

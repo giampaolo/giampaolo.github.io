@@ -13,7 +13,7 @@
     <header id="banner" class="body">
         <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
         <nav><ul>
-            <li><a href="/archives">Blog</a></li>
+            <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
             <li><a href="/donate">Donate</a></li>
             <li><a href="/supporters">Supporters</a></li>
@@ -29,7 +29,22 @@
     </header>
 
     <div class="entry-content">
-      <p>After a long time <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> finally adds support for a brand new exotic platform: AIX! Honestly I am not sure how many AIX Python users are out there (I suppose not many) but still, here it is. For this we have to thank Arnon Yaari who started working on the porting a <a class="reference external" href="https://github.com/giampaolo/psutil/issues/605">couple of years ago</a>. To be honest I was skeptical at first because AIX is the only platform which I cannot virtualize and test on my laptop so that made me a bit nervous but Arnon did a very good job. The final <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1123">PR</a> is huge, it required a considerable amount of work on his part and a review process of over 140 messages which were exchanged between me and him over the course of over 1 month during which I was travelling through China. The final result is very good, basically (almost) all original unit tests pass and the quality of the submitted code is awesome which (I must say) is kind of unusual for an external contribution like this one. Kudos to you Arnon! ;-)</p>
+<footer class="post-info">
+        <a class="published" title="2017-10-12T00:00:00+02:00">
+        Created: 12 Oct 2017,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/aix">aix</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->      <p>After a long time <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> finally adds support for a brand new exotic platform: AIX! Honestly I am not sure how many AIX Python users are out there (I suppose not many) but still, here it is. For this we have to thank Arnon Yaari who started working on the porting a <a class="reference external" href="https://github.com/giampaolo/psutil/issues/605">couple of years ago</a>. To be honest I was skeptical at first because AIX is the only platform which I cannot virtualize and test on my laptop so that made me a bit nervous but Arnon did a very good job. The final <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1123">PR</a> is huge, it required a considerable amount of work on his part and a review process of over 140 messages which were exchanged between me and him over the course of over 1 month during which I was travelling through China. The final result is very good, basically (almost) all original unit tests pass and the quality of the submitted code is awesome which (I must say) is kind of unusual for an external contribution like this one. Kudos to you Arnon! ;-)</p>
 <p>Other than AIX support, release 5.4.0 also includes a couple of important bug fixes for sensors_temperatures() and sensors_fans() functions on Linux and the fix of a bug on OSX which could cause a segmentation fault when using Process.open_files(). Complete list of bugfixes is <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#540">here</a>.</p>
 <p>In terms of future contributions for exotic and still unsupported platforms it is worth mentioning a (still incomplete) PR for <a class="reference external" href="https://github.com/giampaolo/psutil/pull/998">Cygwin</a> which looks promising and <a class="reference external" href="https://github.com/giampaolo/psutil/pull/845">Mingw32</a> compiler support on Windows. It looks like psutil is gradually getting to a point where the addition of new functionalities is becoming more rare, so it is good that support for new platforms happens now when the API is mature and stable. Future development in this direction can also include Android and (hopefully) IOS support. Now <em>that</em> would be really awesome to have! =)</p>
 <p>Stay tuned.</p>
@@ -41,26 +56,9 @@
 </ul>
 </div>
 
-<footer class="post-info">
-        <abbr class="published" title="2017-10-12T00:00:00+02:00">
-                Thu 12 October 2017
-        </abbr>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <p>tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>
-        <a href="https://gmpy.dev/tags/aix">aix</a>
-    </p>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->    </div><!-- /.entry-content -->
+    </div><!-- /.entry-content -->
     <div class="comments">
-      <h2>Comments !</h2>
+      <h2>Comments</h2>
       <div id="disqus_thread"></div>
       <script type="text/javascript">
         var disqus_shortname = 'gmpy-dev';
@@ -88,6 +86,7 @@
             </ul>
         </div><!-- /.social -->
 
+    </div>
         <div class="feeds">
             <h2>feeds</h2>
             <ul>

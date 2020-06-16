@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>How to always execute exit functions in Python</title>
+    <title>Giampaolo Rodola - 2016</title>
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
     <link href="https://gmpy.dev/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
@@ -20,15 +20,15 @@
             <li><a href="/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="https://gmpy.dev/blog/2016/how-to-always-execute-exit-functions-in-python" rel="bookmark"
-           title="Permalink to How to always execute exit functions in Python">How to always execute exit functions in Python</a></h1>
-    </header>
+            <section id="content" class="body">
+                <ol id="posts-list" class="hfeed" start="4">
+        <li><article class="hentry">
+            <header>
+                <h1><a href="https://gmpy.dev/blog/2016/how-to-always-execute-exit-functions-in-python" rel="bookmark"
+                       title="Permalink to How to always execute exit functions in Python">How to always execute exit functions in Python</a></h1>
+            </header>
 
-    <div class="entry-content">
+            <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2016-02-12T00:00:00+01:00">
         Created: 12 Feb 2016,
@@ -46,7 +46,7 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->      <p><em>...or why atexit.register() and signal.signal() are evil</em></p>
+</footer><!-- /.post-info -->            <p><em>...or why atexit.register() and signal.signal() are evil</em></p>
 <ul class="simple">
 <li><strong>UPDATE (2016-02-13)</strong>: this recipe no longer handles SIGINT, SIGQUIT and SIGABRT as aliases for &quot;application exit&quot; because it was a bad idea. It only handles SIGTERM. Also it no longer support Windows because signal.signal() implementation is too different than POSIX.*</li>
 </ul>
@@ -247,25 +247,14 @@ The fact that atexit module does not handle signals and that signal.signal() ove
 </ul>
 </div>
 
-    </div><!-- /.entry-content -->
-    <div class="comments">
-      <h2>Comments</h2>
-      <div id="disqus_thread"></div>
-      <script type="text/javascript">
-        var disqus_shortname = 'gmpy-dev';
-        var disqus_identifier = 'blog/2016/how-to-always-execute-exit-functions-in-python';
-        var disqus_url = 'https://gmpy.dev/blog/2016/how-to-always-execute-exit-functions-in-python';
-        (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//gmpy-dev.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-      </script>
-      <noscript>Please enable JavaScript to view the comments.</noscript>
-    </div>
-
-  </article>
-</section>
+            </div><!-- /.entry-content -->
+        </article></li>
+                </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="https://gmpy.dev/category/2016.html">&laquo;</a>
+    Page 2 / 2
+</p>
+                </section><!-- /#content -->
     <section id="extras" class="body">
 
         <div class="social">

@@ -40,11 +40,11 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight: 400;
 	line-height: 1.1;
 	margin-top: .8em;
-	margin-bottom: .8em;
+	margin-bottom: 5px;
     font-family: 'Yanone Kaffeesatz', arial, serif;
+
     border-bottom: 1px solid #eaecef;
 }
-
 
 h3, h4, h5, h6 { margin-top: .8em; }
 
@@ -92,16 +92,15 @@ li {
 }
 
 .post-info {
-    float:right;
-    margin-top:-5px;
-    margin-bottom:10px;
-    padding-bottom:5px;
+    font-size: 14px;
+    color:grey;
 }
 
-.post-info p{
-    margin-top: 1px;
-    margin-bottom: 1px;
+.post-info p {
+	margin-top:0px;
+	margin-bottom:0px;
 }
+
 
 .readmore { float: right }
 
@@ -451,13 +450,6 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 	#posts-list {list-style: none; margin: 0;}
 	#posts-list .hentry {padding-left: 10px; position: relative;}
 
-	#posts-list footer {
-		left: 10px;
-		position: relative;
-        float: left;
-		top: 0.5em;
-		width: 190px;
-	}
 
 	/* About the Author */
 	#about-author {
@@ -510,3 +502,22 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 
 	#add-comment input[type='submit'] {float: right; margin: 0 .5em;}
 	#add-comment * {margin-bottom: .5em;}
+
+/* hide disqus footer */
+#disqus_thread {
+    position: relative;
+}
+#disqus_thread:after {
+    content: "";
+    display: block;
+    height: 55px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background: white;
+}
+
+.entry-content {
+	border-bottom: 2px solid #CCC;
+	padding-bottom:20px;
+}
