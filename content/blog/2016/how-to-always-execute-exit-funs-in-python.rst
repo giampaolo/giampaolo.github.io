@@ -2,6 +2,7 @@ How to always execute exit functions in Python
 ##############################################
 
 :date: 2016-02-12
+:modified: 2016-02-13
 :tags: python
 
 *...or why atexit.register() and signal.signal() are evil*

@@ -75,7 +75,7 @@ EXTRA_PATH_METADATA = {
 }
 DIRECT_TEMPLATES = ['index', 'tags', 'categories', 'archives']
 
-# DEFAULT_DATE_FORMAT = ('%d %b %Y')
+DEFAULT_DATE_FORMAT = ('%d %b %Y')
 
 # Uncomment following line if you want document-relative URLs when developing
 # RELATIVE_URLS = True
