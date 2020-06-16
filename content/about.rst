@@ -34,29 +34,34 @@ python-dev contributions
 
 Being that Python is an important part of my every day life I'm happy to contribute back every time I get the chance. Starting from year `2010 <https://mail.python.org/pipermail/python-committers/2010-April/000891.html>`_ I've been given commit access against Python code repository. My contributions are mainly focused against the Python standard library. Amongst others:
 
-+----------+------------------------+-----------------------------------------------------------+
-| BPO      | Module / API           | Description                                               |
-+==========+========================+===========================================================+
-| `33671`_ | `shutil`_              | faster file copy with zero-copy syscalls                  |
-|          |                        | (`pycon china talk`_)                                     |
-+----------+------------------------+-----------------------------------------------------------+
-| `4080`_  | `unittest`_            | unittest timings                                          |
-+----------+------------------------+-----------------------------------------------------------+
-| `10882`_ | `os.sendfile`_         | expose sendfile() syscall                                 |
-+----------+------------------------+-----------------------------------------------------------+
-| `17552`_ | `socket.sendfile`_     | sendfile() high-level wrapper                             |
-+----------+------------------------+-----------------------------------------------------------+
-| `2054`_  | `ftplib.TLS_FTP`_      | FTP over SSL support                                      |
-+----------+------------------------+-----------------------------------------------------------+
-| `12442`_ | `shutil.disk_usage`_   | disk usage "df" style                                     |
-+----------+------------------------+-----------------------------------------------------------+
-| `10784`_ | `os.getpriority`_,     | get/set process priority                                  |
-|          | `os.setpriority`_      |                                                           |
-+----------+------------------------+-----------------------------------------------------------+
-| `21076`_ | `signal`_              | signal module constant enums                              |
-+----------+------------------------+-----------------------------------------------------------+
-| `18931`_ | `selectors`_           | Solaris /dev/poll support                                 |
-+----------+------------------------+-----------------------------------------------------------+
++----------+--------------------------+-----------------------------------------------------------+
+| BPO      | Module / API             | Description                                               |
++==========+==========================+===========================================================+
+| `33671`_ | `shutil`_                | faster file copy with zero-copy syscalls                  |
+|          |                          | (`pycon china talk`_)                                     |
++----------+--------------------------+-----------------------------------------------------------+
+| `33695`_ | `shutil`_                | faster file copy by using os.scandir + caching            |
++----------+--------------------------+-----------------------------------------------------------+
+| `4080`_  | `unittest`_              | unittest timings                                          |
++----------+--------------------------+-----------------------------------------------------------+
+| `10882`_ | `os.sendfile`_           | expose sendfile() syscall                                 |
++----------+--------------------------+-----------------------------------------------------------+
+| `17552`_ | `socket.sendfile`_       | sendfile() high-level wrapper                             |
++----------+--------------------------+-----------------------------------------------------------+
+| `17561`_ | `socket.create_server`_  | utility function for dual-stack IPv4/6 TCP servers        |
++----------+--------------------------+-----------------------------------------------------------+
+| `2054`_  | `ftplib.TLS_FTP`_        | FTP over SSL support                                      |
++----------+--------------------------+-----------------------------------------------------------+
+| `12442`_ | `shutil.disk_usage`_     | disk usage "df" style                                     |
++----------+--------------------------+-----------------------------------------------------------+
+| `10784`_ | `os.getpriority`_,       | get/set process priority                                  |
+|          | `os.setpriority`_        |                                                           |
++----------+--------------------------+-----------------------------------------------------------+
+| `21076`_ | `signal`_                | signal module constant enums                              |
++----------+--------------------------+-----------------------------------------------------------+
+| `18931`_ | `selectors`_             | Solaris /dev/poll support                                 |
++----------+--------------------------+-----------------------------------------------------------+
+
 
 Python recipes
 --------------
@@ -101,10 +106,12 @@ Contacts
 .. _`18931`: https://bugs.python.org/issue18931
 .. _`12442`: http://bugs.python.org/issue12442
 .. _`4080`: https://bugs.python.org/issue4080
+.. _`17561`: https://bugs.python.org/issue17561
+.. _`33695`: https://bugs.python.org/issue33695
 .. _`pycon china talk`: static/efficient-io-with-zerocopy-syscalls.pdf
 .. _`shutil`: https://docs.python.org/3/library/shutil.html#shutil-platform-dependent-efficient-copy-operations
 .. _`os.sendfile`: https://docs.python.org/3/library/os.html#os.sendfile
-.. _`socket.sendfile`: https://docs.python.org/3/library/socket.html#socket.sendfile
+.. _`socket.sendfile`: https://docs.python.org/3/library/socket.html#socket.socket.sendfile
 .. _`ftplib.TLS_FTP`: https://docs.python.org/3/library/ftplib.html#ftplib.FTP_TLS
 .. _`os.getpriority`: https://docs.python.org/3/library/os.html#os.getpriority
 .. _`os.setpriority`: https://docs.python.org/3/library/os.html#os.setpriority
@@ -114,4 +121,4 @@ Contacts
 .. _`soicmp`: http://soicmp.sourceforge.net/
 .. _`pypk`: https://sourceforge.net/projects/pypk/
 .. _`shutil.disk_usage`: https://docs.python.org/3/library/shutil.html?highlight=ftplib#shutil.disk_usage
-
+.. _`socket.create_server`: https://docs.python.org/3/library/socket.html#socket.create_server
