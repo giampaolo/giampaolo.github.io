@@ -314,7 +314,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	color: #2980B9;
 	font-size: 1.429em;
 	margin-bottom: .25em;
-	padding: 0 3px;
 }
 
 #extras a:link, #extras a:visited {
@@ -324,24 +323,38 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	padding: .3em .25em;
 }
 
-	/* Blogroll */
-	#extras .blogroll {
-		float: left;
-		width: 615px;
+	#extras {
+		width:800px;
+		padding-left:50px;
+		margin-top:-20px;
+		font-size:15px;
 	}
 
-	#extras .blogroll li {float: left; margin: 0 20px 0 0; width: 185px;}
+	#extras div {
+		color: #444;
+		float:left;
+		width: 190px;
+	}
+
+	#extras .newsletter p {
+		margin-top:8px;
+		margin-bottom:8px;
+	}
+
+	/* Blogroll */
+	#extras .blogroll {
+	}
+
+	#extras .blogroll li {
+		margin: 0 20px 0 0;
+	}
 
 	/* Social */
 	#extras .social {
-		float: right;
-		width: 175px;
 	}
 
 	/* Feeds */
 	#extras .feeds {
-		float: right;
-		margin-top: 2px;
 	}
 
 	#extras .feeds li {

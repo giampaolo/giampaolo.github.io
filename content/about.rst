@@ -89,10 +89,10 @@ These are from when I started moving my first steps with Python in 2005. Listed 
 Contacts
 --------
 
-* mail: g.rodola@gmail.com
-* `github <http://github.com/giampaolo>`__
-* `twitter <https://twitter.com/grodola>`__
-* `linkedin <https://www.linkedin.com/in/grodola/>`__
+* Email: `g.rodola@gmail.com <g.rodola@gmail.com>`__
+* `GitHub <http://github.com/giampaolo>`__
+* `Twitter <https://twitter.com/grodola>`__
+* `Linkedin <https://www.linkedin.com/in/grodola/>`__
 
 .. _`psutil`: https://github.com/giampaolo/psutil
 .. _`pyftpdlib`: https://github.com/giampaolo/pyftpdlib
