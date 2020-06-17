@@ -36,6 +36,8 @@
     </header><!-- /#banner -->
     {% block content %}
     {% endblock %}
+
+    <!-- Footer -->
     <section id="extras" class="body">
     {% if LINKS %}
         <div class="blogroll">
@@ -50,7 +52,7 @@
 
     {% if SOCIAL %}
         <div class="social">
-            <h2>{{ SOCIAL_WIDGET_NAME | default('social') }}</h2>
+            <h2>Social</h2>
             <ul>
             {% for name, link in SOCIAL %}
                 <li><a href="{{ link }}">{{ name }}</a></li>
@@ -59,10 +61,9 @@
         </div><!-- /.social -->
     {% endif %}
 
-    </div>
     {% if FEED_ALL_ATOM or FEED_ALL_RSS %}
         <div class="feeds">
-            <h2>feeds</h2>
+            <h2>Feeds</h2>
             <ul>
             {% if FEED_ALL_ATOM %}
             <li><a href="{{ FEED_DOMAIN }}/{% if FEED_ALL_ATOM_URL %}{{ FEED_ALL_ATOM_URL }}{% else %}{{ FEED_ALL_ATOM }}{% endif %}" type="application/atom+xml" rel="alternate">atom</a></li>
@@ -72,9 +73,21 @@
             </ul>
         {% endif %}
         </div>
-    {% endif %}
+    </div>
 
-    </section><!-- /#extras -->
+        <div class="newsletter">
+            <h2>Newsletter</h2>
+            <p>Enter your email address:</p>
+            <form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('https://feedburner.google.com/fb/a/mailverify?uri=GiampaoloRodola', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
+                <input type="text" style="width:140px" name="email" /><input type="hidden" value="GiampaoloRodola" name="uri"/><input type="hidden" name="loc" value="en_US" />
+                <p><input type="submit" value="Subscribe" /></p>
+            </form>
+        </div>
+
+
+    {% endif %}
+    </section>
+    <!-- /Footer -->
 
     <footer id="contentinfo" class="body">
         <!--
