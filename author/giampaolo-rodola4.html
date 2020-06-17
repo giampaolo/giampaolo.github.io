@@ -71,6 +71,7 @@
 <p>For those of you who are interested in knowing how I did it, here goes: as for moving the issue from GC bug tracker to github's I used <a class="reference external" href="https://github.com/arthur-debert/google-code-issues-migrator">this tool</a>. I managed to preserve the issue IDs but unfortunately not the real owners nor the real issue dates, which kind of sucks. As for migrating the code from mercurial to git I just used <a class="reference external" href="http://stackoverflow.com/a/16037861/376587">this</a>. The Mercurial -&gt; GIT transition was perfect and I also managed to preserve the original Mercurial named branches and tags, which for me it was crucial. In conclusion, psutil is a 5 years, medium sized  project with hundreds of issues: the transition in this case is definitively possible but not painless so if you plan on migrating, the sooner you do it the better.</p>
 </div>
 
+
             </div><!-- /.entry-content -->
         </article></li>
         <li><article class="hentry">
@@ -149,6 +150,7 @@ There were some difficult decisions because many of the changes I introduced are
 <p>OK, that's all folks. I hope you will enjoy this new version and report your feedback.</p>
 </div>
 
+
             </div><!-- /.entry-content -->
         </article></li>
         <li><article class="hentry">
@@ -215,6 +217,7 @@ As always, each platform required its own, different, implementation. Luckily fo
 </ul>
 <p>Hopefully this will help whoever needs to do this into another language. The only platform where this is sort of clunky is OSX, which does not expose anything to list all system-wide sockets in a single shot, so you're forced to query each process. That means you'll need root privileges otherwise you'll get an access denied error. For what it's worth, I took a look at lsof and it has the same limitation and netstat runs with SUID. Well, I guess this is it. I'll leave you with <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_connections">some docs</a>. For the next one I'm planning on working on a couple of other network-related functionalities: <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=376">&quot;ifconfig&quot;</a> and <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=250">NIC speeds</a>. But that's for another time...</p>
 </div>
+
 
             </div><!-- /.entry-content -->
         </article></li>
@@ -546,6 +549,7 @@ If on the other hand you want to write a code which works with both versions I s
 </ul>
 </div>
 
+
             </div><!-- /.entry-content -->
         </article></li>
         <li><article class="hentry">
@@ -630,6 +634,7 @@ For this I have to thank <a class="reference external" href="http://www.dr-josia
 <p>You can put this at the bottom of your module and you'll have fully working module constants (tested on Python from 2.4 to 3.4)!</p>
 <p>EDIT: the only reason I applied this hack is to turn the old constants into aliases pointing to the newly introduced functions and produce a deprecation warning. That aside I can't think of a case where the use of a module property would be justified.</p>
 
+
             </div><!-- /.entry-content -->
         </article></li>
                 </ol><!-- /#posts-list -->
@@ -638,10 +643,12 @@ For this I have to thank <a class="reference external" href="http://www.dr-josia
     Page 4 / 4
 </p>
                 </section><!-- /#content -->
+
+    <!-- Footer -->
     <section id="extras" class="body">
 
         <div class="social">
-            <h2>social</h2>
+            <h2>Social</h2>
             <ul>
                 <li><a href="http://github.com/giampaolo">github</a></li>
                 <li><a href="https://www.linkedin.com/in/grodola/">linkedin</a></li>
@@ -649,16 +656,27 @@ For this I have to thank <a class="reference external" href="http://www.dr-josia
             </ul>
         </div><!-- /.social -->
 
-    </div>
         <div class="feeds">
-            <h2>feeds</h2>
+            <h2>Feeds</h2>
             <ul>
             <li><a href="https://gmpy.dev/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom</a></li>
             <li><a href="https://gmpy.dev/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">rss</a></li>
             </ul>
         </div>
+    </div>
 
-    </section><!-- /#extras -->
+        <div class="newsletter">
+            <h2>Newsletter</h2>
+            <p>Enter your email address:</p>
+            <form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('https://feedburner.google.com/fb/a/mailverify?uri=GiampaoloRodola', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
+                <input type="text" style="width:140px" name="email" /><input type="hidden" value="GiampaoloRodola" name="uri"/><input type="hidden" name="loc" value="en_US" />
+                <p><input type="submit" value="Subscribe" /></p>
+            </form>
+        </div>
+
+
+    </section>
+    <!-- /Footer -->
 
     <footer id="contentinfo" class="body">
         <!--

@@ -71,12 +71,15 @@
 <p>For those of you who are interested in knowing how I did it, here goes: as for moving the issue from GC bug tracker to github's I used <a class="reference external" href="https://github.com/arthur-debert/google-code-issues-migrator">this tool</a>. I managed to preserve the issue IDs but unfortunately not the real owners nor the real issue dates, which kind of sucks. As for migrating the code from mercurial to git I just used <a class="reference external" href="http://stackoverflow.com/a/16037861/376587">this</a>. The Mercurial -&gt; GIT transition was perfect and I also managed to preserve the original Mercurial named branches and tags, which for me it was crucial. In conclusion, psutil is a 5 years, medium sized  project with hundreds of issues: the transition in this case is definitively possible but not painless so if you plan on migrating, the sooner you do it the better.</p>
 </div>
 
+
             </div><!-- /.entry-content -->
         </article></li>
+
+    <!-- Footer -->
     <section id="extras" class="body">
 
         <div class="social">
-            <h2>social</h2>
+            <h2>Social</h2>
             <ul>
                 <li><a href="http://github.com/giampaolo">github</a></li>
                 <li><a href="https://www.linkedin.com/in/grodola/">linkedin</a></li>
@@ -84,16 +87,27 @@
             </ul>
         </div><!-- /.social -->
 
-    </div>
         <div class="feeds">
-            <h2>feeds</h2>
+            <h2>Feeds</h2>
             <ul>
             <li><a href="https://gmpy.dev/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom</a></li>
             <li><a href="https://gmpy.dev/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">rss</a></li>
             </ul>
         </div>
+    </div>
 
-    </section><!-- /#extras -->
+        <div class="newsletter">
+            <h2>Newsletter</h2>
+            <p>Enter your email address:</p>
+            <form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('https://feedburner.google.com/fb/a/mailverify?uri=GiampaoloRodola', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
+                <input type="text" style="width:140px" name="email" /><input type="hidden" value="GiampaoloRodola" name="uri"/><input type="hidden" name="loc" value="en_US" />
+                <p><input type="submit" value="Subscribe" /></p>
+            </form>
+        </div>
+
+
+    </section>
+    <!-- /Footer -->
 
     <footer id="contentinfo" class="body">
         <!--
