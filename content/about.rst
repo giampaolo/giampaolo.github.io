@@ -32,7 +32,7 @@ Projects
 python-dev contributions
 ------------------------
 
-Being that Python is an important part of my every day life I'm happy to contribute back every time I get the chance. Starting from year `2010 <https://mail.python.org/pipermail/python-committers/2010-April/000891.html>`_ I've been given commit access against Python code repository. My contributions are mainly focused against the Python standard library. Amongst others:
+Starting from year `2010 <https://mail.python.org/pipermail/python-committers/2010-April/000891.html>`_ I've been given commit access against Python code repository. My contributions are mainly focused against the Python standard library. Some I care about:
 
 +----------+--------------------------+-----------------------------------------------------------+
 | BPO      | Module / API             | Description                                               |
@@ -52,10 +52,9 @@ Being that Python is an important part of my every day life I'm happy to contrib
 +----------+--------------------------+-----------------------------------------------------------+
 | `2054`_  | `ftplib.TLS_FTP`_        | FTP over SSL support                                      |
 +----------+--------------------------+-----------------------------------------------------------+
-| `12442`_ | `shutil.disk_usage`_     | disk usage "df" style                                     |
+| `12442`_ | `shutil.disk_usage`_     | disk usage metrics                                        |
 +----------+--------------------------+-----------------------------------------------------------+
-| `10784`_ | `os.getpriority`_,       | get/set process priority                                  |
-|          | `os.setpriority`_        |                                                           |
+| `10784`_ | `os.setpriority`_        | get/set process priority                                  |
 +----------+--------------------------+-----------------------------------------------------------+
 | `21076`_ | `signal`_                | signal module constant enums                              |
 +----------+--------------------------+-----------------------------------------------------------+
@@ -72,7 +71,7 @@ Here's the ones I like the most:
 * `Log / directory watcher <http://code.activestate.com/recipes/577968-log-watcher-tail-f-log/?in=user-4178764>`__
 * `IPv4/v6 agnostic server <http://code.activestate.com/recipes/578504-server-supporting-ipv4-and-ipv6/?in=user-4178764>`__
 * `socket.sendfile() <https://code.activestate.com/recipes/578889-socketsendfile/>`__ (backport of `BPO-17552 <https://bugs.python.org/issue17552>`__)
-* `disk usage <http://code.activestate.com/recipes/577972-disk-usage/?in=user-4178764>`__ (backport of `BPO-12442 <http://bugs.python.org/issue12442>`__)
+* `shutil.disk_usage() <http://code.activestate.com/recipes/577972-disk-usage/?in=user-4178764>`__ (backport of `BPO-12442 <http://bugs.python.org/issue12442>`__)
 * `wait for PID <http://code.activestate.com/recipes/578022-wait-for-pid-and-check-for-pid-existance-posix/?in=user-4178764>`__
 * `bytes-to-human corverter <http://code.activestate.com/recipes/578019-bytes-to-human-human-to-bytes-converter/?in=user-4178764>`__
 * `handle exit context manager <blog/2016/how-to-always-execute-exit-functions-in-python/>`__

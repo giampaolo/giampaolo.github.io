@@ -11,7 +11,7 @@ Sponsors
 
     <div style="background-color:#4B5168; width:228px; height:42px">
         <a href="https://tidelift.com/subscription/pkg/pypi-psutil?utm_source=pypi-psutil&utm_medium=referral&utm_campaign=readme">
-        <img alt="me at Chicago in 2016" src="/images/tidelift-logo.svg" />
+        <img src="/images/tidelift-logo.svg" />
         </a>
         <br />
     </div>
