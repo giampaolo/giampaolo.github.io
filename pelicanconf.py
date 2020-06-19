@@ -15,10 +15,15 @@ DISQUS_SITENAME = 'gmpy-dev'
 
 # --- atom/rss feeds
 
-FEED_ALL_ATOM = 'feeds/all.atom.xml'
+# here you can put something like 'feeds/%s.author.xml'
+AUTHOR_FEED_ATOM = None
 CATEGORY_FEED_ATOM = 'feeds/{slug}.atom.xml'
-FEED_ALL_RSS = 'feeds/all.rss.xml'
+FEED_ALL_ATOM = 'feeds/all.atom.xml'
+
+AUTHOR_FEED_RSS = None
 CATEGORY_FEED_RSS = 'feeds/{slug}.rss.xml'
+FEED_ALL_RSS = 'feeds/all.rss.xml'
+
 
 # --- social widget
 
