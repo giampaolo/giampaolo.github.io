@@ -20,15 +20,15 @@
             <li><a href="/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
-            <section id="content" class="body">
-                <ol id="posts-list" class="hfeed" start="4">
-        <li><article class="hentry">
-            <header>
-                <h1><a href="https://gmpy.dev/blog/2014/goodbye-google-code-i-am-moving-to-github" rel="bookmark"
-                       title="Permalink to Goodbye Google Code, I am moving to GitHub">Goodbye Google Code, I am moving to GitHub</a></h1>
-            </header>
-
-            <div class="entry-content">
+<section id="content" class="body">
+<!-- blog posts -->
+        <ol id="posts-list" class="hfeed" start="4">
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2014/goodbye-google-code-i-am-moving-to-github" rel="bookmark"
+                   title="Permalink to Goodbye Google Code, I am moving to GitHub">Goodbye Google Code, I am moving to GitHub</a></h1>
+        </header>
+        <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2014-05-26T00:00:00+02:00">
         Created: 26 May 2014,
@@ -71,16 +71,14 @@
 <p>For those of you who are interested in knowing how I did it, here goes: as for moving the issue from GC bug tracker to github's I used <a class="reference external" href="https://github.com/arthur-debert/google-code-issues-migrator">this tool</a>. I managed to preserve the issue IDs but unfortunately not the real owners nor the real issue dates, which kind of sucks. As for migrating the code from mercurial to git I just used <a class="reference external" href="http://stackoverflow.com/a/16037861/376587">this</a>. The Mercurial -&gt; GIT transition was perfect and I also managed to preserve the original Mercurial named branches and tags, which for me it was crucial. In conclusion, psutil is a 5 years, medium sized  project with hundreds of issues: the transition in this case is definitively possible but not painless so if you plan on migrating, the sooner you do it the better.</p>
 </div>
 
-
-            </div><!-- /.entry-content -->
-        </article></li>
-        <li><article class="hentry">
-            <header>
-                <h1><a href="https://gmpy.dev/blog/2014/psutil-20" rel="bookmark"
-                       title="Permalink to psutil 2.0">psutil 2.0</a></h1>
-            </header>
-
-            <div class="entry-content">
+        </div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2014/psutil-20" rel="bookmark"
+                   title="Permalink to psutil 2.0">psutil 2.0</a></h1>
+        </header>
+        <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2014-03-10T00:00:00+01:00">
         Created: 10 Mar 2014,
@@ -150,16 +148,14 @@ There were some difficult decisions because many of the changes I introduced are
 <p>OK, that's all folks. I hope you will enjoy this new version and report your feedback.</p>
 </div>
 
-
-            </div><!-- /.entry-content -->
-        </article></li>
-        <li><article class="hentry">
-            <header>
-                <h1><a href="https://gmpy.dev/blog/2014/reimplementing-netstat-in-python" rel="bookmark"
-                       title="Permalink to Reimplementing netstat in Python">Reimplementing netstat in Python</a></h1>
-            </header>
-
-            <div class="entry-content">
+        </div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2014/reimplementing-netstat-in-python" rel="bookmark"
+                   title="Permalink to Reimplementing netstat in Python">Reimplementing netstat in Python</a></h1>
+        </header>
+        <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2014-03-10T00:00:00+01:00">
         Created: 10 Mar 2014,
@@ -218,16 +214,14 @@ As always, each platform required its own, different, implementation. Luckily fo
 <p>Hopefully this will help whoever needs to do this into another language. The only platform where this is sort of clunky is OSX, which does not expose anything to list all system-wide sockets in a single shot, so you're forced to query each process. That means you'll need root privileges otherwise you'll get an access denied error. For what it's worth, I took a look at lsof and it has the same limitation and netstat runs with SUID. Well, I guess this is it. I'll leave you with <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_connections">some docs</a>. For the next one I'm planning on working on a couple of other network-related functionalities: <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=376">&quot;ifconfig&quot;</a> and <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=250">NIC speeds</a>. But that's for another time...</p>
 </div>
 
-
-            </div><!-- /.entry-content -->
-        </article></li>
-        <li><article class="hentry">
-            <header>
-                <h1><a href="https://gmpy.dev/blog/2014/psutil-20-api-redesign" rel="bookmark"
-                       title="Permalink to psutil 2.0 API redesign">psutil 2.0 API redesign</a></h1>
-            </header>
-
-            <div class="entry-content">
+        </div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2014/psutil-20-api-redesign" rel="bookmark"
+                   title="Permalink to psutil 2.0 API redesign">psutil 2.0 API redesign</a></h1>
+        </header>
+        <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2014-01-11T00:00:00+01:00">
         Created: 11 Jan 2014,
@@ -549,16 +543,14 @@ If on the other hand you want to write a code which works with both versions I s
 </ul>
 </div>
 
-
-            </div><!-- /.entry-content -->
-        </article></li>
-        <li><article class="hentry">
-            <header>
-                <h1><a href="https://gmpy.dev/blog/2013/making-constants-part-of-your-api-is-evil" rel="bookmark"
-                       title="Permalink to Making constants part of your API is evil">Making constants part of your API is evil</a></h1>
-            </header>
-
-            <div class="entry-content">
+        </div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2013/making-constants-part-of-your-api-is-evil" rel="bookmark"
+                   title="Permalink to Making constants part of your API is evil">Making constants part of your API is evil</a></h1>
+        </header>
+        <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2013-12-21T00:00:00+01:00">
         Created: 21 Dec 2013,
@@ -634,15 +626,15 @@ For this I have to thank <a class="reference external" href="http://www.dr-josia
 <p>You can put this at the bottom of your module and you'll have fully working module constants (tested on Python from 2.4 to 3.4)!</p>
 <p>EDIT: the only reason I applied this hack is to turn the old constants into aliases pointing to the newly introduced functions and produce a deprecation warning. That aside I can't think of a case where the use of a module property would be justified.</p>
 
-
-            </div><!-- /.entry-content -->
-        </article></li>
-                </ol><!-- /#posts-list -->
+        </div>
+    </article></li>
+            </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://gmpy.dev/index3.html">&laquo;</a>
     Page 4 / 4
 </p>
-                </section><!-- /#content -->
+ <!-- /blog posts -->
+</section>
 
     <!-- Footer -->
     <section id="extras" class="body">
@@ -664,17 +656,19 @@ For this I have to thank <a class="reference external" href="http://www.dr-josia
             </ul>
         </div>
     </div>
-
-        <div class="newsletter">
-            <h2>Newsletter</h2>
-            <p>Enter your email address to receive blog updates:</p>
-            <form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('https://feedburner.google.com/fb/a/mailverify?uri=GiampaoloRodola', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
-                <input type="text" style="width:140px" name="email" /><input type="hidden" value="GiampaoloRodola" name="uri"/><input type="hidden" name="loc" value="en_US" />
-                <p><input type="submit" value="Subscribe" /></p>
-            </form>
-        </div>
-
-
+    <div class="newsletter">
+        <h2>Newsletter</h2>
+        <p>Enter your email address to receive blog updates:</p>
+<form class="newsletter"
+       action="https://feedburner.google.com/fb/a/mailverify"
+       method="post"
+       target="popupwindow"
+       onsubmit="window.open('https://feedburner.google.com/fb/a/mailverify?uri=GiampaoloRodola', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
+    <input type="text" style="width:140px" name="email" />
+        <input type="hidden" value="GiampaoloRodola" name="uri"/>
+        <input type="hidden"  name="loc" value="en_US" />
+    <input type="submit" style="height:28px" value="subscribe" />
+</form>    </div>
     </section>
     <!-- /Footer -->
 

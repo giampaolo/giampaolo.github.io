@@ -20,15 +20,15 @@
             <li><a href="/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
-            <section id="content" class="body">
-                <ol id="posts-list" class="hfeed" start="4">
-        <li><article class="hentry">
-            <header>
-                <h1><a href="https://gmpy.dev/blog/2014/python-and-sendfile" rel="bookmark"
-                       title="Permalink to Python and sendfile">Python and sendfile</a></h1>
-            </header>
-
-            <div class="entry-content">
+<section id="content" class="body">
+<!-- blog posts -->
+        <ol id="posts-list" class="hfeed" start="4">
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2014/python-and-sendfile" rel="bookmark"
+                   title="Permalink to Python and sendfile">Python and sendfile</a></h1>
+        </header>
+        <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2014-06-13T00:00:00+02:00">
         Created: 13 Jun 2014,
@@ -266,16 +266,14 @@
 </pre></div>
 </div>
 
-
-            </div><!-- /.entry-content -->
-        </article></li>
-        <li><article class="hentry">
-            <header>
-                <h1><a href="https://gmpy.dev/blog/2014/reimplementing-netstat-in-python" rel="bookmark"
-                       title="Permalink to Reimplementing netstat in Python">Reimplementing netstat in Python</a></h1>
-            </header>
-
-            <div class="entry-content">
+        </div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2014/reimplementing-netstat-in-python" rel="bookmark"
+                   title="Permalink to Reimplementing netstat in Python">Reimplementing netstat in Python</a></h1>
+        </header>
+        <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2014-03-10T00:00:00+01:00">
         Created: 10 Mar 2014,
@@ -334,11 +332,11 @@ As always, each platform required its own, different, implementation. Luckily fo
 <p>Hopefully this will help whoever needs to do this into another language. The only platform where this is sort of clunky is OSX, which does not expose anything to list all system-wide sockets in a single shot, so you're forced to query each process. That means you'll need root privileges otherwise you'll get an access denied error. For what it's worth, I took a look at lsof and it has the same limitation and netstat runs with SUID. Well, I guess this is it. I'll leave you with <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_connections">some docs</a>. For the next one I'm planning on working on a couple of other network-related functionalities: <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=376">&quot;ifconfig&quot;</a> and <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=250">NIC speeds</a>. But that's for another time...</p>
 </div>
 
-
-            </div><!-- /.entry-content -->
-        </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+        </div>
+    </article></li>
+            </ol><!-- /#posts-list -->
+ <!-- /blog posts -->
+</section>
 
     <!-- Footer -->
     <section id="extras" class="body">
@@ -360,17 +358,19 @@ As always, each platform required its own, different, implementation. Luckily fo
             </ul>
         </div>
     </div>
-
-        <div class="newsletter">
-            <h2>Newsletter</h2>
-            <p>Enter your email address to receive blog updates:</p>
-            <form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('https://feedburner.google.com/fb/a/mailverify?uri=GiampaoloRodola', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
-                <input type="text" style="width:140px" name="email" /><input type="hidden" value="GiampaoloRodola" name="uri"/><input type="hidden" name="loc" value="en_US" />
-                <p><input type="submit" value="Subscribe" /></p>
-            </form>
-        </div>
-
-
+    <div class="newsletter">
+        <h2>Newsletter</h2>
+        <p>Enter your email address to receive blog updates:</p>
+<form class="newsletter"
+       action="https://feedburner.google.com/fb/a/mailverify"
+       method="post"
+       target="popupwindow"
+       onsubmit="window.open('https://feedburner.google.com/fb/a/mailverify?uri=GiampaoloRodola', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
+    <input type="text" style="width:140px" name="email" />
+        <input type="hidden" value="GiampaoloRodola" name="uri"/>
+        <input type="hidden"  name="loc" value="en_US" />
+    <input type="submit" style="height:28px" value="subscribe" />
+</form>    </div>
     </section>
     <!-- /Footer -->
 
