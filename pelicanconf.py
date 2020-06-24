@@ -13,17 +13,19 @@ DEFAULT_LANG = 'en'
 GOOGLE_ANALYTICS = "UA-164357405-2"
 DISQUS_SITENAME = 'gmpy-dev'
 
-# --- atom/rss feeds
+# --- atom/rss feeds (http://127.0.0.1:8000/feeds)
 
-# here you can put something like 'feeds/%s.author.xml'
+FEED_ALL_ATOM = 'feeds/atom.all.xml'
+FEED_ALL_RSS = 'feeds/rss.all.xml'
+TAG_FEED_ATOM = 'feeds/atom.tag.{slug}.xml'
+TAG_FEED_RSS = 'feeds/rss.tag.{slug}.rss.xml'
+
 AUTHOR_FEED_ATOM = None
-CATEGORY_FEED_ATOM = 'feeds/{slug}.atom.xml'
-FEED_ALL_ATOM = 'feeds/all.atom.xml'
-
 AUTHOR_FEED_RSS = None
-CATEGORY_FEED_RSS = 'feeds/{slug}.rss.xml'
-FEED_ALL_RSS = 'feeds/all.rss.xml'
-
+CATEGORY_FEED_ATOM = None
+CATEGORY_FEED_RSS = None
+TRANSLATION_FEED_ATOM = None
+TRANSLATION_FEED_RSS = None
 
 # --- social widget
 
