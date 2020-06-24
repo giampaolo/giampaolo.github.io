@@ -2,7 +2,7 @@ psutil 4.4.0: improved Linux memory metrics
 ###########################################
 
 :date: 2016-10-23
-:tags: psutil, memory
+:tags: psutil, memory, python
 
 OK, here's another `psutil <https://github.com/giampaolo/psutil>`__ release. Main highlights of this release are more accurate memory metrics on Linux and different OSX fixes. Here goes.
 

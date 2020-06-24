@@ -2,7 +2,7 @@ psutil 5.4.0 and AIX support
 ############################
 
 :date: 2017-10-12
-:tags: psutil, aix
+:tags: psutil, aix, python
 
 After a long time `psutil <https://github.com/giampaolo/psutil/>`__ finally adds support for a brand new exotic platform: AIX! Honestly I am not sure how many AIX Python users are out there (I suppose not many) but still, here it is. For this we have to thank Arnon Yaari who started working on the porting a `couple of years ago <https://github.com/giampaolo/psutil/issues/605>`__. To be honest I was skeptical at first because AIX is the only platform which I cannot virtualize and test on my laptop so that made me a bit nervous but Arnon did a very good job. The final `PR <https://github.com/giampaolo/psutil/pull/1123>`__ is huge, it required a considerable amount of work on his part and a review process of over 140 messages which were exchanged between me and him over the course of over 1 month during which I was travelling through China. The final result is very good, basically (almost) all original unit tests pass and the quality of the submitted code is awesome which (I must say) is kind of unusual for an external contribution like this one. Kudos to you Arnon! ;-)
 

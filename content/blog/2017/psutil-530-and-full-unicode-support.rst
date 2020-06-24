@@ -2,7 +2,7 @@ psutil 5.3.0 and full unicode support
 #####################################
 
 :date: 2017-09-03
-:tags: psutil, travel
+:tags: psutil, travel, python
 
 `psutil <https://github.com/giampaolo/psutil/>`__ 5.3.0 is finally out. This release is a major one, as it includes tons of improvements and bugfixes, probably like no other previous release. It is interesting to notice how huge the `diff <https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket>`__ between 5.2.2 and 5.3.0 is. This is due to the fact that I've been travelling quite a lot this year, so I kept postponing it. It may sound weird but I consider publishing a new release and write a blog post about more stressful than working on the release itself. =). Anyway, here goes.
 Full Unicode support

@@ -2,7 +2,7 @@ psutil 3.0, aka how I reimplemented ifconfig in Python
 ######################################################
 
 :date: 2015-06-13
-:tags: psutil, travel, personal
+:tags: psutil, travel, personal, python
 
 Here we are. It's been a long time since my last blog post and my last `psutil <https://github.com/giampaolo/psutil>`__ release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally had the chance to meet my friend `Jay Loden <http://jayloden.com/software.htm>`__ in person. `Jay and I <https://fbcdn-sphotos-h-a.akamaihd.net/hphotos-ak-xta1/t31.0-8/11263024_10153285412879890_759604551146752808_o.jpg>`__ originally started working on psutil together `7 years ago <https://groups.google.com/forum/#!topic/psutil-dev/fj8DQ3lGFH4>`__.
 

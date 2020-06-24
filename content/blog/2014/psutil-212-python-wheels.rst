@@ -2,7 +2,7 @@ psutil 2.1.2 and Python wheels
 ##############################
 
 :date: 2014-09-21
-:tags: psutil, wheels, travel
+:tags: psutil, wheels, travel, python
 
 `psutil <https://github.com/giampaolo/psutil/>`__ 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate to the project. The main new "feature" of this release is that other than the exe files, Windows users can now also benefit of `Python wheels <http://pythonwheels.com/>`__ (full story is `here <https://github.com/giampaolo/psutil/issues/505>`__) which are available on PYPI. Frankly I don't know much about the new wheels packaging system but long story short is that Windows users can now install psutil via pip and therefore also include it as a dependency into requirements.txt. Other than this 2.1.2 can basically be considered a bug-fix release, including some important fixes amongst which:
 

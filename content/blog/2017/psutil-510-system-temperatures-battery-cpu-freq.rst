@@ -2,7 +2,7 @@ psutil 5.1.1 system temperature, battery and CPU frequency
 ##########################################################
 
 :date: 2017-02-01
-:tags: psutil
+:tags: psutil, python
 
 OK, here's another `psutil <https://github.com/giampaolo/psutil/>`__ release. Main highlights of this release are sensors-related APIs.
 
