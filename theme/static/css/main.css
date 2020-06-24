@@ -325,7 +325,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 
 	#extras {
 		width:800px;
-		padding-left:50px;
+		padding-left:190px;
 		margin-top:-20px;
 		font-size:15px;
 	}
@@ -333,7 +333,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	#extras div {
 		color: #444;
 		float:left;
-		width: 190px;
+		width: 200px;
 	}
 
 	#extras .newsletter p {
