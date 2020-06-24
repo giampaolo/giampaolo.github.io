@@ -1,13 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - 2014</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/2014.atom.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2014-09-21T00:00:00+02:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>psutil 2.1.2 and Python wheels</title><link href="https://gmpy.dev/blog/2014/psutil-212-and-python-wheels" rel="alternate"></link><published>2014-09-21T00:00:00+02:00</published><updated>2014-09-21T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2014-09-21:/blog/2014/psutil-212-and-python-wheels</id><summary type="html">&lt;p&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate to the project. The main new &amp;quot;feature&amp;quot; of this release is that other than the exe files, Windows users can now also benefit of &lt;a class="reference external" href="http://pythonwheels.com/"&gt;Python wheels&lt;/a&gt; (full story is &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/505"&gt;here&lt;/a&gt;) which are available on PYPI. Frankly I don't know much about the new wheels packaging system but long story short is that Windows users can now install psutil via pip and therefore also include it as a dependency into requirements.txt. Other than this 2.1.2 can basically be considered a bug-fix release, including some important fixes amongst which:&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - python</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.python.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2016-02-13T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>How to always execute exit functions in Python</title><link href="https://gmpy.dev/blog/2016/how-to-always-execute-exit-functions-in-python" rel="alternate"></link><published>2016-02-12T00:00:00+01:00</published><updated>2016-02-13T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2016-02-12:/blog/2016/how-to-always-execute-exit-functions-in-python</id><summary type="html">&lt;p&gt;&lt;em&gt;...or why atexit.register() and signal.signal() are evil&lt;/em&gt;&lt;/p&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/506"&gt;#506&lt;/a&gt;: restored Python 2.4 compatibility&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/340"&gt;#340&lt;/a&gt;: Process.get_open_files() no longer hangs on Windows (this was a very old and high-priority issue)&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/501"&gt;#501&lt;/a&gt;: disk_io_counters() may return negative values on Windows&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/504"&gt;#504&lt;/a&gt;: (Linux) couldn't build RPM packages via setup.py&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;UPDATE (2016-02-13)&lt;/strong&gt;: this recipe no longer handles SIGINT, SIGQUIT and SIGABRT as aliases for &amp;quot;application exit&amp;quot; because it was a bad idea. It only handles SIGTERM. Also it no longer support Windows because signal.signal() implementation is too different than POSIX …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;&lt;em&gt;...or why atexit.register() and signal.signal() are evil&lt;/em&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;UPDATE (2016-02-13)&lt;/strong&gt;: this recipe no longer handles SIGINT, SIGQUIT and SIGABRT as aliases for &amp;quot;application exit&amp;quot; because it was a bad idea. It only handles SIGTERM. Also it no longer support Windows because signal.signal() implementation is too different than POSIX.*&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;The list of all fixes can be found &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst"&gt;here&lt;/a&gt;. For the next release I plan to drop support for Python 2.4 and 2.5 and hopefully network interfaces information similarly to &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/376"&gt;ifconfig&lt;/a&gt;.&lt;/p&gt;
-</content><category term="2014"></category><category term="psutil"></category><category term="wheels"></category><category term="travel"></category></entry><entry><title>Python and sendfile</title><link href="https://gmpy.dev/blog/2014/python-and-sendfile" rel="alternate"></link><published>2014-06-13T00:00:00+02:00</published><updated>2014-06-13T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2014-06-13:/blog/2014/python-and-sendfile</id><summary type="html">&lt;p&gt;&lt;a class="reference external" href="http://linux.die.net/man/2/sendfile"&gt;sendfile(2)&lt;/a&gt; is a UNIX system call which provides a &amp;quot;zero-copy&amp;quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, sendfile(2) is more efficient than the combination of &amp;quot;file.read()&amp;quot; and &amp;quot;socket.send()&amp;quot;, which requires …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="http://linux.die.net/man/2/sendfile"&gt;sendfile(2)&lt;/a&gt; is a UNIX system call which provides a &amp;quot;zero-copy&amp;quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, sendfile(2) is more efficient than the combination of &amp;quot;file.read()&amp;quot; and &amp;quot;socket.send()&amp;quot;, which requires transferring data to and from user space.  This copying of the data twice imposes some performance and resource penalties which sendfile(2) syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of &lt;a class="reference external" href="http://linux.die.net/man/2/read"&gt;read(2)&lt;/a&gt; / &lt;a class="reference external" href="http://linux.die.net/man/2/write"&gt;write(2)&lt;/a&gt; system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how sendfile(2) works is available &lt;a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/"&gt;here&lt;/a&gt;, but long story short is that sending a file with sendfile() is usually &lt;a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark"&gt;twice as fast&lt;/a&gt; than using plain &lt;a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send"&gt;socket.send()&lt;/a&gt;. Typical applications which can benefit from using sendfile() are FTP and HTTP servers.&lt;/p&gt;
+&lt;p&gt;Many people erroneously think that any function registered via atexit module is guaranteed to always be executed when the program terminates. You may have noticed this is not the case when, for example, you daemonize your app in production then try to stop it or restart it: the cleanup functions will not be executed. This is because functions registered wth atexit module are not called when the program is killed by a signal:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;atexit&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nn"&gt;signal&lt;/span&gt;
+
+&lt;span class="nd"&gt;@atexit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;cleanup&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;on exit&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;# XXX this never gets printed&lt;/span&gt;
+
+&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;kill&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getpid&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SIGTERM&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;It must be noted that the same thing would happen if instead of atexit.register() we would use a &amp;quot;finally&amp;quot; clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via signal.signal(). That has a drawback though: in case a third-party module has already registered a function for that signal (SIGTERM or whatever), your new function will overwrite the old one:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nn"&gt;signal&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;old&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;old&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;# XXX this never gets printed&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;new&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SIGTERM&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;old&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SIGTERM&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;kill&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getpid&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SIGTERM&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Also, we would still have to use atexit.register() so that the function is called also on &amp;quot;clean&amp;quot; interpreter exit and take into account other signals other than SIGTERM which would cause the process to terminate. This recipe attempts to address all these issues so that:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;the exit function is always executed for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT) on SIGTERM and on &amp;quot;clean&amp;quot; interpreter exit.&lt;/li&gt;
+&lt;li&gt;any exit function(s) previously registered via atexit.register() or signal.signal() will be executed as well (after the new one).&lt;/li&gt;
+&lt;li&gt;It must be noted that the exit function will never be executed in case of SIGKILL, SIGSTOP or os._exit().&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="section" id="the-code"&gt;
+&lt;h2&gt;The code&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="sd"&gt;Function / decorator which tries very hard to register a function to&lt;/span&gt;
+&lt;span class="sd"&gt;be executed at importerer exit.&lt;/span&gt;
+
+&lt;span class="sd"&gt;Author: Giampaolo Rodola&amp;#39;&lt;/span&gt;
+&lt;span class="sd"&gt;License: MIT&lt;/span&gt;
+&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;__future__&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;print_function&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;atexit&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;functools&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;signal&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;
+
+
+&lt;span class="n"&gt;_registered_exit_funs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;_executed_exit_funs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;register_exit_fun&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;signals&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SIGTERM&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+                      &lt;span class="n"&gt;logfun&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stderr&lt;/span&gt;&lt;span class="p"&gt;)):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Register a function which will be executed on &amp;quot;normal&amp;quot;&lt;/span&gt;
+&lt;span class="sd"&gt;    interpreter exit or in case one of the `signals` is received&lt;/span&gt;
+&lt;span class="sd"&gt;    by this process (differently from atexit.register()).&lt;/span&gt;
+&lt;span class="sd"&gt;    Also, it makes sure to execute any other function which was&lt;/span&gt;
+&lt;span class="sd"&gt;    previously registered via signal.signal(). If any, it will be&lt;/span&gt;
+&lt;span class="sd"&gt;    executed after our own `fun`.&lt;/span&gt;
+
+&lt;span class="sd"&gt;    Functions which were already registered or executed via this&lt;/span&gt;
+&lt;span class="sd"&gt;    function will be ignored.&lt;/span&gt;
+
+&lt;span class="sd"&gt;    Note: there&amp;#39;s no way to escape SIGKILL, SIGSTOP or os._exit(0)&lt;/span&gt;
+&lt;span class="sd"&gt;    so don&amp;#39;t bother trying.&lt;/span&gt;
+
+&lt;span class="sd"&gt;    You can use this either as a function or as a decorator:&lt;/span&gt;
+
+&lt;span class="sd"&gt;        @register_exit_fun&lt;/span&gt;
+&lt;span class="sd"&gt;        def cleanup():&lt;/span&gt;
+&lt;span class="sd"&gt;            pass&lt;/span&gt;
+
+&lt;span class="sd"&gt;        # ...or&lt;/span&gt;
+
+&lt;span class="sd"&gt;        register_exit_fun(cleanup)&lt;/span&gt;
+
+&lt;span class="sd"&gt;    Note about Windows: I tested this some time ago and didn&amp;#39;t work&lt;/span&gt;
+&lt;span class="sd"&gt;    exactly the same as on UNIX, then I didn&amp;#39;t care about it&lt;/span&gt;
+&lt;span class="sd"&gt;    anymore and didn&amp;#39;t test since then so may not work on Windows.&lt;/span&gt;
+
+&lt;span class="sd"&gt;    Parameters:&lt;/span&gt;
+
+&lt;span class="sd"&gt;    - fun: a callable&lt;/span&gt;
+&lt;span class="sd"&gt;    - signals: a list of signals for which this function will be&lt;/span&gt;
+&lt;span class="sd"&gt;      executed (default SIGTERM)&lt;/span&gt;
+&lt;span class="sd"&gt;    - logfun: a logging function which is called when a signal is&lt;/span&gt;
+&lt;span class="sd"&gt;      received. Default: print to standard error. May be set to&lt;/span&gt;
+&lt;span class="sd"&gt;      None if no logging is desired.&lt;/span&gt;
+&lt;span class="sd"&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;stringify_sig&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signum&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;version_info&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="n"&gt;smap&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;([(&lt;/span&gt;&lt;span class="nb"&gt;getattr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;dir&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                         &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;startswith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;SIG&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)])&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;smap&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signum&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;signum&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;signum&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fun_wrapper&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;fun&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_executed_exit_funs&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+            &lt;span class="k"&gt;finally&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;_executed_exit_funs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;signal_wrapper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signum&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;signum&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;logfun&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;logfun&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;signal &lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s2"&gt; received by process with PID &lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+                    &lt;span class="n"&gt;stringify_sig&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signum&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getpid&lt;/span&gt;&lt;span class="p"&gt;()))&lt;/span&gt;
+        &lt;span class="n"&gt;fun_wrapper&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="c1"&gt;# Only return the original signal this process was hit with&lt;/span&gt;
+        &lt;span class="c1"&gt;# in case fun returns with no errors, otherwise process will&lt;/span&gt;
+        &lt;span class="c1"&gt;# return with sig 1.&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;signum&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;signum&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SIGINT&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;KeyboardInterrupt&lt;/span&gt;
+            &lt;span class="c1"&gt;# XXX - should we do the same for SIGTERM / SystemExit?&lt;/span&gt;
+            &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signum&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;register_fun&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;signals&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;callable&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TypeError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;{!r}&lt;/span&gt;&lt;span class="s2"&gt; is not callable&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;  &lt;span class="c1"&gt;# raise exc if obj is not hash-able&lt;/span&gt;
+
+        &lt;span class="n"&gt;signals&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signals&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;sig&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;signals&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="c1"&gt;# Register function for this signal and pop() the previously&lt;/span&gt;
+            &lt;span class="c1"&gt;# registered one (if any). This can either be a callable,&lt;/span&gt;
+            &lt;span class="c1"&gt;# SIG_IGN (ignore signal) or SIG_DFL (perform default action&lt;/span&gt;
+            &lt;span class="c1"&gt;# for signal).&lt;/span&gt;
+            &lt;span class="n"&gt;old_handler&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sig&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;signal_wrapper&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;old_handler&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SIG_DFL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SIG_IGN&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                &lt;span class="c1"&gt;# ...just for extra safety.&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;callable&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;old_handler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                    &lt;span class="k"&gt;continue&lt;/span&gt;
+                &lt;span class="c1"&gt;# This is needed otherwise we&amp;#39;ll get a KeyboardInterrupt&lt;/span&gt;
+                &lt;span class="c1"&gt;# strace on interpreter exit, even if the process exited&lt;/span&gt;
+                &lt;span class="c1"&gt;# with sig 0.&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sig&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SIGINT&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt;
+                        &lt;span class="n"&gt;old_handler&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;default_int_handler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                    &lt;span class="k"&gt;continue&lt;/span&gt;
+                &lt;span class="c1"&gt;# There was a function which was already registered for this&lt;/span&gt;
+                &lt;span class="c1"&gt;# signal. Register it again so it will get executed (after our&lt;/span&gt;
+                &lt;span class="c1"&gt;# new fun).&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;old_handler&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_registered_exit_funs&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="n"&gt;atexit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;old_handler&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                    &lt;span class="n"&gt;_registered_exit_funs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;old_handler&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="c1"&gt;# This further registration will be executed in case of clean&lt;/span&gt;
+        &lt;span class="c1"&gt;# interpreter exit (no signals received).&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;fun&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_registered_exit_funs&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;signals&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;atexit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fun_wrapper&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;_registered_exit_funs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# This piece of machinery handles 3 usage cases. register_exit_fun()&lt;/span&gt;
+    &lt;span class="c1"&gt;# used as:&lt;/span&gt;
+    &lt;span class="c1"&gt;# - a function&lt;/span&gt;
+    &lt;span class="c1"&gt;# - a decorator without parentheses&lt;/span&gt;
+    &lt;span class="c1"&gt;# - a decorator with parentheses&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;fun&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="nd"&gt;@functools&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wraps&lt;/span&gt;
+        &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;outer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;register_fun&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;signals&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;outer&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;register_fun&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;signals&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;fun&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="usage"&gt;
+&lt;h2&gt;Usage&lt;/h2&gt;
+&lt;p&gt;As a function:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;cleanup&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;cleanup&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;register_exit_fun&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cleanup&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;As a decorator:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@register_exit_fun&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;cleanup&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;cleanup&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="unit-tests"&gt;
+&lt;h2&gt;Unit tests&lt;/h2&gt;
+&lt;p&gt;This recipe is hosted on ActiveState and has a full set of unittests. It works with Python 2 and 3.
+Notes about Windows
+On Windows signals are only partially supported meaning a function which was previously registered via signal.signal() will be executed only on interpreter exit, but not if the process receives a signal. Apparently this is a limitation either of Windows or the signal module (most likely Windows).&lt;/p&gt;
+&lt;p&gt;Because of how different signal.signal() behaves on Windows, this code is UNIX only: &lt;a class="reference external" href="http://bugs.python.org/issue26350"&gt;http://bugs.python.org/issue26350&lt;/a&gt;
+Proposal for stdlib inclusion
+The fact that atexit module does not handle signals and that signal.signal() overwrites previously registered handlers is unfortunate. It is also confusing because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the times you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with signal.signal(). To me this suggests there could be space for something like &amp;quot;atexit.register_w_signals&amp;quot;.&lt;/p&gt;
+&lt;p&gt;External discussions&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;reddit&lt;/li&gt;
+&lt;li&gt;hacker news&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2016"></category><category term="python"></category></entry><entry><title>Python and sendfile</title><link href="https://gmpy.dev/blog/2014/python-and-sendfile" rel="alternate"></link><published>2014-06-13T00:00:00+02:00</published><updated>2014-06-13T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2014-06-13:/blog/2014/python-and-sendfile</id><summary type="html">&lt;p&gt;&lt;a class="reference external" href="http://linux.die.net/man/2/sendfile"&gt;sendfile(2)&lt;/a&gt; is a UNIX system call which provides a &amp;quot;zero-copy&amp;quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, sendfile(2) is more efficient than the combination of &amp;quot;file.read()&amp;quot; and &amp;quot;socket.send()&amp;quot;, which requires …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="http://linux.die.net/man/2/sendfile"&gt;sendfile(2)&lt;/a&gt; is a UNIX system call which provides a &amp;quot;zero-copy&amp;quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, sendfile(2) is more efficient than the combination of &amp;quot;file.read()&amp;quot; and &amp;quot;socket.send()&amp;quot;, which requires transferring data to and from user space.  This copying of the data twice imposes some performance and resource penalties which sendfile(2) syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of &lt;a class="reference external" href="http://linux.die.net/man/2/read"&gt;read(2)&lt;/a&gt; / &lt;a class="reference external" href="http://linux.die.net/man/2/write"&gt;write(2)&lt;/a&gt; system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how sendfile(2) works is available &lt;a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/"&gt;here&lt;/a&gt;, but long story short is that sending a file with sendfile() is usually &lt;a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark"&gt;twice as fast&lt;/a&gt; than using plain &lt;a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send"&gt;socket.send()&lt;/a&gt;. Typical applications which can benefit from using sendfile() are FTP and HTTP servers.&lt;/p&gt;
 &lt;div class="section" id="socket-sendfile"&gt;
 &lt;h2&gt;socket.sendfile()&lt;/h2&gt;
 &lt;p&gt;I recently contributed a patch for Python's socket module which adds a high-level &lt;a class="reference external" href="https://docs.python.org/3.5/library/socket.html#socket.socket.sendfile"&gt;socket.sendfile()&lt;/a&gt; method (see full discussion at &lt;a class="reference external" href="http://bugs.python.org/issue17552"&gt;BPO-17552&lt;/a&gt;). socket.sendfile() will transmit a file until EOF is reached by attempting to use &lt;a class="reference external" href="https://docs.python.org/3/library/os.html#os.sendfile"&gt;os.sendfile()&lt;/a&gt;, if available, else it falls back on using plain socket.send(). Internally, it takes care of handling socket timeouts and provides two optional parameters to move the file offset or to send only a limited amount of bytes. I came up with this idea because getting all of that right is a bit tricky, so a generic wrapper seemed to be convenient to have. socket.sendfile() will make its appearance in Python 3.5.&lt;/p&gt;
@@ -228,86 +422,7 @@
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;_sendfile_use_send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sock&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;file&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;offset&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
-</content><category term="2014"></category><category term="python"></category><category term="python-dev"></category><category term="sendfile"></category><category term="zerocopy"></category><category term="network"></category></entry><entry><title>Goodbye Google Code, I am moving to GitHub</title><link href="https://gmpy.dev/blog/2014/goodbye-google-code-i-am-moving-to-github" rel="alternate"></link><published>2014-05-26T00:00:00+02:00</published><updated>2014-05-26T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2014-05-26:/blog/2014/goodbye-google-code-i-am-moving-to-github</id><summary type="html">&lt;p&gt;8 years ago I started hosting my first open source project (&lt;a class="reference external" href="https://code.google.com/p/pyftpdlib/"&gt;pyftpdlib&lt;/a&gt;) on Google Code and I later ended up also hosting &lt;a class="reference external" href="https://code.google.com/p/psutil/"&gt;psutil&lt;/a&gt; and &lt;a class="reference external" href="https://code.google.com/p/pysendfile/"&gt;pysendfile&lt;/a&gt;. Back then GC had just been released and similarly to other Google products I appreciated the clean and minimalistic interface, the excellent bug tracker and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;8 years ago I started hosting my first open source project (&lt;a class="reference external" href="https://code.google.com/p/pyftpdlib/"&gt;pyftpdlib&lt;/a&gt;) on Google Code and I later ended up also hosting &lt;a class="reference external" href="https://code.google.com/p/psutil/"&gt;psutil&lt;/a&gt; and &lt;a class="reference external" href="https://code.google.com/p/pysendfile/"&gt;pysendfile&lt;/a&gt;. Back then GC had just been released and similarly to other Google products I appreciated the clean and minimalistic interface, the excellent bug tracker and the freedom to choose between different revision control systems (SVN, GIT and Mercurial, which is my favourite one). Unfortunately as the years passed Google completely lost interest in maintaining GC to the point that now GC can basically be considered an &lt;a class="reference external" href="https://groups.google.com/forum/#!topic/google-code-hosting/PEhNMdtBGt4"&gt;abandoned project&lt;/a&gt;.  If you take a look at &lt;a class="reference external" href="https://code.google.com/p/support/issues/list"&gt;GC bug tracker&lt;/a&gt; you can see literally hundreds of issues which have been open for years, even some apparently easy ones such as &lt;a class="reference external" href="https://code.google.com/p/support/issues/detail?id=60"&gt;#60&lt;/a&gt; and &lt;a class="reference external" href="https://code.google.com/p/support/issues/detail?id=919"&gt;#919&lt;/a&gt;. The lack of interest from Google is absolutely astonishing and it is the main reason why I ultimately decided to change. After at least a couple of years of thinking about migrating to github I finally bite the bullet and as of today psutil is now &lt;a class="reference external" href="https://github.com/giampaolo/psutil"&gt;hosted on github&lt;/a&gt; (update: now also &lt;a class="reference external" href="https://github.com/giampaolo/pyftpdlib"&gt;pyftpdlib&lt;/a&gt; and &lt;a class="reference external" href="https://github.com/giampaolo/pysendfile"&gt;pysendfile&lt;/a&gt;).&lt;/p&gt;
-&lt;div class="section" id="what-i-will-miss-the-most-about-gc"&gt;
-&lt;h2&gt;What I will miss the most about GC&lt;/h2&gt;
-&lt;p&gt;First of all I must say that despite the unfortunate situation of GC I'm also sad for abandoning it. It started as a really great hosting platform, and it still has some peculiar aspects which I know I will be missing. In order of importance:&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/list"&gt;The bug tracker&lt;/a&gt;: it is much more powerful than &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues?state=open"&gt;github's&lt;/a&gt;, especially for the extremely customizable labeling system which is pure gold, the excellent searching system and the &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/list?can=2&amp;amp;q=&amp;amp;colspec=ID+Summary+Type+Opsys+Status+Priority+Opened+Owner&amp;amp;groupby=&amp;amp;sort=&amp;amp;x=&amp;amp;y=&amp;amp;cells=tiles&amp;amp;mode=grid"&gt;grid view&lt;/a&gt;. GC bug tracker seriously kicks some ass so kudos to whoever was behind its design! By comparison github bug tracker is too minimalistic and it has no good way to order issues or list them in a more compact form. I'm totally gonna miss psutil bug tracker.&lt;/li&gt;
-&lt;li&gt;Mercurial: I'm a big fan of Mercurial and I consider it way more pleasant to work with &lt;a class="reference external" href="https://twitter.com/grodola/status/456238397690875905"&gt;compared to GIT&lt;/a&gt;. I don't know exactly why GIT ended up being so much more used than Mercurial (probably because of github?) but I'm sure that many other guys like me who know both systems will agree that Mercurial is simply so much easier to use. Unfortunately once you decide to stick with github you have no other choice. Mercurial, I'm gonna miss you too!&lt;/li&gt;
-&lt;li&gt;GC layout: it is much simpler than github's! Everything is easy to find, even for a non-geek person. The home page alone is perfect to summarize what the project is about and doesn't have tens of icons all over the place. github layout is &lt;a class="reference external" href="https://twitter.com/JoshHelfferich/status/423680220126650368"&gt;more complicated&lt;/a&gt; and needs some time to get used to, even for a programmer. If these projects (psutil and others) weren't about programming I wouldn't have chosen github because it's &amp;quot;not for the masses&amp;quot;.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div class="section" id="what-i-appreciate-about-github"&gt;
-&lt;h2&gt;What I appreciate about github&lt;/h2&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;Travis integration: there's this totally awesome free continuos integration service called &lt;a class="reference external" href="https://travis-ci.org/giampaolo/psutil"&gt;Travis&lt;/a&gt; which given a configuration file &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/.travis.yml"&gt;like this&lt;/a&gt; it will automatically run tests on multiple python versions every time a commit is pushed. They recently added &lt;a class="reference external" href="http://blog.travis-ci.com/2014-05-13-multi-os-feature-available/"&gt;OSX support&lt;/a&gt; and &lt;a class="reference external" href="https://github.com/travis-ci/travis-ci/issues/216"&gt;Windows support&lt;/a&gt; is on the way. This way I will finally be able to quickly test psutil on Linux, OSX and Windows without using virtualized systems except for FreeBSD and Solaris! To me this is like the ultimate Christmas gift and I couldn't ask for any better. Note: as of today Travis only works with github.&lt;/li&gt;
-&lt;li&gt;forks and pull requests: honestly I'm not a big fan of them (yet?), probably because I'm used to the python-dev development workflow consisting in uploading patches on the bug tracker and reviewing them (see &lt;a class="reference external" href="http://bugs.python.org/issue17552"&gt;this&lt;/a&gt; for example). Nevertheless to my understanding most people use pull requests in order to contribute to open source projects so basically this is a service I'm glad to offer to my users who hopefully will be able to contribute back more easily. GC has a &lt;a class="reference external" href="https://code.google.com/p/psutil/source/clones"&gt;cloning system&lt;/a&gt; but isn't anywhere near github's and I'm not even sure how it works (never cared).&lt;/li&gt;
-&lt;li&gt;the &amp;quot;social&amp;quot; side of github including the fact that you can &amp;quot;star&amp;quot; developers and receive notifications about their activity was another big incentive for migrating. The &lt;a class="reference external" href="https://github.com/giampaolo"&gt;personal landing page&lt;/a&gt; collecting all your contributions to different projects is absolutely cool. GC had something similar but they stupidly &lt;a class="reference external" href="https://code.google.com/p/support/issues/detail?id=24324"&gt;removed it&lt;/a&gt; all of the sudden and never reintroduced it back. &lt;a class="reference external" href="https://groups.google.com/forum/#!topic/google-code-hosting/0XbdStxE_uw"&gt;A lot of people were angry&lt;/a&gt; but again, they didn't care. Actually this was the feature I appreciated the most about GC after the bug tracker and that is when I seriously started thinking about flipping off GC for good.&lt;/li&gt;
-&lt;li&gt;the enormous user base: the fact that github is the most used code hosting platform out there will hopefully help me and my projects have a little more visibility. Also, in many job interviews I've been asked what my github profile was so it seems github also became an active part in getting jobs.&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://gist.github.com/"&gt;gists&lt;/a&gt;: gists are &amp;quot;a simple way to share code snippets and pastes with others. All gists are Git repositories, so they are automatically versioned, forkable and usable from Git&amp;quot;. Seriously, they are  beautiful. In order to share &lt;a class="reference external" href="https://code.activestate.com/recipes/users/4178764/"&gt;my code snippets&lt;/a&gt; I've always used Active State but I think I will eventually migrate them as well in order to have everything in one place.&lt;/li&gt;
-&lt;li&gt;the fact that if you mention an issue number as part of your commit message that specific issue will automatically be updated. As I said GC bug tracker is superior in basically any aspect but since I always took care of updating issues by mentioning the specific cset which fixed them (see for example &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=463"&gt;here&lt;/a&gt;) having this little extra feature will save me some time.&lt;/li&gt;
-&lt;li&gt;SSH keys: using Mercurial on GC means using password based authentication. Incredibly they still do not support SSH key based auth. Simply &amp;quot;git push&amp;quot;ing without entering any password when I'm not on my laptop is nice, and of course, it is also much more secure.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div class="section" id="migration"&gt;
-&lt;h2&gt;Migration&lt;/h2&gt;
-&lt;p&gt;For those of you who are interested in knowing how I did it, here goes: as for moving the issue from GC bug tracker to github's I used &lt;a class="reference external" href="https://github.com/arthur-debert/google-code-issues-migrator"&gt;this tool&lt;/a&gt;. I managed to preserve the issue IDs but unfortunately not the real owners nor the real issue dates, which kind of sucks. As for migrating the code from mercurial to git I just used &lt;a class="reference external" href="http://stackoverflow.com/a/16037861/376587"&gt;this&lt;/a&gt;. The Mercurial -&amp;gt; GIT transition was perfect and I also managed to preserve the original Mercurial named branches and tags, which for me it was crucial. In conclusion, psutil is a 5 years, medium sized  project with hundreds of issues: the transition in this case is definitively possible but not painless so if you plan on migrating, the sooner you do it the better.&lt;/p&gt;
-&lt;/div&gt;
-</content><category term="2014"></category><category term="rant"></category></entry><entry><title>psutil 2.0</title><link href="https://gmpy.dev/blog/2014/psutil-20" rel="alternate"></link><published>2014-03-10T00:00:00+01:00</published><updated>2014-03-10T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2014-03-10:/blog/2014/psutil-20</id><summary type="html">&lt;p&gt;The time has finally come: &lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 2.0 is out! This is a release which took me a considerable amount of effort and careful thinking during the past 4 months as I went through a major &lt;strong&gt;rewrite and reorganization&lt;/strong&gt; of both python and C extension modules. To get a sense …&lt;/p&gt;</summary><content type="html">&lt;p&gt;The time has finally come: &lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 2.0 is out! This is a release which took me a considerable amount of effort and careful thinking during the past 4 months as I went through a major &lt;strong&gt;rewrite and reorganization&lt;/strong&gt; of both python and C extension modules. To get a sense of how much has changed you can compare the differences with old 1.2.1 version by running &amp;quot;hg diff -r release-1.2.1:release-2.0.0&amp;quot; which will produce more than &lt;strong&gt;22,000 lines&lt;/strong&gt; of output! In those 22k lines I tried to nail down all the quirks the project had accumulated since its start 4 years ago and the resulting code base is now cleaner than ever, more manageable and fully compliant with PEP-7 and PEP-8 guidelines.
-There were some difficult decisions because many of the changes I introduced are not backward compatible so I was concerned with the pain this may cause existing users. I kind of still am, but I'm sure the transition will be well perceived on the long run as it will result in more manageable user code. OK, enough with the preface and let's see what changed.&lt;/p&gt;
-&lt;div class="section" id="api-changes"&gt;
-&lt;h2&gt;API changes&lt;/h2&gt;
-&lt;p&gt;I already wrote a detailed &lt;a class="reference external" href="../../2014/psutil-20-api-redesign/"&gt;blog post&lt;/a&gt; about what changed so I recommend you to use that as the official reference on how to port your code.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="rst-documentation"&gt;
-&lt;h2&gt;RST documentation&lt;/h2&gt;
-&lt;p&gt;I've never been happy with old doc hosted on Google Code. The markup language provided by Google is pretty limited, plus it's not put under revision control. New doc is more detailed, it uses reStructuredText as the markup language, it lives in the same code repository as psutil's and it is hosted on the excellent readthedocs web site: &lt;a class="reference external" href="http://psutil.readthedocs.org/"&gt;http://psutil.readthedocs.org/&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="physical-cpus-count"&gt;
-&lt;h2&gt;Physical CPUs count&lt;/h2&gt;
-&lt;p&gt;You're now able to distinguish between logical and physical CPUs:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_count&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;  &lt;span class="c1"&gt;# logical&lt;/span&gt;
-&lt;span class="mi"&gt;4&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;logical&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;# physical cores only&lt;/span&gt;
-&lt;span class="mi"&gt;2&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Full story is in &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427"&gt;issue 427&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="process-instances-are-hashable"&gt;
-&lt;h2&gt;Process instances are hashable&lt;/h2&gt;
-&lt;p&gt;Basically this means process instances can now be checked for equality and can be used with set()s:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;p1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;p2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;p1&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;p2&lt;/span&gt;
-&lt;span class="kc"&gt;True&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;p1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;p2&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-&lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;8217&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;python&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="mi"&gt;140007043550608&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Full story is in &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=452"&gt;issue 452&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="speedups"&gt;
-&lt;h2&gt;Speedups&lt;/h2&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=477"&gt;#477&lt;/a&gt;: process cpu_percent() is about 30% faster.&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=478"&gt;#478&lt;/a&gt;: (Linux) almost all APIs are about 30% faster on Python 3.X.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div class="section" id="other-improvements-and-bugfixes"&gt;
-&lt;h2&gt;Other improvements and bugfixes&lt;/h2&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=424"&gt;#424&lt;/a&gt;: Windows installers for Python 3.X 64-bit&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447"&gt;#447&lt;/a&gt;: psutil.wait_procs() timeout parameter is now optional.&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=459"&gt;#459&lt;/a&gt;: a Makefile is now available for running tests and other repetitive tasks (also on Windows)&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=463"&gt;#463&lt;/a&gt;: timeout parameter of cpu_percent* functions default to 0.0 because it was a common trap to introduce slowdowns.&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=340"&gt;#340&lt;/a&gt;: (Windows) process open_files() no longer hangs.&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=448"&gt;#448&lt;/a&gt;: (Windows) fixed a memory leak affecting children() and ppid() methods.&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=461"&gt;#461&lt;/a&gt;: namedtuples are now pickle-able.&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=474"&gt;#474&lt;/a&gt;: (Windows) Process.cpu_percent() is no longer capped at 100%&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;OK, that's all folks. I hope you will enjoy this new version and report your feedback.&lt;/p&gt;
-&lt;/div&gt;
-</content><category term="2014"></category><category term="psutil"></category></entry><entry><title>Reimplementing netstat in Python</title><link href="https://gmpy.dev/blog/2014/reimplementing-netstat-in-python" rel="alternate"></link><published>2014-03-10T00:00:00+01:00</published><updated>2014-03-10T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2014-03-10:/blog/2014/reimplementing-netstat-in-python</id><summary type="html">&lt;p&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 2.1.0 is out and with it I finally managed to implement something I've been wanting to have for a long time: netstat-like functionalities (see &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=387"&gt;ticket&lt;/a&gt;). Similarly to &amp;quot;netstat -antp&amp;quot; on UNIX you can now list system-wide connections in pure python and also determine &lt;strong&gt;what process (PID) is …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 2.1.0 is out and with it I finally managed to implement something I've been wanting to have for a long time: netstat-like functionalities (see &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=387"&gt;ticket&lt;/a&gt;). Similarly to &amp;quot;netstat -antp&amp;quot; on UNIX you can now list system-wide connections in pure python and also determine &lt;strong&gt;what process (PID) is using a particular connection&lt;/strong&gt;:&lt;/p&gt;
+</content><category term="2014"></category><category term="python"></category><category term="python-dev"></category><category term="sendfile"></category><category term="zerocopy"></category><category term="network"></category></entry><entry><title>Reimplementing netstat in Python</title><link href="https://gmpy.dev/blog/2014/reimplementing-netstat-in-python" rel="alternate"></link><published>2014-03-10T00:00:00+01:00</published><updated>2014-03-10T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2014-03-10:/blog/2014/reimplementing-netstat-in-python</id><summary type="html">&lt;p&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 2.1.0 is out and with it I finally managed to implement something I've been wanting to have for a long time: netstat-like functionalities (see &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=387"&gt;ticket&lt;/a&gt;). Similarly to &amp;quot;netstat -antp&amp;quot; on UNIX you can now list system-wide connections in pure python and also determine &lt;strong&gt;what process (PID) is …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 2.1.0 is out and with it I finally managed to implement something I've been wanting to have for a long time: netstat-like functionalities (see &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=387"&gt;ticket&lt;/a&gt;). Similarly to &amp;quot;netstat -antp&amp;quot; on UNIX you can now list system-wide connections in pure python and also determine &lt;strong&gt;what process (PID) is using a particular connection&lt;/strong&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;psutil&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pprint&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;pprint&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;pp&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;pp&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;net_connections&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
@@ -349,309 +464,63 @@ As always, each platform required its own, different, implementation. Luckily fo
 &lt;/ul&gt;
 &lt;p&gt;Hopefully this will help whoever needs to do this into another language. The only platform where this is sort of clunky is OSX, which does not expose anything to list all system-wide sockets in a single shot, so you're forced to query each process. That means you'll need root privileges otherwise you'll get an access denied error. For what it's worth, I took a look at lsof and it has the same limitation and netstat runs with SUID. Well, I guess this is it. I'll leave you with &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_connections"&gt;some docs&lt;/a&gt;. For the next one I'm planning on working on a couple of other network-related functionalities: &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=376"&gt;&amp;quot;ifconfig&amp;quot;&lt;/a&gt; and &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=250"&gt;NIC speeds&lt;/a&gt;. But that's for another time...&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="2014"></category><category term="python"></category><category term="network"></category></entry><entry><title>psutil 2.0 API redesign</title><link href="https://gmpy.dev/blog/2014/psutil-20-api-redesign" rel="alternate"></link><published>2014-01-11T00:00:00+01:00</published><updated>2014-01-11T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2014-01-11:/blog/2014/psutil-20-api-redesign</id><summary type="html">&lt;p&gt;This my second blog post is going to be about &lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This my second blog post is going to be about &lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is to serve as an official reference which describes how you should port your existent code base. In doing so I will also explain why I decided to make these changes. Despite many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten but I think this is for the better and it needed to be done, hopefully for the first and last time. OK, here we go now.&lt;/p&gt;
-&lt;div class="section" id="module-constants-turned-into-functions"&gt;
-&lt;h2&gt;Module constants turned into functions&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;What changed&lt;/strong&gt;&lt;/p&gt;
-&lt;table border="1" class="docutils"&gt;
-&lt;colgroup&gt;
-&lt;col width="42%" /&gt;
-&lt;col width="58%" /&gt;
-&lt;/colgroup&gt;
-&lt;thead valign="bottom"&gt;
-&lt;tr&gt;&lt;th class="head"&gt;Old name&lt;/th&gt;
-&lt;th class="head"&gt;Replacement&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td&gt;psutil.BOOT_TIME&lt;/td&gt;
-&lt;td&gt;psutil.boot_time()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;psutil.NUM_CPUS&lt;/td&gt;
-&lt;td&gt;psutil.cpu_count()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;psutil.TOTAL_PHYMEM&lt;/td&gt;
-&lt;td&gt;psutil.virtual_memory().total&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;Why I did it&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;I already talked about this more extensively in this &lt;a class="reference external" href="../../2013/making-constants-part-of-your-api-is-evil/"&gt;blog post&lt;/a&gt;. In short: other than introducing unnecessary slowdowns, calculating a module level constant at import time is dangerous because in case of error the whole app will crash. Also, the represented values may be subject to change (think about the system clock) but the constant cannot be updated.
-Thanks to this hack accessing the old constants still works and produces a DeprecationWarning.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="module-functions-renamings"&gt;
-&lt;h2&gt;Module functions renamings&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;What changed&lt;/strong&gt;&lt;/p&gt;
-&lt;table border="1" class="docutils"&gt;
-&lt;colgroup&gt;
-&lt;col width="44%" /&gt;
-&lt;col width="56%" /&gt;
-&lt;/colgroup&gt;
-&lt;thead valign="bottom"&gt;
-&lt;tr&gt;&lt;th class="head"&gt;Old name&lt;/th&gt;
-&lt;th class="head"&gt;Replacement&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td&gt;psutil.get_boot_time()&lt;/td&gt;
-&lt;td&gt;psutil.boot_time()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;psutil.get_pid_list()&lt;/td&gt;
-&lt;td&gt;psutil.pids()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;psutil.get_users()&lt;/td&gt;
-&lt;td&gt;psutil.users()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;Why I did it&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;They were the only module level functions having a &lt;tt class="docutils literal"&gt;get_&lt;/tt&gt; prefix. All others do not.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="process-class-methods-renamings"&gt;
-&lt;h2&gt;Process class' methods renamings&lt;/h2&gt;
-&lt;p&gt;All methods lost their &lt;tt class="docutils literal"&gt;get_&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;set_&lt;/tt&gt; prefixes. A single method can now be used for both getting and setting (if a value is passed). Assuming p = psutil.Process():&lt;/p&gt;
-&lt;table border="1" class="docutils"&gt;
-&lt;colgroup&gt;
-&lt;col width="46%" /&gt;
-&lt;col width="54%" /&gt;
-&lt;/colgroup&gt;
-&lt;thead valign="bottom"&gt;
-&lt;tr&gt;&lt;th class="head"&gt;Old name&lt;/th&gt;
-&lt;th class="head"&gt;Replacement&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td&gt;p.get_children()&lt;/td&gt;
-&lt;td&gt;p.children()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_connections()&lt;/td&gt;
-&lt;td&gt;p.connections()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_cpu_affinity()&lt;/td&gt;
-&lt;td&gt;p.cpu_affinity()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_cpu_percent()&lt;/td&gt;
-&lt;td&gt;p.cpu_percent()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_cpu_times()&lt;/td&gt;
-&lt;td&gt;p.cpu_times()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_io_counters()&lt;/td&gt;
-&lt;td&gt;p.io_counters()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_ionice()&lt;/td&gt;
-&lt;td&gt;p.ionice()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_memory_info()&lt;/td&gt;
-&lt;td&gt;p.memory_info()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_ext_memory_info()&lt;/td&gt;
-&lt;td&gt;p.memory_info_ex()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_memory_maps()&lt;/td&gt;
-&lt;td&gt;p.memory_maps()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_memory_percent()&lt;/td&gt;
-&lt;td&gt;p.memory_percent()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_nice()&lt;/td&gt;
-&lt;td&gt;p.nice()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_num_ctx_switches()&lt;/td&gt;
-&lt;td&gt;p.num_ctx_switches()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_num_fds()&lt;/td&gt;
-&lt;td&gt;p.num_fds()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_num_threads()&lt;/td&gt;
-&lt;td&gt;p.num_threads()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_open_files()&lt;/td&gt;
-&lt;td&gt;p.open_files()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_rlimit()&lt;/td&gt;
-&lt;td&gt;p.rlimit()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.get_threads()&lt;/td&gt;
-&lt;td&gt;p.threads()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.getcwd()&lt;/td&gt;
-&lt;td&gt;p.cwd()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;...as for set_* methods:&lt;/p&gt;
-&lt;table border="1" class="docutils"&gt;
-&lt;colgroup&gt;
-&lt;col width="44%" /&gt;
-&lt;col width="56%" /&gt;
-&lt;/colgroup&gt;
-&lt;thead valign="bottom"&gt;
-&lt;tr&gt;&lt;th class="head"&gt;Old name&lt;/th&gt;
-&lt;th class="head"&gt;Replacement&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td&gt;p.set_cpu_affinity()&lt;/td&gt;
-&lt;td&gt;p.cpu_affinity(cpus)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.set_ionice()&lt;/td&gt;
-&lt;td&gt;p.ionice(ioclass, value=None)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.set_nice()&lt;/td&gt;
-&lt;td&gt;p.nice(value)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.set_rlimit()&lt;/td&gt;
-&lt;td&gt;p.rlimit(resource, limits=None)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;Why I did it&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;I wanted to be consistent with system-wide module level functions which have no &lt;tt class="docutils literal"&gt;get_&lt;/tt&gt; prefix. After I got rid of &lt;tt class="docutils literal"&gt;get_&lt;/tt&gt; prefixes removing also &lt;tt class="docutils literal"&gt;set_&lt;/tt&gt; seemed natural and helped diminish the number of methods.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="process-properties-are-now-methods"&gt;
-&lt;h2&gt;Process properties are now methods&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;What changed&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Assuming p = psutil.Process():&lt;/p&gt;
-&lt;table border="1" class="docutils"&gt;
-&lt;colgroup&gt;
-&lt;col width="44%" /&gt;
-&lt;col width="56%" /&gt;
-&lt;/colgroup&gt;
-&lt;thead valign="bottom"&gt;
-&lt;tr&gt;&lt;th class="head"&gt;Old name&lt;/th&gt;
-&lt;th class="head"&gt;Replacement&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td&gt;p.cmdline&lt;/td&gt;
-&lt;td&gt;p.cmdline()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.create_time&lt;/td&gt;
-&lt;td&gt;p.create_time()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.exe&lt;/td&gt;
-&lt;td&gt;p.exe()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.gids&lt;/td&gt;
-&lt;td&gt;p.gids()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.name&lt;/td&gt;
-&lt;td&gt;p.name()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.parent&lt;/td&gt;
-&lt;td&gt;p.parent()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.ppid&lt;/td&gt;
-&lt;td&gt;p.ppid()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.status&lt;/td&gt;
-&lt;td&gt;p.status()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.uids&lt;/td&gt;
-&lt;td&gt;p.uids()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;p.username&lt;/td&gt;
-&lt;td&gt;p.username()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;Why I did it&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Different reasons:&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;Having a mixed API which uses both properties and methods for no particular reason is confusing and messy as you don't know whether to use &amp;quot;()&amp;quot; or not (see &lt;a class="reference external" href="https://code.google.com/p/psutil/source/browse/test/test_psutil.py?name=release-0.7.0#1716"&gt;here&lt;/a&gt;).&lt;/li&gt;
-&lt;li&gt;It is usually expected from a property to not perform many computations internally whereas psutil actually invokes a function every time it is accessed. This has two drawbacks:
-* you may get an exception just by accessing the property (e.g. &amp;quot;p.name&amp;quot; may raise NoSuchProcess or AccessDenied)
-* you may erroneously think properties are cached but this is true only for name, exe, and create_time.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div class="section" id="cpu-percent-intervals"&gt;
-&lt;h2&gt;CPU percent intervals&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;What changed&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The timeout parameter of &lt;cite&gt;cpu_percent*&lt;/cite&gt; functions now defaults to 0.0 instead of 0.1. The functions affected are:&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;psutil.Process.cpu_percent()&lt;/li&gt;
-&lt;li&gt;psutil.cpu_percent()&lt;/li&gt;
-&lt;li&gt;psutil.cpu_times_percent()&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;Why I did it&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;I originally set 0.1 as the default timeout because in order to get a meaningful percent value you need to wait some time.
-Having an API which &amp;quot;sleeps&amp;quot; by default is risky though, because it's easy to forget it does so. That is particularly problematic when calling cpu_percent() for all processes: it's very easy to forget about specifying timeout=0 resulting in dramatic slowdowns which are hard to spot. For example, this code snippet might take different seconds to complete depending on the number of active processes:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c1"&gt;# this will be slow&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;process_iter&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-&lt;span class="o"&gt;...&lt;/span&gt;    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_percent&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="section" id="migration-strategy"&gt;
-&lt;h2&gt;Migration strategy&lt;/h2&gt;
-&lt;p&gt;Except for Process properties (name, exe, cmdline, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long you start the interpreter with the &amp;quot;-Wd&amp;quot; option. This will enable deprecation warnings which were &lt;a class="reference external" href="http://bugs.python.org/issue7319"&gt;silenced in Python 2.7&lt;/a&gt; (IMHO, from a developer standpoint this was a bad decision).&lt;/p&gt;
-&lt;pre class="literal-block"&gt;
-giampaolo&amp;#64;ubuntu:/tmp$ python -Wd
-Python 2.7.3 (default, Sep 26 2013, 20:03:06)
-[GCC 4.6.3] on linux2
-Type &amp;quot;help&amp;quot;, &amp;quot;copyright&amp;quot;, &amp;quot;credits&amp;quot; or &amp;quot;license&amp;quot; for more information.
-&amp;gt;&amp;gt;&amp;gt; import psutil
-&amp;gt;&amp;gt;&amp;gt; psutil.get_pid_list()
-__main__:1: DeprecationWarning: psutil.get_pid_list is deprecated; use psutil.pids() instead
-[1, 2, 3, 6, 7, 13, ...]
-&amp;gt;&amp;gt;&amp;gt;
-&amp;gt;&amp;gt;&amp;gt;
-&amp;gt;&amp;gt;&amp;gt; p = psutil.Process()
-&amp;gt;&amp;gt;&amp;gt; p.get_cpu_times()
-__main__:1: DeprecationWarning: get_cpu_times() is deprecated; use cpu_times() instead
-pcputimes(user=0.08, system=0.03)
-&amp;gt;&amp;gt;&amp;gt;
-&lt;/pre&gt;
-&lt;p&gt;If you have a solid test suite you can run tests and fix the warnings one by one.
-As for the the Process properties which were turned into methods it's more difficult because whereas psutil 1.2.1 returns the actual value, psutil 2.0.0 will return the bound method:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# psutil 1.2.1&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;
-&lt;span class="s1"&gt;&amp;#39;python&amp;#39;&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
-
-&lt;span class="c1"&gt;# psutil 2.0.0&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;
-&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;bound&lt;/span&gt; &lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;19816&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;python&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="mi"&gt;139845631328144&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;What I would recommend if you want to drop support with 1.2.1 is to grep for &amp;quot;.name&amp;quot;, &amp;quot;.exe&amp;quot; etc. and just replace them with &amp;quot;.exe()&amp;quot; and &amp;quot;.name()&amp;quot; one by one.
-If on the other hand you want to write a code which works with both versions I see two possibilities:&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;#1 check version info, like this:&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;PSUTIL2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;version_info&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;PSUTIL2&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;exe&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exe&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;PSUTIL2&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exe&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;#2 get rid of all &amp;quot;.name&amp;quot;, &amp;quot;.exe&amp;quot; occurrences you have in your code and use as_dict() instead:&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;pinfo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as_dict&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;attrs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;exe&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;pinfo&lt;/span&gt;
-&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;exe&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/usr/bin/python2.7&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;python&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pinfo&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;exe&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pinfo&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;exe&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="section" id="new-features-introduced-in-2-0-0"&gt;
-&lt;h2&gt;New features introduced in 2.0.0&lt;/h2&gt;
-&lt;p&gt;Ok, enough with the bad news. =) psutil 2.0.0 is not only about code breakage. I also had the chance to integrate a bunch of interesting features.&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427"&gt;#427&lt;/a&gt;: you're now able to distinguish between the number of logical and physical CPUs:&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_count&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;  &lt;span class="c1"&gt;# logical&lt;/span&gt;
-&lt;span class="mi"&gt;4&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;logical&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;# physical cores only&lt;/span&gt;
+</content><category term="2014"></category><category term="python"></category><category term="network"></category></entry><entry><title>Making constants part of your API is evil</title><link href="https://gmpy.dev/blog/2013/making-constants-part-of-your-api-is-evil" rel="alternate"></link><published>2013-12-21T00:00:00+01:00</published><updated>2013-12-21T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2013-12-21:/blog/2013/making-constants-part-of-your-api-is-evil</id><summary type="html">&lt;p&gt;One of the initial features which were included in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; since day one (5 years ago) were system's boot time, number of CPUs and total physical memory. These metrics have one thing in common: they are (apparently) not supposed to change over time. That is why we (me and &lt;a class="reference external" href="http://www.jayloden.com/"&gt;Jay …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the initial features which were included in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; since day one (5 years ago) were system's boot time, number of CPUs and total physical memory. These metrics have one thing in common: they are (apparently) not supposed to change over time. That is why we (me and &lt;a class="reference external" href="http://www.jayloden.com/"&gt;Jay&lt;/a&gt;) decided that exposing them as module constants calculated at import time was the way to go.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;NUM_CPUS&lt;/span&gt;
 &lt;span class="mi"&gt;2&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;BOOT_TIME&lt;/span&gt;  &lt;span class="c1"&gt;# as seconds since the epoch&lt;/span&gt;
+&lt;span class="mf"&gt;1387579049.799092&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TOTAL_PHYMEM&lt;/span&gt;
+&lt;span class="mi"&gt;8374120448&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=452"&gt;#452&lt;/a&gt;: process classes are now hashable and can be checked for equality. That means you can use Process objects with sets (finally!).&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447"&gt;#447&lt;/a&gt;: psutil.wait_procs() &amp;quot;timeout&amp;quot; parameter is now optional&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=461"&gt;#461&lt;/a&gt;: functions returning namedtuples are now pickle-able&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=459"&gt;#459&lt;/a&gt;: a Makefile is now available to automatize repetitive tasks such as build, install, running tests etc. There's also a make.bat for Windows.&lt;/li&gt;
-&lt;li&gt;introduced unittest2 module as a requirement for running tests&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-</content><category term="2014"></category><category term="psutil"></category><category term="api-design"></category></entry></feed>
+&lt;p&gt;5 years later I regret that decision and I'm going to explain you why you don't want to do the same mistake.
+A constant should not change
+When we think of  'constants', our expectations are that they should not change over time. It may be obvious, but before thinking about introducing a constant be absolutely sure the value it represents is going to remain the same.
+Now, back then we thought these 3 metrics were not supposed to change, at least until the system is rebooted. Well, we were wrong: it turns out 2 of them actually can.
+Apparently virtualized systems can change physical installed memory at runtime (see &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=140#c5"&gt;here&lt;/a&gt; and &lt;a class="reference external" href="http://technet.microsoft.com/en-us/library/hh831766.aspx"&gt;here&lt;/a&gt;) and system boot time can easily be altered every time you update the system clock.
+In both of these cases, of course, the constants will not reflect the updated values.
+Doing things at import time is dangerous
+That's because import time usually means startup time and if something goes wrong the whole application will crash. In general the only reason for a module to crash at import time is because of a missing dependancy or because it's not supposed to run on that platform in the first place.
+Now, here's a couple of bug reports which were collected over time: &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=188"&gt;issue 188&lt;/a&gt;, &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=133"&gt;issue 313&lt;/a&gt;.
+The inconvenience was so severe that I had to release different fixed versions ASAP and the fix consisted of a &lt;a class="reference external" href="https://code.google.com/p/psutil/source/browse/psutil/_psosx.py?name=release-1.2.1#24"&gt;stinky workaround&lt;/a&gt;.
+That's when I started thinking about getting rid of those constants once and for all and introduce functions instead. But how to do that without breaking everybody's code?
+Backward compatibility matters
+Now here's the crucial part: every time you deliver a library to someone else you just cannot remove an API all of the sudden, especially if they are 3 and have been around since day one.
+It should first be deprecated, possibly turned into an alias pointing to a newer API and finally be removed after 1 or 2 major releases. Also, you want the deprecated API to explicitly raise a DeprecationWarning informing the user he's relying on something which will eventually be removed. With a module constant you cannot do any of that. What you would need is a module property.
+Module properties
+One of the greatest things about Python is that it's so dynamic that it lets you do all sort of nasty things with objects, including injecting names into modules (which are also objects) and make them behave like actual class properties!
+For this I have to thank &lt;a class="reference external" href="http://www.dr-josiah.com/2013/12/properties-on-python-modules.html"&gt;Josiah Carlson&lt;/a&gt; who came up with this very simple yet effective solution:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ModuleWrapper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__repr__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;repr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_module&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="fm"&gt;__str__&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="fm"&gt;__repr__&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@property&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;NUM_CPUS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;msg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;NUM_CPUS constant is deprecated; use cpu_count() instead&amp;quot;&lt;/span&gt;
+        &lt;span class="n"&gt;warnings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;warn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;category&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="ne"&gt;DeprecationWarning&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;stacklevel&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;cpu_count&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@property&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;BOOT_TIME&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;msg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;BOOT_TIME constant is deprecated; &amp;quot;&lt;/span&gt; \
+              &lt;span class="s2"&gt;&amp;quot;use get_boot_time() instead&amp;quot;&lt;/span&gt;
+        &lt;span class="n"&gt;warnings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;warn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;category&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="ne"&gt;DeprecationWarning&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;stacklevel&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;get_boot_time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@property&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;TOTAL_PHYMEM&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;msg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;TOTAL_PHYMEM constant is deprecated; &amp;quot;&lt;/span&gt; \
+              &lt;span class="s2"&gt;&amp;quot;use virtual_memory().total instead&amp;quot;&lt;/span&gt;
+        &lt;span class="n"&gt;warnings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;warn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;category&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="ne"&gt;DeprecationWarning&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;stacklevel&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;virtual_memory&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;total&lt;/span&gt;
+
+&lt;span class="n"&gt;mod&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ModuleWrapper&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;mod&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="vm"&gt;__dict__&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;globals&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;mod&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_module&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;modules&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;modules&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mod&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You can put this at the bottom of your module and you'll have fully working module constants (tested on Python from 2.4 to 3.4)!&lt;/p&gt;
+&lt;p&gt;EDIT: the only reason I applied this hack is to turn the old constants into aliases pointing to the newly introduced functions and produce a deprecation warning. That aside I can't think of a case where the use of a module property would be justified.&lt;/p&gt;
+</content><category term="2013"></category><category term="python"></category><category term="api-design"></category></entry></feed>
