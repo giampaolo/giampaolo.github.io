@@ -11,13 +11,11 @@ Recurring donations / sponsorship
 
 - `GitHub sponsors <https://github.com/sponsors/giampaolo>`__
 - `Open Collective <https://opencollective.com/psutil>`__
+- `Patreon <https://www.patreon.com/gmpy>`__
 
 One-time donations
 ==================
 
 - `PayPal <https://www.paypal.me/gmpydev>`__
-
-
-
 
 .. _`psutil`: https://github.com/giampaolo/psutil
