@@ -2,7 +2,7 @@ System load average on Windows in Python
 ########################################
 
 :date: 2019-05-29
-:tags: psutil, windows, windows, unittest, travel
+:tags: psutil, windows, windows, unittest, travel, python
 
 New `psutil <https://github.com/giampaolo/psutil/>`__ 5.6.2 release implements an emulation of `os.getloadavg() <https://docs.python.org/3/library/os.html#os.getloadavg>`__ on Windows which was kindly `contributed by Ammar Askar <https://github.com/giampaolo/psutil/pull/1485>`__ who originally implemented it for `cPython's test suite <https://github.com/python/cpython/pull/8357/files>`__. This idea has been floating around for quite a while. The first proposal dates back to `2010 <https://code.google.com/archive/p/psutil/issues/139>`__, when psutil was still hosted on Google Code, and it popped up `multiple times <https://github.com/giampaolo/psutil/issues?utf8=%E2%9C%93&q=getloadavg>`__ throughout the years. There was/is a bunch of info on internet mentioning the bits with which it's theoretically possible to do this (the so called System Processor Queue Length), but I couldn't find any real implementation. A `Google search <https://www.google.com/search?client=ubuntu&hs=2EI&channel=fs&ei=LafCXO2ZE8PKswX9kY-wAw&q=windows+load+average&oq=windows+load+average&gs_l=psy-ab.3..0j0i22i30l7.12536.13873..14008...0.0..0.482.2591.4-6......0....1..gws-wiz.......0i71j0i131.37ys3SB25pE>`__ tells there is quite some demand for this, but very few tools out there providing this natively (the only one I could find is this `sFlowTrend <https://blog.sflow.com/2011/02/windows-load-average.html>`__ tool and `Zabbix <https://www.zabbix.com/forum/zabbix-help/50423-windows-cpu-load>`__), so I'm very happy this finally landed into psutil / Python.
 

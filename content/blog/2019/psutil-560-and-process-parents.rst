@@ -2,7 +2,7 @@ psutil 5.6.0 and process parents
 ################################
 
 :date: 2019-03-05
-:tags: psutil
+:tags: psutil, python
 
 Hello world =)
 

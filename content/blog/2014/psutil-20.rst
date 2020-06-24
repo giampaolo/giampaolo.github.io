@@ -2,7 +2,7 @@ psutil 2.0
 ##########
 
 :date: 2014-03-10
-:tags: psutil
+:tags: psutil, python
 
 The time has finally come: `psutil <https://github.com/giampaolo/psutil/>`__ 2.0 is out! This is a release which took me a considerable amount of effort and careful thinking during the past 4 months as I went through a major **rewrite and reorganization** of both python and C extension modules. To get a sense of how much has changed you can compare the differences with old 1.2.1 version by running "hg diff -r release-1.2.1:release-2.0.0" which will produce more than **22,000 lines** of output! In those 22k lines I tried to nail down all the quirks the project had accumulated since its start 4 years ago and the resulting code base is now cleaner than ever, more manageable and fully compliant with PEP-7 and PEP-8 guidelines.
 There were some difficult decisions because many of the changes I introduced are not backward compatible so I was concerned with the pain this may cause existing users. I kind of still am, but I'm sure the transition will be well perceived on the long run as it will result in more manageable user code. OK, enough with the preface and let's see what changed.
