@@ -107,7 +107,7 @@ mem-maps      RSS      PATH
 &lt;h2&gt;Other improvements and bug fixes&lt;/h2&gt;
 &lt;p&gt;Just take a look at the &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#440---2016-10-23"&gt;HISTORY&lt;/a&gt; file.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="2016"></category><category term="psutil"></category><category term="memory"></category></entry><entry><title>Real process memory and environ in Python</title><link href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python" rel="alternate"></link><published>2016-02-17T00:00:00+01:00</published><updated>2016-02-17T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2016-02-17:/blog/2016/real-process-memory-and-environ-in-python</id><summary type="html">&lt;p&gt;New psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll just get straight to the point and describe what's new.&lt;/p&gt;
+</content><category term="2016"></category><category term="psutil"></category><category term="memory"></category><category term="python"></category></entry><entry><title>Real process memory and environ in Python</title><link href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python" rel="alternate"></link><published>2016-02-17T00:00:00+01:00</published><updated>2016-02-17T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2016-02-17:/blog/2016/real-process-memory-and-environ-in-python</id><summary type="html">&lt;p&gt;New psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll just get straight to the point and describe what's new.&lt;/p&gt;
 &lt;div class="section" id="real-process-memory-info"&gt;
 &lt;h2&gt;&amp;quot;Real&amp;quot; process memory info&lt;/h2&gt;
 &lt;p&gt;Determining how much memory a process &lt;strong&gt;really&lt;/strong&gt; uses is not an easy matter (see &lt;a class="reference external" href="https://lwn.net/Articles/230975/"&gt;this&lt;/a&gt; and &lt;a class="reference external" href="http://bmaurer.blogspot.it/2006/03/memory-usage-with-smaps.html"&gt;this&lt;/a&gt;). RSS (Resident Set …&lt;/p&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;New psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll just get straight to the point and describe what's new.&lt;/p&gt;
@@ -236,4 +236,4 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 &lt;li&gt;&lt;a class="reference external" href="https://news.ycombinator.com/item?id=11119298"&gt;hacker news&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="2016"></category><category term="psutil"></category><category term="memory"></category></entry></feed>
+</content><category term="2016"></category><category term="psutil"></category><category term="memory"></category><category term="python"></category></entry></feed>

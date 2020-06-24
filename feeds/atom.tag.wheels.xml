@@ -7,4 +7,4 @@
 &lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/504"&gt;#504&lt;/a&gt;: (Linux) couldn't build RPM packages via setup.py&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;The list of all fixes can be found &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst"&gt;here&lt;/a&gt;. For the next release I plan to drop support for Python 2.4 and 2.5 and hopefully network interfaces information similarly to &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/376"&gt;ifconfig&lt;/a&gt;.&lt;/p&gt;
-</content><category term="2014"></category><category term="psutil"></category><category term="wheels"></category><category term="travel"></category></entry></feed>
+</content><category term="2014"></category><category term="psutil"></category><category term="wheels"></category><category term="travel"></category><category term="python"></category></entry></feed>
