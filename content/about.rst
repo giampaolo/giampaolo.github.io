@@ -111,8 +111,6 @@ Enter your email address to receive blog updates:
         <input type="submit" style="height:28px" value="subscribe" />
     </form>
 
-
-
 .. _`psutil`: https://github.com/giampaolo/psutil
 .. _`pyftpdlib`: https://github.com/giampaolo/pyftpdlib
 .. _`pysendfile`: https://github.com/giampaolo/pysendfile
