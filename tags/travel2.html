@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Giampaolo Rodola - Tags</title>
+    <title>Giampaolo Rodola - travel</title>
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
     <link rel="icon" type="image/x-icon" href="https://gmpy.dev/favicon.ico">
@@ -19,32 +19,48 @@
             <li><a href="/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
-
 <section id="content" class="body">
-    <h1>Blog post tags</h1>
-    <ul>
-        <li><a href="https://gmpy.dev/tags/aix">aix</a> (1)</li>
-        <li><a href="https://gmpy.dev/tags/api-design">api-design</a> (2)</li>
-        <li><a href="https://gmpy.dev/tags/bsd">bsd</a> (3)</li>
-        <li><a href="https://gmpy.dev/tags/macos">macos</a> (1)</li>
-        <li><a href="https://gmpy.dev/tags/memory">memory</a> (2)</li>
-        <li><a href="https://gmpy.dev/tags/network">network</a> (2)</li>
-        <li><a href="https://gmpy.dev/tags/performance">performance</a> (1)</li>
-        <li><a href="https://gmpy.dev/tags/personal">personal</a> (1)</li>
-        <li><a href="https://gmpy.dev/tags/psutil">psutil</a> (17)</li>
-        <li><a href="https://gmpy.dev/tags/python">python</a> (21)</li>
-        <li><a href="https://gmpy.dev/tags/python-dev">python-dev</a> (1)</li>
-        <li><a href="https://gmpy.dev/tags/rant">rant</a> (1)</li>
-        <li><a href="https://gmpy.dev/tags/sendfile">sendfile</a> (1)</li>
-        <li><a href="https://gmpy.dev/tags/sunos">sunos</a> (1)</li>
-        <li><a href="https://gmpy.dev/tags/travel">travel</a> (6)</li>
-        <li><a href="https://gmpy.dev/tags/unittest">unittest</a> (3)</li>
-        <li><a href="https://gmpy.dev/tags/wheels">wheels</a> (1)</li>
-        <li><a href="https://gmpy.dev/tags/windows">windows</a> (4)</li>
-        <li><a href="https://gmpy.dev/tags/zerocopy">zerocopy</a> (1)</li>
-    </ul>
-</section>
+<!-- blog posts -->
+        <ol id="posts-list" class="hfeed" start="4">
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2014/psutil-212-and-python-wheels" rel="bookmark"
+                   title="Permalink to psutil 2.1.2 and Python wheels">psutil 2.1.2 and Python wheels</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2014-09-21T00:00:00+02:00">
+        Created: 21 Sep 2014,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/wheels">wheels</a>,        <a href="https://gmpy.dev/tags/travel">travel</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
 
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate to the project. The main new &quot;feature&quot; of this release is that other than the exe files, Windows users can now also benefit of <a class="reference external" href="http://pythonwheels.com/">Python wheels</a> (full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/505">here</a>) which are available on PYPI. Frankly I don't know much about the new wheels packaging system but long story short is that Windows users can now install psutil via pip and therefore also include it as a dependency into requirements.txt. Other than this 2.1.2 can basically be considered a bug-fix release, including some important fixes amongst which:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/506">#506</a>: restored Python 2.4 compatibility</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/340">#340</a>: Process.get_open_files() no longer hangs on Windows (this was a very old and high-priority issue)</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/501">#501</a>: disk_io_counters() may return negative values on Windows</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/504">#504</a>: (Linux) couldn't build RPM packages via setup.py</li>
+</ul>
+<p>The list of all fixes can be found <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">here</a>. For the next release I plan to drop support for Python 2.4 and 2.5 and hopefully network interfaces information similarly to <a class="reference external" href="https://github.com/giampaolo/psutil/issues/376">ifconfig</a>.</p>
+
+        </div>
+    </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="https://gmpy.dev/tags/travel.html">&laquo;</a>
+    Page 2 / 2
+</p>
+ <!-- /blog posts -->
+</section>
 
     <!-- Footer -->
     <section id="extras" class="body">
