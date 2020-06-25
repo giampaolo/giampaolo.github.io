@@ -25,6 +25,53 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2020/system-load-average-on-windows" rel="bookmark"
+                   title="Permalink to System load average on Windows">System load average on Windows</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2020-06-25T00:00:00+02:00">
+        Created: 25 Jun 2020,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/windows">windows</a>,        <a href="https://gmpy.dev/tags/unittest">unittest</a>,        <a href="https://gmpy.dev/tags/travel">travel</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>New <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.6.2 release implements an emulation of <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getloadavg">os.getloadavg()</a> on Windows which was kindly <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1485">contributed by Ammar Askar</a> who originally implemented it for <a class="reference external" href="https://github.com/python/cpython/pull/8357/files">cPython's test suite</a>. This idea has been floating around for quite a while. The first proposal dates back to <a class="reference external" href="https://code.google.com/archive/p/psutil/issues/139">2010</a>, when psutil was still hosted on Google Code, and it popped up <a class="reference external" href="https://github.com/giampaolo/psutil/issues?utf8=%E2%9C%93&amp;q=getloadavg">multiple times</a> throughout the years. There was/is a bunch of info on internet mentioning the bits with which it's theoretically possible to do this (the so called System Processor Queue Length), but I couldn't find any real implementation. A <a class="reference external" href="https://www.google.com/search?client=ubuntu&amp;hs=2EI&amp;channel=fs&amp;ei=LafCXO2ZE8PKswX9kY-wAw&amp;q=windows+load+average&amp;oq=windows+load+average&amp;gs_l=psy-ab.3..0j0i22i30l7.12536.13873..14008...0.0..0.482.2591.4-6......0....1..gws-wiz.......0i71j0i131.37ys3SB25pE">Google search</a> tells there is quite some demand for this, but very few tools out there providing this natively (the only one I could find is this <a class="reference external" href="https://blog.sflow.com/2011/02/windows-load-average.html">sFlowTrend</a> tool and <a class="reference external" href="https://www.zabbix.com/forum/zabbix-help/50423-windows-cpu-load">Zabbix</a>), so I'm very happy this finally landed into psutil / Python.</p>
+<div class="section" id="other-improvements-and-bugfixes-in-psutil-5-6-2">
+<h2>Other improvements and bugfixes in psutil 5.6.2</h2>
+<p>The full list is <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#562">here</a> but I would like to mention a couple:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">1476</a>: the possibility to set process' high I/O priority on Windows</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">1458</a>: colorized test output. I admit nobody will use this directly but it's very cool and I'm porting it to a bunch of other projects I work on (e.g. pyftpdlib). Also, perhaps this could be a good candidate for a small module to put on PYPI which can also include some functionalities taken from pytest and which I'm gradually re-implementing in unittest module amongst which:<ul>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1478">1478</a>: re-running failed tests</li>
+<li>display test timings/durations: this is something I'm contributing to cPython, see <a class="reference external" href="https://bugs.python.org/issue4080">BPO-4080</a> and and <a class="reference external" href="https://github.com/python/cpython/pull/12271/files">PR-12271</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="about-me">
+<h2>About me</h2>
+<p>I'm currently in China (Shenzhen) for a mix of vacation and work, and I will likely take a break from Open Source for a while (likely 2.5 months, during which I will also go to Philippines and Japan - I love Asia ;-)).</p>
+</div>
+<div class="section" id="external">
+<h2>External</h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/bhji0m/new_psutil_562_with_load_average_emulation_on/">Reddit</a></li>
+</ul>
+</div>
+
+        </div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2019/system-load-average-on-windows-in-python" rel="bookmark"
                    title="Permalink to System load average on Windows in Python">System load average on Windows in Python</a></h1>
         </header>
@@ -282,99 +329,9 @@ This is the biggest change. In order to achieve this I had to refactor all funct
 
         </div>
     </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2017/psutil-511-system-temperature-battery-and-cpu-frequency" rel="bookmark"
-                   title="Permalink to psutil 5.1.1 system temperature, battery and CPU frequency">psutil 5.1.1 system temperature, battery and CPU frequency</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2017-02-01T00:00:00+01:00">
-        Created: 01 Feb 2017,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> release. Main highlights of this release are sensors-related APIs.</p>
-<div class="section" id="temperatures">
-<h2>Temperatures</h2>
-<p>It is now possible to retrieve hardware temperatures. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/962/files">here</a>. Unfortunately this is Linux only. I couldn't manage to implement this on other platforms mainly for two reasons:</p>
-<ul class="simple">
-<li>On Windows it is hard to do this in a hardware agnostic fashion. I bumped into 3 different approaches, all using WMI, and none of them worked with my hardware so I gave up.</li>
-<li>On OSX it appears it is possible to retrieve temperatures relatively easy, but I have a virtualized OSX box which does not support sensors, so basically I gave up on this due to lack of hardware. If somebody wants to give it a try <a class="reference external" href="https://github.com/giampaolo/psutil/issues/371#issuecomment-274961948">be my guest</a>.</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">sensors_temperatures</span><span class="p">()</span>
-<span class="p">{</span><span class="s1">&#39;acpitz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">47.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">103.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">103.0</span><span class="p">)],</span>
- <span class="s1">&#39;asus&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">47.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="kc">None</span><span class="p">)],</span>
- <span class="s1">&#39;coretemp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Physical id 0&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">52.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">),</span>
-              <span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Core 0&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">45.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">),</span>
-              <span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Core 1&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">52.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">),</span>
-              <span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Core 2&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">45.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">),</span>
-              <span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Core 3&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">47.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">)]}</span>
-</pre></div>
-</div>
-<div class="section" id="battery-status">
-<h2>Battery status</h2>
-<p>This works on Linux, Windows and FreeBSD and provides battery status information. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/963/files">here</a>.</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">secs2hours</span><span class="p">(</span><span class="n">secs</span><span class="p">):</span>
-<span class="o">...</span>     <span class="n">mm</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">secs</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
-<span class="o">...</span>     <span class="n">hh</span><span class="p">,</span> <span class="n">mm</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
-<span class="o">...</span>     <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">hh</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">ss</span><span class="p">)</span>
-<span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">battery</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">sensors_battery</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">battery</span>
-<span class="n">sbattery</span><span class="p">(</span><span class="n">percent</span><span class="o">=</span><span class="mi">93</span><span class="p">,</span> <span class="n">secsleft</span><span class="o">=</span><span class="mi">16628</span><span class="p">,</span> <span class="n">power_plugged</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;charge = </span><span class="si">%s%%</span><span class="s2">, time left = </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">batt</span><span class="o">.</span><span class="n">percent</span><span class="p">,</span> <span class="n">secs2hours</span><span class="p">(</span><span class="n">batt</span><span class="o">.</span><span class="n">secsleft</span><span class="p">)))</span>
-<span class="n">charge</span> <span class="o">=</span> <span class="mi">93</span><span class="o">%</span><span class="p">,</span> <span class="n">time</span> <span class="n">left</span> <span class="o">=</span> <span class="mi">4</span><span class="p">:</span><span class="mi">37</span><span class="p">:</span><span class="mi">08</span>
-</pre></div>
-</div>
-<div class="section" id="cpu-frequency">
-<h2>CPU frequency</h2>
-<p>Available under Linux, Windows and OSX. Relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/952/files">here</a>. Linux is the only platform which reports the real-time value (always changing), on all other platforms current frequency is represented as the nominal “fixed” value.</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_freq</span><span class="p">()</span>
-<span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">931.42925</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_freq</span><span class="p">(</span><span class="n">percpu</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="p">[</span><span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">2394.945</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">),</span>
- <span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">2236.812</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">),</span>
- <span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">1703.609</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">),</span>
- <span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">1754.289</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">)]</span>
-</pre></div>
-</div>
-<div class="section" id="what-cpu-a-process-is-on">
-<h2>What CPU a process is on</h2>
-<p>This will let you know what CPU number a process is currently running on, which is somewhat related to the existent <a class="reference external" href="https://pythonhosted.org/psutil/#psutil.Process.cpu_affinity">cpu_affinity()</a> functionality. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/954/files">here</a>. It is interesting to use this method to visualize how the OS scheduler continuously evenly reassigns processes to different CPUs  (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/cpu_distribution.py">cpu_distribution.py</a> script).</p>
-</div>
-<div class="section" id="cpu-affinity">
-<h2>CPU affinity</h2>
-<p>A new syntax can now be used as an alias for &quot;set affinity against all eligible CPUs&quot;.</p>
-<div class="highlight"><pre><span></span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">cpu_affinity</span><span class="p">([])</span>
-</pre></div>
-<p>This was implemented because it turns out <a class="reference external" href="https://github.com/giampaolo/psutil/issues/956">on Linux</a> it is not always possible to set affinity against all CPUs. Having such an alias is also a shortcut to avoid doing this, which is kinda verbose:</p>
-<div class="highlight"><pre><span></span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">cpu_affinity</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())))</span>
-</pre></div>
-</div>
-<div class="section" id="other-bug-fixes">
-<h2>Other bug fixes</h2>
-<p>See <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#510">full list</a>.</p>
-</div>
-
-        </div>
-    </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 4
+    Page 1 / 5
         <a href="https://gmpy.dev/author/giampaolo-rodola2.html">&raquo;</a>
 </p>
  <!-- /blog posts -->
