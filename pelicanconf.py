@@ -20,6 +20,12 @@ FEED_ALL_RSS = 'feeds/rss.all.xml'
 TAG_FEED_ATOM = 'feeds/atom.tag.{slug}.xml'
 TAG_FEED_RSS = 'feeds/rss.tag.{slug}.rss.xml'
 
+
+FEED_ALL_ATOM = None
+FEED_ALL_RSS = None
+TAG_FEED_ATOM = None
+TAG_FEED_RSS = None
+
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 CATEGORY_FEED_ATOM = None
