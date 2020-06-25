@@ -71,5 +71,18 @@ github: publish
 	ghp-import -m "Generate Pelican site" -b $(GITHUB_PAGES_BRANCH) $(OUTPUTDIR)
 	git push origin $(GITHUB_PAGES_BRANCH)
 
+blogpost:
+	@$(PY) -c \
+		"import os, datetime; \
+		now = datetime.datetime.now(); \
+		root = os.path.join('content', 'blog', str(now.year)); \
+		os.mkdir(root) if not os.path.exists(root) else None; \
+		file = os.path.join(root, 'new.rst'); \
+		f = open(file, 'w'); \
+		f.write('title\n'); \
+		f.write('#####\n\n'); \
+		f.write(':date: %s\n' % (now.strftime('%Y-%m-%d'))); \
+		f.write(':tags: psutil, python\n\n'); \
+		print(file);"
 
 .PHONY: html help clean regenerate serve devserver publish github
