@@ -18,7 +18,7 @@ DISQUS_SITENAME = 'gmpy-dev'
 FEED_ALL_ATOM = 'feeds/atom.all.xml'
 FEED_ALL_RSS = 'feeds/rss.all.xml'
 TAG_FEED_ATOM = 'feeds/atom.tag.{slug}.xml'
-TAG_FEED_RSS = 'feeds/rss.tag.{slug}.rss.xml'
+TAG_FEED_RSS = 'feeds/rss.tag.{slug}.xml'
 
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
