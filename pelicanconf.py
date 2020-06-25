@@ -13,18 +13,12 @@ DEFAULT_LANG = 'en'
 GOOGLE_ANALYTICS = "UA-164357405-2"
 DISQUS_SITENAME = 'gmpy-dev'
 
-# --- atom/rss feeds (http://127.0.0.1:8000/feeds)
+# --- atom / rss feeds (http://127.0.0.1:8000/feeds)
 
 FEED_ALL_ATOM = 'feeds/atom.all.xml'
 FEED_ALL_RSS = 'feeds/rss.all.xml'
 TAG_FEED_ATOM = 'feeds/atom.tag.{slug}.xml'
 TAG_FEED_RSS = 'feeds/rss.tag.{slug}.rss.xml'
-
-
-FEED_ALL_ATOM = None
-FEED_ALL_RSS = None
-TAG_FEED_ATOM = None
-TAG_FEED_RSS = None
 
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
