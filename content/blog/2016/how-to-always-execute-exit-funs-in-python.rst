@@ -3,13 +3,13 @@ How to always execute exit functions in Python
 
 :date: 2016-02-12
 :modified: 2016-02-13
-:tags: python
+:tags: python, recipe
 
 *...or why atexit.register() and signal.signal() are evil*
 
-* **UPDATE (2016-02-13)**: this recipe no longer handles SIGINT, SIGQUIT and SIGABRT as aliases for "application exit" because it was a bad idea. It only handles SIGTERM. Also it no longer support Windows because signal.signal() implementation is too different than POSIX.*
+* **UPDATE (2016-02-13)**: this recipe no longer handles SIGINT, SIGQUIT and SIGABRT as aliases for "application exit" because it was a `bad idea <https://mail.python.org/pipermail/python-ideas/2016-February/038471.html>`__. It only handles SIGTERM. Also it no longer support Windows because `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ implementation is `too different <http://bugs.python.org/issue26350>`__ than POSIX.*
 
-Many people erroneously think that any function registered via atexit module is guaranteed to always be executed when the program terminates. You may have noticed this is not the case when, for example, you daemonize your app in production then try to stop it or restart it: the cleanup functions will not be executed. This is because functions registered wth atexit module are not called when the program is killed by a signal:
+Many people erroneously think that any function registered via `atexit module <https://docs.python.org/3/library/atexit.html>`__ is guaranteed to always be executed when the program terminates. You may have noticed this is not the case when, for example, you daemonize your app in production then try to stop it or restart it: the cleanup functions will not be executed. This is because functions registered wth atexit module are **not called** when the program is killed by a signal:
 
 .. code-block:: python
 
@@ -21,7 +21,7 @@ Many people erroneously think that any function registered via atexit module is 
 
     os.kill(os.getpid(), signal.SIGTERM)
 
-It must be noted that the same thing would happen if instead of atexit.register() we would use a "finally" clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via signal.signal(). That has a drawback though: in case a third-party module has already registered a function for that signal (SIGTERM or whatever), your new function will overwrite the old one:
+It must be noted that the same thing would happen if instead of `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__ we would use a "finally" clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__. That has a drawback though: in case a third-party module has already registered a function for that signal (SIGTERM or whatever), your new function will **overwrite** the old one:
 
 .. code-block:: python
 
@@ -38,10 +38,10 @@ It must be noted that the same thing would happen if instead of atexit.register(
     os.kill(os.getpid(), signal.SIGTERM)
 
 
-Also, we would still have to use atexit.register() so that the function is called also on "clean" interpreter exit and take into account other signals other than SIGTERM which would cause the process to terminate. This recipe attempts to address all these issues so that:
+Also, we would still have to use `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__ so that the function is called also on "clean" interpreter exit :strike:`and take into account other signals other than SIGTERM which would cause the process to terminate`. This recipe attempts to address all these issues so that:
 
-* the exit function is always executed for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT) on SIGTERM and on "clean" interpreter exit.
-* any exit function(s) previously registered via atexit.register() or signal.signal() will be executed as well (after the new one).
+* the exit function is always executed :strike:`for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT)` on SIGTERM and on "clean" interpreter exit.
+* any exit function(s) previously registered via `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__ or `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ will be executed as well (after the new one).
 * It must be noted that the exit function will never be executed in case of SIGKILL, SIGSTOP or os._exit().
 
 The code
@@ -73,7 +73,7 @@ The code
                           logfun=lambda s: print(s, file=sys.stderr)):
         """Register a function which will be executed on "normal"
         interpreter exit or in case one of the `signals` is received
-        by this process (differently from atexit.register()).
+        by this process (differently from `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__).
         Also, it makes sure to execute any other function which was
         previously registered via signal.signal(). If any, it will be
         executed after our own `fun`.
@@ -209,15 +209,25 @@ As a decorator:
 Unit tests
 ----------
 
-This recipe is hosted on ActiveState and has a full set of unittests. It works with Python 2 and 3.
-Notes about Windows
-On Windows signals are only partially supported meaning a function which was previously registered via signal.signal() will be executed only on interpreter exit, but not if the process receives a signal. Apparently this is a limitation either of Windows or the signal module (most likely Windows).
+This recipe is hosted on `ActiveState <https://code.activestate.com/recipes/580672-register-exit-function/>`__ and has a full set of unittests. It works with Python 2 and 3.
 
-Because of how different signal.signal() behaves on Windows, this code is UNIX only: http://bugs.python.org/issue26350
+Notes about Windows
+-------------------
+
+:strike:`On Windows signals are only partially supported meaning a function which was previously registered via signal.signal() will be executed only on interpreter exit, but not if the process receives a signal. Apparently this is a limitation either of Windows or the signal module.`
+
+Because of how different `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ behaves on Windows, this code is UNIX only, see `BPO-26350 <https://bugs.python.org/issue26350>`__.
+
 Proposal for stdlib inclusion
-The fact that atexit module does not handle signals and that signal.signal() overwrites previously registered handlers is unfortunate. It is also confusing because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the times you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with signal.signal(). To me this suggests there could be space for something like "atexit.register_w_signals".
+-----------------------------
+
+The fact that atexit module `does not handle signals <http://stackoverflow.com/a/2546397/376587>`__ and that `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ overwrites previously registered handlers is unfortunate. It is also `confusing <http://ambracode.com/index/show/92669>`__ because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the times you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__. To me this suggests there could be space for something like `atexit.register_w_signals <https://mail.python.org/pipermail/python-ideas/2016-February/038431.html>`__.
 
 External discussions
+--------------------
 
-* reddit
-* hacker news
+* `Reddit <https://www.reddit.com/r/Python/comments/45fvd9/how_to_always_execute_exit_functions_in_python/>`__
+* `Hacker news <https://news.ycombinator.com/item?id=11088938>`__
+
+.. role:: strike
+    :class: strike
