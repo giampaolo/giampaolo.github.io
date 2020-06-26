@@ -4,34 +4,45 @@
 
 <h1 class="entry-title">Archives</h1>
 
-<h1>Newsletter</h1>
-<p>Enter your email address to receive blog updates:</p>
-{% include 'newsletter.html' %}
+<div class="archives">
+    <div class="archives-right">
+        <h1>Newsletter</h1>
+        <p>Enter your email address to receive blog updates:</p>
+        {% include 'newsletter.html' %}
 
-<h1>Tags</h1>
-<div id="tag-list">
-{% for tag, articles in tags|sort_by_tags %}
-    <a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a> ({{ articles|count }}){% if not loop.last %},{% endif %}
-{% endfor %}
+        <h1>Tags</h1>
+        <div id="tag-list">
+        <ul>
+        {% for tag, articles in tags|sort_by_tags %}
+            <li><a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a> ({{ articles|count }})</li>
+        {% endfor %}
+        </ul>
+        </div>
+    </div>
+
+    <div class="archives-left">
+        <h1>Posts</h1>
+        {% for year, date_year in dates|groupby( 'date.year' )|sort(reverse=True) %}
+            <h3>{{ year }}</h3>
+            <ul>
+            {% for year, articles in date_year|groupby( 'date.year' )|sort(reverse=True) %}
+                {% for article in articles %}
+                    <li>
+                    <a>{{ article.date.strftime('%b')  }}</a>: <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a>
+                    <!--
+                    —
+                    {% for tag in article.tags|sort %}
+                        <i>{{ tag }}</i>{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                    -->
+                    </li>
+                {% endfor %}
+            {% endfor %}
+            </ul>
+        {% endfor %}
+    </div>
 </div>
 
-<h1>Posts</h1>
-{% for year, date_year in dates|groupby( 'date.year' )|sort(reverse=True) %}
-    <h3>{{ year }}</h3>
-    <ul>
-    {% for year, articles in date_year|groupby( 'date.year' )|sort(reverse=True) %}
-        {% for article in articles %}
-            <li>
-            <a>{{ article.date.strftime('%b')  }}</a>: <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a>
-             —
-            {% for tag in article.tags|sort %}
-                <i>{{ tag }}</i>{% if not loop.last %},{% endif %}
-            {% endfor %}
-            </li>
-        {% endfor %}
-    {% endfor %}
-    </ul>
-{% endfor %}
 <!--
 <dl>
 {% for article in dates %}
