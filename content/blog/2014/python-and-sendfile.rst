@@ -2,7 +2,7 @@ Python and sendfile
 ###################
 
 :date: 2014-06-13
-:tags: python, python-dev, sendfile, zerocopy, network
+:tags: python, python-dev, sendfile, zerocopy, network, recipe
 
 `sendfile(2) <http://linux.die.net/man/2/sendfile>`__ is a UNIX system call which provides a "zero-copy" way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, sendfile(2) is more efficient than the combination of "file.read()" and "socket.send()", which requires transferring data to and from user space.  This copying of the data twice imposes some performance and resource penalties which sendfile(2) syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of `read(2) <http://linux.die.net/man/2/read>`__ / `write(2) <http://linux.die.net/man/2/write>`__ system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how sendfile(2) works is available `here <http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/>`__, but long story short is that sending a file with sendfile() is usually `twice as fast <https://github.com/giampaolo/pysendfile#a-simple-benchmark>`__ than using plain `socket.send() <https://docs.python.org/3/library/socket.html#socket.socket.send>`__. Typical applications which can benefit from using sendfile() are FTP and HTTP servers.
 

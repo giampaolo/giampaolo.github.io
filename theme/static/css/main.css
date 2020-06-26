@@ -123,7 +123,13 @@ blockquote {
     margin: 20px;
     font-style: italic;
 }
-cite {}
+cite {
+	padding: .2em .4em;
+	margin: 0;
+	background-color: rgba(27,31,35,.05);
+	border-radius: 6px;
+	font-style: normal;
+}
 
 q {}
 
@@ -557,4 +563,8 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 	width: 70%;
 	border-right: 1px solid #eaecef;
 	padding-right: 20px;
+}
+
+.strike {
+	text-decoration: line-through;
 }
