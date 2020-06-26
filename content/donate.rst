@@ -1,9 +1,8 @@
 Donate
 ######
 
-I spent and still spend a lot of time working on my OSS projects, especially
-`psutil`_. It's 12 years in total now.
-If you feel my projetcs are useful to you or your business and want to support
+I spend a lot of time working on my OSS projects, especially `psutil`_. It's 12 years in total now.
+If you feel my projects are useful to you or your business and want to support
 their future development please consider making me a donation.
 
 Recurring donations / sponsorship

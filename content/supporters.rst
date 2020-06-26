@@ -16,6 +16,11 @@ Sponsors
         <br />
     </div>
 
+Recurring donations
+===================
+
+None yet.
+
 Companies one-time donations (> $100)
 =====================================
 
