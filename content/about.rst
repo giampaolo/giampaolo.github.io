@@ -32,7 +32,7 @@ Projects
 python-dev contributions
 ------------------------
 
-Starting from year `2010 <https://mail.python.org/pipermail/python-committers/2010-April/000891.html>`_ I've been given commit access against Python code repository. My contributions are mainly focused against the Python standard library. Some I care about:
+Starting from year `2010 <https://mail.python.org/pipermail/python-committers/2010-April/000891.html>`_ I've been given commit access against Python code repository. My `contributions <https://bugs.python.org/issue?%40search_text=&ignore=file%3Acontent&title=&%40columns=title&id=&%40columns=id&stage=&creation=&creator=giampaolo.rodola&activity=&%40columns=activity&%40sort=activity&actor=&nosy=&type=&components=&versions=&dependencies=&assignee=&keywords=&priority=&status=&%40columns=status&resolution=&nosy_count=&message_count=&%40group=&%40pagesize=50&%40startwith=0&%40sortdir=on&%40queryname=&%40old-queryname=&%40action=search>`__ are mainly focused against the Python standard library. Some I particularly care about:
 
 +----------+--------------------------+-----------------------------------------------------------+
 | BPO      | Module / API             | Description                                               |
