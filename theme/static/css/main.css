@@ -568,3 +568,7 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 .strike {
 	text-decoration: line-through;
 }
+
+#projects p {
+	margin:4px;
+}

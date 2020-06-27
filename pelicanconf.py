@@ -94,3 +94,8 @@ JINJA_FILTERS = {
     'sort_by_tags': functools.partial(sorted, key=lambda tags: len(tags[1]),
                                       reverse=True)
 }
+
+# Do not generate /author/* HTML files.
+AUTHOR_SAVE_AS = ""
+# Do not generate /categories.html
+CATEGORIES_SAVE_AS = ""

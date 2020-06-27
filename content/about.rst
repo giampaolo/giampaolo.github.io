@@ -22,12 +22,63 @@ Interviews
 
 * `2017, Pydev of the week <https://www.blog.pythonlibrary.org/2017/10/09/pydev-of-the-week-giampaolo-rodola/>`_
 
+
 Projects
 --------
 
-* `psutil`_: a cross-platform library for retrieving information on running processes and system utilization (CPU, memory, disks, network) in Python which works on Linux, Windows, OSX, FreeBSD and Solaris.  (2008 - now)
-* `pyftpdlib`_: a very fast, asynchronous, pure-python FTP server.  (2006 - now)
-* `pysendfile`_: a binding to sendfile(2) syscall which lets you send a file twice as fast as with a common socket.  (2011 - now)
+* `psutil`_: a cross-platform library for retrieving information on running processes and system utilization (CPU, memory, disks, network) in Python.  *(2008 - now)*
+
+  .. image:: https://img.shields.io/pypi/dm/psutil?color=%232980B9&style=flat
+    :target: https://pepy.tech/project/psutil
+    :alt: Downloads
+
+  .. image:: https://img.shields.io/github/stars/giampaolo/psutil?color=%232980B9&style=flat
+    :target: https://github.com/giampaolo/psutil/stargazers
+    :alt: Github stars
+
+  .. image:: https://img.shields.io/github/forks/giampaolo/psutil?color=%232980B9&style=flat
+    :target: https://github.com/giampaolo/pyftpdlib/network/members
+    :alt: Github forks
+
+  .. image:: https://img.shields.io/github/contributors/giampaolo/psutil?color=%232980B9&style=flat
+    :target: https://github.com/giampaolo/psutil/graphs/contributors
+    :alt: Contributors
+
+* `pyftpdlib`_: a very fast, asynchronous, pure-python FTP server.  *(2006 - now)*
+
+  .. image:: https://img.shields.io/pypi/dm/pyftpdlib?color=%232980B9&style=flat
+    :target: https://pepy.tech/project/pyftpdlib
+    :alt: Downloads
+
+  .. image:: https://img.shields.io/github/stars/giampaolo/pyftpdlib?color=%232980B9&style=flat
+    :target: https://github.com/giampaolo/pyftpdlib/stargazers
+    :alt: Github stars
+
+  .. image:: https://img.shields.io/github/forks/giampaolo/pyftpdlib?color=%232980B9&style=flat
+    :target: https://github.com/giampaolo/pyftpdlib/network/members
+    :alt: Github forks
+
+  .. image:: https://img.shields.io/github/contributors/giampaolo/pyftpdlib?color=%232980B9&style=flat
+    :target: https://github.com/giampaolo/pyftpdlib/graphs/contributors
+    :alt: Contributors
+
+* `pysendfile`_: a binding to `sendfile(2)` syscall which lets you send a file twice as fast as with a common socket.  *(2011 - now)*
+
+  .. image:: https://img.shields.io/pypi/dm/pysendfile?color=%232980B9&style=flat
+    :target: https://pepy.tech/project/pysendfile
+    :alt: Downloads
+
+  .. image:: https://img.shields.io/github/stars/giampaolo/pysendfile?color=%232980B9&style=flat
+    :target: https://github.com/giampaolo/pysendfile/stargazers
+    :alt: Github stars
+
+  .. image:: https://img.shields.io/github/forks/giampaolo/pysendfile?color=%232980B9&style=flat
+    :target: https://github.com/giampaolo/pysendfile/network/members
+    :alt: Github forks
+
+  .. image:: https://img.shields.io/github/contributors/giampaolo/pysendfile?color=%232980B9&style=flat
+    :target: https://github.com/giampaolo/pysendfile/graphs/contributors
+    :alt: Contributors
 
 python-dev contributions
 ------------------------
@@ -44,9 +95,9 @@ Starting from year `2010 <https://mail.python.org/pipermail/python-committers/20
 +----------+--------------------------+-----------------------------------------------------------+
 | `4080`_  | `unittest`_              | unittest timings                                          |
 +----------+--------------------------+-----------------------------------------------------------+
-| `10882`_ | `os.sendfile`_           | expose sendfile() syscall                                 |
+| `10882`_ | `os.sendfile`_           | expose `sendfile()` syscall                               |
 +----------+--------------------------+-----------------------------------------------------------+
-| `17552`_ | `socket.sendfile`_       | sendfile() high-level wrapper                             |
+| `17552`_ | `socket.sendfile`_       | `sendfile()` high-level wrapper                           |
 +----------+--------------------------+-----------------------------------------------------------+
 | `17561`_ | `socket.create_server`_  | utility function for dual-stack IPv4/6 TCP servers        |
 +----------+--------------------------+-----------------------------------------------------------+
@@ -58,7 +109,7 @@ Starting from year `2010 <https://mail.python.org/pipermail/python-committers/20
 +----------+--------------------------+-----------------------------------------------------------+
 | `21076`_ | `signal`_                | signal module constant enums                              |
 +----------+--------------------------+-----------------------------------------------------------+
-| `18931`_ | `selectors`_             | Solaris /dev/poll support                                 |
+| `18931`_ | `selectors`_             | Solaris `/dev/poll` support                               |
 +----------+--------------------------+-----------------------------------------------------------+
 
 
@@ -81,9 +132,9 @@ Abandoned projects
 
 These are from when I started moving my first steps with Python in 2005. Listed here mainly for historical / nostalgic reasons. =)
 
-* `soicmp`_: a remote shell using ICMP protocol instead of TCP
-* `pypk`_: a port knocker based on libpcap
-* pftpd: this is the ancestor of `pyftpdlib`_ (web site is lost), a thread-based FTP server.
+* `soicmp`_: a remote shell using ICMP protocol instead of TCP. *(2005 - 2006)*
+* `pypk`_: a port knocker based on `libpcap`. *(2005 - 2006)*
+* pftpd: this is the ancestor of `pyftpdlib`_ (web site is lost), a thread-based FTP server. *(2005 - 2006)*
 
 Contacts
 --------
