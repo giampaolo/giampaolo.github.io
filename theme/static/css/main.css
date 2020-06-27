@@ -129,6 +129,8 @@ cite {
 	background-color: rgba(27,31,35,.05);
 	border-radius: 6px;
 	font-style: normal;
+	font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+	font-size:15px;
 }
 
 q {}
@@ -302,7 +304,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	background: #fff;
 	margin-bottom: 2em;
 	overflow: hidden;
-	padding: 20px 20px;
+	padding: 20px;
 	width: 860px;
 
 	border-radius: 10px;
@@ -466,7 +468,7 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 
 	/* Blog Index */
 	#posts-list {list-style: none; margin: 0;}
-	#posts-list .hentry {padding-left: 10px; position: relative;}
+	#posts-list .hentry {padding: 15px; position: relative;}
 
 
 	/* About the Author */
@@ -570,4 +572,8 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 
 #projects p {
 	margin:4px;
+}
+
+.paginator {
+	padding-left:20px;
 }

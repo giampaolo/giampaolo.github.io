@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content_title %}{% endblock %}
 {% block content %}
+
 <section id="content" class="body">
 {% if page_name == 'index' %}
     <div align="center" style="border-bottom: 2px solid #CCC; padding-bottom:20px">
@@ -18,6 +19,8 @@
             <input type="submit" style="height:28px; margin-top:10px" value="subscribe" />
         </form>
     </div>
+{% else %}
+    <h1 class="entry-title">Blog posts for {{ page_name }}</h1>
 {% endif %}
 
 <!-- blog posts -->

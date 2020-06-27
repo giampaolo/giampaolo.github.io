@@ -63,10 +63,14 @@ psutil 4.2.0 comes with 2 other enhancements for Linux:
 
 * psutil.virtual_memory() returns a new "shared" memory field. This is the same value reported by "free" cmdline utility.
 * I changed the way how /proc was parsed. Instead of reading /proc/{pid}/status line by line I used a regular expression. Here's the speedups:
-   - Process.ppid() is 20% faster
-   - Process.status() is 28% faster
-   - Process.name() is 25% faster
-   - Process.num_threads() is 20% faster (on Python 3 only; on Python 2 it's a bit slower; I suppose re module received some improvements)
+
+  * `Process.ppid()` is 20% faster
+
+  * `Process.status()` is 28% faster
+
+  * `Process.name()` is 25% faster
+
+  * `Process.num_threads()` is 20% faster (on Python 3 only; on Python 2 it's a bit slower; I suppose re module received some improvements)
 
 External links
 --------------
