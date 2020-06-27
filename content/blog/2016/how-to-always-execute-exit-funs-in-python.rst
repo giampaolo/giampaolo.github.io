@@ -229,5 +229,7 @@ External discussions
 * `Reddit <https://www.reddit.com/r/Python/comments/45fvd9/how_to_always_execute_exit_functions_in_python/>`__
 * `Hacker news <https://news.ycombinator.com/item?id=11088938>`__
 
+
+
 .. role:: strike
     :class: strike
