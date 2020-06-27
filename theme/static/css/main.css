@@ -235,7 +235,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 		-webkit-border-radius: 5px;
 	}
 
-	#banner nav ul {list-style: none; margin: 0 auto; width: 860px;}
+	#banner nav ul {list-style: none; margin: 0 auto; width: 900px;}
 	#banner nav li {float: left; display: inline; margin: 0;}
 
 	#banner nav a:link, #banner nav a:visited {
