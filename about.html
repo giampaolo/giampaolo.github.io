@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>About</title>
+    <!--<title>About</title>-->
+    <title>Giampaolo Rodola</title>
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
     <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
@@ -43,15 +44,21 @@
 </div>
 <div class="section" id="projects">
 <h2>Projects</h2>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a>: a cross-platform library for retrieving information on running processes and system utilization (CPU, memory, disks, network) in Python which works on Linux, Windows, OSX, FreeBSD and Solaris.  (2008 - now)</li>
-<li><a class="reference external" href="https://github.com/giampaolo/pyftpdlib">pyftpdlib</a>: a very fast, asynchronous, pure-python FTP server.  (2006 - now)</li>
-<li><a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a>: a binding to sendfile(2) syscall which lets you send a file twice as fast as with a common socket.  (2011 - now)</li>
+<ul>
+<li><p class="first"><a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a>: a cross-platform library for retrieving information on running processes and system utilization (CPU, memory, disks, network) in Python.  <em>(2008 - now)</em></p>
+<a class="reference external image-reference" href="https://pepy.tech/project/psutil"><img alt="Downloads" src="https://img.shields.io/pypi/dm/psutil?color=%232980B9&amp;style=flat" /></a>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/giampaolo/pyftpdlib">pyftpdlib</a>: a very fast, asynchronous, pure-python FTP server.  <em>(2006 - now)</em></p>
+<a class="reference external image-reference" href="https://pepy.tech/project/pyftpdlib"><img alt="Downloads" src="https://img.shields.io/pypi/dm/pyftpdlib?color=%232980B9&amp;style=flat" /></a>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a>: a binding to <cite>sendfile(2)</cite> syscall which lets you send a file twice as fast as with a common socket.  <em>(2011 - now)</em></p>
+<a class="reference external image-reference" href="https://pepy.tech/project/pysendfile"><img alt="Downloads" src="https://img.shields.io/pypi/dm/pysendfile?color=%232980B9&amp;style=flat" /></a>
+</li>
 </ul>
 </div>
 <div class="section" id="python-dev-contributions">
 <h2>python-dev contributions</h2>
-<p>Starting from year <a class="reference external" href="https://mail.python.org/pipermail/python-committers/2010-April/000891.html">2010</a> I've been given commit access against Python code repository. My contributions are mainly focused against the Python standard library. Some I care about:</p>
+<p>Starting from year <a class="reference external" href="https://mail.python.org/pipermail/python-committers/2010-April/000891.html">2010</a> I've been given commit access against Python code repository. My <a class="reference external" href="https://bugs.python.org/issue?%40search_text=&amp;ignore=file%3Acontent&amp;title=&amp;%40columns=title&amp;id=&amp;%40columns=id&amp;stage=&amp;creation=&amp;creator=giampaolo.rodola&amp;activity=&amp;%40columns=activity&amp;%40sort=activity&amp;actor=&amp;nosy=&amp;type=&amp;components=&amp;versions=&amp;dependencies=&amp;assignee=&amp;keywords=&amp;priority=&amp;status=&amp;%40columns=status&amp;resolution=&amp;nosy_count=&amp;message_count=&amp;%40group=&amp;%40pagesize=50&amp;%40startwith=0&amp;%40sortdir=on&amp;%40queryname=&amp;%40old-queryname=&amp;%40action=search">contributions</a> are mainly focused against the Python standard library. Some I particularly care about:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="11%" />
@@ -80,11 +87,11 @@
 </tr>
 <tr><td><a class="reference external" href="https://bugs.python.org/issue10882">10882</a></td>
 <td><a class="reference external" href="https://docs.python.org/3/library/os.html#os.sendfile">os.sendfile</a></td>
-<td>expose sendfile() syscall</td>
+<td>expose <cite>sendfile()</cite> syscall</td>
 </tr>
 <tr><td><a class="reference external" href="https://bugs.python.org/issue17552">17552</a></td>
 <td><a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.sendfile">socket.sendfile</a></td>
-<td>sendfile() high-level wrapper</td>
+<td><cite>sendfile()</cite> high-level wrapper</td>
 </tr>
 <tr><td><a class="reference external" href="https://bugs.python.org/issue17561">17561</a></td>
 <td><a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.create_server">socket.create_server</a></td>
@@ -108,7 +115,7 @@
 </tr>
 <tr><td><a class="reference external" href="https://bugs.python.org/issue18931">18931</a></td>
 <td><a class="reference external" href="https://docs.python.org/3/library/selectors.html">selectors</a></td>
-<td>Solaris /dev/poll support</td>
+<td>Solaris <cite>/dev/poll</cite> support</td>
 </tr>
 </tbody>
 </table>
@@ -131,9 +138,9 @@ Here's the ones I like the most:</p>
 <h2>Abandoned projects</h2>
 <p>These are from when I started moving my first steps with Python in 2005. Listed here mainly for historical / nostalgic reasons. =)</p>
 <ul class="simple">
-<li><a class="reference external" href="http://soicmp.sourceforge.net/">soicmp</a>: a remote shell using ICMP protocol instead of TCP</li>
-<li><a class="reference external" href="https://sourceforge.net/projects/pypk/">pypk</a>: a port knocker based on libpcap</li>
-<li>pftpd: this is the ancestor of <a class="reference external" href="https://github.com/giampaolo/pyftpdlib">pyftpdlib</a> (web site is lost), a thread-based FTP server.</li>
+<li><a class="reference external" href="http://soicmp.sourceforge.net/">soicmp</a>: a remote shell using ICMP protocol instead of TCP. <em>(2005 - 2006)</em></li>
+<li><a class="reference external" href="https://sourceforge.net/projects/pypk/">pypk</a>: a port knocker based on <cite>libpcap</cite>. <em>(2005 - 2006)</em></li>
+<li>pftpd: this is the ancestor of <a class="reference external" href="https://github.com/giampaolo/pyftpdlib">pyftpdlib</a> (web site is lost), a thread-based FTP server. <em>(2005 - 2006)</em></li>
 </ul>
 </div>
 <div class="section" id="contacts">
@@ -176,24 +183,11 @@ Here's the ones I like the most:</p>
         <div class="feeds">
             <h2>Feeds</h2>
             <ul>
-            <li><a href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate">atom</a></li>
-            <li><a href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate">rss</a></li>
+                <li><a href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate">atom</a></li>
+                <li><a href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate">rss</a></li>
             </ul>
         </div>
     </div>
-    <div class="newsletter">
-        <h2>Newsletter</h2>
-        <p>Enter your email address to receive blog updates:</p>
-<form class="newsletter"
-       action="https://feedburner.google.com/fb/a/mailverify"
-       method="post"
-       target="popupwindow"
-       onsubmit="window.open('https://feedburner.google.com/fb/a/mailverify?uri=GiampaoloRodola', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
-    <input type="text" style="width:140px" name="email" />
-        <input type="hidden" value="GiampaoloRodola" name="uri"/>
-        <input type="hidden"  name="loc" value="en_US" />
-    <input type="submit" style="height:28px" value="subscribe" />
-</form>    </div>
     </section>
     <!-- /Footer -->
 

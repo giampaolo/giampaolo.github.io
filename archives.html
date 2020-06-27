@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <!--<title>Giampaolo Rodola</title>-->
     <title>Giampaolo Rodola</title>
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
@@ -22,8 +23,12 @@
     </header><!-- /#banner -->
 <section id="content" class="body">
 
-<h1>Newsletter</h1>
-    <p>Enter your email address to receive blog updates:</p>
+<h1 class="entry-title">Archives</h1>
+
+<div class="archives">
+    <div class="archives-right">
+        <h1>Newsletter</h1>
+        <p>Enter your email address to receive blog updates:</p>
 <form class="newsletter"
        action="https://feedburner.google.com/fb/a/mailverify"
        method="post"
@@ -32,128 +37,181 @@
     <input type="text" style="width:140px" name="email" />
         <input type="hidden" value="GiampaoloRodola" name="uri"/>
         <input type="hidden"  name="loc" value="en_US" />
-    <input type="submit" style="height:28px" value="subscribe" />
+    <br />
+    <input type="submit" style="height:28px; margin-top:10px" value="subscribe" />
 </form>
-<h1>Tags</h1>
-    <div id="tag-list">
-        <a href="https://gmpy.dev/tags/python">python</a> (21),        <a href="https://gmpy.dev/tags/psutil">psutil</a> (17),        <a href="https://gmpy.dev/tags/travel">travel</a> (6),        <a href="https://gmpy.dev/tags/windows">windows</a> (4),        <a href="https://gmpy.dev/tags/unittest">unittest</a> (3),        <a href="https://gmpy.dev/tags/bsd">bsd</a> (3),        <a href="https://gmpy.dev/tags/memory">memory</a> (2),        <a href="https://gmpy.dev/tags/network">network</a> (2),        <a href="https://gmpy.dev/tags/api-design">api-design</a> (2),        <a href="https://gmpy.dev/tags/aix">aix</a> (1),        <a href="https://gmpy.dev/tags/performance">performance</a> (1),        <a href="https://gmpy.dev/tags/macos">macos</a> (1),        <a href="https://gmpy.dev/tags/sunos">sunos</a> (1),        <a href="https://gmpy.dev/tags/personal">personal</a> (1),        <a href="https://gmpy.dev/tags/wheels">wheels</a> (1),        <a href="https://gmpy.dev/tags/python-dev">python-dev</a> (1),        <a href="https://gmpy.dev/tags/sendfile">sendfile</a> (1),        <a href="https://gmpy.dev/tags/zerocopy">zerocopy</a> (1),        <a href="https://gmpy.dev/tags/rant">rant</a> (1)    </div>
+        <h1>Tags</h1>
+        <div id="tag-list">
+        <ul>
+            <li><a href="https://gmpy.dev/tags/python">python</a> (19)</li>
+            <li><a href="https://gmpy.dev/tags/psutil">psutil</a> (15)</li>
+            <li><a href="https://gmpy.dev/tags/travel">travel</a> (4)</li>
+            <li><a href="https://gmpy.dev/tags/bsd">bsd</a> (3)</li>
+            <li><a href="https://gmpy.dev/tags/api-design">api-design</a> (2)</li>
+            <li><a href="https://gmpy.dev/tags/memory">memory</a> (2)</li>
+            <li><a href="https://gmpy.dev/tags/network">network</a> (2)</li>
+            <li><a href="https://gmpy.dev/tags/recipe">recipe</a> (2)</li>
+            <li><a href="https://gmpy.dev/tags/windows">windows</a> (2)</li>
+            <li><a href="https://gmpy.dev/tags/aix">aix</a> (1)</li>
+            <li><a href="https://gmpy.dev/tags/macos">macos</a> (1)</li>
+            <li><a href="https://gmpy.dev/tags/performance">performance</a> (1)</li>
+            <li><a href="https://gmpy.dev/tags/personal">personal</a> (1)</li>
+            <li><a href="https://gmpy.dev/tags/python-dev">python-dev</a> (1)</li>
+            <li><a href="https://gmpy.dev/tags/rant">rant</a> (1)</li>
+            <li><a href="https://gmpy.dev/tags/sunos">sunos</a> (1)</li>
+            <li><a href="https://gmpy.dev/tags/sendfile">sendfile</a> (1)</li>
+            <li><a href="https://gmpy.dev/tags/unittest">unittest</a> (1)</li>
+            <li><a href="https://gmpy.dev/tags/wheels">wheels</a> (1)</li>
+            <li><a href="https://gmpy.dev/tags/zerocopy">zerocopy</a> (1)</li>
+        </ul>
+        </div>
+    </div>
 
-<h1>Posts</h1>
-        <h3>2020</h3>
-        <ul>
-                <li>
-                <a>Jun</a>: <a href="https://gmpy.dev/blog/2020/test-1">test 1</a>
-                 —
-                    <i>psutil</i>,                    <i>python</i>,                    <i>travel</i>,                    <i>unittest</i>,                    <i>windows</i>                </li>
-                <li>
-                <a>Jun</a>: <a href="https://gmpy.dev/blog/2020/test-2">test 2</a>
-                 —
-                    <i>psutil</i>,                    <i>python</i>,                    <i>travel</i>,                    <i>unittest</i>,                    <i>windows</i>                </li>
-        </ul>
-        <h3>2019</h3>
-        <ul>
-                <li>
-                <a>May</a>: <a href="https://gmpy.dev/blog/2019/system-load-average-on-windows-in-python">System load average on Windows in Python</a>
-                 —
-                    <i>psutil</i>,                    <i>python</i>,                    <i>travel</i>,                    <i>unittest</i>,                    <i>windows</i>                </li>
-                <li>
-                <a>Mar</a>: <a href="https://gmpy.dev/blog/2019/psutil-560-and-process-parents">psutil 5.6.0 and process parents</a>
-                 —
-                    <i>psutil</i>,                    <i>python</i>                </li>
-        </ul>
-        <h3>2017</h3>
-        <ul>
-                <li>
-                <a>Oct</a>: <a href="https://gmpy.dev/blog/2017/psutil-540-and-aix-support">psutil 5.4.0 and AIX support</a>
-                 —
-                    <i>aix</i>,                    <i>psutil</i>,                    <i>python</i>                </li>
-                <li>
-                <a>Sep</a>: <a href="https://gmpy.dev/blog/2017/psutil-530-and-full-unicode-support">psutil 5.3.0 and full unicode support</a>
-                 —
-                    <i>psutil</i>,                    <i>python</i>,                    <i>travel</i>                </li>
-                <li>
-                <a>Feb</a>: <a href="https://gmpy.dev/blog/2017/psutil-511-system-temperature-battery-and-cpu-frequency">psutil 5.1.1 system temperature, battery and CPU frequency</a>
-                 —
-                    <i>psutil</i>,                    <i>python</i>                </li>
-        </ul>
-        <h3>2016</h3>
-        <ul>
-                <li>
-                <a>Nov</a>: <a href="https://gmpy.dev/blog/2016/psutil-550-is-twice-as-fast">psutil 5.5.0 is twice as fast</a>
-                 —
-                    <i>bsd</i>,                    <i>macos</i>,                    <i>performance</i>,                    <i>psutil</i>,                    <i>python</i>,                    <i>sunos</i>                </li>
-                <li>
-                <a>Oct</a>: <a href="https://gmpy.dev/blog/2016/psutil-440-improved-linux-memory-metrics">psutil 4.4.0: improved Linux memory metrics</a>
-                 —
-                    <i>memory</i>,                    <i>psutil</i>,                    <i>python</i>                </li>
-                <li>
-                <a>May</a>: <a href="https://gmpy.dev/blog/2016/psutil-420-windows-services-in-python">psutil 4.2.0: Windows services in Python</a>
-                 —
-                    <i>psutil</i>,                    <i>python</i>,                    <i>windows</i>                </li>
-                <li>
-                <a>Feb</a>: <a href="https://gmpy.dev/blog/2016/psutil-netbsd-support">psutil NetBSD support</a>
-                 —
-                    <i>bsd</i>,                    <i>psutil</i>,                    <i>python</i>                </li>
-                <li>
-                <a>Feb</a>: <a href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python">Real process memory and environ in Python</a>
-                 —
-                    <i>memory</i>,                    <i>psutil</i>,                    <i>python</i>                </li>
-                <li>
-                <a>Feb</a>: <a href="https://gmpy.dev/blog/2016/how-to-always-execute-exit-functions-in-python">How to always execute exit functions in Python</a>
-                 —
-                    <i>python</i>                </li>
-        </ul>
-        <h3>2015</h3>
-        <ul>
-                <li>
-                <a>Nov</a>: <a href="https://gmpy.dev/blog/2015/psutil-openbsd-support">psutil OpenBSD support</a>
-                 —
-                    <i>bsd</i>,                    <i>psutil</i>,                    <i>python</i>                </li>
-                <li>
-                <a>Jun</a>: <a href="https://gmpy.dev/blog/2015/psutil-30-aka-how-i-reimplemented-ifconfig-in-python">psutil 3.0, aka how I reimplemented ifconfig in Python</a>
-                 —
-                    <i>personal</i>,                    <i>psutil</i>,                    <i>python</i>,                    <i>travel</i>                </li>
-        </ul>
-        <h3>2014</h3>
-        <ul>
-                <li>
-                <a>Sep</a>: <a href="https://gmpy.dev/blog/2014/psutil-212-and-python-wheels">psutil 2.1.2 and Python wheels</a>
-                 —
-                    <i>psutil</i>,                    <i>python</i>,                    <i>travel</i>,                    <i>wheels</i>                </li>
-                <li>
-                <a>Jun</a>: <a href="https://gmpy.dev/blog/2014/python-and-sendfile">Python and sendfile</a>
-                 —
-                    <i>network</i>,                    <i>python</i>,                    <i>python-dev</i>,                    <i>sendfile</i>,                    <i>zerocopy</i>                </li>
-                <li>
-                <a>May</a>: <a href="https://gmpy.dev/blog/2014/goodbye-google-code-i-am-moving-to-github">Goodbye Google Code, I am moving to GitHub</a>
-                 —
-                    <i>rant</i>                </li>
-                <li>
-                <a>Mar</a>: <a href="https://gmpy.dev/blog/2014/psutil-20">psutil 2.0</a>
-                 —
-                    <i>psutil</i>,                    <i>python</i>                </li>
-                <li>
-                <a>Mar</a>: <a href="https://gmpy.dev/blog/2014/reimplementing-netstat-in-python">Reimplementing netstat in Python</a>
-                 —
-                    <i>network</i>,                    <i>python</i>                </li>
-                <li>
-                <a>Jan</a>: <a href="https://gmpy.dev/blog/2014/psutil-20-api-redesign">psutil 2.0 API redesign</a>
-                 —
-                    <i>api-design</i>,                    <i>psutil</i>,                    <i>python</i>                </li>
-        </ul>
-        <h3>2013</h3>
-        <ul>
-                <li>
-                <a>Dec</a>: <a href="https://gmpy.dev/blog/2013/making-constants-part-of-your-api-is-evil">Making constants part of your API is evil</a>
-                 —
-                    <i>api-design</i>,                    <i>python</i>                </li>
-        </ul>
+    <div class="archives-left">
+        <h1>Posts</h1>
+            <h3>2019</h3>
+            <ul>
+                    <li>
+                    <a>May</a>: <a href="https://gmpy.dev/blog/2019/system-load-average-on-windows-in-python">System load average on Windows in Python</a>
+                    <!--
+                    —
+                        <i>psutil</i>,                        <i>python</i>,                        <i>travel</i>,                        <i>unittest</i>,                        <i>windows</i>                    -->
+                    </li>
+                    <li>
+                    <a>Mar</a>: <a href="https://gmpy.dev/blog/2019/psutil-560-and-process-parents">psutil 5.6.0 and process parents</a>
+                    <!--
+                    —
+                        <i>psutil</i>,                        <i>python</i>                    -->
+                    </li>
+            </ul>
+            <h3>2017</h3>
+            <ul>
+                    <li>
+                    <a>Oct</a>: <a href="https://gmpy.dev/blog/2017/psutil-540-and-aix-support">psutil 5.4.0 and AIX support</a>
+                    <!--
+                    —
+                        <i>aix</i>,                        <i>psutil</i>,                        <i>python</i>                    -->
+                    </li>
+                    <li>
+                    <a>Sep</a>: <a href="https://gmpy.dev/blog/2017/psutil-530-and-full-unicode-support">psutil 5.3.0 and full unicode support</a>
+                    <!--
+                    —
+                        <i>psutil</i>,                        <i>python</i>,                        <i>travel</i>                    -->
+                    </li>
+                    <li>
+                    <a>Feb</a>: <a href="https://gmpy.dev/blog/2017/psutil-511-system-temperature-battery-and-cpu-frequency">psutil 5.1.1 system temperature, battery and CPU frequency</a>
+                    <!--
+                    —
+                        <i>psutil</i>,                        <i>python</i>                    -->
+                    </li>
+            </ul>
+            <h3>2016</h3>
+            <ul>
+                    <li>
+                    <a>Nov</a>: <a href="https://gmpy.dev/blog/2016/psutil-550-is-twice-as-fast">psutil 5.5.0 is twice as fast</a>
+                    <!--
+                    —
+                        <i>bsd</i>,                        <i>macos</i>,                        <i>performance</i>,                        <i>psutil</i>,                        <i>python</i>,                        <i>sunos</i>                    -->
+                    </li>
+                    <li>
+                    <a>Oct</a>: <a href="https://gmpy.dev/blog/2016/psutil-440-improved-linux-memory-metrics">psutil 4.4.0: improved Linux memory metrics</a>
+                    <!--
+                    —
+                        <i>memory</i>,                        <i>psutil</i>,                        <i>python</i>                    -->
+                    </li>
+                    <li>
+                    <a>May</a>: <a href="https://gmpy.dev/blog/2016/psutil-420-windows-services-in-python">psutil 4.2.0: Windows services in Python</a>
+                    <!--
+                    —
+                        <i>psutil</i>,                        <i>python</i>,                        <i>windows</i>                    -->
+                    </li>
+                    <li>
+                    <a>Feb</a>: <a href="https://gmpy.dev/blog/2016/psutil-netbsd-support">psutil NetBSD support</a>
+                    <!--
+                    —
+                        <i>bsd</i>,                        <i>psutil</i>,                        <i>python</i>                    -->
+                    </li>
+                    <li>
+                    <a>Feb</a>: <a href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python">Real process memory and environ in Python</a>
+                    <!--
+                    —
+                        <i>memory</i>,                        <i>psutil</i>,                        <i>python</i>                    -->
+                    </li>
+                    <li>
+                    <a>Feb</a>: <a href="https://gmpy.dev/blog/2016/how-to-always-execute-exit-functions-in-python">How to always execute exit functions in Python</a>
+                    <!--
+                    —
+                        <i>python</i>,                        <i>recipe</i>                    -->
+                    </li>
+            </ul>
+            <h3>2015</h3>
+            <ul>
+                    <li>
+                    <a>Nov</a>: <a href="https://gmpy.dev/blog/2015/psutil-openbsd-support">psutil OpenBSD support</a>
+                    <!--
+                    —
+                        <i>bsd</i>,                        <i>psutil</i>,                        <i>python</i>                    -->
+                    </li>
+                    <li>
+                    <a>Jun</a>: <a href="https://gmpy.dev/blog/2015/psutil-30-aka-how-i-reimplemented-ifconfig-in-python">psutil 3.0, aka how I reimplemented ifconfig in Python</a>
+                    <!--
+                    —
+                        <i>personal</i>,                        <i>psutil</i>,                        <i>python</i>,                        <i>travel</i>                    -->
+                    </li>
+            </ul>
+            <h3>2014</h3>
+            <ul>
+                    <li>
+                    <a>Sep</a>: <a href="https://gmpy.dev/blog/2014/psutil-212-and-python-wheels">psutil 2.1.2 and Python wheels</a>
+                    <!--
+                    —
+                        <i>psutil</i>,                        <i>python</i>,                        <i>travel</i>,                        <i>wheels</i>                    -->
+                    </li>
+                    <li>
+                    <a>Jun</a>: <a href="https://gmpy.dev/blog/2014/python-and-sendfile">Python and sendfile</a>
+                    <!--
+                    —
+                        <i>network</i>,                        <i>python</i>,                        <i>python-dev</i>,                        <i>recipe</i>,                        <i>sendfile</i>,                        <i>zerocopy</i>                    -->
+                    </li>
+                    <li>
+                    <a>May</a>: <a href="https://gmpy.dev/blog/2014/goodbye-google-code-i-am-moving-to-github">Goodbye Google Code, I am moving to GitHub</a>
+                    <!--
+                    —
+                        <i>rant</i>                    -->
+                    </li>
+                    <li>
+                    <a>Mar</a>: <a href="https://gmpy.dev/blog/2014/psutil-20">psutil 2.0</a>
+                    <!--
+                    —
+                        <i>psutil</i>,                        <i>python</i>                    -->
+                    </li>
+                    <li>
+                    <a>Mar</a>: <a href="https://gmpy.dev/blog/2014/reimplementing-netstat-in-python">Reimplementing netstat in Python</a>
+                    <!--
+                    —
+                        <i>network</i>,                        <i>python</i>                    -->
+                    </li>
+                    <li>
+                    <a>Jan</a>: <a href="https://gmpy.dev/blog/2014/psutil-20-api-redesign">psutil 2.0 API redesign</a>
+                    <!--
+                    —
+                        <i>api-design</i>,                        <i>psutil</i>,                        <i>python</i>                    -->
+                    </li>
+            </ul>
+            <h3>2013</h3>
+            <ul>
+                    <li>
+                    <a>Dec</a>: <a href="https://gmpy.dev/blog/2013/making-constants-part-of-your-api-is-evil">Making constants part of your API is evil</a>
+                    <!--
+                    —
+                        <i>api-design</i>,                        <i>python</i>                    -->
+                    </li>
+            </ul>
+    </div>
+</div>
+
 <!--
 <dl>
-    <dt>25 Jun 2020</dt>
-    <dd><a href="https://gmpy.dev/blog/2020/test-1">test 1</a></dd>
-    <dt>25 Jun 2020</dt>
-    <dd><a href="https://gmpy.dev/blog/2020/test-2">test 2</a></dd>
     <dt>29 May 2019</dt>
     <dd><a href="https://gmpy.dev/blog/2019/system-load-average-on-windows-in-python">System load average on Windows in Python</a></dd>
     <dt>05 Mar 2019</dt>
@@ -213,24 +271,11 @@
         <div class="feeds">
             <h2>Feeds</h2>
             <ul>
-            <li><a href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate">atom</a></li>
-            <li><a href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate">rss</a></li>
+                <li><a href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate">atom</a></li>
+                <li><a href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate">rss</a></li>
             </ul>
         </div>
     </div>
-    <div class="newsletter">
-        <h2>Newsletter</h2>
-        <p>Enter your email address to receive blog updates:</p>
-<form class="newsletter"
-       action="https://feedburner.google.com/fb/a/mailverify"
-       method="post"
-       target="popupwindow"
-       onsubmit="window.open('https://feedburner.google.com/fb/a/mailverify?uri=GiampaoloRodola', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
-    <input type="text" style="width:140px" name="email" />
-        <input type="hidden" value="GiampaoloRodola" name="uri"/>
-        <input type="hidden"  name="loc" value="en_US" />
-    <input type="submit" style="height:28px" value="subscribe" />
-</form>    </div>
     </section>
     <!-- /Footer -->
 
