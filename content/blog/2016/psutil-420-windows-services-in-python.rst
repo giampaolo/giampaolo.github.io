@@ -26,7 +26,7 @@ New `psutil <https://github.com/giampaolo/psutil>`__ 4.2.0 is out. The main feat
      'status': 'stopped',
      'username': 'NT AUTHORITY\\LocalService'}
 
-I did this mainly because I find pywin32 APIs too low level. Having something like this in psutil can be useful to discover and monitor services more easily. The code changes are `here <https://github.com/giampaolo/psutil/pull/803/files>`__ and here's the `doc <https://psutil.readthedocs.io/en/latest/#windows-services>`__. The API for querying a service is similar to ``psutil.Process``. You can get a reference to a service object by using its name (which is unique for every service) and then use name(), status(), etc..:
+I did this mainly because I find pywin32 APIs too low level. Having something like this in psutil can be useful to discover and monitor services more easily. The code changes are `here <https://github.com/giampaolo/psutil/pull/803/files>`__ and here's the `doc <https://psutil.readthedocs.io/en/latest/#windows-services>`__. The API for querying a service is similar to ``psutil.Process``. You can get a reference to a service object by using its name (which is unique for every service) and then use ``name()``, ``status()``, etc..:
 
 .. code-block:: python
 
@@ -36,7 +36,7 @@ I did this mainly because I find pywin32 APIs too low level. Having something li
     >>> s.status()
     'stopped'
 
-Initially I thought to expose and provide a complete set of APIs to handle all aspects of service handling including ``start()``, ``stop()``, ``restart()``, ``install()``, uninstall() and modify() but I soon realized that I would have ended up reimplementing what pywin32 already provides at the cost of overcrowding psutil API (see my reasoning `here <https://github.com/giampaolo/psutil/blob/d28de253a2e6d7f368e5260d7a4ab14b285c5083/psutil/_pswindows.py#L426>`__). I think psutil should really be about monitoring, not about installing and modifying system stuff, especially something as critical as a Windows service.
+Initially I thought to expose and provide a complete set of APIs to handle all aspects of service handling including ``start()``, ``stop()``, ``restart()``, ``install()``, ``uninstall()`` and ``modify()`` but I soon realized that I would have ended up reimplementing what pywin32 already provides at the cost of overcrowding psutil API (see my reasoning `here <https://github.com/giampaolo/psutil/blob/d28de253a2e6d7f368e5260d7a4ab14b285c5083/psutil/_pswindows.py#L426>`__). I think psutil should really be about monitoring, not about installing and modifying system stuff, especially something as critical as a Windows service.
 
 Considerations about Windows services
 -------------------------------------
@@ -61,16 +61,16 @@ Other improvements
 
 psutil 4.2.0 comes with 2 other enhancements for Linux:
 
-* psutil.virtual_memory() returns a new "shared" memory field. This is the same value reported by "free" cmdline utility.
-* I changed the way how /proc was parsed. Instead of reading /proc/{pid}/status line by line I used a regular expression. Here's the speedups:
+* ``psutil.virtual_memory()`` returns a new "shared" memory field. This is the same value reported by ``free`` cmdline utility.
+* I changed the way how ``/proc`` was parsed. Instead of reading ``/proc/{pid}/status`` line by line I used a regular expression. Here's the speedups:
 
-  * `Process.ppid()` is 20% faster
+  * ``Process.ppid()`` is 20% faster
 
-  * `Process.status()` is 28% faster
+  * ``Process.status()`` is 28% faster
 
-  * `Process.name()` is 25% faster
+  * ``Process.name()`` is 25% faster
 
-  * `Process.num_threads()` is 20% faster (on Python 3 only; on Python 2 it's a bit slower; I suppose re module received some improvements)
+  * ``Process.num_threads()`` is 20% faster (on Python 3 only; on Python 2 it's a bit slower; I suppose ``re`` module received some improvements)
 
 External links
 --------------

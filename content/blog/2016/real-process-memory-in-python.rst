@@ -24,7 +24,7 @@ The USS (Unique Set Size) is the memory which is unique to a process and which w
 PSS and swap
 ------------
 
-On Linux there are two additional metrics which can also be determined via /proc/pid/smaps: PSS and swap. PSS, aka "Proportional Set Size", represents the amount of memory shared with other processes, accounted in a way that the amount is divided evenly between the processes that share it. I.e. if a process has 10 MBs all to itself (USS) and 10 MBs shared with another process, its PSS will be 15 MBs. "swap" is simply the amount of memory that has been swapped out to disk. With memory_full_info() it is possible to implement a tool `like this <https://github.com/giampaolo/psutil/blob/master/scripts/procsmem.py>`__, similar to `smem <https://www.selenic.com/smem/>`__ on Linux, which provides a list of processes sorted by "USS". It is interesting to notice how RSS differs from USS:
+On Linux there are two additional metrics which can also be determined via `/proc/pid/smaps`: PSS and swap. PSS, aka "Proportional Set Size", represents the amount of memory shared with other processes, accounted in a way that the amount is divided evenly between the processes that share it. I.e. if a process has 10 MBs all to itself (USS) and 10 MBs shared with another process, its PSS will be 15 MBs. "swap" is simply the amount of memory that has been swapped out to disk. With memory_full_info() it is possible to implement a tool `like this <https://github.com/giampaolo/psutil/blob/master/scripts/procsmem.py>`__, similar to `smem <https://www.selenic.com/smem/>`__ on Linux, which provides a list of processes sorted by "USS". It is interesting to notice how RSS differs from USS:
 
 ::
 
@@ -49,7 +49,7 @@ On Linux there are two additional metrics which can also be determined via /proc
 Implementation
 --------------
 
-In order to get these values (USS, PSS and swap) we need to pass through the whole process address space. This usually requires higher user privileges and is considerably slower than getting the "usual" memory metrics via Process.memory_info(), which is probably the reason why tools like ps and top show RSS/VMS instead of USS. A big thanks goes to the Mozilla team which figured out all this stuff on Windows and OSX, and to Eric Rahm who put the PRs for psutil together (see #744, #745 and #746). For those of you who don't use Python and would like to port the code on other languages here's the interesting parts:
+In order to get these values (USS, PSS and swap) we need to pass through the whole process address space. This usually requires higher user privileges and is considerably slower than getting the "usual" memory metrics via Process.memory_info(), which is probably the reason why tools like ps and top show RSS/VMS instead of USS. A big thanks goes to the Mozilla team which figured out all this stuff on Windows and OSX, and to Eric Rahm who put the PRs for psutil together (see `#744 <https://github.com/giampaolo/psutil/pull/744>`__, `#745 <https://github.com/giampaolo/psutil/pull/745>`__ and `#746 <https://github.com/giampaolo/psutil/pull/746>`__). For those of you who don't use Python and would like to port the code on other languages here's the interesting parts:
 
 * `Linux <https://github.com/giampaolo/psutil/blob/42b34049cf96e845b6423db91f991849a2f87578/psutil/_pslinux.py#L1026>`__
 * `OSX <https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_psutil_osx.c#L568>`__
@@ -83,7 +83,7 @@ Second biggest improvement in psutil 4.0.0 is the ability to determine the proce
                 ...
 
 
-Process environ was a `long standing issue <https://code.google.com/archive/p/psutil/issues/52>`_ (year 2009) who I gave up to implement because the Windows implementation worked for the current process only. Frank Benkstein `solved that <https://github.com/giampaolo/psutil/pull/747>`__ and the process environ can now be determined on Linux, Windows and OSX for all processes (of course you may still bump into AccessDenied for processes owned by another user):
+Process environ was a `long standing issue <https://code.google.com/archive/p/psutil/issues/52>`_ (year 2009) who I gave up to implement because the Windows implementation worked for the current process only. Frank Benkstein `solved that <https://github.com/giampaolo/psutil/pull/747>`__ and the process environ can now be determined on Linux, Windows and OSX for all processes (of course you may still bump into `AccessDenied` for processes owned by another user):
 
 .. code-block:: python
 
@@ -111,7 +111,7 @@ Extended disk IO stats
 ``psutil.disk_io_counters()`` has been extended to report additional metrics on Linux and FreeBSD:
 
 * busy_time, which is the time spent doing actual I/Os (in milliseconds).
-* read_merged_count and write_merged_count (Linux only), which is number of merged reads and writes (see `iostats <https://www.kernel.org/doc/Documentation/iostats.txt>`_ doc)
+* read_merged_count and write_merged_count (Linux only), which is number of merged reads and writes (see `iostats <https://www.kernel.org/doc/Documentation/iostats.txt>`_ doc).
 
 With these new metrics it is possible to have a better representation of actual `disk utilization <https://github.com/giampaolo/psutil/issues/756>`_, similarly to ``iostat`` command on Linux.
 
@@ -120,7 +120,7 @@ OS constants
 
 Given the increasing number of platform-specific metrics I added a new set of constants to quickly differentiate what platform you're on: ``psutil.LINUX``, ``psutil.WINDOWS``, etc. Main bug fixes:
 
-* `#734 <https://github.com/giampaolo/psutil/issues/734>`_: on Python 3 invalid UTF-8 data was not correctly handled for proces ``name()``, ``cwd()``, ``exe()``, ``cmdline()`` and ``open_files()`` methods, resulting in UnicodeDecodeError. This was affecting all platforms. Now surrogateescape error handler is used as a workaround for replacing the corrupted data.
+* `#734 <https://github.com/giampaolo/psutil/issues/734>`_: on Python 3 invalid UTF-8 data was not correctly handled for proces ``name()``, ``cwd()``, ``exe()``, ``cmdline()`` and ``open_files()`` methods, resulting in UnicodeDecodeError. This was affecting all platforms. Now ``surrogateescape`` error handler is used as a workaround for replacing the corrupted data.
 * `#761 <https://github.com/giampaolo/psutil/issues/761>`_: [Windows] ``psutil.boot_time()`` no longer wraps to 0 after 49 days.
 * `#767 <https://github.com/giampaolo/psutil/issues/767>`_: [Linux] ``disk_io_counters()`` may raise ValueError on 2.6 kernels and it's  broken on 2.4 kernels.
 * `#764 <https://github.com/giampaolo/psutil/issues/764>`_: psutil can now be compiled on NetBSD-6.X.

@@ -155,7 +155,7 @@ CPU percent intervals
 
 **What changed**
 
-The timeout parameter of `cpu_percent*` functions now defaults to 0.0 instead of 0.1. The functions affected are:
+The timeout parameter of ``cpu_percent*`` functions now defaults to 0.0 instead of 0.1. The functions affected are:
 
 * psutil.Process.cpu_percent()
 * psutil.cpu_percent()
@@ -164,7 +164,7 @@ The timeout parameter of `cpu_percent*` functions now defaults to 0.0 instead of
 **Why I did it**
 
 I originally set 0.1 as the default timeout because in order to get a meaningful percent value you need to wait some time.
-Having an API which "sleeps" by default is risky though, because it's easy to forget it does so. That is particularly problematic when calling cpu_percent() for all processes: it's very easy to forget about specifying timeout=0 resulting in dramatic slowdowns which are hard to spot. For example, this code snippet might take different seconds to complete depending on the number of active processes:
+Having an API which "sleeps" by default is risky though, because it's easy to forget it does so. That is particularly problematic when calling `cpu_percent()` for all processes: it's very easy to forget about specifying `timeout=0` resulting in dramatic slowdowns which are hard to spot. For example, this code snippet might take different seconds to complete depending on the number of active processes:
 
 .. code-block:: python
 
@@ -175,7 +175,7 @@ Having an API which "sleeps" by default is risky though, because it's easy to fo
 Migration strategy
 ------------------
 
-Except for Process properties (name, exe, cmdline, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long you start the interpreter with the "-Wd" option. This will enable deprecation warnings which were `silenced in Python 2.7 <http://bugs.python.org/issue7319>`__ (IMHO, from a developer standpoint this was a bad decision).
+Except for Process properties (`name`, `exe`, `cmdline`, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long you start the interpreter with the "-Wd" option. This will enable deprecation warnings which were `silenced in Python 2.7 <http://bugs.python.org/issue7319>`__ (IMHO, from a developer standpoint this was a bad decision).
 
 ::
 
@@ -210,7 +210,7 @@ As for the the Process properties which were turned into methods it's more diffi
     <bound method Process.name of psutil.Process(pid=19816, name='python') at 139845631328144>
     >>>
 
-What I would recommend if you want to drop support with 1.2.1 is to grep for ".name", ".exe" etc. and just replace them with ".exe()" and ".name()" one by one.
+What I would recommend if you want to drop support with 1.2.1 is to grep for `".name"`, `".exe"` etc. and just replace them with `".exe()"` and `".name()"` one by one.
 If on the other hand you want to write a code which works with both versions I see two possibilities:
 
 * #1 check version info, like this:
@@ -222,7 +222,7 @@ If on the other hand you want to write a code which works with both versions I s
     >>> name = p.name() if PSUTIL2 else p.name
     >>> exe = p.exe() if PSUTIL2 else p.exe
 
-* #2 get rid of all ".name", ".exe" occurrences you have in your code and use as_dict() instead:
+* #2 get rid of all `".name"`, `".exe"` occurrences you have in your code and use `as_dict()` instead:
 
 .. code-block:: python
 
@@ -247,9 +247,9 @@ Ok, enough with the bad news. =) psutil 2.0.0 is not only about code breakage. I
     >>> psutil.cpu_count(logical=False)  # physical cores only
     2
 
-* `#452 <https://code.google.com/p/psutil/issues/detail?id=452>`__: process classes are now hashable and can be checked for equality. That means you can use Process objects with sets (finally!).
-* `#447 <https://code.google.com/p/psutil/issues/detail?id=447>`__: psutil.wait_procs() "timeout" parameter is now optional
+* `#452 <https://code.google.com/p/psutil/issues/detail?id=452>`__: process classes are now hashable and can be checked for equality. That means you can use `Process` objects with sets (finally!).
+* `#447 <https://code.google.com/p/psutil/issues/detail?id=447>`__: `psutil.wait_procs()` "timeout" parameter is now optional
 * `#461 <https://code.google.com/p/psutil/issues/detail?id=461>`__: functions returning namedtuples are now pickle-able
 * `#459 <https://code.google.com/p/psutil/issues/detail?id=459>`__: a Makefile is now available to automatize repetitive tasks such as build, install, running tests etc. There's also a make.bat for Windows.
-* introduced unittest2 module as a requirement for running tests
+* introduced `unittest2` module as a requirement for running tests
 

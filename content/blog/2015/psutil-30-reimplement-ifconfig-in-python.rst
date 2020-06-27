@@ -44,7 +44,7 @@ In a few words, we're now able to list network interface addresses similarly to 
                         netmask=None,
                         broadcast='00:00:00:00:00:00')]}
 
-This is limited to AF_INET (IPv4), AF_INET6 (IPv6) and AF_LINK (ETHERNET) address families. If you want something more poweful (e.g. AF_BLUETOOTH) you can take a look at `netifaces <https://pypi.python.org/pypi/netifaces/>`__ extension. And here's the code which does these tricks on POSIX and Windows:
+This is limited to `AF_INET` (IPv4), `AF_INET6` (IPv6) and `AF_LINK` (Ethernet) address families. If you want something more poweful (e.g. `AF_BLUETOOTH`) you can take a look at `netifaces <https://pypi.python.org/pypi/netifaces/>`__ extension. And here's the code which does these tricks on POSIX and Windows:
 
 * `POSIX <https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L151>`__
 * `Windows <https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L2907>`__
@@ -100,11 +100,11 @@ On Python 3.4 you'll see a more informative:
 
 They are backward compatible, meaning if you're sending serialized data produced with psutil through the network you can safely use comparison operators and so on. The psutil APIs returning enums (on Python >=3.4) are:
 
-* psutil.net_connections() (the address families):
-* psutil.Process.connections() (same as above)
-* psutil.net_if_stats()  (all ``NIC_DUPLEX_*`` constants)
-* psutil.Process.nice() on Windows (for all the ``*_PRIORITY_CLASS`` constants)
-* psutil.Process.ionice() on Linux (for all the ``IOPRIO_CLASS_*`` constants)
+* `psutil.net_connections()` (the address families):
+* `psutil.Process.connections()` (same as above)
+* `psutil.net_if_stats()`  (all ``NIC_DUPLEX_*`` constants)
+* `psutil.Process.nice()` on Windows (for all the ``*_PRIORITY_CLASS`` constants)
+* `psutil.Process.ionice()` on Linux (for all the ``IOPRIO_CLASS_*`` constants)
 
 All the other existing constants remained plain strings (``STATUS_*``) or integers (``CONN_*``).
 
@@ -118,7 +118,7 @@ This is a big one. The full story is `here <https://github.com/giampaolo/psutil/
     >>> pid = create_zombie()
     >>> p = psutil.Process(pid)
 
-...but every time we queried it we got a NoSuchProcess exception:
+...but every time we queried it we got a `NoSuchProcess` exception:
 
 .. code-block:: python
 
@@ -134,19 +134,19 @@ That was misleading though because the PID technically still existed:
     >>> psutil.pid_exists(p.pid)
     True
 
-Furthermore, depending on what platform you were on, certain process stats could still be queried (instead of raising NoSuchProcess):
+Furthermore, depending on what platform you were on, certain process stats could still be queried (instead of raising `NoSuchProcess`):
 
 .. code-block:: python
 
     >>> psutil.cmdline()
     ['python']
 
-Also process_iter() did not return zombie processes at all. This was probably the worst aspect because being able to identify them is an important use case, as they signal an issue with process: if a parent process spawns a child, terminates it (via kill()), but doesn't wait() for it it will create a zombie. Long story short, the way this changed in psutil 3.0 is that:
+Also `process_iter()` did not return zombie processes at all. This was probably the worst aspect because being able to identify them is an important use case, as they signal an issue with process: if a parent process spawns a child, terminates it (via `kill()`), but doesn't `wait()` for it it will create a zombie. Long story short, the way this changed in psutil 3.0 is that:
 
-* we now have a new ZombieProcess exception, raised every time we're not able to query a process because it's a zombie
-* it is raised instead of NoSuchProcess (which was incorrect and misleading)
-* it is still backward compatible (meaning you won't have to change your old code) because it inherits from NoSuchProcess
-* process_iter() finally works, meaning you can safely identify zombie processes like this:
+* we now have a new `ZombieProcess` exception, raised every time we're not able to query a process because it's a zombie
+* it is raised instead of `NoSuchProcess` (which was incorrect and misleading)
+* it is still backward compatible (meaning you won't have to change your old code) because it inherits from `NoSuchProcess`
+* `process_iter()` finally works, meaning you can safely identify zombie processes like this:
 
 .. code-block:: python
 
@@ -203,7 +203,7 @@ Removed module functions and constants
 | psutil.virtmem_usage()       | psutil.swap_memory()            |
 +------------------------------+---------------------------------+
 
-Process methods (assuming p = psutil.Process()):
+Process methods (assuming `p = psutil.Process()`):
 
 +------------------------------+---------------------------------+
 | Already deprecated name      | New name                        |
@@ -274,7 +274,7 @@ Ease of development
 These are not enhancements you will directly benefit from but I put some effort into making my life easier every time I work on psutil.
 
 * I care about psutil code being fully `PEP8 <https://www.python.org/dev/peps/pep-0008/>`__ compliant so I added a `pre-commit <https://github.com/giampaolo/psutil/blob/master/.git-pre-commit>`__ GIT hook which runs `flake8 <https://pypi.python.org/pypi/flake8>`__ on every commit and rejects it if the coding style is not compliant. The way I install this is via `make install-git-hooks <https://github.com/giampaolo/psutil/blob/82da82a6bb94ed5c6faf9d762ef4ad0fec18f01b/Makefile#L108)>`__.
-* I added a ``make install-dev-deps`` command which installs all deps and stuff which is useful for testing (ipdb, coverage, etc).
+* I added a ``make install-dev-deps`` command which installs all deps and stuff which is useful for testing (`ipdb`, `coverage`, etc).
 * A new ``make coverage`` command which runs `coverage <http://nedbatchelder.com/code/coverage/>`__. With this I discovered some of parts in the code which weren't covered by tests and I fixed that.
 * I started using `tox <https://github.com/giampaolo/psutil/blob/master/tox.ini>`__ to easily test psutil against all supported Python versions (from 2.6 to 3.4) in one shot.
 * I `reorganized tests <https://github.com/giampaolo/psutil/issues/629>`__ so that now they can be easily executed with py.test and nose (before, only unittest runner was fully supported)

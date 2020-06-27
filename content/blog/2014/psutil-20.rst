@@ -50,20 +50,20 @@ Full story is in `issue 452 <https://code.google.com/p/psutil/issues/detail?id=4
 Speedups
 --------
 
-* `#477 <https://code.google.com/p/psutil/issues/detail?id=477>`__: process cpu_percent() is about 30% faster.
+* `#477 <https://code.google.com/p/psutil/issues/detail?id=477>`__: process `cpu_percent()` is about 30% faster.
 * `#478 <https://code.google.com/p/psutil/issues/detail?id=478>`__: (Linux) almost all APIs are about 30% faster on Python 3.X.
 
 Other improvements and bugfixes
 -------------------------------
 
 * `#424 <https://code.google.com/p/psutil/issues/detail?id=424>`__: Windows installers for Python 3.X 64-bit
-* `#447 <https://code.google.com/p/psutil/issues/detail?id=447>`__: psutil.wait_procs() timeout parameter is now optional.
+* `#447 <https://code.google.com/p/psutil/issues/detail?id=447>`__: `psutil.wait_procs()` timeout parameter is now optional.
 * `#459 <https://code.google.com/p/psutil/issues/detail?id=459>`__: a Makefile is now available for running tests and other repetitive tasks (also on Windows)
-* `#463 <https://code.google.com/p/psutil/issues/detail?id=463>`__: timeout parameter of cpu_percent* functions default to 0.0 because it was a common trap to introduce slowdowns.
-* `#340 <https://code.google.com/p/psutil/issues/detail?id=340>`__: (Windows) process open_files() no longer hangs.
-* `#448 <https://code.google.com/p/psutil/issues/detail?id=448>`__: (Windows) fixed a memory leak affecting children() and ppid() methods.
+* `#463 <https://code.google.com/p/psutil/issues/detail?id=463>`__: timeout parameter of ``cpu_percent*`` functions default to 0.0 because it was a common trap to introduce slowdowns.
+* `#340 <https://code.google.com/p/psutil/issues/detail?id=340>`__: (Windows) process `open_files()` no longer hangs.
+* `#448 <https://code.google.com/p/psutil/issues/detail?id=448>`__: (Windows) fixed a memory leak affecting `children()` and `ppid()` methods.
 * `#461 <https://code.google.com/p/psutil/issues/detail?id=461>`__: namedtuples are now pickle-able.
-* `#474 <https://code.google.com/p/psutil/issues/detail?id=474>`__: (Windows) Process.cpu_percent() is no longer capped at 100%
+* `#474 <https://code.google.com/p/psutil/issues/detail?id=474>`__: (Windows) `Process.cpu_percent()` is no longer capped at 100%
 
 OK, that's all folks. I hope you will enjoy this new version and report your feedback.
 
