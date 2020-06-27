@@ -12,6 +12,63 @@ About
 
 My name is Giampaolo Rodola. I'm a passionate Python developer who loves writing open source libraries for fun. I'm mostly known for being the author of `psutil`_. I am also a senior consultant and freelancer. Below is a list of my contribution to the world.
 
+Projects
+--------
+
+* `psutil`_: a cross-platform library for retrieving information on running processes and system utilization (CPU, memory, disks, network) in Python.  (2008 - now)
+
+  .. image:: https://img.shields.io/pypi/dm/psutil.svg
+    :target: https://pepy.tech/project/psutil
+    :alt: Downloads
+
+  .. image:: https://img.shields.io/github/stars/giampaolo/psutil.svg
+    :target: https://github.com/giampaolo/psutil/stargazers
+    :alt: Github stars
+
+  .. image:: https://img.shields.io/github/forks/giampaolo/psutil.svg
+    :target: https://github.com/giampaolo/psutil/network/members
+    :alt: Github forks
+
+  .. image:: https://img.shields.io/github/contributors/giampaolo/psutil.svg
+    :target: https://github.com/giampaolo/psutil/graphs/contributors
+    :alt: Contributors
+
+* `pyftpdlib`_: a very fast, asynchronous, pure-python FTP server.  (2006 - now)
+
+  .. image:: https://img.shields.io/pypi/dm/pyftpdlib.svg
+    :target: https://pepy.tech/project/pyftpdlib
+    :alt: Downloads
+
+  .. image:: https://img.shields.io/github/stars/giampaolo/pyftpdlib.svg
+    :target: https://github.com/giampaolo/pyftpdlib/stargazers
+    :alt: Github stars
+
+  .. image:: https://img.shields.io/github/forks/giampaolo/pyftpdlib.svg
+    :target: https://github.com/giampaolo/pyftpdlib/network/members
+    :alt: Github forks
+
+  .. image:: https://img.shields.io/github/contributors/giampaolo/pyftpdlib.svg
+    :target: https://github.com/giampaolo/pyftpdlib/graphs/contributors
+    :alt: Contributors
+
+* `pysendfile`_: a binding to sendfile(2) syscall which lets you send a file twice as fast as with a common socket.  (2011 - now)
+
+  .. image:: https://img.shields.io/pypi/dm/pysendfile.svg
+    :target: https://pepy.tech/project/pysendfile
+    :alt: Downloads
+
+  .. image:: https://img.shields.io/github/stars/giampaolo/pysendfile.svg
+    :target: https://github.com/giampaolo/pysendfile/stargazers
+    :alt: Github stars
+
+  .. image:: https://img.shields.io/github/forks/giampaolo/pysendfile.svg
+    :target: https://github.com/giampaolo/pysendfile/network/members
+    :alt: Github forks
+
+  .. image:: https://img.shields.io/github/contributors/giampaolo/pysendfile.svg
+    :target: https://github.com/giampaolo/pysendfile/graphs/contributors
+    :alt: Contributors
+
 Talks
 -----
 
@@ -21,13 +78,6 @@ Interviews
 ----------
 
 * `2017, Pydev of the week <https://www.blog.pythonlibrary.org/2017/10/09/pydev-of-the-week-giampaolo-rodola/>`_
-
-Projects
---------
-
-* `psutil`_: a cross-platform library for retrieving information on running processes and system utilization (CPU, memory, disks, network) in Python which works on Linux, Windows, OSX, FreeBSD and Solaris.  (2008 - now)
-* `pyftpdlib`_: a very fast, asynchronous, pure-python FTP server.  (2006 - now)
-* `pysendfile`_: a binding to sendfile(2) syscall which lets you send a file twice as fast as with a common socket.  (2011 - now)
 
 python-dev contributions
 ------------------------
