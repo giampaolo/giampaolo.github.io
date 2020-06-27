@@ -10,7 +10,7 @@ How to always execute exit functions in Python
 
 *...or why atexit.register() and signal.signal() are evil*
 
-* **UPDATE (2016-02-13)**: this recipe no longer handles SIGINT, SIGQUIT and SIGABRT as aliases for "application exit" because it was a `bad idea <https://mail.python.org/pipermail/python-ideas/2016-February/038471.html>`__. It only handles SIGTERM. Also it no longer support Windows because `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ implementation is `too different <http://bugs.python.org/issue26350>`__ than POSIX.*
+* **UPDATE (2016-02-13)**: this recipe no longer handles ``SIGINT``, ``SIGQUIT`` and ``SIGABRT`` as aliases for "application exit" because it was a `bad idea <https://mail.python.org/pipermail/python-ideas/2016-February/038471.html>`__. It only handles ``SIGTERM``. Also it no longer support Windows because `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ implementation is `too different <http://bugs.python.org/issue26350>`__ than POSIX.*
 
 Many people erroneously think that any function registered via `atexit module <https://docs.python.org/3/library/atexit.html>`__ is guaranteed to always be executed when the program terminates. You may have noticed this is not the case when, for example, you daemonize your app in production then try to stop it or restart it: the cleanup functions will not be executed. This is because functions registered wth atexit module are **not called** when the program is killed by a signal:
 
@@ -24,7 +24,7 @@ Many people erroneously think that any function registered via `atexit module <h
 
     os.kill(os.getpid(), signal.SIGTERM)
 
-It must be noted that the same thing would happen if instead of `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__ we would use a "finally" clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__. That has a drawback though: in case a third-party module has already registered a function for that signal (SIGTERM or whatever), your new function will **overwrite** the old one:
+It must be noted that the same thing would happen if instead of `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__ we would use a "finally" clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__. That has a drawback though: in case a third-party module has already registered a function for that signal (``SIGTERM`` or whatever), your new function will **overwrite** the old one:
 
 .. code-block:: python
 
@@ -43,9 +43,9 @@ It must be noted that the same thing would happen if instead of `atexit.register
 
 Also, we would still have to use `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__ so that the function is called also on "clean" interpreter exit :strike:`and take into account other signals other than SIGTERM which would cause the process to terminate`. This recipe attempts to address all these issues so that:
 
-* the exit function is always executed :strike:`for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT)` on SIGTERM and on "clean" interpreter exit.
+* the exit function is always executed :strike:`for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT)` on ``SIGTERM`` and on "clean" interpreter exit.
 * any exit function(s) previously registered via `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__ or `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ will be executed as well (after the new one).
-* It must be noted that the exit function will never be executed in case of SIGKILL, SIGSTOP or os._exit().
+* It must be noted that the exit function will never be executed in case of ``SIGKILL``, ``SIGSTOP`` or ``os._exit()``.
 
 The code
 --------

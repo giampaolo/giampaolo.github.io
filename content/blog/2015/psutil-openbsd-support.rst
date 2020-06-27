@@ -18,7 +18,7 @@ As expected, OpenBSD implementation is very similar to FreeBSD's (which was alre
 * ``psutil.swap_memory()`` sin and sout (swap in and swap out) values are not available and hence are always set to 0.
 * ``psutil.cpu_count(logical=False)`` always return None.
 
-Similarly to FreeBSD, also OpenBSD implementation of Process.open_files() is problematic as it is not able to return file paths (FreeBSD can sometimes). Other than these differences the functionalities are all there and pretty much the same, so overall I'm pretty satisfied with the result.
+Similarly to FreeBSD, also OpenBSD implementation of `Process.open_files()` is problematic as it is not able to return file paths (FreeBSD can sometimes). Other than these differences the functionalities are all there and pretty much the same, so overall I'm pretty satisfied with the result.
 
 Considerations about BSD platforms
 ----------------------------------
