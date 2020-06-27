@@ -34,6 +34,9 @@
             {% include 'article_infos.html' %}
             {{ article.content }}
         </div>
+        {% if not loop.last %}
+            <div style="border-bottom: 2px solid #CCC;"></div>
+        {% endif %}
     </article></li>
     {% if loop.last %}
         {% if loop.length > 1 or articles_page.has_other_pages() %}
