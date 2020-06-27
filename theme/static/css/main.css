@@ -180,7 +180,7 @@ aside, nav, article, figure {
 }
 
 /***** Layout *****/
-.body {clear: both; margin: 0 auto; width: 800px;}
+.body {clear: both; margin: 0 auto; width: 920px;}
 img.right, figure.right, div.figure.align-right {
     float: right;
     margin: 0 0 2em 2em;
@@ -228,14 +228,14 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 		margin: 0 auto 1em auto;
 		padding: 0;
 		text-align: center;
-		width: 800px;
+		width: 900px;
 
 		border-radius: 5px;
 		-moz-border-radius: 5px;
 		-webkit-border-radius: 5px;
 	}
 
-	#banner nav ul {list-style: none; margin: 0 auto; width: 800px;}
+	#banner nav ul {list-style: none; margin: 0 auto; width: 860px;}
 	#banner nav li {float: left; display: inline; margin: 0;}
 
 	#banner nav a:link, #banner nav a:visited {
@@ -274,7 +274,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	margin-bottom: 2em;
 	overflow: hidden;
 	padding: 20px;
-	width: 760px;
+	width: 860px;
 
 	border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -303,7 +303,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	margin-bottom: 2em;
 	overflow: hidden;
 	padding: 20px 20px;
-	width: 760px;
+	width: 860px;
 
 	border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -330,7 +330,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 }
 
 	#extras {
-		width:800px;
+		width:860px;
 		padding-left:50px;
 		margin-top:-20px;
 		font-size:15px;
@@ -424,7 +424,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	overflow: hidden;
 	padding: 20px;
 	text-align: left;
-	width: 760px;
+	width: 860px;
 
 	border-radius: 10px;
 	-moz-border-radius: 10px;
