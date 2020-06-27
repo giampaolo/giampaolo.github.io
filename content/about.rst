@@ -32,35 +32,12 @@ Projects
     :target: https://pepy.tech/project/psutil
     :alt: Downloads
 
-  .. image:: https://img.shields.io/github/stars/giampaolo/psutil?color=%232980B9&style=flat
-    :target: https://github.com/giampaolo/psutil/stargazers
-    :alt: Github stars
-
-  .. image:: https://img.shields.io/github/forks/giampaolo/psutil?color=%232980B9&style=flat
-    :target: https://github.com/giampaolo/pyftpdlib/network/members
-    :alt: Github forks
-
-  .. image:: https://img.shields.io/github/contributors/giampaolo/psutil?color=%232980B9&style=flat
-    :target: https://github.com/giampaolo/psutil/graphs/contributors
-    :alt: Contributors
-
 * `pyftpdlib`_: a very fast, asynchronous, pure-python FTP server.  *(2006 - now)*
 
   .. image:: https://img.shields.io/pypi/dm/pyftpdlib?color=%232980B9&style=flat
     :target: https://pepy.tech/project/pyftpdlib
     :alt: Downloads
 
-  .. image:: https://img.shields.io/github/stars/giampaolo/pyftpdlib?color=%232980B9&style=flat
-    :target: https://github.com/giampaolo/pyftpdlib/stargazers
-    :alt: Github stars
-
-  .. image:: https://img.shields.io/github/forks/giampaolo/pyftpdlib?color=%232980B9&style=flat
-    :target: https://github.com/giampaolo/pyftpdlib/network/members
-    :alt: Github forks
-
-  .. image:: https://img.shields.io/github/contributors/giampaolo/pyftpdlib?color=%232980B9&style=flat
-    :target: https://github.com/giampaolo/pyftpdlib/graphs/contributors
-    :alt: Contributors
 
 * `pysendfile`_: a binding to `sendfile(2)` syscall which lets you send a file twice as fast as with a common socket.  *(2011 - now)*
 
@@ -68,17 +45,6 @@ Projects
     :target: https://pepy.tech/project/pysendfile
     :alt: Downloads
 
-  .. image:: https://img.shields.io/github/stars/giampaolo/pysendfile?color=%232980B9&style=flat
-    :target: https://github.com/giampaolo/pysendfile/stargazers
-    :alt: Github stars
-
-  .. image:: https://img.shields.io/github/forks/giampaolo/pysendfile?color=%232980B9&style=flat
-    :target: https://github.com/giampaolo/pysendfile/network/members
-    :alt: Github forks
-
-  .. image:: https://img.shields.io/github/contributors/giampaolo/pysendfile?color=%232980B9&style=flat
-    :target: https://github.com/giampaolo/pysendfile/graphs/contributors
-    :alt: Contributors
 
 python-dev contributions
 ------------------------

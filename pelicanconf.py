@@ -91,8 +91,9 @@ DEFAULT_DATE_FORMAT = ('%d %b %Y')
 # RELATIVE_URLS = True
 
 JINJA_FILTERS = {
-    'sort_by_tags': functools.partial(sorted, key=lambda tags: len(tags[1]),
-                                      reverse=True)
+    'sort_by_tags': functools.partial(
+        sorted, key=lambda tags: (len(tags[1]), -ord(tags[0].name[0])),
+        reverse=True)
 }
 
 # Do not generate /author/* HTML files.
