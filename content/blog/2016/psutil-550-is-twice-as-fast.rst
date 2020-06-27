@@ -113,7 +113,7 @@ SunOS implementation is similar to Linux implementation in that it reads files i
 External links
 --------------
 
-* `reddit <https://www.reddit.com/r/Python/comments/5bhn4q/psutil_500_is_around_twice_as_fast/>`__
+* `Reddit <https://www.reddit.com/r/Python/comments/5bhn4q/psutil_500_is_around_twice_as_fast/>`__
 
 
 
