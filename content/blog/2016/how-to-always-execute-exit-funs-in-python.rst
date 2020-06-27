@@ -5,6 +5,9 @@ How to always execute exit functions in Python
 :modified: 2016-02-13
 :tags: python, recipe
 
+.. role:: strike
+    :class: strike
+
 *...or why atexit.register() and signal.signal() are evil*
 
 * **UPDATE (2016-02-13)**: this recipe no longer handles SIGINT, SIGQUIT and SIGABRT as aliases for "application exit" because it was a `bad idea <https://mail.python.org/pipermail/python-ideas/2016-February/038471.html>`__. It only handles SIGTERM. Also it no longer support Windows because `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ implementation is `too different <http://bugs.python.org/issue26350>`__ than POSIX.*
@@ -228,8 +231,3 @@ External discussions
 
 * `Reddit <https://www.reddit.com/r/Python/comments/45fvd9/how_to_always_execute_exit_functions_in_python/>`__
 * `Hacker news <https://news.ycombinator.com/item?id=11088938>`__
-
-
-
-.. role:: strike
-    :class: strike
