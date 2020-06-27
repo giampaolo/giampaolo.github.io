@@ -36,7 +36,7 @@ As a personal note I'd like to add that I'm currently in Prague (Czech Republic)
 External discussions
 --------------------
 
-* `reddit <https://www.reddit.com/r/Python/comments/4131q2/netbsd_support_for_psutil/>`_
-* `hackernews <https://news.ycombinator.com/item?id=10909101>`_
+* `Reddit <https://www.reddit.com/r/Python/comments/4131q2/netbsd_support_for_psutil/>`_
+* `Hacker news <https://news.ycombinator.com/item?id=10909101>`_
 
 .. _`psutil`: https://github.com/giampaolo/psutil

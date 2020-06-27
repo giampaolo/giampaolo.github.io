@@ -146,6 +146,6 @@ OK, this is it. I would like to spend a couple more words to announce the world 
 External links
 --------------
 
-* `reddit <https://www.reddit.com/r/Python/comments/469p2c/psutil_400_real_process_memory_info_and_process/>`_
-* `hacker news <https://news.ycombinator.com/item?id=11119298>`_
+* `Reddit <https://www.reddit.com/r/Python/comments/469p2c/psutil_400_real_process_memory_info_and_process/>`_
+* `Hacker news <https://news.ycombinator.com/item?id=11119298>`_
 

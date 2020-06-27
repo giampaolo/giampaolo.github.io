@@ -33,6 +33,6 @@ The only other enhancement is `issue #558 <https://github.com/giampaolo/psutil/i
 External discussions
 --------------------
 
-* `reddit <https://www.reddit.com/r/Python/comments/3u8wm3/openbsd_support_for_psutil_330/>`__
-* `hacker news <https://news.ycombinator.com/item?id=10628726>`__
+* `Reddit <https://www.reddit.com/r/Python/comments/3u8wm3/openbsd_support_for_psutil_330/>`__
+* `Hacker news <https://news.ycombinator.com/item?id=10628726>`__
 
