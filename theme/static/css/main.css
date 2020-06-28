@@ -684,11 +684,10 @@ input[type=text] {
 		-ms-transform: scale(2.2, 2.2);
 		-webkit-transform: scale(2.2, 2.2);
 		transform: scale(2.2, 2.2);
-        -webkit-appearance: none;
 	}
     input[type="text"] {
-    	width: 150px;
-    	margin-right: 20px;
+    	width: 120px;
+    	margin-right: 10px;
 	}
 
 	.newsletter-button {
