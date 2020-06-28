@@ -598,14 +598,14 @@ input[type=text] {
 }
 
 @media only screen and (max-device-width : 415px) {
-    #body {
-        background: white;
-    }
+    html, body {
+		width:100%;
+		height:100%;
+	}
 
     #content {
-        width:100%;
-        height:100%;
         font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+        width: auto;
         font-size: 40px;
         color:#24292e;
         word-wrap: break-word;
@@ -613,12 +613,12 @@ input[type=text] {
         padding:30px;
     }
 
-    #featured {width:100%}
-    #extras {width:100%}
-    #about {width:100%}
     #banner {width:100%}
     #header {width:100%}
-    #banner nav {width:100%}
+    #banner nav {
+    	width:100%;
+    	padding-top:3px;
+    }
     #banner nav ul {width:100%}
     .archives-right {
         width:100%;
