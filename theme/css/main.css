@@ -606,6 +606,11 @@ input[type=text] {
 	padding-bottom:20px;
 }
 
+
+/*
+    Mobile
+*****************/
+
 @media only screen and (max-device-width : 415px) {
     html, body {
 		width:100%;
@@ -679,6 +684,7 @@ input[type=text] {
 		-ms-transform: scale(2.2, 2.2);
 		-webkit-transform: scale(2.2, 2.2);
 		transform: scale(2.2, 2.2);
+        -webkit-appearance: none;
 	}
     input[type="text"] {
     	width: 150px;
