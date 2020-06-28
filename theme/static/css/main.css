@@ -589,6 +589,10 @@ input[type=text] {
 	width:140px
 }
 
+.archives-right .newsletter-text {
+	margin-bottom:10px;
+}
+
 #nav li {
 	padding:0px;
 }
