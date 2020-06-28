@@ -589,11 +589,28 @@ input[type=text] {
 	width:140px
 }
 
+#nav li {
+	padding:0px;
+}
+
+
+
 /* phones */
-/*
-@media (min-width:320px)  {
-	#content {width:100%;}
-	#content {padding:0px;}
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+	#body {
+		background: white;
+	}
+
+	#content {
+		width:100%
+		font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+		padding: 61px;
+		font-size: 45px;
+		color:#24292e;
+		word-wrap: break-word;
+		margin-bottom: 0px;
+	}
+
 	#featured {width:100%}
 	#extras {width:100%}
 	#about {width:100%}
@@ -601,5 +618,54 @@ input[type=text] {
 	#header {width:100%}
 	#banner nav {width:100%}
 	#banner nav ul {width:100%}
+	.archives-right {
+		width:100%;
+		float:unset;
+	}
+	#banner h1 {
+		margin-top:70px;
+		font-size: 110px;
+	}
+	#banner h1 strong {
+		display: block;
+		margin-top:90px;
+		font-size: 60px;
+	}
+
+	cite, .literal {font-size:45px;}
+	.post-info {font-size:45px;}
+	.archives-left {width:100%;}
+	.entry-title {font-size:2.5em;}
+	#tag-list ul {margin:0px;}
+	#tag-list li {
+	  text-overflow: ellipsis;
+	  white-space: nowrap;
+	  display: inline-block;
+	}
+	h1, h2, h3, h4, h5, h6 {
+		border-bottom:solid 2px #ccc;
+	}
+	input[type="text"] {
+	    width: 282px;
+	    height: 40px;
+	    border: 3px solid #ccc;
+	}
+	input[type=button], input[type=submit], input[type=reset] {
+	    width: 282px;
+		border:3px solid #ccc;
+		font-size:40px;
+	    background:#ccc;
+	    border-radius: 5px;
+	    display: inline-block; height: 200px;
+	}
+	#banner nav {
+		font-size:30px;
+		font-weight: bold;
+	}
+	#banner li {
+		padding-left:0px;
+		padding-right:0px;
+		margin:0px;
+	}
+	#extras {display:none;}
 }
-*/
