@@ -86,12 +86,13 @@ Whatever is not big enough to become an actual project I usually turn into an in
 Here's the ones I like the most:
 
 * `Log / directory watcher <http://code.activestate.com/recipes/577968-log-watcher-tail-f-log/?in=user-4178764>`__
+* `handle exit context manager <https://gmpy.dev/blog/2016/how-to-always-execute-exit-functions-in-python>`__
 * `IPv4/v6 agnostic server <http://code.activestate.com/recipes/578504-server-supporting-ipv4-and-ipv6/?in=user-4178764>`__
 * `socket.sendfile() <https://code.activestate.com/recipes/578889-socketsendfile/>`__ (backport of `BPO-17552 <https://bugs.python.org/issue17552>`__)
 * `shutil.disk_usage() <http://code.activestate.com/recipes/577972-disk-usage/?in=user-4178764>`__ (backport of `BPO-12442 <http://bugs.python.org/issue12442>`__)
 * `wait for PID <http://code.activestate.com/recipes/578022-wait-for-pid-and-check-for-pid-existance-posix/?in=user-4178764>`__
 * `bytes-to-human corverter <http://code.activestate.com/recipes/578019-bytes-to-human-human-to-bytes-converter/?in=user-4178764>`__
-* `handle exit context manager <blog/2016/how-to-always-execute-exit-functions-in-python/>`__
+
 
 Abandoned projects
 ------------------
