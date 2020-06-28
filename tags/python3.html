@@ -21,7 +21,9 @@
             <li><a href="/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
+
 <section id="content" class="body">
+    <h1 class="entry-title">Blog posts for tags/python</h1>
 
 <!-- blog posts -->
         <ol id="posts-list" class="hfeed" start="4">
@@ -50,7 +52,7 @@
 -->
 </footer><!-- /.post-info -->            <p><em>...or why atexit.register() and signal.signal() are evil</em></p>
 <ul class="simple">
-<li><strong>UPDATE (2016-02-13)</strong>: this recipe no longer handles SIGINT, SIGQUIT and SIGABRT as aliases for &quot;application exit&quot; because it was a <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038471.html">bad idea</a>. It only handles SIGTERM. Also it no longer support Windows because <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> implementation is <a class="reference external" href="http://bugs.python.org/issue26350">too different</a> than POSIX.*</li>
+<li><strong>UPDATE (2016-02-13)</strong>: this recipe no longer handles <tt class="docutils literal">SIGINT</tt>, <tt class="docutils literal">SIGQUIT</tt> and <tt class="docutils literal">SIGABRT</tt> as aliases for &quot;application exit&quot; because it was a <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038471.html">bad idea</a>. It only handles <tt class="docutils literal">SIGTERM</tt>. Also it no longer support Windows because <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> implementation is <a class="reference external" href="http://bugs.python.org/issue26350">too different</a> than POSIX.*</li>
 </ul>
 <p>Many people erroneously think that any function registered via <a class="reference external" href="https://docs.python.org/3/library/atexit.html">atexit module</a> is guaranteed to always be executed when the program terminates. You may have noticed this is not the case when, for example, you daemonize your app in production then try to stop it or restart it: the cleanup functions will not be executed. This is because functions registered wth atexit module are <strong>not called</strong> when the program is killed by a signal:</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">atexit</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">signal</span>
@@ -61,7 +63,7 @@
 
 <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
 </pre></div>
-<p>It must be noted that the same thing would happen if instead of <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> we would use a &quot;finally&quot; clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. That has a drawback though: in case a third-party module has already registered a function for that signal (SIGTERM or whatever), your new function will <strong>overwrite</strong> the old one:</p>
+<p>It must be noted that the same thing would happen if instead of <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> we would use a &quot;finally&quot; clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. That has a drawback though: in case a third-party module has already registered a function for that signal (<tt class="docutils literal">SIGTERM</tt> or whatever), your new function will <strong>overwrite</strong> the old one:</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">signal</span>
 
 <span class="k">def</span> <span class="nf">old</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
@@ -76,9 +78,9 @@
 </pre></div>
 <p>Also, we would still have to use <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> so that the function is called also on &quot;clean&quot; interpreter exit <span class="strike">and take into account other signals other than SIGTERM which would cause the process to terminate</span>. This recipe attempts to address all these issues so that:</p>
 <ul class="simple">
-<li>the exit function is always executed <span class="strike">for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT)</span> on SIGTERM and on &quot;clean&quot; interpreter exit.</li>
+<li>the exit function is always executed <span class="strike">for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT)</span> on <tt class="docutils literal">SIGTERM</tt> and on &quot;clean&quot; interpreter exit.</li>
 <li>any exit function(s) previously registered via <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> or <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> will be executed as well (after the new one).</li>
-<li>It must be noted that the exit function will never be executed in case of SIGKILL, SIGSTOP or os._exit().</li>
+<li>It must be noted that the exit function will never be executed in case of <tt class="docutils literal">SIGKILL</tt>, <tt class="docutils literal">SIGSTOP</tt> or <tt class="docutils literal">os._exit()</tt>.</li>
 </ul>
 <div class="section" id="the-code">
 <h2>The code</h2>
@@ -291,7 +293,7 @@
 <li><tt class="docutils literal">psutil.swap_memory()</tt> sin and sout (swap in and swap out) values are not available and hence are always set to 0.</li>
 <li><tt class="docutils literal">psutil.cpu_count(logical=False)</tt> always return None.</li>
 </ul>
-<p>Similarly to FreeBSD, also OpenBSD implementation of Process.open_files() is problematic as it is not able to return file paths (FreeBSD can sometimes). Other than these differences the functionalities are all there and pretty much the same, so overall I'm pretty satisfied with the result.</p>
+<p>Similarly to FreeBSD, also OpenBSD implementation of <cite>Process.open_files()</cite> is problematic as it is not able to return file paths (FreeBSD can sometimes). Other than these differences the functionalities are all there and pretty much the same, so overall I'm pretty satisfied with the result.</p>
 </div>
 <div class="section" id="considerations-about-bsd-platforms">
 <h2>Considerations about BSD platforms</h2>
@@ -362,7 +364,7 @@
                     <span class="n">netmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;00:00:00:00:00:00&#39;</span><span class="p">)]}</span>
 </pre></div>
-<p>This is limited to AF_INET (IPv4), AF_INET6 (IPv6) and AF_LINK (ETHERNET) address families. If you want something more poweful (e.g. AF_BLUETOOTH) you can take a look at <a class="reference external" href="https://pypi.python.org/pypi/netifaces/">netifaces</a> extension. And here's the code which does these tricks on POSIX and Windows:</p>
+<p>This is limited to <cite>AF_INET</cite> (IPv4), <cite>AF_INET6</cite> (IPv6) and <cite>AF_LINK</cite> (Ethernet) address families. If you want something more poweful (e.g. <cite>AF_BLUETOOTH</cite>) you can take a look at <a class="reference external" href="https://pypi.python.org/pypi/netifaces/">netifaces</a> extension. And here's the code which does these tricks on POSIX and Windows:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L151">POSIX</a></li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L2907">Windows</a></li>
@@ -407,11 +409,11 @@
 </pre></div>
 <p>They are backward compatible, meaning if you're sending serialized data produced with psutil through the network you can safely use comparison operators and so on. The psutil APIs returning enums (on Python &gt;=3.4) are:</p>
 <ul class="simple">
-<li>psutil.net_connections() (the address families):</li>
-<li>psutil.Process.connections() (same as above)</li>
-<li>psutil.net_if_stats()  (all <tt class="docutils literal">NIC_DUPLEX_*</tt> constants)</li>
-<li>psutil.Process.nice() on Windows (for all the <tt class="docutils literal">*_PRIORITY_CLASS</tt> constants)</li>
-<li>psutil.Process.ionice() on Linux (for all the <tt class="docutils literal">IOPRIO_CLASS_*</tt> constants)</li>
+<li><cite>psutil.net_connections()</cite> (the address families):</li>
+<li><cite>psutil.Process.connections()</cite> (same as above)</li>
+<li><cite>psutil.net_if_stats()</cite>  (all <tt class="docutils literal">NIC_DUPLEX_*</tt> constants)</li>
+<li><cite>psutil.Process.nice()</cite> on Windows (for all the <tt class="docutils literal">*_PRIORITY_CLASS</tt> constants)</li>
+<li><cite>psutil.Process.ionice()</cite> on Linux (for all the <tt class="docutils literal">IOPRIO_CLASS_*</tt> constants)</li>
 </ul>
 <p>All the other existing constants remained plain strings (<tt class="docutils literal">STATUS_*</tt>) or integers (<tt class="docutils literal">CONN_*</tt>).</p>
 </div>
@@ -421,7 +423,7 @@
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">pid</span> <span class="o">=</span> <span class="n">create_zombie</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
 </pre></div>
-<p>...but every time we queried it we got a NoSuchProcess exception:</p>
+<p>...but every time we queried it we got a <cite>NoSuchProcess</cite> exception:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
   <span class="n">File</span> <span class="s2">&quot;psutil/__init__.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">374</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_init</span>
     <span class="k">raise</span> <span class="n">NoSuchProcess</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
@@ -431,16 +433,16 @@
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">pid_exists</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">)</span>
 <span class="kc">True</span>
 </pre></div>
-<p>Furthermore, depending on what platform you were on, certain process stats could still be queried (instead of raising NoSuchProcess):</p>
+<p>Furthermore, depending on what platform you were on, certain process stats could still be queried (instead of raising <cite>NoSuchProcess</cite>):</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cmdline</span><span class="p">()</span>
 <span class="p">[</span><span class="s1">&#39;python&#39;</span><span class="p">]</span>
 </pre></div>
-<p>Also process_iter() did not return zombie processes at all. This was probably the worst aspect because being able to identify them is an important use case, as they signal an issue with process: if a parent process spawns a child, terminates it (via kill()), but doesn't wait() for it it will create a zombie. Long story short, the way this changed in psutil 3.0 is that:</p>
+<p>Also <cite>process_iter()</cite> did not return zombie processes at all. This was probably the worst aspect because being able to identify them is an important use case, as they signal an issue with process: if a parent process spawns a child, terminates it (via <cite>kill()</cite>), but doesn't <cite>wait()</cite> for it it will create a zombie. Long story short, the way this changed in psutil 3.0 is that:</p>
 <ul class="simple">
-<li>we now have a new ZombieProcess exception, raised every time we're not able to query a process because it's a zombie</li>
-<li>it is raised instead of NoSuchProcess (which was incorrect and misleading)</li>
-<li>it is still backward compatible (meaning you won't have to change your old code) because it inherits from NoSuchProcess</li>
-<li>process_iter() finally works, meaning you can safely identify zombie processes like this:</li>
+<li>we now have a new <cite>ZombieProcess</cite> exception, raised every time we're not able to query a process because it's a zombie</li>
+<li>it is raised instead of <cite>NoSuchProcess</cite> (which was incorrect and misleading)</li>
+<li>it is still backward compatible (meaning you won't have to change your old code) because it inherits from <cite>NoSuchProcess</cite></li>
+<li><cite>process_iter()</cite> finally works, meaning you can safely identify zombie processes like this:</li>
 </ul>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">psutil</span>
 <span class="n">zombies</span> <span class="o">=</span> <span class="p">[]</span>
@@ -519,7 +521,7 @@
 </tr>
 </tbody>
 </table>
-<p>Process methods (assuming p = psutil.Process()):</p>
+<p>Process methods (assuming <cite>p = psutil.Process()</cite>):</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="48%" />
@@ -620,7 +622,7 @@
 <p>These are not enhancements you will directly benefit from but I put some effort into making my life easier every time I work on psutil.</p>
 <ul class="simple">
 <li>I care about psutil code being fully <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8</a> compliant so I added a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/.git-pre-commit">pre-commit</a> GIT hook which runs <a class="reference external" href="https://pypi.python.org/pypi/flake8">flake8</a> on every commit and rejects it if the coding style is not compliant. The way I install this is via <a class="reference external" href="https://github.com/giampaolo/psutil/blob/82da82a6bb94ed5c6faf9d762ef4ad0fec18f01b/Makefile#L108)">make install-git-hooks</a>.</li>
-<li>I added a <tt class="docutils literal">make <span class="pre">install-dev-deps</span></tt> command which installs all deps and stuff which is useful for testing (ipdb, coverage, etc).</li>
+<li>I added a <tt class="docutils literal">make <span class="pre">install-dev-deps</span></tt> command which installs all deps and stuff which is useful for testing (<cite>ipdb</cite>, <cite>coverage</cite>, etc).</li>
 <li>A new <tt class="docutils literal">make coverage</tt> command which runs <a class="reference external" href="http://nedbatchelder.com/code/coverage/">coverage</a>. With this I discovered some of parts in the code which weren't covered by tests and I fixed that.</li>
 <li>I started using <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/tox.ini">tox</a> to easily test psutil against all supported Python versions (from 2.6 to 3.4) in one shot.</li>
 <li>I <a class="reference external" href="https://github.com/giampaolo/psutil/issues/629">reorganized tests</a> so that now they can be easily executed with py.test and nose (before, only unittest runner was fully supported)</li>
@@ -658,8 +660,8 @@
 </footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate to the project. The main new &quot;feature&quot; of this release is that other than the exe files, Windows users can now also benefit of <a class="reference external" href="http://pythonwheels.com/">Python wheels</a> (full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/505">here</a>) which are available on PYPI. Frankly I don't know much about the new wheels packaging system but long story short is that Windows users can now install psutil via pip and therefore also include it as a dependency into requirements.txt. Other than this 2.1.2 can basically be considered a bug-fix release, including some important fixes amongst which:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/506">#506</a>: restored Python 2.4 compatibility</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/340">#340</a>: Process.get_open_files() no longer hangs on Windows (this was a very old and high-priority issue)</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/501">#501</a>: disk_io_counters() may return negative values on Windows</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/340">#340</a>: <cite>Process.get_open_files()</cite> no longer hangs on Windows (this was a very old and high-priority issue)</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/501">#501</a>: <cite>disk_io_counters()</cite> may return negative values on Windows</li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/504">#504</a>: (Linux) couldn't build RPM packages via setup.py</li>
 </ul>
 <p>The list of all fixes can be found <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">here</a>. For the next release I plan to drop support for Python 2.4 and 2.5 and hopefully network interfaces information similarly to <a class="reference external" href="https://github.com/giampaolo/psutil/issues/376">ifconfig</a>.</p>
@@ -688,14 +690,14 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p><a class="reference external" href="http://linux.die.net/man/2/sendfile">sendfile(2)</a> is a UNIX system call which provides a &quot;zero-copy&quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, sendfile(2) is more efficient than the combination of &quot;file.read()&quot; and &quot;socket.send()&quot;, which requires transferring data to and from user space.  This copying of the data twice imposes some performance and resource penalties which sendfile(2) syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of <a class="reference external" href="http://linux.die.net/man/2/read">read(2)</a> / <a class="reference external" href="http://linux.die.net/man/2/write">write(2)</a> system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how sendfile(2) works is available <a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/">here</a>, but long story short is that sending a file with sendfile() is usually <a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark">twice as fast</a> than using plain <a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send">socket.send()</a>. Typical applications which can benefit from using sendfile() are FTP and HTTP servers.</p>
+</footer><!-- /.post-info -->            <p><a class="reference external" href="http://linux.die.net/man/2/sendfile">sendfile(2)</a> is a UNIX system call which provides a &quot;zero-copy&quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, <cite>sendfile(2)</cite> is more efficient than the combination of <cite>file.read()</cite> and <cite>socket.send()</cite>, which requires transferring data to and from user space.  This copying of the data twice imposes some performance and resource penalties which <cite>sendfile(2)</cite> syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of <a class="reference external" href="http://linux.die.net/man/2/read">read(2)</a> / <a class="reference external" href="http://linux.die.net/man/2/write">write(2)</a> system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how <cite>sendfile(2)</cite> works is available <a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/">here</a>, but long story short is that sending a file with <cite>sendfile()</cite> is usually <a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark">twice as fast</a> than using plain <a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send">socket.send()</a>. Typical applications which can benefit from using <cite>sendfile()</cite> are FTP and HTTP servers.</p>
 <div class="section" id="socket-sendfile">
 <h2>socket.sendfile()</h2>
-<p>I recently contributed a patch for Python's socket module which adds a high-level <a class="reference external" href="https://docs.python.org/3.5/library/socket.html#socket.socket.sendfile">socket.sendfile()</a> method (see full discussion at <a class="reference external" href="http://bugs.python.org/issue17552">BPO-17552</a>). socket.sendfile() will transmit a file until EOF is reached by attempting to use <a class="reference external" href="https://docs.python.org/3/library/os.html#os.sendfile">os.sendfile()</a>, if available, else it falls back on using plain socket.send(). Internally, it takes care of handling socket timeouts and provides two optional parameters to move the file offset or to send only a limited amount of bytes. I came up with this idea because getting all of that right is a bit tricky, so a generic wrapper seemed to be convenient to have. socket.sendfile() will make its appearance in Python 3.5.</p>
+<p>I recently contributed a patch for Python's socket module which adds a high-level <a class="reference external" href="https://docs.python.org/3.5/library/socket.html#socket.socket.sendfile">socket.sendfile()</a> method (see full discussion at <a class="reference external" href="http://bugs.python.org/issue17552">BPO-17552</a>). <cite>socket.sendfile()</cite> will transmit a file until EOF is reached by attempting to use <a class="reference external" href="https://docs.python.org/3/library/os.html#os.sendfile">os.sendfile()</a>, if available, else it falls back on using plain <cite>socket.send()</cite>. Internally, it takes care of handling socket timeouts and provides two optional parameters to move the file offset or to send only a limited amount of bytes. I came up with this idea because getting all of that right is a bit tricky, so a generic wrapper seemed to be convenient to have. <cite>socket.sendfile()</cite> will make its appearance in Python 3.5.</p>
 </div>
 <div class="section" id="sendfile-and-python">
 <h2>sendfile and Python</h2>
-<p>sendfile(2) made its first appearance into the Python stdlib kind of late: Python 3.3. It was contributed by Ross Lagerwall and me in <a class="reference external" href="http://bugs.python.org/issue10882">BPO-10882</a>. Since the patch didn't make it into python 2.X and I wanted to <a class="reference external" href="https://code.google.com/p/pyftpdlib/issues/detail?id=152">use sendfile() in pyftpdlib</a> I later decided to release it as a stand alone module working with older (2.5+) Python versions (see <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> project). Starting with version 3.5, Python will hopefully start using sendfile() more extensively, in details:</p>
+<p><cite>sendfile(2)</cite> made its first appearance into the Python stdlib kind of late: Python 3.3. It was contributed by Ross Lagerwall and me in <a class="reference external" href="http://bugs.python.org/issue10882">BPO-10882</a>. Since the patch didn't make it into python 2.X and I wanted to <a class="reference external" href="https://code.google.com/p/pyftpdlib/issues/detail?id=152">use sendfile() in pyftpdlib</a> I later decided to release it as a stand alone module working with older (2.5+) Python versions (see <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> project). Starting with version 3.5, Python will hopefully start using <cite>sendfile()</cite> more extensively, in details:</p>
 <ul class="simple">
 <li><a class="reference external" href="http://bugs.python.org/issue13564">BPO-13563: ftplib</a></li>
 <li><a class="reference external" href="http://bugs.python.org/issue13559">BPO-13559: httplib</a></li>
@@ -705,7 +707,7 @@
 </div>
 <div class="section" id="backport-to-python-2-6-and-2-7">
 <h2>Backport to Python 2.6 and 2.7</h2>
-<p>For those of you who are interested in using socket.sendfile() with older Python 2.6 and 2.7 versions here's a backport. It requires <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> module to be installed. Full code including tests is hosted <a class="reference external" href="https://code.activestate.com/recipes/578889-socketsendfile/">here</a>.</p>
+<p>For those of you who are interested in using <cite>socket.sendfile()</cite> with older Python 2.6 and 2.7 versions here's a backport. It requires <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> module to be installed. Full code including tests is hosted <a class="reference external" href="https://code.activestate.com/recipes/578889-socketsendfile/">here</a>.</p>
 <div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
 
 <span class="sd">&quot;&quot;&quot;</span>

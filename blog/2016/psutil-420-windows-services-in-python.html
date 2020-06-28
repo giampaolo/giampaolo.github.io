@@ -64,14 +64,14 @@
  <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;stopped&#39;</span><span class="p">,</span>
  <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;NT AUTHORITY</span><span class="se">\\</span><span class="s1">LocalService&#39;</span><span class="p">}</span>
 </pre></div>
-<p>I did this mainly because I find pywin32 APIs too low level. Having something like this in psutil can be useful to discover and monitor services more easily. The code changes are <a class="reference external" href="https://github.com/giampaolo/psutil/pull/803/files">here</a> and here's the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#windows-services">doc</a>. The API for querying a service is similar to <tt class="docutils literal">psutil.Process</tt>. You can get a reference to a service object by using its name (which is unique for every service) and then use name(), status(), etc..:</p>
+<p>I did this mainly because I find pywin32 APIs too low level. Having something like this in psutil can be useful to discover and monitor services more easily. The code changes are <a class="reference external" href="https://github.com/giampaolo/psutil/pull/803/files">here</a> and here's the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#windows-services">doc</a>. The API for querying a service is similar to <tt class="docutils literal">psutil.Process</tt>. You can get a reference to a service object by using its name (which is unique for every service) and then use <tt class="docutils literal">name()</tt>, <tt class="docutils literal">status()</tt>, etc..:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">win_service_get</span><span class="p">(</span><span class="s1">&#39;alg&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
 <span class="s1">&#39;alg&#39;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
 <span class="s1">&#39;stopped&#39;</span>
 </pre></div>
-<p>Initially I thought to expose and provide a complete set of APIs to handle all aspects of service handling including <tt class="docutils literal">start()</tt>, <tt class="docutils literal">stop()</tt>, <tt class="docutils literal">restart()</tt>, <tt class="docutils literal">install()</tt>, uninstall() and modify() but I soon realized that I would have ended up reimplementing what pywin32 already provides at the cost of overcrowding psutil API (see my reasoning <a class="reference external" href="https://github.com/giampaolo/psutil/blob/d28de253a2e6d7f368e5260d7a4ab14b285c5083/psutil/_pswindows.py#L426">here</a>). I think psutil should really be about monitoring, not about installing and modifying system stuff, especially something as critical as a Windows service.</p>
+<p>Initially I thought to expose and provide a complete set of APIs to handle all aspects of service handling including <tt class="docutils literal">start()</tt>, <tt class="docutils literal">stop()</tt>, <tt class="docutils literal">restart()</tt>, <tt class="docutils literal">install()</tt>, <tt class="docutils literal">uninstall()</tt> and <tt class="docutils literal">modify()</tt> but I soon realized that I would have ended up reimplementing what pywin32 already provides at the cost of overcrowding psutil API (see my reasoning <a class="reference external" href="https://github.com/giampaolo/psutil/blob/d28de253a2e6d7f368e5260d7a4ab14b285c5083/psutil/_pswindows.py#L426">here</a>). I think psutil should really be about monitoring, not about installing and modifying system stuff, especially something as critical as a Windows service.</p>
 <div class="section" id="considerations-about-windows-services">
 <h2>Considerations about Windows services</h2>
 <p>For those of you who are not familiar with Windows, a service is something, generally an executable (.exe), which runs at system startup and keeps running in background. We can say they are the equivalent of a UNIX init script. All service are controlled by a &quot;manager&quot; which keeps track of their status and metadata (e.g. description, startup type) and with that you can start and stop them. It is interesting to note that since (most) services are bound to an executable (and hence a process) you can reference the process via its PID:</p>
@@ -91,17 +91,13 @@
 <h2>Other improvements</h2>
 <p>psutil 4.2.0 comes with 2 other enhancements for Linux:</p>
 <ul class="simple">
-<li>psutil.virtual_memory() returns a new &quot;shared&quot; memory field. This is the same value reported by &quot;free&quot; cmdline utility.</li>
-<li><dl class="first docutils">
-<dt>I changed the way how /proc was parsed. Instead of reading /proc/{pid}/status line by line I used a regular expression. Here's the speedups:</dt>
-<dd><ul class="first last">
-<li>Process.ppid() is 20% faster</li>
-<li>Process.status() is 28% faster</li>
-<li>Process.name() is 25% faster</li>
-<li>Process.num_threads() is 20% faster (on Python 3 only; on Python 2 it's a bit slower; I suppose re module received some improvements)</li>
+<li><tt class="docutils literal">psutil.virtual_memory()</tt> returns a new &quot;shared&quot; memory field. This is the same value reported by <tt class="docutils literal">free</tt> cmdline utility.</li>
+<li>I changed the way how <tt class="docutils literal">/proc</tt> was parsed. Instead of reading <tt class="docutils literal"><span class="pre">/proc/{pid}/status</span></tt> line by line I used a regular expression. Here's the speedups:<ul>
+<li><tt class="docutils literal">Process.ppid()</tt> is 20% faster</li>
+<li><tt class="docutils literal">Process.status()</tt> is 28% faster</li>
+<li><tt class="docutils literal">Process.name()</tt> is 25% faster</li>
+<li><tt class="docutils literal">Process.num_threads()</tt> is 20% faster (on Python 3 only; on Python 2 it's a bit slower; I suppose <tt class="docutils literal">re</tt> module received some improvements)</li>
 </ul>
-</dd>
-</dl>
 </li>
 </ul>
 </div>

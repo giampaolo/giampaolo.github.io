@@ -80,7 +80,7 @@ There were some difficult decisions because many of the changes I introduced are
 <div class="section" id="speedups">
 <h2>Speedups</h2>
 <ul class="simple">
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=477">#477</a>: process cpu_percent() is about 30% faster.</li>
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=477">#477</a>: process <cite>cpu_percent()</cite> is about 30% faster.</li>
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=478">#478</a>: (Linux) almost all APIs are about 30% faster on Python 3.X.</li>
 </ul>
 </div>
@@ -88,13 +88,13 @@ There were some difficult decisions because many of the changes I introduced are
 <h2>Other improvements and bugfixes</h2>
 <ul class="simple">
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=424">#424</a>: Windows installers for Python 3.X 64-bit</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447">#447</a>: psutil.wait_procs() timeout parameter is now optional.</li>
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447">#447</a>: <cite>psutil.wait_procs()</cite> timeout parameter is now optional.</li>
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=459">#459</a>: a Makefile is now available for running tests and other repetitive tasks (also on Windows)</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=463">#463</a>: timeout parameter of cpu_percent* functions default to 0.0 because it was a common trap to introduce slowdowns.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=340">#340</a>: (Windows) process open_files() no longer hangs.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=448">#448</a>: (Windows) fixed a memory leak affecting children() and ppid() methods.</li>
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=463">#463</a>: timeout parameter of <tt class="docutils literal">cpu_percent*</tt> functions default to 0.0 because it was a common trap to introduce slowdowns.</li>
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=340">#340</a>: (Windows) process <cite>open_files()</cite> no longer hangs.</li>
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=448">#448</a>: (Windows) fixed a memory leak affecting <cite>children()</cite> and <cite>ppid()</cite> methods.</li>
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=461">#461</a>: namedtuples are now pickle-able.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=474">#474</a>: (Windows) Process.cpu_percent() is no longer capped at 100%</li>
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=474">#474</a>: (Windows) <cite>Process.cpu_percent()</cite> is no longer capped at 100%</li>
 </ul>
 <p>OK, that's all folks. I hope you will enjoy this new version and report your feedback.</p>
 </div>

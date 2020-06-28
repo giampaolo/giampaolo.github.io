@@ -21,7 +21,9 @@
             <li><a href="/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
+
 <section id="content" class="body">
+    <h1 class="entry-title">Blog posts for tags/personal</h1>
 
 <!-- blog posts -->
         <ol id="posts-list" class="hfeed" start="4">
@@ -75,7 +77,7 @@
                     <span class="n">netmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;00:00:00:00:00:00&#39;</span><span class="p">)]}</span>
 </pre></div>
-<p>This is limited to AF_INET (IPv4), AF_INET6 (IPv6) and AF_LINK (ETHERNET) address families. If you want something more poweful (e.g. AF_BLUETOOTH) you can take a look at <a class="reference external" href="https://pypi.python.org/pypi/netifaces/">netifaces</a> extension. And here's the code which does these tricks on POSIX and Windows:</p>
+<p>This is limited to <cite>AF_INET</cite> (IPv4), <cite>AF_INET6</cite> (IPv6) and <cite>AF_LINK</cite> (Ethernet) address families. If you want something more poweful (e.g. <cite>AF_BLUETOOTH</cite>) you can take a look at <a class="reference external" href="https://pypi.python.org/pypi/netifaces/">netifaces</a> extension. And here's the code which does these tricks on POSIX and Windows:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L151">POSIX</a></li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L2907">Windows</a></li>
@@ -120,11 +122,11 @@
 </pre></div>
 <p>They are backward compatible, meaning if you're sending serialized data produced with psutil through the network you can safely use comparison operators and so on. The psutil APIs returning enums (on Python &gt;=3.4) are:</p>
 <ul class="simple">
-<li>psutil.net_connections() (the address families):</li>
-<li>psutil.Process.connections() (same as above)</li>
-<li>psutil.net_if_stats()  (all <tt class="docutils literal">NIC_DUPLEX_*</tt> constants)</li>
-<li>psutil.Process.nice() on Windows (for all the <tt class="docutils literal">*_PRIORITY_CLASS</tt> constants)</li>
-<li>psutil.Process.ionice() on Linux (for all the <tt class="docutils literal">IOPRIO_CLASS_*</tt> constants)</li>
+<li><cite>psutil.net_connections()</cite> (the address families):</li>
+<li><cite>psutil.Process.connections()</cite> (same as above)</li>
+<li><cite>psutil.net_if_stats()</cite>  (all <tt class="docutils literal">NIC_DUPLEX_*</tt> constants)</li>
+<li><cite>psutil.Process.nice()</cite> on Windows (for all the <tt class="docutils literal">*_PRIORITY_CLASS</tt> constants)</li>
+<li><cite>psutil.Process.ionice()</cite> on Linux (for all the <tt class="docutils literal">IOPRIO_CLASS_*</tt> constants)</li>
 </ul>
 <p>All the other existing constants remained plain strings (<tt class="docutils literal">STATUS_*</tt>) or integers (<tt class="docutils literal">CONN_*</tt>).</p>
 </div>
@@ -134,7 +136,7 @@
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">pid</span> <span class="o">=</span> <span class="n">create_zombie</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
 </pre></div>
-<p>...but every time we queried it we got a NoSuchProcess exception:</p>
+<p>...but every time we queried it we got a <cite>NoSuchProcess</cite> exception:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
   <span class="n">File</span> <span class="s2">&quot;psutil/__init__.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">374</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_init</span>
     <span class="k">raise</span> <span class="n">NoSuchProcess</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
@@ -144,16 +146,16 @@
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">pid_exists</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">)</span>
 <span class="kc">True</span>
 </pre></div>
-<p>Furthermore, depending on what platform you were on, certain process stats could still be queried (instead of raising NoSuchProcess):</p>
+<p>Furthermore, depending on what platform you were on, certain process stats could still be queried (instead of raising <cite>NoSuchProcess</cite>):</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cmdline</span><span class="p">()</span>
 <span class="p">[</span><span class="s1">&#39;python&#39;</span><span class="p">]</span>
 </pre></div>
-<p>Also process_iter() did not return zombie processes at all. This was probably the worst aspect because being able to identify them is an important use case, as they signal an issue with process: if a parent process spawns a child, terminates it (via kill()), but doesn't wait() for it it will create a zombie. Long story short, the way this changed in psutil 3.0 is that:</p>
+<p>Also <cite>process_iter()</cite> did not return zombie processes at all. This was probably the worst aspect because being able to identify them is an important use case, as they signal an issue with process: if a parent process spawns a child, terminates it (via <cite>kill()</cite>), but doesn't <cite>wait()</cite> for it it will create a zombie. Long story short, the way this changed in psutil 3.0 is that:</p>
 <ul class="simple">
-<li>we now have a new ZombieProcess exception, raised every time we're not able to query a process because it's a zombie</li>
-<li>it is raised instead of NoSuchProcess (which was incorrect and misleading)</li>
-<li>it is still backward compatible (meaning you won't have to change your old code) because it inherits from NoSuchProcess</li>
-<li>process_iter() finally works, meaning you can safely identify zombie processes like this:</li>
+<li>we now have a new <cite>ZombieProcess</cite> exception, raised every time we're not able to query a process because it's a zombie</li>
+<li>it is raised instead of <cite>NoSuchProcess</cite> (which was incorrect and misleading)</li>
+<li>it is still backward compatible (meaning you won't have to change your old code) because it inherits from <cite>NoSuchProcess</cite></li>
+<li><cite>process_iter()</cite> finally works, meaning you can safely identify zombie processes like this:</li>
 </ul>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">psutil</span>
 <span class="n">zombies</span> <span class="o">=</span> <span class="p">[]</span>
@@ -232,7 +234,7 @@
 </tr>
 </tbody>
 </table>
-<p>Process methods (assuming p = psutil.Process()):</p>
+<p>Process methods (assuming <cite>p = psutil.Process()</cite>):</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="48%" />
@@ -333,7 +335,7 @@
 <p>These are not enhancements you will directly benefit from but I put some effort into making my life easier every time I work on psutil.</p>
 <ul class="simple">
 <li>I care about psutil code being fully <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8</a> compliant so I added a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/.git-pre-commit">pre-commit</a> GIT hook which runs <a class="reference external" href="https://pypi.python.org/pypi/flake8">flake8</a> on every commit and rejects it if the coding style is not compliant. The way I install this is via <a class="reference external" href="https://github.com/giampaolo/psutil/blob/82da82a6bb94ed5c6faf9d762ef4ad0fec18f01b/Makefile#L108)">make install-git-hooks</a>.</li>
-<li>I added a <tt class="docutils literal">make <span class="pre">install-dev-deps</span></tt> command which installs all deps and stuff which is useful for testing (ipdb, coverage, etc).</li>
+<li>I added a <tt class="docutils literal">make <span class="pre">install-dev-deps</span></tt> command which installs all deps and stuff which is useful for testing (<cite>ipdb</cite>, <cite>coverage</cite>, etc).</li>
 <li>A new <tt class="docutils literal">make coverage</tt> command which runs <a class="reference external" href="http://nedbatchelder.com/code/coverage/">coverage</a>. With this I discovered some of parts in the code which weren't covered by tests and I fixed that.</li>
 <li>I started using <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/tox.ini">tox</a> to easily test psutil against all supported Python versions (from 2.6 to 3.4) in one shot.</li>
 <li>I <a class="reference external" href="https://github.com/giampaolo/psutil/issues/629">reorganized tests</a> so that now they can be easily executed with py.test and nose (before, only unittest runner was fully supported)</li>

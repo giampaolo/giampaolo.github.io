@@ -264,7 +264,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 <div class="section" id="cpu-percent-intervals">
 <h2>CPU percent intervals</h2>
 <p><strong>What changed</strong></p>
-<p>The timeout parameter of <cite>cpu_percent*</cite> functions now defaults to 0.0 instead of 0.1. The functions affected are:</p>
+<p>The timeout parameter of <tt class="docutils literal">cpu_percent*</tt> functions now defaults to 0.0 instead of 0.1. The functions affected are:</p>
 <ul class="simple">
 <li>psutil.Process.cpu_percent()</li>
 <li>psutil.cpu_percent()</li>
@@ -272,7 +272,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 </ul>
 <p><strong>Why I did it</strong></p>
 <p>I originally set 0.1 as the default timeout because in order to get a meaningful percent value you need to wait some time.
-Having an API which &quot;sleeps&quot; by default is risky though, because it's easy to forget it does so. That is particularly problematic when calling cpu_percent() for all processes: it's very easy to forget about specifying timeout=0 resulting in dramatic slowdowns which are hard to spot. For example, this code snippet might take different seconds to complete depending on the number of active processes:</p>
+Having an API which &quot;sleeps&quot; by default is risky though, because it's easy to forget it does so. That is particularly problematic when calling <cite>cpu_percent()</cite> for all processes: it's very easy to forget about specifying <cite>timeout=0</cite> resulting in dramatic slowdowns which are hard to spot. For example, this code snippet might take different seconds to complete depending on the number of active processes:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="c1"># this will be slow</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
 <span class="o">...</span>    <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">())</span>
@@ -280,7 +280,7 @@ Having an API which &quot;sleeps&quot; by default is risky though, because it's 
 </div>
 <div class="section" id="migration-strategy">
 <h2>Migration strategy</h2>
-<p>Except for Process properties (name, exe, cmdline, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long you start the interpreter with the &quot;-Wd&quot; option. This will enable deprecation warnings which were <a class="reference external" href="http://bugs.python.org/issue7319">silenced in Python 2.7</a> (IMHO, from a developer standpoint this was a bad decision).</p>
+<p>Except for Process properties (<cite>name</cite>, <cite>exe</cite>, <cite>cmdline</cite>, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long you start the interpreter with the &quot;-Wd&quot; option. This will enable deprecation warnings which were <a class="reference external" href="http://bugs.python.org/issue7319">silenced in Python 2.7</a> (IMHO, from a developer standpoint this was a bad decision).</p>
 <pre class="literal-block">
 giampaolo&#64;ubuntu:/tmp$ python -Wd
 Python 2.7.3 (default, Sep 26 2013, 20:03:06)
@@ -310,7 +310,7 @@ As for the the Process properties which were turned into methods it's more diffi
 <span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Process</span><span class="o">.</span><span class="n">name</span> <span class="n">of</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">19816</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">139845631328144</span><span class="o">&gt;</span>
 <span class="o">&gt;&gt;&gt;</span>
 </pre></div>
-<p>What I would recommend if you want to drop support with 1.2.1 is to grep for &quot;.name&quot;, &quot;.exe&quot; etc. and just replace them with &quot;.exe()&quot; and &quot;.name()&quot; one by one.
+<p>What I would recommend if you want to drop support with 1.2.1 is to grep for <cite>&quot;.name&quot;</cite>, <cite>&quot;.exe&quot;</cite> etc. and just replace them with <cite>&quot;.exe()&quot;</cite> and <cite>&quot;.name()&quot;</cite> one by one.
 If on the other hand you want to write a code which works with both versions I see two possibilities:</p>
 <ul class="simple">
 <li>#1 check version info, like this:</li>
@@ -321,7 +321,7 @@ If on the other hand you want to write a code which works with both versions I s
 <span class="o">&gt;&gt;&gt;</span> <span class="n">exe</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">exe</span><span class="p">()</span> <span class="k">if</span> <span class="n">PSUTIL2</span> <span class="k">else</span> <span class="n">p</span><span class="o">.</span><span class="n">exe</span>
 </pre></div>
 <ul class="simple">
-<li>#2 get rid of all &quot;.name&quot;, &quot;.exe&quot; occurrences you have in your code and use as_dict() instead:</li>
+<li>#2 get rid of all <cite>&quot;.name&quot;</cite>, <cite>&quot;.exe&quot;</cite> occurrences you have in your code and use <cite>as_dict()</cite> instead:</li>
 </ul>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">pinfo</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;exe&quot;</span><span class="p">])</span>
@@ -343,11 +343,11 @@ If on the other hand you want to write a code which works with both versions I s
 <span class="mi">2</span>
 </pre></div>
 <ul class="simple">
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=452">#452</a>: process classes are now hashable and can be checked for equality. That means you can use Process objects with sets (finally!).</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447">#447</a>: psutil.wait_procs() &quot;timeout&quot; parameter is now optional</li>
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=452">#452</a>: process classes are now hashable and can be checked for equality. That means you can use <cite>Process</cite> objects with sets (finally!).</li>
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447">#447</a>: <cite>psutil.wait_procs()</cite> &quot;timeout&quot; parameter is now optional</li>
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=461">#461</a>: functions returning namedtuples are now pickle-able</li>
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=459">#459</a>: a Makefile is now available to automatize repetitive tasks such as build, install, running tests etc. There's also a make.bat for Windows.</li>
-<li>introduced unittest2 module as a requirement for running tests</li>
+<li>introduced <cite>unittest2</cite> module as a requirement for running tests</li>
 </ul>
 </div>
 
