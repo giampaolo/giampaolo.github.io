@@ -589,12 +589,21 @@ input[type=text] {
 	width:140px
 }
 
+.archives-right .newsletter-text {
+	margin-bottom:10px;
+}
+
 #nav li {
 	padding:0px;
 }
 
 .blogposts-separator {
 	border-top: 3px solid #ccc;
+}
+
+.newsletter-home {
+	border-bottom: 2px solid #CCC;
+	padding-bottom:20px;
 }
 
 @media only screen and (max-device-width : 415px) {
@@ -637,6 +646,20 @@ input[type=text] {
     	margin:40px;
     }
 
+	.newsletter-home {
+		border-bottom: 3px solid #CCC;
+		padding-bottom:20px;
+	}
+
+	.newsletter-home .newsletter {
+		margin-bottom:20px;
+	}
+
+	.archives-right .newsletter {
+		margin-left:100px;
+	}
+
+
     cite, .literal {font-size:35px;}
     .post-info {font-size:35px;}
     .archives-left {width:100%;}
@@ -650,19 +673,26 @@ input[type=text] {
     h1, h2, h3, h4, h5, h6 {
         border-bottom:solid 2px #ccc;
     }
+
+
+	input {
+		-ms-transform: scale(2.2, 2.2);
+		-webkit-transform: scale(2.2, 2.2);
+		transform: scale(2.2, 2.2);
+	}
     input[type="text"] {
-        width: 282px;
-        height: 40px;
-        border: 3px solid #ccc;
+    	width: 150px;
+    	margin-right: 20px;
+	}
+
+	.newsletter-button {
+		margin-left: 150px;
+	}
+
+    .archives-right-newsletter {
+        display:none;
     }
-    input[type=button], input[type=submit], input[type=reset] {
-        width: 282px;
-        border:3px solid #ccc;
-        font-size:40px;
-        background:#ccc;
-        border-radius: 5px;
-        display: inline-block; height: 200px;
-    }
+
     #banner nav {
         height:80px;
         display: flex;

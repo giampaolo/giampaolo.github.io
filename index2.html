@@ -23,21 +23,19 @@
     </header><!-- /#banner -->
 
 <section id="content" class="body">
-    <div align="center" style="border-bottom: 2px solid #CCC; padding-bottom:20px">
+    <div align="center" class="newsletter-home">
         <h1 style="margin-top:0px">Newsletter</h1>
-        <form class="newsletter"
-               action="https://feedburner.google.com/fb/a/mailverify"
-               method="post"
-               target="popupwindow"
-               onsubmit="window.open('https://feedburner.google.com/fb/a/mailverify?uri=GiampaoloRodola', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
-            <a>Enter your email address to receive blog updates:</a>
-            <br />
-            <input type="text" name="email" />
-                <input type="hidden" value="GiampaoloRodola" name="uri"/>
-                <input type="hidden"  name="loc" value="en_US" />
-            <input type="submit" style="height:28px; margin-top:10px" value="Subscribe" />
-        </form>
-    </div>
+        <p>Enter your email address to receive blog updates:</p>
+<form class="newsletter"
+       action="https://feedburner.google.com/fb/a/mailverify"
+       method="post"
+       target="popupwindow"
+       onsubmit="window.open('https://feedburner.google.com/fb/a/mailverify?uri=GiampaoloRodola', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
+    <input class="newsletter-text" type="text" name="email" />
+        <input type="hidden" value="GiampaoloRodola" name="uri"/>
+        <input type="hidden"  name="loc" value="en_US" />
+    <input class="newsletter-button" type="submit" value="Subscribe" />
+</form>    </div>
 
 <!-- blog posts -->
         <ol id="posts-list" class="hfeed" start="4">

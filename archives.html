@@ -27,19 +27,20 @@
 
 <div class="archives">
     <div class="archives-right">
-        <h1>Newsletter</h1>
-        <p>Enter your email address to receive blog updates:</p>
+        <div class="archives-right-newsletter">
+            <h1>Newsletter</h1>
+            <p>Enter your email address to receive blog updates:</p>
 <form class="newsletter"
        action="https://feedburner.google.com/fb/a/mailverify"
        method="post"
        target="popupwindow"
        onsubmit="window.open('https://feedburner.google.com/fb/a/mailverify?uri=GiampaoloRodola', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
-    <input type="text" name="email" />
+    <input class="newsletter-text" type="text" name="email" />
         <input type="hidden" value="GiampaoloRodola" name="uri"/>
         <input type="hidden"  name="loc" value="en_US" />
-    <br />
-    <input type="submit" style="margin-top:10px" value="Subscribe" />
-</form>
+    <input class="newsletter-button" type="submit" value="Subscribe" />
+</form>        </div>
+
         <h1>Tags</h1>
         <div id="tag-list">
         <ul>
