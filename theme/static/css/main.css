@@ -650,6 +650,8 @@ input[type=text] {
     h1, h2, h3, h4, h5, h6 {
         border-bottom:solid 2px #ccc;
     }
+
+    /*
     input[type="text"] {
         width: 282px;
         height: 40px;
@@ -663,6 +665,7 @@ input[type=text] {
         border-radius: 5px;
         display: inline-block; height: 200px;
     }
+    */
     #banner nav {
         height:80px;
         display: flex;
