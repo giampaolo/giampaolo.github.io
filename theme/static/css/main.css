@@ -597,20 +597,20 @@ input[type=text] {
 	border-top: 3px solid #ccc;
 }
 
-/*
-@media only screen and (min-device-width : 415px) {
+@media only screen and (max-device-width : 415px) {
     #body {
         background: white;
     }
 
     #content {
-        width:100%
+        width:100%;
+        height:100%;
         font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
-        padding: 61px;
         font-size: 40px;
         color:#24292e;
         word-wrap: break-word;
         margin-bottom: 0px;
+        padding:30px;
     }
 
     #featured {width:100%}
@@ -664,8 +664,8 @@ input[type=text] {
         display: inline-block; height: 200px;
     }
     #banner nav {
-        font-size:30px;
         height:80px;
+        display: flex;
     }
     #banner li {
     	text-align:center;
@@ -674,9 +674,9 @@ input[type=text] {
         margin:0px;
     }
     #banner nav a:link, #banner nav a:visited {
- 	   	font-family: 'Yanone Kaffeesatz', arial, serif;
-       	padding:25px;
-       	font-size:60px;
+		padding:20px;
+		font-size:45px;
+		padding-top:20px;
     }
     #extras {display:none;}
 
@@ -692,6 +692,14 @@ input[type=text] {
     .image-reference {
       	margin-left:100px;
     }
+    pre {
+		white-space: pre-wrap;
+		word-wrap: break-word;
+		text-align: justify;
+		font-size: 30px;
+	}
 
+	#contentinfo {
+		display:none;
+	}
 }
-*/
