@@ -523,7 +523,7 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 
 	#add-comment p.req {clear: both; margin: 0 .5em 1em 0; text-align: right;}
 
-	#add-comment input[type='submit'] {float: right; margin: 0 .5em;}
+	#add-comment input[type='submit'] {float: right; margin: 0 .5em; height: 34px;}
 	#add-comment * {margin-bottom: .5em;}
 
 /* hide disqus footer */
@@ -581,7 +581,16 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 	padding-left:20px;
 }
 
+input[type=button], input[type=submit], input[type=reset] {
+	height: 34px !important;
+}
+
+input[type=text] {
+	width:140px
+}
+
 /* phones */
+/*
 @media (min-width:320px)  {
 	#content {width:100%;}
 	#content {padding:0px;}
@@ -593,3 +602,4 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 	#banner nav {width:100%}
 	#banner nav ul {width:100%}
 }
+*/
