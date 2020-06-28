@@ -110,24 +110,6 @@ Contacts
 * `Twitter <https://twitter.com/grodola>`__
 * `Linkedin <https://www.linkedin.com/in/grodola/>`__
 
-Newsletter
-----------
-
-Enter your email address to receive blog updates:
-
-.. raw:: html
-
-    <form class="newsletter"
-           action="https://feedburner.google.com/fb/a/mailverify"
-           method="post"
-           target="popupwindow"
-           onsubmit="window.open('https://feedburner.google.com/fb/a/mailverify?uri=GiampaoloRodola', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
-        <input type="text" style="width:140px" name="email" />
-            <input type="hidden" value="GiampaoloRodola" name="uri"/>
-            <input type="hidden"  name="loc" value="en_US" />
-        <input type="submit" style="height:28px" value="subscribe" />
-    </form>
-
 .. _`psutil`: https://github.com/giampaolo/psutil
 .. _`pyftpdlib`: https://github.com/giampaolo/pyftpdlib
 .. _`pysendfile`: https://github.com/giampaolo/pysendfile
