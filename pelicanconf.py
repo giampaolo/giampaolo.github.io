@@ -62,11 +62,20 @@ DEFAULT_PAGINATION = 5
 PAGE_PATHS = ['']
 PAGE_URL = '{slug}'
 PAGE_SAVE_AS = '{slug}.html'
+# Do not generate /author/* HTML files.
+AUTHOR_SAVE_AS = ""
+# Do not generate /categories.html
+CATEGORIES_SAVE_AS = ""
 
 # --- tags
 
 TAG_SAVE_AS = 'tags/{slug}.html'
 TAG_URL = 'tags/{slug}'
+
+# --- plugins
+
+PLUGIN_PATHS = ["plugins"]
+PLUGINS = ["headerid"]
 
 # ---paths
 
@@ -85,10 +94,7 @@ EXTRA_PATH_METADATA = {
 }
 DIRECT_TEMPLATES = ['index', 'tags', 'categories', 'archives']
 
-DEFAULT_DATE_FORMAT = ('%d %b %Y')
-
-# Uncomment following line if you want document-relative URLs when developing
-# RELATIVE_URLS = True
+# --- others
 
 JINJA_FILTERS = {
     'sort_by_tags': functools.partial(
@@ -96,7 +102,4 @@ JINJA_FILTERS = {
         reverse=True)
 }
 
-# Do not generate /author/* HTML files.
-AUTHOR_SAVE_AS = ""
-# Do not generate /categories.html
-CATEGORIES_SAVE_AS = ""
+DEFAULT_DATE_FORMAT = ('%d %b %Y')
