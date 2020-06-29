@@ -83,7 +83,7 @@
 <li>It must be noted that the exit function will never be executed in case of <tt class="docutils literal">SIGKILL</tt>, <tt class="docutils literal">SIGSTOP</tt> or <tt class="docutils literal">os._exit()</tt>.</li>
 </ul>
 <div class="section" id="the-code">
-<h2>The code</h2>
+<h2>The code<a class="headerlink" href="#the-code" title="Permalink to this headline">¶</a></h2>
 <div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Function / decorator which tries very hard to register a function to</span>
 <span class="sd">be executed at importerer exit.</span>
@@ -223,7 +223,7 @@
 </pre></div>
 </div>
 <div class="section" id="usage">
-<h2>Usage</h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>As a function:</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cleanup&quot;</span><span class="p">)</span>
@@ -237,20 +237,20 @@
 </pre></div>
 </div>
 <div class="section" id="unit-tests">
-<h2>Unit tests</h2>
+<h2>Unit tests<a class="headerlink" href="#unit-tests" title="Permalink to this headline">¶</a></h2>
 <p>This recipe is hosted on <a class="reference external" href="https://code.activestate.com/recipes/580672-register-exit-function/">ActiveState</a> and has a full set of unittests. It works with Python 2 and 3.</p>
 </div>
 <div class="section" id="notes-about-windows">
-<h2>Notes about Windows</h2>
+<h2>Notes about Windows<a class="headerlink" href="#notes-about-windows" title="Permalink to this headline">¶</a></h2>
 <p><span class="strike">On Windows signals are only partially supported meaning a function which was previously registered via signal.signal() will be executed only on interpreter exit, but not if the process receives a signal. Apparently this is a limitation either of Windows or the signal module.</span></p>
 <p>Because of how different <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> behaves on Windows, this code is UNIX only, see <a class="reference external" href="https://bugs.python.org/issue26350">BPO-26350</a>.</p>
 </div>
 <div class="section" id="proposal-for-stdlib-inclusion">
-<h2>Proposal for stdlib inclusion</h2>
+<h2>Proposal for stdlib inclusion<a class="headerlink" href="#proposal-for-stdlib-inclusion" title="Permalink to this headline">¶</a></h2>
 <p>The fact that atexit module <a class="reference external" href="http://stackoverflow.com/a/2546397/376587">does not handle signals</a> and that <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> overwrites previously registered handlers is unfortunate. It is also <a class="reference external" href="http://ambracode.com/index/show/92669">confusing</a> because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the times you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. To me this suggests there could be space for something like <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038431.html">atexit.register_w_signals</a>.</p>
 </div>
 <div class="section" id="external-discussions">
-<h2>External discussions</h2>
+<h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/45fvd9/how_to_always_execute_exit_functions_in_python/">Reddit</a></li>
 <li><a class="reference external" href="https://news.ycombinator.com/item?id=11088938">Hacker news</a></li>

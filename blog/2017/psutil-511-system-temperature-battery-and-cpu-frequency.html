@@ -47,7 +47,7 @@
 -->
 </footer><!-- /.post-info -->      <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> release. Main highlights of this release are sensors-related APIs.</p>
 <div class="section" id="temperatures">
-<h2>Temperatures</h2>
+<h2>Temperatures<a class="headerlink" href="#temperatures" title="Permalink to this headline">¶</a></h2>
 <p>It is now possible to retrieve hardware temperatures. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/962/files">here</a>. Unfortunately this is Linux only. I couldn't manage to implement this on other platforms mainly for two reasons:</p>
 <ul class="simple">
 <li>On Windows it is hard to do this in a hardware agnostic fashion. I bumped into 3 different approaches, all using WMI, and none of them worked with my hardware so I gave up.</li>
@@ -65,7 +65,7 @@
 </pre></div>
 </div>
 <div class="section" id="battery-status">
-<h2>Battery status</h2>
+<h2>Battery status<a class="headerlink" href="#battery-status" title="Permalink to this headline">¶</a></h2>
 <p>This works on Linux, Windows and FreeBSD and provides battery status information. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/963/files">here</a>.</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span>
@@ -82,7 +82,7 @@
 </pre></div>
 </div>
 <div class="section" id="cpu-frequency">
-<h2>CPU frequency</h2>
+<h2>CPU frequency<a class="headerlink" href="#cpu-frequency" title="Permalink to this headline">¶</a></h2>
 <p>Available under Linux, Windows and OSX. Relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/952/files">here</a>. Linux is the only platform which reports the real-time value (always changing), on all other platforms current frequency is represented as the nominal “fixed” value.</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_freq</span><span class="p">()</span>
@@ -95,11 +95,11 @@
 </pre></div>
 </div>
 <div class="section" id="what-cpu-a-process-is-on">
-<h2>What CPU a process is on</h2>
+<h2>What CPU a process is on<a class="headerlink" href="#what-cpu-a-process-is-on" title="Permalink to this headline">¶</a></h2>
 <p>This will let you know what CPU number a process is currently running on, which is somewhat related to the existent <a class="reference external" href="https://pythonhosted.org/psutil/#psutil.Process.cpu_affinity">cpu_affinity()</a> functionality. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/954/files">here</a>. It is interesting to use this method to visualize how the OS scheduler continuously evenly reassigns processes to different CPUs  (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/cpu_distribution.py">cpu_distribution.py</a> script).</p>
 </div>
 <div class="section" id="cpu-affinity">
-<h2>CPU affinity</h2>
+<h2>CPU affinity<a class="headerlink" href="#cpu-affinity" title="Permalink to this headline">¶</a></h2>
 <p>A new syntax can now be used as an alias for &quot;set affinity against all eligible CPUs&quot;.</p>
 <div class="highlight"><pre><span></span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">cpu_affinity</span><span class="p">([])</span>
 </pre></div>
@@ -108,7 +108,7 @@
 </pre></div>
 </div>
 <div class="section" id="other-bug-fixes">
-<h2>Other bug fixes</h2>
+<h2>Other bug fixes<a class="headerlink" href="#other-bug-fixes" title="Permalink to this headline">¶</a></h2>
 <p>See <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#510">full list</a>.</p>
 </div>
 

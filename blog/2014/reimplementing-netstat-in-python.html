@@ -74,11 +74,11 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">check_listening_port</span><span class="p">(</span><span class="mi">80</span><span class="p">))</span>
 </pre></div>
 <div class="section" id="netstat-in-pure-python">
-<h2>Netstat in pure python</h2>
+<h2>Netstat in pure python<a class="headerlink" href="#netstat-in-pure-python" title="Permalink to this headline">¶</a></h2>
 <p>Here it is, in 65 lines of code: <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/netstat.py">netstat.py</a>. Pretty neat right? ;-)</p>
 </div>
 <div class="section" id="implementation-s">
-<h2>Implementation(s)</h2>
+<h2>Implementation(s)<a class="headerlink" href="#implementation-s" title="Permalink to this headline">¶</a></h2>
 <p>As always, each platform required its own, different, implementation. Luckily for some platforms (OSX, Windows) I was able to reuse and customize some code from the existing <cite>Process.connections()</cite> implementation which was already in place. For those of you who are interested in knowing how this was done here's the source code references:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/_pslinux.py#L741">Linux</a></li>

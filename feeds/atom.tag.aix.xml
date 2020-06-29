@@ -4,7 +4,7 @@
 &lt;p&gt;In terms of future contributions for exotic and still unsupported platforms it is worth mentioning a (still incomplete) PR for &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/998"&gt;Cygwin&lt;/a&gt; which looks promising and &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/845"&gt;Mingw32&lt;/a&gt; compiler support on Windows. It looks like psutil is gradually getting to a point where the addition of new functionalities is becoming more rare, so it is good that support for new platforms happens now when the API is mature and stable. Future development in this direction can also include Android and (hopefully) IOS support. Now &lt;em&gt;that&lt;/em&gt; would be really awesome to have! =)&lt;/p&gt;
 &lt;p&gt;Stay tuned.&lt;/p&gt;
 &lt;div class="section" id="external-links"&gt;
-&lt;h2&gt;External links&lt;/h2&gt;
+&lt;h2&gt;External links&lt;a class="headerlink" href="#external-links" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/75wsfu/psutil_540_with_aix_support_is_out/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class="reference external" href="http://grodola.blogspot.com/2017/10/psutil-540-with-aix-support-is-out.html"&gt;HackerNews&lt;/a&gt;&lt;/li&gt;

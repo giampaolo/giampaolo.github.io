@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - api-design</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.api-design.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2014-01-11T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>psutil 2.0 API redesign</title><link href="https://gmpy.dev/blog/2014/psutil-20-api-redesign" rel="alternate"></link><published>2014-01-11T00:00:00+01:00</published><updated>2014-01-11T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2014-01-11:/blog/2014/psutil-20-api-redesign</id><summary type="html">&lt;p&gt;This my second blog post is going to be about &lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This my second blog post is going to be about &lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is to serve as an official reference which describes how you should port your existent code base. In doing so I will also explain why I decided to make these changes. Despite many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten but I think this is for the better and it needed to be done, hopefully for the first and last time. OK, here we go now.&lt;/p&gt;
 &lt;div class="section" id="module-constants-turned-into-functions"&gt;
-&lt;h2&gt;Module constants turned into functions&lt;/h2&gt;
+&lt;h2&gt;Module constants turned into functions&lt;a class="headerlink" href="#module-constants-turned-into-functions" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;What changed&lt;/strong&gt;&lt;/p&gt;
 &lt;table border="1" class="docutils"&gt;
 &lt;colgroup&gt;
@@ -30,7 +30,7 @@
 Thanks to this hack accessing the old constants still works and produces a DeprecationWarning.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="module-functions-renamings"&gt;
-&lt;h2&gt;Module functions renamings&lt;/h2&gt;
+&lt;h2&gt;Module functions renamings&lt;a class="headerlink" href="#module-functions-renamings" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;What changed&lt;/strong&gt;&lt;/p&gt;
 &lt;table border="1" class="docutils"&gt;
 &lt;colgroup&gt;
@@ -58,7 +58,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 &lt;p&gt;They were the only module level functions having a &lt;tt class="docutils literal"&gt;get_&lt;/tt&gt; prefix. All others do not.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="process-class-methods-renamings"&gt;
-&lt;h2&gt;Process class' methods renamings&lt;/h2&gt;
+&lt;h2&gt;Process class' methods renamings&lt;a class="headerlink" href="#process-class-methods-renamings" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;All methods lost their &lt;tt class="docutils literal"&gt;get_&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;set_&lt;/tt&gt; prefixes. A single method can now be used for both getting and setting (if a value is passed). Assuming p = psutil.Process():&lt;/p&gt;
 &lt;table border="1" class="docutils"&gt;
 &lt;colgroup&gt;
@@ -160,7 +160,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 &lt;p&gt;I wanted to be consistent with system-wide module level functions which have no &lt;tt class="docutils literal"&gt;get_&lt;/tt&gt; prefix. After I got rid of &lt;tt class="docutils literal"&gt;get_&lt;/tt&gt; prefixes removing also &lt;tt class="docutils literal"&gt;set_&lt;/tt&gt; seemed natural and helped diminish the number of methods.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="process-properties-are-now-methods"&gt;
-&lt;h2&gt;Process properties are now methods&lt;/h2&gt;
+&lt;h2&gt;Process properties are now methods&lt;a class="headerlink" href="#process-properties-are-now-methods" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;What changed&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Assuming p = psutil.Process():&lt;/p&gt;
 &lt;table border="1" class="docutils"&gt;
@@ -216,7 +216,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;div class="section" id="cpu-percent-intervals"&gt;
-&lt;h2&gt;CPU percent intervals&lt;/h2&gt;
+&lt;h2&gt;CPU percent intervals&lt;a class="headerlink" href="#cpu-percent-intervals" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;What changed&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The timeout parameter of &lt;tt class="docutils literal"&gt;cpu_percent*&lt;/tt&gt; functions now defaults to 0.0 instead of 0.1. The functions affected are:&lt;/p&gt;
 &lt;ul class="simple"&gt;
@@ -233,7 +233,7 @@ Having an API which &amp;quot;sleeps&amp;quot; by default is risky though, becau
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="migration-strategy"&gt;
-&lt;h2&gt;Migration strategy&lt;/h2&gt;
+&lt;h2&gt;Migration strategy&lt;a class="headerlink" href="#migration-strategy" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Except for Process properties (&lt;cite&gt;name&lt;/cite&gt;, &lt;cite&gt;exe&lt;/cite&gt;, &lt;cite&gt;cmdline&lt;/cite&gt;, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long you start the interpreter with the &amp;quot;-Wd&amp;quot; option. This will enable deprecation warnings which were &lt;a class="reference external" href="http://bugs.python.org/issue7319"&gt;silenced in Python 2.7&lt;/a&gt; (IMHO, from a developer standpoint this was a bad decision).&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 giampaolo&amp;#64;ubuntu:/tmp$ python -Wd
@@ -286,7 +286,7 @@ If on the other hand you want to write a code which works with both versions I s
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="new-features-introduced-in-2-0-0"&gt;
-&lt;h2&gt;New features introduced in 2.0.0&lt;/h2&gt;
+&lt;h2&gt;New features introduced in 2.0.0&lt;a class="headerlink" href="#new-features-introduced-in-2-0-0" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Ok, enough with the bad news. =) psutil 2.0.0 is not only about code breakage. I also had the chance to integrate a bunch of interesting features.&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427"&gt;#427&lt;/a&gt;: you're now able to distinguish between the number of logical and physical CPUs:&lt;/li&gt;
@@ -315,26 +315,26 @@ If on the other hand you want to write a code which works with both versions I s
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;5 years later I regret that decision and I'm going to explain you why you don't want to do the same mistake.&lt;/p&gt;
 &lt;div class="section" id="a-constant-should-not-change"&gt;
-&lt;h2&gt;A constant should not change&lt;/h2&gt;
+&lt;h2&gt;A constant should not change&lt;a class="headerlink" href="#a-constant-should-not-change" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;When we think of  'constants', our expectations are that they should not change over time. It may be obvious, but before thinking about introducing a constant be absolutely sure the value it represents is going to remain the same.
 Now, back then we thought these 3 metrics were not supposed to change, at least until the system is rebooted. Well, we were wrong: it turns out 2 of them actually can.
 Apparently virtualized systems can change physical installed memory at runtime (see &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=140#c5"&gt;here&lt;/a&gt; and &lt;a class="reference external" href="http://technet.microsoft.com/en-us/library/hh831766.aspx"&gt;here&lt;/a&gt;) and system boot time can easily be altered every time you update the system clock.
 In both of these cases, of course, the constants will not reflect the updated values.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="doing-things-at-import-time-is-dangerous"&gt;
-&lt;h2&gt;Doing things at import time is dangerous&lt;/h2&gt;
+&lt;h2&gt;Doing things at import time is dangerous&lt;a class="headerlink" href="#doing-things-at-import-time-is-dangerous" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;That's because import time usually means startup time and if something goes wrong the whole application will crash. In general the only reason for a module to crash at import time is because of a missing dependancy or because it's not supposed to run on that platform in the first place.
 Now, here's a couple of bug reports which were collected over time: &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=188"&gt;issue 188&lt;/a&gt;, &lt;a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=133"&gt;issue 313&lt;/a&gt;.
 The inconvenience was so severe that I had to release different fixed versions ASAP and the fix consisted of a &lt;a class="reference external" href="https://code.google.com/p/psutil/source/browse/psutil/_psosx.py?name=release-1.2.1#24"&gt;stinky workaround&lt;/a&gt;.
 That's when I started thinking about getting rid of those constants once and for all and introduce functions instead. But how to do that without breaking everybody's code?&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="backward-compatibility-matters"&gt;
-&lt;h2&gt;Backward compatibility matters&lt;/h2&gt;
+&lt;h2&gt;Backward compatibility matters&lt;a class="headerlink" href="#backward-compatibility-matters" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Now here's the crucial part: every time you deliver a library to someone else you just cannot remove an API all of the sudden, especially if they are 3 and have been around since day one.
 It should first be deprecated, possibly turned into an alias pointing to a newer API and finally be removed after 1 or 2 major releases. Also, you want the deprecated API to explicitly raise a DeprecationWarning informing the user he's relying on something which will eventually be removed. With a module constant you cannot do any of that. What you would need is a module property.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="module-properties"&gt;
-&lt;h2&gt;Module properties&lt;/h2&gt;
+&lt;h2&gt;Module properties&lt;a class="headerlink" href="#module-properties" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;One of the greatest things about Python is that it's so dynamic that it lets you do all sort of nasty things with objects, including injecting names into modules (which are also objects) and make them behave like actual class properties!
 For this I have to thank &lt;a class="reference external" href="http://www.dr-josiah.com/2013/12/properties-on-python-modules.html"&gt;Josiah Carlson&lt;/a&gt; who came up with this very simple yet effective solution:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ModuleWrapper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;

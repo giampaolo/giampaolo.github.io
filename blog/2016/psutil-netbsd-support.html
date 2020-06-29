@@ -47,7 +47,7 @@
 -->
 </footer><!-- /.post-info -->      <p>Roughly two months have passed since I last announced <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> added support for OpenBSD platforms. Today I am happy to announce we also have NetBSD support! This was contributed by <a class="reference external" href="https://github.com/0-wiz-0">Thomas Klausner</a>, <a class="reference external" href="https://github.com/ryoon">Ryo Onodera</a> and myself in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">#570</a>.</p>
 <div class="section" id="differences-with-freebsd-and-openbsd">
-<h2>Differences with FreeBSD (and OpenBSD)</h2>
+<h2>Differences with FreeBSD (and OpenBSD)<a class="headerlink" href="#differences-with-freebsd-and-openbsd" title="Permalink to this headline">¶</a></h2>
 <p>NetBSD implementation has similar limitations as the ones I encountered with OpenBSD. Again, FreeBSD presents itself as the BSD variant with the best support in terms of kernel functionalities.</p>
 <ul class="simple">
 <li><tt class="docutils literal">Process.memory_maps()</tt> is not implemented. The kernel provides the necessary pieces but I didn't do this yet (hopefully later).</li>
@@ -58,7 +58,7 @@
 <p>As for the rest: it is all there. All memory, disk, network and process APIs are fully supported and functioning.</p>
 </div>
 <div class="section" id="other-enhancements-available-in-this-psutil-release">
-<h2>Other enhancements available in this psutil release</h2>
+<h2>Other enhancements available in this psutil release<a class="headerlink" href="#other-enhancements-available-in-this-psutil-release" title="Permalink to this headline">¶</a></h2>
 <p>Other than NetBSD support this new release has a couple of interesting enhancements:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/708">#708</a>: [Linux] <tt class="docutils literal">psutil.net_connections()</tt> and <tt class="docutils literal">Process.connections()</tt> on Python can be up to 3x faster in case of many connections.</li>
@@ -67,11 +67,11 @@
 <p>You can read the rest in the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">HISTORY</a> file, as usual.</p>
 </div>
 <div class="section" id="move-to-prague">
-<h2>Move to Prague</h2>
+<h2>Move to Prague<a class="headerlink" href="#move-to-prague" title="Permalink to this headline">¶</a></h2>
 <p>As a personal note I'd like to add that I'm currently in Prague (Czech Republic) and I'm thinking about moving down here for a while. The city is great and girls are beautiful. ;-)</p>
 </div>
 <div class="section" id="external-discussions">
-<h2>External discussions</h2>
+<h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/4131q2/netbsd_support_for_psutil/">Reddit</a></li>
 <li><a class="reference external" href="https://news.ycombinator.com/item?id=10909101">Hacker news</a></li>

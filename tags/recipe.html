@@ -83,7 +83,7 @@
 <li>It must be noted that the exit function will never be executed in case of <tt class="docutils literal">SIGKILL</tt>, <tt class="docutils literal">SIGSTOP</tt> or <tt class="docutils literal">os._exit()</tt>.</li>
 </ul>
 <div class="section" id="the-code">
-<h2>The code</h2>
+<h2>The code<a class="headerlink" href="#the-code" title="Permalink to this headline">¶</a></h2>
 <div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Function / decorator which tries very hard to register a function to</span>
 <span class="sd">be executed at importerer exit.</span>
@@ -223,7 +223,7 @@
 </pre></div>
 </div>
 <div class="section" id="usage">
-<h2>Usage</h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>As a function:</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cleanup&quot;</span><span class="p">)</span>
@@ -237,20 +237,20 @@
 </pre></div>
 </div>
 <div class="section" id="unit-tests">
-<h2>Unit tests</h2>
+<h2>Unit tests<a class="headerlink" href="#unit-tests" title="Permalink to this headline">¶</a></h2>
 <p>This recipe is hosted on <a class="reference external" href="https://code.activestate.com/recipes/580672-register-exit-function/">ActiveState</a> and has a full set of unittests. It works with Python 2 and 3.</p>
 </div>
 <div class="section" id="notes-about-windows">
-<h2>Notes about Windows</h2>
+<h2>Notes about Windows<a class="headerlink" href="#notes-about-windows" title="Permalink to this headline">¶</a></h2>
 <p><span class="strike">On Windows signals are only partially supported meaning a function which was previously registered via signal.signal() will be executed only on interpreter exit, but not if the process receives a signal. Apparently this is a limitation either of Windows or the signal module.</span></p>
 <p>Because of how different <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> behaves on Windows, this code is UNIX only, see <a class="reference external" href="https://bugs.python.org/issue26350">BPO-26350</a>.</p>
 </div>
 <div class="section" id="proposal-for-stdlib-inclusion">
-<h2>Proposal for stdlib inclusion</h2>
+<h2>Proposal for stdlib inclusion<a class="headerlink" href="#proposal-for-stdlib-inclusion" title="Permalink to this headline">¶</a></h2>
 <p>The fact that atexit module <a class="reference external" href="http://stackoverflow.com/a/2546397/376587">does not handle signals</a> and that <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> overwrites previously registered handlers is unfortunate. It is also <a class="reference external" href="http://ambracode.com/index/show/92669">confusing</a> because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the times you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. To me this suggests there could be space for something like <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038431.html">atexit.register_w_signals</a>.</p>
 </div>
 <div class="section" id="external-discussions">
-<h2>External discussions</h2>
+<h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/45fvd9/how_to_always_execute_exit_functions_in_python/">Reddit</a></li>
 <li><a class="reference external" href="https://news.ycombinator.com/item?id=11088938">Hacker news</a></li>
@@ -283,11 +283,11 @@
 -->
 </footer><!-- /.post-info -->            <p><a class="reference external" href="http://linux.die.net/man/2/sendfile">sendfile(2)</a> is a UNIX system call which provides a &quot;zero-copy&quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, <cite>sendfile(2)</cite> is more efficient than the combination of <cite>file.read()</cite> and <cite>socket.send()</cite>, which requires transferring data to and from user space.  This copying of the data twice imposes some performance and resource penalties which <cite>sendfile(2)</cite> syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of <a class="reference external" href="http://linux.die.net/man/2/read">read(2)</a> / <a class="reference external" href="http://linux.die.net/man/2/write">write(2)</a> system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how <cite>sendfile(2)</cite> works is available <a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/">here</a>, but long story short is that sending a file with <cite>sendfile()</cite> is usually <a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark">twice as fast</a> than using plain <a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send">socket.send()</a>. Typical applications which can benefit from using <cite>sendfile()</cite> are FTP and HTTP servers.</p>
 <div class="section" id="socket-sendfile">
-<h2>socket.sendfile()</h2>
+<h2>socket.sendfile()<a class="headerlink" href="#socket-sendfile" title="Permalink to this headline">¶</a></h2>
 <p>I recently contributed a patch for Python's socket module which adds a high-level <a class="reference external" href="https://docs.python.org/3.5/library/socket.html#socket.socket.sendfile">socket.sendfile()</a> method (see full discussion at <a class="reference external" href="http://bugs.python.org/issue17552">BPO-17552</a>). <cite>socket.sendfile()</cite> will transmit a file until EOF is reached by attempting to use <a class="reference external" href="https://docs.python.org/3/library/os.html#os.sendfile">os.sendfile()</a>, if available, else it falls back on using plain <cite>socket.send()</cite>. Internally, it takes care of handling socket timeouts and provides two optional parameters to move the file offset or to send only a limited amount of bytes. I came up with this idea because getting all of that right is a bit tricky, so a generic wrapper seemed to be convenient to have. <cite>socket.sendfile()</cite> will make its appearance in Python 3.5.</p>
 </div>
 <div class="section" id="sendfile-and-python">
-<h2>sendfile and Python</h2>
+<h2>sendfile and Python<a class="headerlink" href="#sendfile-and-python" title="Permalink to this headline">¶</a></h2>
 <p><cite>sendfile(2)</cite> made its first appearance into the Python stdlib kind of late: Python 3.3. It was contributed by Ross Lagerwall and me in <a class="reference external" href="http://bugs.python.org/issue10882">BPO-10882</a>. Since the patch didn't make it into python 2.X and I wanted to <a class="reference external" href="https://code.google.com/p/pyftpdlib/issues/detail?id=152">use sendfile() in pyftpdlib</a> I later decided to release it as a stand alone module working with older (2.5+) Python versions (see <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> project). Starting with version 3.5, Python will hopefully start using <cite>sendfile()</cite> more extensively, in details:</p>
 <ul class="simple">
 <li><a class="reference external" href="http://bugs.python.org/issue13564">BPO-13563: ftplib</a></li>
@@ -297,7 +297,7 @@
 <p>Also, Windows provides something similar to sendfile(2): <a class="reference external" href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms740565(v=vs.85).aspx">TransmitFile</a>. Now that socket.sendfile() is in place it seems natural to add support for it as well (see <a class="reference external" href="http://bugs.python.org/issue21721">BPO-21721</a>).</p>
 </div>
 <div class="section" id="backport-to-python-2-6-and-2-7">
-<h2>Backport to Python 2.6 and 2.7</h2>
+<h2>Backport to Python 2.6 and 2.7<a class="headerlink" href="#backport-to-python-2-6-and-2-7" title="Permalink to this headline">¶</a></h2>
 <p>For those of you who are interested in using <cite>socket.sendfile()</cite> with older Python 2.6 and 2.7 versions here's a backport. It requires <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> module to be installed. Full code including tests is hosted <a class="reference external" href="https://code.activestate.com/recipes/578889-socketsendfile/">here</a>.</p>
 <div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
 

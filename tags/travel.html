@@ -50,7 +50,7 @@
 -->
 </footer><!-- /.post-info -->            <p>New <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.6.2 release implements an emulation of <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getloadavg">os.getloadavg()</a> on Windows which was kindly <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1485">contributed by Ammar Askar</a> who originally implemented it for <a class="reference external" href="https://github.com/python/cpython/pull/8357/files">cPython's test suite</a>. This idea has been floating around for quite a while. The first proposal dates back to <a class="reference external" href="https://code.google.com/archive/p/psutil/issues/139">2010</a>, when psutil was still hosted on Google Code, and it popped up <a class="reference external" href="https://github.com/giampaolo/psutil/issues?utf8=%E2%9C%93&amp;q=getloadavg">multiple times</a> throughout the years. There was/is a bunch of info on internet mentioning the bits with which it's theoretically possible to do this (the so called <cite>System Processor Queue Length</cite>), but I couldn't find any real implementation. A <a class="reference external" href="https://www.google.com/search?client=ubuntu&amp;hs=2EI&amp;channel=fs&amp;ei=LafCXO2ZE8PKswX9kY-wAw&amp;q=windows+load+average&amp;oq=windows+load+average&amp;gs_l=psy-ab.3..0j0i22i30l7.12536.13873..14008...0.0..0.482.2591.4-6......0....1..gws-wiz.......0i71j0i131.37ys3SB25pE">Google search</a> tells there is quite some demand for this, but very few tools out there providing this natively (the only one I could find is this <a class="reference external" href="https://blog.sflow.com/2011/02/windows-load-average.html">sFlowTrend</a> tool and <a class="reference external" href="https://www.zabbix.com/forum/zabbix-help/50423-windows-cpu-load">Zabbix</a>), so I'm very happy this finally landed into psutil / Python.</p>
 <div class="section" id="other-improvements-and-bugfixes-in-psutil-5-6-2">
-<h2>Other improvements and bugfixes in psutil 5.6.2</h2>
+<h2>Other improvements and bugfixes in psutil 5.6.2<a class="headerlink" href="#other-improvements-and-bugfixes-in-psutil-5-6-2" title="Permalink to this headline">¶</a></h2>
 <p>The full list is <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#562">here</a> but I would like to mention a couple:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">1476</a>: the possibility to set process' high I/O priority on Windows</li>
@@ -62,11 +62,11 @@
 </ul>
 </div>
 <div class="section" id="about-me">
-<h2>About me</h2>
+<h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
 <p>I'm currently in China (Shenzhen) for a mix of vacation and work, and I will likely take a break from Open Source for a while (likely 2.5 months, during which I will also go to Philippines and Japan - I love Asia ;-)).</p>
 </div>
 <div class="section" id="external">
-<h2>External</h2>
+<h2>External<a class="headerlink" href="#external" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/bhji0m/new_psutil_562_with_load_average_emulation_on/">Reddit</a></li>
 </ul>
@@ -98,7 +98,7 @@
 -->
 </footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.3.0 is finally out. This release is a major one, as it includes tons of improvements and bugfixes, probably like no other previous release. It is interesting to notice how huge the <a class="reference external" href="https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket">diff</a> between 5.2.2 and 5.3.0 is. This is due to the fact that I've been travelling quite a lot this year, so I kept postponing it. It may sound weird but I consider publishing a new release and write a blog post about more stressful than working on the release itself. =). Anyway, here goes.</p>
 <div class="section" id="full-unicode-support">
-<h2>Full Unicode support</h2>
+<h2>Full Unicode support<a class="headerlink" href="#full-unicode-support" title="Permalink to this headline">¶</a></h2>
 <p>This is the biggest change. In order to achieve this I had to refactor all functions and internals either returning or accepting a string. Incidentally this helped me having a better understanding of how Unicode works and how it should be handled at the C level in terms of differences between Python 2 and 3. Issue <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1040">#1040</a> includes all the reasonings I've been through and potentially serves as a documentation for people who are facing a similar task (handling Unicode in C for both Python 2 and 3). Up until version 5.2.x psutil functions returning a string had different problems as they could:</p>
 <ul class="simple">
 <li>raise decoding error on Python 3 in case of non-ASCII string</li>
@@ -121,7 +121,7 @@
 </pre></div>
 </div>
 <div class="section" id="improved-process-iter-function">
-<h2>Improved process_iter() function</h2>
+<h2>Improved process_iter() function<a class="headerlink" href="#improved-process-iter-function" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.process_iter">process_iter()</a> accepts two new parameters in order to invoke <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.as_dict">Process.as_dict()</a> internally: <cite>&quot;attrs&quot;</cite> and <cite>&quot;ad_value&quot;</cite>. With this you can iterate over all processes in one shot without having to catch <cite>NoSuchProcess</cite> explicitly. Before:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
@@ -168,15 +168,15 @@
 </pre></div>
 </div>
 <div class="section" id="automatic-overflow-handling-of-numbers">
-<h2>Automatic overflow handling of numbers</h2>
+<h2>Automatic overflow handling of numbers<a class="headerlink" href="#automatic-overflow-handling-of-numbers" title="Permalink to this headline">¶</a></h2>
 <p>On very busy or long-lived system systems numbers returned by <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.disk_io_counters">disk_io_counters()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_io_counters">net_io_counters()</a> functions may wrap (restart from zero). Up to version 5.2.x you had to take this into account while now this is automatically handled by psutil (see: <a class="reference external" href="https://github.com/giampaolo/psutil/issues/802">#802</a>). If a &quot;counter&quot; restarts from 0 psutil will add the value from the previous call for you so that numbers will never decrease. This is crucial for applications monitoring disk or network I/O in real time. Old behavior can be resumed by passing <cite>nowrap=True</cite> argument.</p>
 </div>
 <div class="section" id="sunos-process-environ">
-<h2>SunOS Process environ()</h2>
+<h2>SunOS Process environ()<a class="headerlink" href="#sunos-process-environ" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.environ">Process.environ()</a> is now available also on SunOS (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1091">#1091</a>).</p>
 </div>
 <div class="section" id="other-improvements-and-bug-fixes">
-<h2>Other improvements and bug fixes</h2>
+<h2>Other improvements and bug fixes<a class="headerlink" href="#other-improvements-and-bug-fixes" title="Permalink to this headline">¶</a></h2>
 <p>Amongst others, here's a couple of important bug fixes I'd like to mention:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/pull/1044">#1044</a>: on OSX different <cite>Process</cite> methods could incorrectly raise <cite>AccessDenied</cite> for zombie processes. This was due to poor proc_pidpath OSX API.</li>
@@ -185,7 +185,7 @@
 <p>BSD systems also received some love (NetBSD and OpenBSD in particular). Different memory leaks were fixed and functions returning connected sockets were partially rewritten. The full list of enhancement and bug fixes can be seen <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#530">here</a>.</p>
 </div>
 <div class="section" id="about-me">
-<h2>About me</h2>
+<h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
 <p>I would like to spend a couple more words about my current situation. Last year (2016) I relocated to Prague and remote worked from there the whole year (it's been cool - great city!). This year I have mainly been resting in Turin (Italy) due to some health issues and travelling across Asia once I started to recover. I am currently in Shenzhen, China, and unless the current situation with North Korea gets worse I'm planning to continue my trip until November and visit Taiwan, South Korea and Japan. Once I'm finished the plan is to briefly return to Turin (Italy) and finally return to Prague. By then I will probably be looking for a new (remote) gig again, so if you have anything for me by November feel free to send me a message. ;-)</p>
 </div>
 
@@ -220,7 +220,7 @@
     </a>
 </div><p>Back then I didn't know any C (and I still am a terrible C developer) so he's been crucial to develop the initial psutil skeleton including OSX and Windows support. I'm back home now (but not for long ;-)), so I finally have some time to write this blog post and tell you about the new psutil release. Let's see what happened.</p>
 <div class="section" id="net-if-addrs">
-<h2>net_if_addrs()</h2>
+<h2>net_if_addrs()<a class="headerlink" href="#net-if-addrs" title="Permalink to this headline">¶</a></h2>
 <p>In a few words, we're now able to list network interface addresses similarly to &quot;ifconfig&quot; command on UNIX:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
@@ -250,7 +250,7 @@
 <p>Also, here's some <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_if_addrs">doc</a>.</p>
 </div>
 <div class="section" id="net-if-stats">
-<h2>net_if_stats()</h2>
+<h2>net_if_stats()<a class="headerlink" href="#net-if-stats" title="Permalink to this headline">¶</a></h2>
 <p>This will return a bunch of information about network interface cards:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
@@ -274,7 +274,7 @@
 <p>...and the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_if_stats">doc</a>.</p>
 </div>
 <div class="section" id="enums">
-<h2>Enums</h2>
+<h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://docs.python.org/3/library/enum.html">Enums</a> are a nice new feature introduced in Python 3.4. Very briefly (or at least, this is what I appreciate the most about them), they help you write an API with human-readable constants. If you use Python 2 you'll see something like this:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">IOPRIO_CLASS_IDLE</span>
@@ -296,7 +296,7 @@
 <p>All the other existing constants remained plain strings (<tt class="docutils literal">STATUS_*</tt>) or integers (<tt class="docutils literal">CONN_*</tt>).</p>
 </div>
 <div class="section" id="zombie-processes">
-<h2>Zombie processes</h2>
+<h2>Zombie processes<a class="headerlink" href="#zombie-processes" title="Permalink to this headline">¶</a></h2>
 <p>This is a big one. The full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/428">here</a> but basically the support for <a class="reference external" href="http://askubuntu.com/a/48625">zombie processes</a> on UNIX was <a class="reference external" href="https://github.com/giampaolo/psutil/issues/428">broken</a> (except on Linux, and Windows doesn't have zombie processes). Up until psutil 2.X we could instantiate a zombie process:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">pid</span> <span class="o">=</span> <span class="n">create_zombie</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
@@ -333,11 +333,11 @@
 </pre></div>
 </div>
 <div class="section" id="removal-of-deprecated-apis">
-<h2>Removal of deprecated APIs</h2>
+<h2>Removal of deprecated APIs<a class="headerlink" href="#removal-of-deprecated-apis" title="Permalink to this headline">¶</a></h2>
 <p>This is another big one, probably the biggest. In a previous blog post I already talked about deprecated APIs. What I did back then (January 2014) was to rename and officially deprecate different APIs and provide aliases for them so that people wouldn't yell at me because I broke their existent code. The most interesting deprecation was certainly the one affecting module constants and the hack which was used in order to provide &quot;module properties&quot;. With this new release I decided to get rid of all those aliases. I'm sure this will cause problems but hey! This is a new major release, right? =). Plus the amount of crap which was removed is impressive (see the <a class="reference external" href="https://github.com/giampaolo/psutil/commit/ab211934af0acf99091e4cd534fc5bbe7fd3b233">commit</a>). Here's the old aliases which are now gone for good (or bad, depending on how much headache they will cause you):</p>
 </div>
 <div class="section" id="removed-module-functions-and-constants">
-<h2>Removed module functions and constants</h2>
+<h2>Removed module functions and constants<a class="headerlink" href="#removed-module-functions-and-constants" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="48%" />
@@ -485,7 +485,7 @@
 <p>If your code suddenly breaks with AttributeError after you upgraded psutil it means you were using one of those deprecated aliases. In that case just take a look at the table above and rename stuff in accordance.</p>
 </div>
 <div class="section" id="bug-fixes">
-<h2>Bug fixes</h2>
+<h2>Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h2>
 <p>I fixed a lot of stuff (full list <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">here</a>), but here's the list of things which I think are worth mentioning:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/512">#512</a>: [FreeBSD] fix segfault in net_connections().</li>
@@ -496,7 +496,7 @@
 </ul>
 </div>
 <div class="section" id="ease-of-development">
-<h2>Ease of development</h2>
+<h2>Ease of development<a class="headerlink" href="#ease-of-development" title="Permalink to this headline">¶</a></h2>
 <p>These are not enhancements you will directly benefit from but I put some effort into making my life easier every time I work on psutil.</p>
 <ul class="simple">
 <li>I care about psutil code being fully <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8</a> compliant so I added a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/.git-pre-commit">pre-commit</a> GIT hook which runs <a class="reference external" href="https://pypi.python.org/pypi/flake8">flake8</a> on every commit and rejects it if the coding style is not compliant. The way I install this is via <a class="reference external" href="https://github.com/giampaolo/psutil/blob/82da82a6bb94ed5c6faf9d762ef4ad0fec18f01b/Makefile#L108)">make install-git-hooks</a>.</li>
@@ -507,7 +507,7 @@
 </ul>
 </div>
 <div class="section" id="final-words">
-<h2>Final words</h2>
+<h2>Final words<a class="headerlink" href="#final-words" title="Permalink to this headline">¶</a></h2>
 <p>I must say I'm pretty satisfied with how psutil is going and the satisfaction I still get every time I work on it. Right now it gets almost <a class="reference external" href="https://pypi.python.org/pypi/psutil#downloads">800.000 download a month</a>, which is pretty great for a Python library. As of right now I consider psutil almost &quot;completed&quot; in terms of features, meaning I'm basically running out of ideas on what I should add next (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/TODO">TODO</a>). From now on the future development will probably focus on adding support for more exotic platforms (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/562">OpenBSD</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">NetBSD</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/355">Android</a>). There also have been some discussions on python-ideas mailing list about <a class="reference external" href="https://mail.python.org/pipermail//python-ideas/2014-October/029835.html">including psutil into Python stdlib</a> but, assuming that will ever happen, it's still far away in the future as it would require a lot of time which I currently don't have. That should be all. I hope you will all enjoy this new release.</p>
 </div>
 

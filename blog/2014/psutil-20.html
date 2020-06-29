@@ -48,15 +48,15 @@
 </footer><!-- /.post-info -->      <p>The time has finally come: <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0 is out! This is a release which took me a considerable amount of effort and careful thinking during the past 4 months as I went through a major <strong>rewrite and reorganization</strong> of both python and C extension modules. To get a sense of how much has changed you can compare the differences with old 1.2.1 version by running &quot;hg diff -r release-1.2.1:release-2.0.0&quot; which will produce more than <strong>22,000 lines</strong> of output! In those 22k lines I tried to nail down all the quirks the project had accumulated since its start 4 years ago and the resulting code base is now cleaner than ever, more manageable and fully compliant with PEP-7 and PEP-8 guidelines.
 There were some difficult decisions because many of the changes I introduced are not backward compatible so I was concerned with the pain this may cause existing users. I kind of still am, but I'm sure the transition will be well perceived on the long run as it will result in more manageable user code. OK, enough with the preface and let's see what changed.</p>
 <div class="section" id="api-changes">
-<h2>API changes</h2>
+<h2>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h2>
 <p>I already wrote a detailed <a class="reference external" href="../../2014/psutil-20-api-redesign/">blog post</a> about what changed so I recommend you to use that as the official reference on how to port your code.</p>
 </div>
 <div class="section" id="rst-documentation">
-<h2>RST documentation</h2>
+<h2>RST documentation<a class="headerlink" href="#rst-documentation" title="Permalink to this headline">¶</a></h2>
 <p>I've never been happy with old doc hosted on Google Code. The markup language provided by Google is pretty limited, plus it's not put under revision control. New doc is more detailed, it uses reStructuredText as the markup language, it lives in the same code repository as psutil's and it is hosted on the excellent readthedocs web site: <a class="reference external" href="http://psutil.readthedocs.org/">http://psutil.readthedocs.org/</a></p>
 </div>
 <div class="section" id="physical-cpus-count">
-<h2>Physical CPUs count</h2>
+<h2>Physical CPUs count<a class="headerlink" href="#physical-cpus-count" title="Permalink to this headline">¶</a></h2>
 <p>You're now able to distinguish between logical and physical CPUs:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
 <span class="mi">4</span>
@@ -66,7 +66,7 @@ There were some difficult decisions because many of the changes I introduced are
 <p>Full story is in <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427">issue 427</a>.</p>
 </div>
 <div class="section" id="process-instances-are-hashable">
-<h2>Process instances are hashable</h2>
+<h2>Process instances are hashable<a class="headerlink" href="#process-instances-are-hashable" title="Permalink to this headline">¶</a></h2>
 <p>Basically this means process instances can now be checked for equality and can be used with set()s:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
@@ -78,14 +78,14 @@ There were some difficult decisions because many of the changes I introduced are
 <p>Full story is in <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=452">issue 452</a>.</p>
 </div>
 <div class="section" id="speedups">
-<h2>Speedups</h2>
+<h2>Speedups<a class="headerlink" href="#speedups" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=477">#477</a>: process <cite>cpu_percent()</cite> is about 30% faster.</li>
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=478">#478</a>: (Linux) almost all APIs are about 30% faster on Python 3.X.</li>
 </ul>
 </div>
 <div class="section" id="other-improvements-and-bugfixes">
-<h2>Other improvements and bugfixes</h2>
+<h2>Other improvements and bugfixes<a class="headerlink" href="#other-improvements-and-bugfixes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=424">#424</a>: Windows installers for Python 3.X 64-bit</li>
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447">#447</a>: <cite>psutil.wait_procs()</cite> timeout parameter is now optional.</li>

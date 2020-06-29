@@ -47,18 +47,18 @@
 -->
 </footer><!-- /.post-info -->      <p>New psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll just get straight to the point and describe what's new.</p>
 <div class="section" id="real-process-memory-info">
-<h2>&quot;Real&quot; process memory info</h2>
+<h2>&quot;Real&quot; process memory info<a class="headerlink" href="#real-process-memory-info" title="Permalink to this headline">¶</a></h2>
 <p>Determining how much memory a process <strong>really</strong> uses is not an easy matter (see <a class="reference external" href="https://lwn.net/Articles/230975/">this</a> and <a class="reference external" href="http://bmaurer.blogspot.it/2006/03/memory-usage-with-smaps.html">this</a>). RSS (Resident Set Size), which is what most people usually rely on, is misleading because it includes both the memory which is unique to the process and the memory shared with other processes. What would be more interesting in terms of profiling is the memory which would be freed if the process was terminated <strong>right now</strong>. In the Linux world this is called USS (Unique Set Size), and this is the major feature which was introduced in psutil 4.0.0 (not only for Linux but also for Windows and OSX).</p>
 </div>
 <div class="section" id="uss-memory">
-<h2>USS memory</h2>
+<h2>USS memory<a class="headerlink" href="#uss-memory" title="Permalink to this headline">¶</a></h2>
 <p>The USS (Unique Set Size) is the memory which is unique to a process and which would be freed if the process was terminated right now. On Linux this can be determined by parsing all the &quot;private&quot; blocks in /proc/pid/smaps. The Firefox team pushed this further and managed to do the same also on <a class="reference external" href="https://dxr.mozilla.org/mozilla-central/rev/aa90f482e16db77cdb7dea84564ea1cbd8f7f6b3/xpcom/base/nsMemoryReporterManager.cpp">OSX and Windows</a>, which is great. New version of psutil is now able to do the same:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_full_info</span><span class="p">()</span>
 <span class="n">pfullmem</span><span class="p">(</span><span class="n">rss</span><span class="o">=</span><span class="mi">101990</span><span class="p">,</span> <span class="n">vms</span><span class="o">=</span><span class="mi">521888</span><span class="p">,</span> <span class="n">shared</span><span class="o">=</span><span class="mi">38804</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="mi">28200</span><span class="p">,</span> <span class="n">lib</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="mi">59672</span><span class="p">,</span> <span class="n">dirty</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">uss</span><span class="o">=</span><span class="mi">81623</span><span class="p">,</span> <span class="n">pss</span><span class="o">=</span><span class="mi">91788</span><span class="p">,</span> <span class="n">swap</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="section" id="pss-and-swap">
-<h2>PSS and swap</h2>
+<h2>PSS and swap<a class="headerlink" href="#pss-and-swap" title="Permalink to this headline">¶</a></h2>
 <p>On Linux there are two additional metrics which can also be determined via <cite>/proc/pid/smaps</cite>: PSS and swap. PSS, aka &quot;Proportional Set Size&quot;, represents the amount of memory shared with other processes, accounted in a way that the amount is divided evenly between the processes that share it. I.e. if a process has 10 MBs all to itself (USS) and 10 MBs shared with another process, its PSS will be 15 MBs. &quot;swap&quot; is simply the amount of memory that has been swapped out to disk. With memory_full_info() it is possible to implement a tool <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/procsmem.py">like this</a>, similar to <a class="reference external" href="https://www.selenic.com/smem/">smem</a> on Linux, which provides a list of processes sorted by &quot;USS&quot;. It is interesting to notice how RSS differs from USS:</p>
 <pre class="literal-block">
 ~/svn/psutil$ ./scripts/procsmem.py
@@ -81,7 +81,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 </pre>
 </div>
 <div class="section" id="implementation">
-<h2>Implementation</h2>
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
 <p>In order to get these values (USS, PSS and swap) we need to pass through the whole process address space. This usually requires higher user privileges and is considerably slower than getting the &quot;usual&quot; memory metrics via Process.memory_info(), which is probably the reason why tools like ps and top show RSS/VMS instead of USS. A big thanks goes to the Mozilla team which figured out all this stuff on Windows and OSX, and to Eric Rahm who put the PRs for psutil together (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/744">#744</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/pull/745">#745</a> and <a class="reference external" href="https://github.com/giampaolo/psutil/pull/746">#746</a>). For those of you who don't use Python and would like to port the code on other languages here's the interesting parts:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/42b34049cf96e845b6423db91f991849a2f87578/psutil/_pslinux.py#L1026">Linux</a></li>
@@ -90,14 +90,14 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 </ul>
 </div>
 <div class="section" id="memory-type-percent">
-<h2>Memory type percent</h2>
+<h2>Memory type percent<a class="headerlink" href="#memory-type-percent" title="Permalink to this headline">¶</a></h2>
 <p>After <a class="reference external" href="https://github.com/giampaolo/psutil/pull/744#issuecomment-180054438">reorganizing process memory APIs</a> I decided to add a new memtype parameter to Process.memory_percent(). With this it is now possible to compare a specific memory type (not only RSS) against the total physical memory. E.g.</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_percent</span><span class="p">(</span><span class="n">memtype</span><span class="o">=</span><span class="s1">&#39;pss&#39;</span><span class="p">)</span>
 <span class="mf">0.06877466326787016</span>
 </pre></div>
 </div>
 <div class="section" id="process-environ">
-<h2>Process environ</h2>
+<h2>Process environ<a class="headerlink" href="#process-environ" title="Permalink to this headline">¶</a></h2>
 <p>Second biggest improvement in psutil 4.0.0 is the ability to determine the process environment variables. This opens interesting possibilities about process recognition and monitoring techniques. For instance, one might start a process by passing a certain custom environment variable, then iterate over all processes to find the one of interest (and figure out whether it's running or whatever):</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">psutil</span>
 <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
@@ -130,7 +130,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 </ul>
 </div>
 <div class="section" id="extended-disk-io-stats">
-<h2>Extended disk IO stats</h2>
+<h2>Extended disk IO stats<a class="headerlink" href="#extended-disk-io-stats" title="Permalink to this headline">¶</a></h2>
 <p><tt class="docutils literal">psutil.disk_io_counters()</tt> has been extended to report additional metrics on Linux and FreeBSD:</p>
 <ul class="simple">
 <li>busy_time, which is the time spent doing actual I/Os (in milliseconds).</li>
@@ -139,7 +139,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 <p>With these new metrics it is possible to have a better representation of actual <a class="reference external" href="https://github.com/giampaolo/psutil/issues/756">disk utilization</a>, similarly to <tt class="docutils literal">iostat</tt> command on Linux.</p>
 </div>
 <div class="section" id="os-constants">
-<h2>OS constants</h2>
+<h2>OS constants<a class="headerlink" href="#os-constants" title="Permalink to this headline">¶</a></h2>
 <p>Given the increasing number of platform-specific metrics I added a new set of constants to quickly differentiate what platform you're on: <tt class="docutils literal">psutil.LINUX</tt>, <tt class="docutils literal">psutil.WINDOWS</tt>, etc. Main bug fixes:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/734">#734</a>: on Python 3 invalid UTF-8 data was not correctly handled for proces <tt class="docutils literal">name()</tt>, <tt class="docutils literal">cwd()</tt>, <tt class="docutils literal">exe()</tt>, <tt class="docutils literal">cmdline()</tt> and <tt class="docutils literal">open_files()</tt> methods, resulting in UnicodeDecodeError. This was affecting all platforms. Now <tt class="docutils literal">surrogateescape</tt> error handler is used as a workaround for replacing the corrupted data.</li>
@@ -151,7 +151,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 <p>Complete list of bug fixes is available <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">here</a>.</p>
 </div>
 <div class="section" id="porting-code">
-<h2>Porting code</h2>
+<h2>Porting code<a class="headerlink" href="#porting-code" title="Permalink to this headline">¶</a></h2>
 <p>Being 4.0.0 a major version, I took the chance to (lightly) change / break some APIs.</p>
 <ul class="simple">
 <li><tt class="docutils literal">Process.memory_info()</tt> no longer returns just an (rss, vms) namedtuple. Instead it returns a namedtuple of variable length, changing depending on the platform (rss and vms are always present though, also on Windows). Basically it returns the same result of old <tt class="docutils literal">memory_info_ex()</tt>. This shouldn't break your existent code, unless you were doing <tt class="docutils literal">rss, vms = p.memory_info()</tt>.</li>
@@ -161,11 +161,11 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 </ul>
 </div>
 <div class="section" id="final-notes-and-looking-for-a-job">
-<h2>Final notes and looking for a job</h2>
+<h2>Final notes and looking for a job<a class="headerlink" href="#final-notes-and-looking-for-a-job" title="Permalink to this headline">¶</a></h2>
 <p>OK, this is it. I would like to spend a couple more words to announce the world that I'm currently unemployed and looking for a remote gig again! =) I want remote because my plan for this year is to remain in Prague (Czech Republic) and possibly spend 2-3 months in Asia. If you know about any company who's looking for a Python backend dev who can work from afar feel free to share my <a class="reference external" href="https://www.linkedin.com/in/grodola/">Linkedin profile</a> or mail me at g.rodola [at] gmail [dot] com.</p>
 </div>
 <div class="section" id="external-links">
-<h2>External links</h2>
+<h2>External links<a class="headerlink" href="#external-links" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/469p2c/psutil_400_real_process_memory_info_and_process/">Reddit</a></li>
 <li><a class="reference external" href="https://news.ycombinator.com/item?id=11119298">Hacker news</a></li>

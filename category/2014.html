@@ -83,11 +83,11 @@
 -->
 </footer><!-- /.post-info -->            <p><a class="reference external" href="http://linux.die.net/man/2/sendfile">sendfile(2)</a> is a UNIX system call which provides a &quot;zero-copy&quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, <cite>sendfile(2)</cite> is more efficient than the combination of <cite>file.read()</cite> and <cite>socket.send()</cite>, which requires transferring data to and from user space.  This copying of the data twice imposes some performance and resource penalties which <cite>sendfile(2)</cite> syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of <a class="reference external" href="http://linux.die.net/man/2/read">read(2)</a> / <a class="reference external" href="http://linux.die.net/man/2/write">write(2)</a> system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how <cite>sendfile(2)</cite> works is available <a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/">here</a>, but long story short is that sending a file with <cite>sendfile()</cite> is usually <a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark">twice as fast</a> than using plain <a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send">socket.send()</a>. Typical applications which can benefit from using <cite>sendfile()</cite> are FTP and HTTP servers.</p>
 <div class="section" id="socket-sendfile">
-<h2>socket.sendfile()</h2>
+<h2>socket.sendfile()<a class="headerlink" href="#socket-sendfile" title="Permalink to this headline">¶</a></h2>
 <p>I recently contributed a patch for Python's socket module which adds a high-level <a class="reference external" href="https://docs.python.org/3.5/library/socket.html#socket.socket.sendfile">socket.sendfile()</a> method (see full discussion at <a class="reference external" href="http://bugs.python.org/issue17552">BPO-17552</a>). <cite>socket.sendfile()</cite> will transmit a file until EOF is reached by attempting to use <a class="reference external" href="https://docs.python.org/3/library/os.html#os.sendfile">os.sendfile()</a>, if available, else it falls back on using plain <cite>socket.send()</cite>. Internally, it takes care of handling socket timeouts and provides two optional parameters to move the file offset or to send only a limited amount of bytes. I came up with this idea because getting all of that right is a bit tricky, so a generic wrapper seemed to be convenient to have. <cite>socket.sendfile()</cite> will make its appearance in Python 3.5.</p>
 </div>
 <div class="section" id="sendfile-and-python">
-<h2>sendfile and Python</h2>
+<h2>sendfile and Python<a class="headerlink" href="#sendfile-and-python" title="Permalink to this headline">¶</a></h2>
 <p><cite>sendfile(2)</cite> made its first appearance into the Python stdlib kind of late: Python 3.3. It was contributed by Ross Lagerwall and me in <a class="reference external" href="http://bugs.python.org/issue10882">BPO-10882</a>. Since the patch didn't make it into python 2.X and I wanted to <a class="reference external" href="https://code.google.com/p/pyftpdlib/issues/detail?id=152">use sendfile() in pyftpdlib</a> I later decided to release it as a stand alone module working with older (2.5+) Python versions (see <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> project). Starting with version 3.5, Python will hopefully start using <cite>sendfile()</cite> more extensively, in details:</p>
 <ul class="simple">
 <li><a class="reference external" href="http://bugs.python.org/issue13564">BPO-13563: ftplib</a></li>
@@ -97,7 +97,7 @@
 <p>Also, Windows provides something similar to sendfile(2): <a class="reference external" href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms740565(v=vs.85).aspx">TransmitFile</a>. Now that socket.sendfile() is in place it seems natural to add support for it as well (see <a class="reference external" href="http://bugs.python.org/issue21721">BPO-21721</a>).</p>
 </div>
 <div class="section" id="backport-to-python-2-6-and-2-7">
-<h2>Backport to Python 2.6 and 2.7</h2>
+<h2>Backport to Python 2.6 and 2.7<a class="headerlink" href="#backport-to-python-2-6-and-2-7" title="Permalink to this headline">¶</a></h2>
 <p>For those of you who are interested in using <cite>socket.sendfile()</cite> with older Python 2.6 and 2.7 versions here's a backport. It requires <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> module to be installed. Full code including tests is hosted <a class="reference external" href="https://code.activestate.com/recipes/578889-socketsendfile/">here</a>.</p>
 <div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
 
@@ -329,7 +329,7 @@
 -->
 </footer><!-- /.post-info -->            <p>8 years ago I started hosting my first open source project (<a class="reference external" href="https://code.google.com/p/pyftpdlib/">pyftpdlib</a>) on Google Code and I later ended up also hosting <a class="reference external" href="https://code.google.com/p/psutil/">psutil</a> and <a class="reference external" href="https://code.google.com/p/pysendfile/">pysendfile</a>. Back then GC had just been released and similarly to other Google products I appreciated the clean and minimalistic interface, the excellent bug tracker and the freedom to choose between different revision control systems (SVN, GIT and Mercurial, which is my favourite one). Unfortunately as the years passed Google completely lost interest in maintaining GC to the point that now GC can basically be considered an <a class="reference external" href="https://groups.google.com/forum/#!topic/google-code-hosting/PEhNMdtBGt4">abandoned project</a>.  If you take a look at <a class="reference external" href="https://code.google.com/p/support/issues/list">GC bug tracker</a> you can see literally hundreds of issues which have been open for years, even some apparently easy ones such as <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=60">#60</a> and <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=919">#919</a>. The lack of interest from Google is absolutely astonishing and it is the main reason why I ultimately decided to change. After at least a couple of years of thinking about migrating to github I finally bite the bullet and as of today psutil is now <a class="reference external" href="https://github.com/giampaolo/psutil">hosted on github</a> (update: now also <a class="reference external" href="https://github.com/giampaolo/pyftpdlib">pyftpdlib</a> and <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a>).</p>
 <div class="section" id="what-i-will-miss-the-most-about-gc">
-<h2>What I will miss the most about GC</h2>
+<h2>What I will miss the most about GC<a class="headerlink" href="#what-i-will-miss-the-most-about-gc" title="Permalink to this headline">¶</a></h2>
 <p>First of all I must say that despite the unfortunate situation of GC I'm also sad for abandoning it. It started as a really great hosting platform, and it still has some peculiar aspects which I know I will be missing. In order of importance:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/list">The bug tracker</a>: it is much more powerful than <a class="reference external" href="https://github.com/giampaolo/psutil/issues?state=open">github's</a>, especially for the extremely customizable labeling system which is pure gold, the excellent searching system and the <a class="reference external" href="https://code.google.com/p/psutil/issues/list?can=2&amp;q=&amp;colspec=ID+Summary+Type+Opsys+Status+Priority+Opened+Owner&amp;groupby=&amp;sort=&amp;x=&amp;y=&amp;cells=tiles&amp;mode=grid">grid view</a>. GC bug tracker seriously kicks some ass so kudos to whoever was behind its design! By comparison github bug tracker is too minimalistic and it has no good way to order issues or list them in a more compact form. I'm totally gonna miss psutil bug tracker.</li>
@@ -338,7 +338,7 @@
 </ul>
 </div>
 <div class="section" id="what-i-appreciate-about-github">
-<h2>What I appreciate about github</h2>
+<h2>What I appreciate about github<a class="headerlink" href="#what-i-appreciate-about-github" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Travis integration: there's this totally awesome free continuos integration service called <a class="reference external" href="https://travis-ci.org/giampaolo/psutil">Travis</a> which given a configuration file <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/.travis.yml">like this</a> it will automatically run tests on multiple python versions every time a commit is pushed. They recently added <a class="reference external" href="http://blog.travis-ci.com/2014-05-13-multi-os-feature-available/">OSX support</a> and <a class="reference external" href="https://github.com/travis-ci/travis-ci/issues/216">Windows support</a> is on the way. This way I will finally be able to quickly test psutil on Linux, OSX and Windows without using virtualized systems except for FreeBSD and Solaris! To me this is like the ultimate Christmas gift and I couldn't ask for any better. Note: as of today Travis only works with github.</li>
 <li>forks and pull requests: honestly I'm not a big fan of them (yet?), probably because I'm used to the python-dev development workflow consisting in uploading patches on the bug tracker and reviewing them (see <a class="reference external" href="http://bugs.python.org/issue17552">this</a> for example). Nevertheless to my understanding most people use pull requests in order to contribute to open source projects so basically this is a service I'm glad to offer to my users who hopefully will be able to contribute back more easily. GC has a <a class="reference external" href="https://code.google.com/p/psutil/source/clones">cloning system</a> but isn't anywhere near github's and I'm not even sure how it works (never cared).</li>
@@ -350,7 +350,7 @@
 </ul>
 </div>
 <div class="section" id="migration">
-<h2>Migration</h2>
+<h2>Migration<a class="headerlink" href="#migration" title="Permalink to this headline">¶</a></h2>
 <p>For those of you who are interested in knowing how I did it, here goes: as for moving the issue from GC bug tracker to github's I used <a class="reference external" href="https://github.com/arthur-debert/google-code-issues-migrator">this tool</a>. I managed to preserve the issue IDs but unfortunately not the real owners nor the real issue dates, which kind of sucks. As for migrating the code from mercurial to git I just used <a class="reference external" href="http://stackoverflow.com/a/16037861/376587">this</a>. The Mercurial -&gt; GIT transition was perfect and I also managed to preserve the original Mercurial named branches and tags, which for me it was crucial. In conclusion, psutil is a 5 years, medium sized  project with hundreds of issues: the transition in this case is definitively possible but not painless so if you plan on migrating, the sooner you do it the better.</p>
 </div>
 
@@ -381,15 +381,15 @@
 </footer><!-- /.post-info -->            <p>The time has finally come: <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0 is out! This is a release which took me a considerable amount of effort and careful thinking during the past 4 months as I went through a major <strong>rewrite and reorganization</strong> of both python and C extension modules. To get a sense of how much has changed you can compare the differences with old 1.2.1 version by running &quot;hg diff -r release-1.2.1:release-2.0.0&quot; which will produce more than <strong>22,000 lines</strong> of output! In those 22k lines I tried to nail down all the quirks the project had accumulated since its start 4 years ago and the resulting code base is now cleaner than ever, more manageable and fully compliant with PEP-7 and PEP-8 guidelines.
 There were some difficult decisions because many of the changes I introduced are not backward compatible so I was concerned with the pain this may cause existing users. I kind of still am, but I'm sure the transition will be well perceived on the long run as it will result in more manageable user code. OK, enough with the preface and let's see what changed.</p>
 <div class="section" id="api-changes">
-<h2>API changes</h2>
+<h2>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h2>
 <p>I already wrote a detailed <a class="reference external" href="../../2014/psutil-20-api-redesign/">blog post</a> about what changed so I recommend you to use that as the official reference on how to port your code.</p>
 </div>
 <div class="section" id="rst-documentation">
-<h2>RST documentation</h2>
+<h2>RST documentation<a class="headerlink" href="#rst-documentation" title="Permalink to this headline">¶</a></h2>
 <p>I've never been happy with old doc hosted on Google Code. The markup language provided by Google is pretty limited, plus it's not put under revision control. New doc is more detailed, it uses reStructuredText as the markup language, it lives in the same code repository as psutil's and it is hosted on the excellent readthedocs web site: <a class="reference external" href="http://psutil.readthedocs.org/">http://psutil.readthedocs.org/</a></p>
 </div>
 <div class="section" id="physical-cpus-count">
-<h2>Physical CPUs count</h2>
+<h2>Physical CPUs count<a class="headerlink" href="#physical-cpus-count" title="Permalink to this headline">¶</a></h2>
 <p>You're now able to distinguish between logical and physical CPUs:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
 <span class="mi">4</span>
@@ -399,7 +399,7 @@ There were some difficult decisions because many of the changes I introduced are
 <p>Full story is in <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427">issue 427</a>.</p>
 </div>
 <div class="section" id="process-instances-are-hashable">
-<h2>Process instances are hashable</h2>
+<h2>Process instances are hashable<a class="headerlink" href="#process-instances-are-hashable" title="Permalink to this headline">¶</a></h2>
 <p>Basically this means process instances can now be checked for equality and can be used with set()s:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
@@ -411,14 +411,14 @@ There were some difficult decisions because many of the changes I introduced are
 <p>Full story is in <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=452">issue 452</a>.</p>
 </div>
 <div class="section" id="speedups">
-<h2>Speedups</h2>
+<h2>Speedups<a class="headerlink" href="#speedups" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=477">#477</a>: process <cite>cpu_percent()</cite> is about 30% faster.</li>
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=478">#478</a>: (Linux) almost all APIs are about 30% faster on Python 3.X.</li>
 </ul>
 </div>
 <div class="section" id="other-improvements-and-bugfixes">
-<h2>Other improvements and bugfixes</h2>
+<h2>Other improvements and bugfixes<a class="headerlink" href="#other-improvements-and-bugfixes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=424">#424</a>: Windows installers for Python 3.X 64-bit</li>
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447">#447</a>: <cite>psutil.wait_procs()</cite> timeout parameter is now optional.</li>
@@ -485,11 +485,11 @@ There were some difficult decisions because many of the changes I introduced are
 <span class="nb">print</span><span class="p">(</span><span class="n">check_listening_port</span><span class="p">(</span><span class="mi">80</span><span class="p">))</span>
 </pre></div>
 <div class="section" id="netstat-in-pure-python">
-<h2>Netstat in pure python</h2>
+<h2>Netstat in pure python<a class="headerlink" href="#netstat-in-pure-python" title="Permalink to this headline">¶</a></h2>
 <p>Here it is, in 65 lines of code: <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/netstat.py">netstat.py</a>. Pretty neat right? ;-)</p>
 </div>
 <div class="section" id="implementation-s">
-<h2>Implementation(s)</h2>
+<h2>Implementation(s)<a class="headerlink" href="#implementation-s" title="Permalink to this headline">¶</a></h2>
 <p>As always, each platform required its own, different, implementation. Luckily for some platforms (OSX, Windows) I was able to reuse and customize some code from the existing <cite>Process.connections()</cite> implementation which was already in place. For those of you who are interested in knowing how this was done here's the source code references:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/_pslinux.py#L741">Linux</a></li>

@@ -47,7 +47,7 @@
 -->
 </footer><!-- /.post-info -->      <p>This my second blog post is going to be about <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is to serve as an official reference which describes how you should port your existent code base. In doing so I will also explain why I decided to make these changes. Despite many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten but I think this is for the better and it needed to be done, hopefully for the first and last time. OK, here we go now.</p>
 <div class="section" id="module-constants-turned-into-functions">
-<h2>Module constants turned into functions</h2>
+<h2>Module constants turned into functions<a class="headerlink" href="#module-constants-turned-into-functions" title="Permalink to this headline">¶</a></h2>
 <p><strong>What changed</strong></p>
 <table border="1" class="docutils">
 <colgroup>
@@ -76,7 +76,7 @@
 Thanks to this hack accessing the old constants still works and produces a DeprecationWarning.</p>
 </div>
 <div class="section" id="module-functions-renamings">
-<h2>Module functions renamings</h2>
+<h2>Module functions renamings<a class="headerlink" href="#module-functions-renamings" title="Permalink to this headline">¶</a></h2>
 <p><strong>What changed</strong></p>
 <table border="1" class="docutils">
 <colgroup>
@@ -104,7 +104,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 <p>They were the only module level functions having a <tt class="docutils literal">get_</tt> prefix. All others do not.</p>
 </div>
 <div class="section" id="process-class-methods-renamings">
-<h2>Process class' methods renamings</h2>
+<h2>Process class' methods renamings<a class="headerlink" href="#process-class-methods-renamings" title="Permalink to this headline">¶</a></h2>
 <p>All methods lost their <tt class="docutils literal">get_</tt> and <tt class="docutils literal">set_</tt> prefixes. A single method can now be used for both getting and setting (if a value is passed). Assuming p = psutil.Process():</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -206,7 +206,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 <p>I wanted to be consistent with system-wide module level functions which have no <tt class="docutils literal">get_</tt> prefix. After I got rid of <tt class="docutils literal">get_</tt> prefixes removing also <tt class="docutils literal">set_</tt> seemed natural and helped diminish the number of methods.</p>
 </div>
 <div class="section" id="process-properties-are-now-methods">
-<h2>Process properties are now methods</h2>
+<h2>Process properties are now methods<a class="headerlink" href="#process-properties-are-now-methods" title="Permalink to this headline">¶</a></h2>
 <p><strong>What changed</strong></p>
 <p>Assuming p = psutil.Process():</p>
 <table border="1" class="docutils">
@@ -262,7 +262,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 </ul>
 </div>
 <div class="section" id="cpu-percent-intervals">
-<h2>CPU percent intervals</h2>
+<h2>CPU percent intervals<a class="headerlink" href="#cpu-percent-intervals" title="Permalink to this headline">¶</a></h2>
 <p><strong>What changed</strong></p>
 <p>The timeout parameter of <tt class="docutils literal">cpu_percent*</tt> functions now defaults to 0.0 instead of 0.1. The functions affected are:</p>
 <ul class="simple">
@@ -279,7 +279,7 @@ Having an API which &quot;sleeps&quot; by default is risky though, because it's 
 </pre></div>
 </div>
 <div class="section" id="migration-strategy">
-<h2>Migration strategy</h2>
+<h2>Migration strategy<a class="headerlink" href="#migration-strategy" title="Permalink to this headline">¶</a></h2>
 <p>Except for Process properties (<cite>name</cite>, <cite>exe</cite>, <cite>cmdline</cite>, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long you start the interpreter with the &quot;-Wd&quot; option. This will enable deprecation warnings which were <a class="reference external" href="http://bugs.python.org/issue7319">silenced in Python 2.7</a> (IMHO, from a developer standpoint this was a bad decision).</p>
 <pre class="literal-block">
 giampaolo&#64;ubuntu:/tmp$ python -Wd
@@ -332,7 +332,7 @@ If on the other hand you want to write a code which works with both versions I s
 </pre></div>
 </div>
 <div class="section" id="new-features-introduced-in-2-0-0">
-<h2>New features introduced in 2.0.0</h2>
+<h2>New features introduced in 2.0.0<a class="headerlink" href="#new-features-introduced-in-2-0-0" title="Permalink to this headline">¶</a></h2>
 <p>Ok, enough with the bad news. =) psutil 2.0.0 is not only about code breakage. I also had the chance to integrate a bunch of interesting features.</p>
 <ul class="simple">
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427">#427</a>: you're now able to distinguish between the number of logical and physical CPUs:</li>

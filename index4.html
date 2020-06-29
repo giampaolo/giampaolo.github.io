@@ -62,7 +62,7 @@
 -->
 </footer><!-- /.post-info -->            <p>8 years ago I started hosting my first open source project (<a class="reference external" href="https://code.google.com/p/pyftpdlib/">pyftpdlib</a>) on Google Code and I later ended up also hosting <a class="reference external" href="https://code.google.com/p/psutil/">psutil</a> and <a class="reference external" href="https://code.google.com/p/pysendfile/">pysendfile</a>. Back then GC had just been released and similarly to other Google products I appreciated the clean and minimalistic interface, the excellent bug tracker and the freedom to choose between different revision control systems (SVN, GIT and Mercurial, which is my favourite one). Unfortunately as the years passed Google completely lost interest in maintaining GC to the point that now GC can basically be considered an <a class="reference external" href="https://groups.google.com/forum/#!topic/google-code-hosting/PEhNMdtBGt4">abandoned project</a>.  If you take a look at <a class="reference external" href="https://code.google.com/p/support/issues/list">GC bug tracker</a> you can see literally hundreds of issues which have been open for years, even some apparently easy ones such as <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=60">#60</a> and <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=919">#919</a>. The lack of interest from Google is absolutely astonishing and it is the main reason why I ultimately decided to change. After at least a couple of years of thinking about migrating to github I finally bite the bullet and as of today psutil is now <a class="reference external" href="https://github.com/giampaolo/psutil">hosted on github</a> (update: now also <a class="reference external" href="https://github.com/giampaolo/pyftpdlib">pyftpdlib</a> and <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a>).</p>
 <div class="section" id="what-i-will-miss-the-most-about-gc">
-<h2>What I will miss the most about GC</h2>
+<h2>What I will miss the most about GC<a class="headerlink" href="#what-i-will-miss-the-most-about-gc" title="Permalink to this headline">¶</a></h2>
 <p>First of all I must say that despite the unfortunate situation of GC I'm also sad for abandoning it. It started as a really great hosting platform, and it still has some peculiar aspects which I know I will be missing. In order of importance:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/list">The bug tracker</a>: it is much more powerful than <a class="reference external" href="https://github.com/giampaolo/psutil/issues?state=open">github's</a>, especially for the extremely customizable labeling system which is pure gold, the excellent searching system and the <a class="reference external" href="https://code.google.com/p/psutil/issues/list?can=2&amp;q=&amp;colspec=ID+Summary+Type+Opsys+Status+Priority+Opened+Owner&amp;groupby=&amp;sort=&amp;x=&amp;y=&amp;cells=tiles&amp;mode=grid">grid view</a>. GC bug tracker seriously kicks some ass so kudos to whoever was behind its design! By comparison github bug tracker is too minimalistic and it has no good way to order issues or list them in a more compact form. I'm totally gonna miss psutil bug tracker.</li>
@@ -71,7 +71,7 @@
 </ul>
 </div>
 <div class="section" id="what-i-appreciate-about-github">
-<h2>What I appreciate about github</h2>
+<h2>What I appreciate about github<a class="headerlink" href="#what-i-appreciate-about-github" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Travis integration: there's this totally awesome free continuos integration service called <a class="reference external" href="https://travis-ci.org/giampaolo/psutil">Travis</a> which given a configuration file <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/.travis.yml">like this</a> it will automatically run tests on multiple python versions every time a commit is pushed. They recently added <a class="reference external" href="http://blog.travis-ci.com/2014-05-13-multi-os-feature-available/">OSX support</a> and <a class="reference external" href="https://github.com/travis-ci/travis-ci/issues/216">Windows support</a> is on the way. This way I will finally be able to quickly test psutil on Linux, OSX and Windows without using virtualized systems except for FreeBSD and Solaris! To me this is like the ultimate Christmas gift and I couldn't ask for any better. Note: as of today Travis only works with github.</li>
 <li>forks and pull requests: honestly I'm not a big fan of them (yet?), probably because I'm used to the python-dev development workflow consisting in uploading patches on the bug tracker and reviewing them (see <a class="reference external" href="http://bugs.python.org/issue17552">this</a> for example). Nevertheless to my understanding most people use pull requests in order to contribute to open source projects so basically this is a service I'm glad to offer to my users who hopefully will be able to contribute back more easily. GC has a <a class="reference external" href="https://code.google.com/p/psutil/source/clones">cloning system</a> but isn't anywhere near github's and I'm not even sure how it works (never cared).</li>
@@ -83,7 +83,7 @@
 </ul>
 </div>
 <div class="section" id="migration">
-<h2>Migration</h2>
+<h2>Migration<a class="headerlink" href="#migration" title="Permalink to this headline">¶</a></h2>
 <p>For those of you who are interested in knowing how I did it, here goes: as for moving the issue from GC bug tracker to github's I used <a class="reference external" href="https://github.com/arthur-debert/google-code-issues-migrator">this tool</a>. I managed to preserve the issue IDs but unfortunately not the real owners nor the real issue dates, which kind of sucks. As for migrating the code from mercurial to git I just used <a class="reference external" href="http://stackoverflow.com/a/16037861/376587">this</a>. The Mercurial -&gt; GIT transition was perfect and I also managed to preserve the original Mercurial named branches and tags, which for me it was crucial. In conclusion, psutil is a 5 years, medium sized  project with hundreds of issues: the transition in this case is definitively possible but not painless so if you plan on migrating, the sooner you do it the better.</p>
 </div>
 
@@ -114,15 +114,15 @@
 </footer><!-- /.post-info -->            <p>The time has finally come: <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0 is out! This is a release which took me a considerable amount of effort and careful thinking during the past 4 months as I went through a major <strong>rewrite and reorganization</strong> of both python and C extension modules. To get a sense of how much has changed you can compare the differences with old 1.2.1 version by running &quot;hg diff -r release-1.2.1:release-2.0.0&quot; which will produce more than <strong>22,000 lines</strong> of output! In those 22k lines I tried to nail down all the quirks the project had accumulated since its start 4 years ago and the resulting code base is now cleaner than ever, more manageable and fully compliant with PEP-7 and PEP-8 guidelines.
 There were some difficult decisions because many of the changes I introduced are not backward compatible so I was concerned with the pain this may cause existing users. I kind of still am, but I'm sure the transition will be well perceived on the long run as it will result in more manageable user code. OK, enough with the preface and let's see what changed.</p>
 <div class="section" id="api-changes">
-<h2>API changes</h2>
+<h2>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h2>
 <p>I already wrote a detailed <a class="reference external" href="../../2014/psutil-20-api-redesign/">blog post</a> about what changed so I recommend you to use that as the official reference on how to port your code.</p>
 </div>
 <div class="section" id="rst-documentation">
-<h2>RST documentation</h2>
+<h2>RST documentation<a class="headerlink" href="#rst-documentation" title="Permalink to this headline">¶</a></h2>
 <p>I've never been happy with old doc hosted on Google Code. The markup language provided by Google is pretty limited, plus it's not put under revision control. New doc is more detailed, it uses reStructuredText as the markup language, it lives in the same code repository as psutil's and it is hosted on the excellent readthedocs web site: <a class="reference external" href="http://psutil.readthedocs.org/">http://psutil.readthedocs.org/</a></p>
 </div>
 <div class="section" id="physical-cpus-count">
-<h2>Physical CPUs count</h2>
+<h2>Physical CPUs count<a class="headerlink" href="#physical-cpus-count" title="Permalink to this headline">¶</a></h2>
 <p>You're now able to distinguish between logical and physical CPUs:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
 <span class="mi">4</span>
@@ -132,7 +132,7 @@ There were some difficult decisions because many of the changes I introduced are
 <p>Full story is in <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427">issue 427</a>.</p>
 </div>
 <div class="section" id="process-instances-are-hashable">
-<h2>Process instances are hashable</h2>
+<h2>Process instances are hashable<a class="headerlink" href="#process-instances-are-hashable" title="Permalink to this headline">¶</a></h2>
 <p>Basically this means process instances can now be checked for equality and can be used with set()s:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
@@ -144,14 +144,14 @@ There were some difficult decisions because many of the changes I introduced are
 <p>Full story is in <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=452">issue 452</a>.</p>
 </div>
 <div class="section" id="speedups">
-<h2>Speedups</h2>
+<h2>Speedups<a class="headerlink" href="#speedups" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=477">#477</a>: process <cite>cpu_percent()</cite> is about 30% faster.</li>
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=478">#478</a>: (Linux) almost all APIs are about 30% faster on Python 3.X.</li>
 </ul>
 </div>
 <div class="section" id="other-improvements-and-bugfixes">
-<h2>Other improvements and bugfixes</h2>
+<h2>Other improvements and bugfixes<a class="headerlink" href="#other-improvements-and-bugfixes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=424">#424</a>: Windows installers for Python 3.X 64-bit</li>
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447">#447</a>: <cite>psutil.wait_procs()</cite> timeout parameter is now optional.</li>
@@ -218,11 +218,11 @@ There were some difficult decisions because many of the changes I introduced are
 <span class="nb">print</span><span class="p">(</span><span class="n">check_listening_port</span><span class="p">(</span><span class="mi">80</span><span class="p">))</span>
 </pre></div>
 <div class="section" id="netstat-in-pure-python">
-<h2>Netstat in pure python</h2>
+<h2>Netstat in pure python<a class="headerlink" href="#netstat-in-pure-python" title="Permalink to this headline">¶</a></h2>
 <p>Here it is, in 65 lines of code: <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/netstat.py">netstat.py</a>. Pretty neat right? ;-)</p>
 </div>
 <div class="section" id="implementation-s">
-<h2>Implementation(s)</h2>
+<h2>Implementation(s)<a class="headerlink" href="#implementation-s" title="Permalink to this headline">¶</a></h2>
 <p>As always, each platform required its own, different, implementation. Luckily for some platforms (OSX, Windows) I was able to reuse and customize some code from the existing <cite>Process.connections()</cite> implementation which was already in place. For those of you who are interested in knowing how this was done here's the source code references:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/_pslinux.py#L741">Linux</a></li>
@@ -260,7 +260,7 @@ There were some difficult decisions because many of the changes I introduced are
 -->
 </footer><!-- /.post-info -->            <p>This my second blog post is going to be about <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is to serve as an official reference which describes how you should port your existent code base. In doing so I will also explain why I decided to make these changes. Despite many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten but I think this is for the better and it needed to be done, hopefully for the first and last time. OK, here we go now.</p>
 <div class="section" id="module-constants-turned-into-functions">
-<h2>Module constants turned into functions</h2>
+<h2>Module constants turned into functions<a class="headerlink" href="#module-constants-turned-into-functions" title="Permalink to this headline">¶</a></h2>
 <p><strong>What changed</strong></p>
 <table border="1" class="docutils">
 <colgroup>
@@ -289,7 +289,7 @@ There were some difficult decisions because many of the changes I introduced are
 Thanks to this hack accessing the old constants still works and produces a DeprecationWarning.</p>
 </div>
 <div class="section" id="module-functions-renamings">
-<h2>Module functions renamings</h2>
+<h2>Module functions renamings<a class="headerlink" href="#module-functions-renamings" title="Permalink to this headline">¶</a></h2>
 <p><strong>What changed</strong></p>
 <table border="1" class="docutils">
 <colgroup>
@@ -317,7 +317,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 <p>They were the only module level functions having a <tt class="docutils literal">get_</tt> prefix. All others do not.</p>
 </div>
 <div class="section" id="process-class-methods-renamings">
-<h2>Process class' methods renamings</h2>
+<h2>Process class' methods renamings<a class="headerlink" href="#process-class-methods-renamings" title="Permalink to this headline">¶</a></h2>
 <p>All methods lost their <tt class="docutils literal">get_</tt> and <tt class="docutils literal">set_</tt> prefixes. A single method can now be used for both getting and setting (if a value is passed). Assuming p = psutil.Process():</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -419,7 +419,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 <p>I wanted to be consistent with system-wide module level functions which have no <tt class="docutils literal">get_</tt> prefix. After I got rid of <tt class="docutils literal">get_</tt> prefixes removing also <tt class="docutils literal">set_</tt> seemed natural and helped diminish the number of methods.</p>
 </div>
 <div class="section" id="process-properties-are-now-methods">
-<h2>Process properties are now methods</h2>
+<h2>Process properties are now methods<a class="headerlink" href="#process-properties-are-now-methods" title="Permalink to this headline">¶</a></h2>
 <p><strong>What changed</strong></p>
 <p>Assuming p = psutil.Process():</p>
 <table border="1" class="docutils">
@@ -475,7 +475,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 </ul>
 </div>
 <div class="section" id="cpu-percent-intervals">
-<h2>CPU percent intervals</h2>
+<h2>CPU percent intervals<a class="headerlink" href="#cpu-percent-intervals" title="Permalink to this headline">¶</a></h2>
 <p><strong>What changed</strong></p>
 <p>The timeout parameter of <tt class="docutils literal">cpu_percent*</tt> functions now defaults to 0.0 instead of 0.1. The functions affected are:</p>
 <ul class="simple">
@@ -492,7 +492,7 @@ Having an API which &quot;sleeps&quot; by default is risky though, because it's 
 </pre></div>
 </div>
 <div class="section" id="migration-strategy">
-<h2>Migration strategy</h2>
+<h2>Migration strategy<a class="headerlink" href="#migration-strategy" title="Permalink to this headline">¶</a></h2>
 <p>Except for Process properties (<cite>name</cite>, <cite>exe</cite>, <cite>cmdline</cite>, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long you start the interpreter with the &quot;-Wd&quot; option. This will enable deprecation warnings which were <a class="reference external" href="http://bugs.python.org/issue7319">silenced in Python 2.7</a> (IMHO, from a developer standpoint this was a bad decision).</p>
 <pre class="literal-block">
 giampaolo&#64;ubuntu:/tmp$ python -Wd
@@ -545,7 +545,7 @@ If on the other hand you want to write a code which works with both versions I s
 </pre></div>
 </div>
 <div class="section" id="new-features-introduced-in-2-0-0">
-<h2>New features introduced in 2.0.0</h2>
+<h2>New features introduced in 2.0.0<a class="headerlink" href="#new-features-introduced-in-2-0-0" title="Permalink to this headline">¶</a></h2>
 <p>Ok, enough with the bad news. =) psutil 2.0.0 is not only about code breakage. I also had the chance to integrate a bunch of interesting features.</p>
 <ul class="simple">
 <li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427">#427</a>: you're now able to distinguish between the number of logical and physical CPUs:</li>
@@ -599,26 +599,26 @@ If on the other hand you want to write a code which works with both versions I s
 </pre></div>
 <p>5 years later I regret that decision and I'm going to explain you why you don't want to do the same mistake.</p>
 <div class="section" id="a-constant-should-not-change">
-<h2>A constant should not change</h2>
+<h2>A constant should not change<a class="headerlink" href="#a-constant-should-not-change" title="Permalink to this headline">¶</a></h2>
 <p>When we think of  'constants', our expectations are that they should not change over time. It may be obvious, but before thinking about introducing a constant be absolutely sure the value it represents is going to remain the same.
 Now, back then we thought these 3 metrics were not supposed to change, at least until the system is rebooted. Well, we were wrong: it turns out 2 of them actually can.
 Apparently virtualized systems can change physical installed memory at runtime (see <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=140#c5">here</a> and <a class="reference external" href="http://technet.microsoft.com/en-us/library/hh831766.aspx">here</a>) and system boot time can easily be altered every time you update the system clock.
 In both of these cases, of course, the constants will not reflect the updated values.</p>
 </div>
 <div class="section" id="doing-things-at-import-time-is-dangerous">
-<h2>Doing things at import time is dangerous</h2>
+<h2>Doing things at import time is dangerous<a class="headerlink" href="#doing-things-at-import-time-is-dangerous" title="Permalink to this headline">¶</a></h2>
 <p>That's because import time usually means startup time and if something goes wrong the whole application will crash. In general the only reason for a module to crash at import time is because of a missing dependancy or because it's not supposed to run on that platform in the first place.
 Now, here's a couple of bug reports which were collected over time: <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=188">issue 188</a>, <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=133">issue 313</a>.
 The inconvenience was so severe that I had to release different fixed versions ASAP and the fix consisted of a <a class="reference external" href="https://code.google.com/p/psutil/source/browse/psutil/_psosx.py?name=release-1.2.1#24">stinky workaround</a>.
 That's when I started thinking about getting rid of those constants once and for all and introduce functions instead. But how to do that without breaking everybody's code?</p>
 </div>
 <div class="section" id="backward-compatibility-matters">
-<h2>Backward compatibility matters</h2>
+<h2>Backward compatibility matters<a class="headerlink" href="#backward-compatibility-matters" title="Permalink to this headline">¶</a></h2>
 <p>Now here's the crucial part: every time you deliver a library to someone else you just cannot remove an API all of the sudden, especially if they are 3 and have been around since day one.
 It should first be deprecated, possibly turned into an alias pointing to a newer API and finally be removed after 1 or 2 major releases. Also, you want the deprecated API to explicitly raise a DeprecationWarning informing the user he's relying on something which will eventually be removed. With a module constant you cannot do any of that. What you would need is a module property.</p>
 </div>
 <div class="section" id="module-properties">
-<h2>Module properties</h2>
+<h2>Module properties<a class="headerlink" href="#module-properties" title="Permalink to this headline">¶</a></h2>
 <p>One of the greatest things about Python is that it's so dynamic that it lets you do all sort of nasty things with objects, including injecting names into modules (which are also objects) and make them behave like actual class properties!
 For this I have to thank <a class="reference external" href="http://www.dr-josiah.com/2013/12/properties-on-python-modules.html">Josiah Carlson</a> who came up with this very simple yet effective solution:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ModuleWrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>

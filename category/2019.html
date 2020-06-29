@@ -50,7 +50,7 @@
 -->
 </footer><!-- /.post-info -->            <p>New <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.6.2 release implements an emulation of <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getloadavg">os.getloadavg()</a> on Windows which was kindly <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1485">contributed by Ammar Askar</a> who originally implemented it for <a class="reference external" href="https://github.com/python/cpython/pull/8357/files">cPython's test suite</a>. This idea has been floating around for quite a while. The first proposal dates back to <a class="reference external" href="https://code.google.com/archive/p/psutil/issues/139">2010</a>, when psutil was still hosted on Google Code, and it popped up <a class="reference external" href="https://github.com/giampaolo/psutil/issues?utf8=%E2%9C%93&amp;q=getloadavg">multiple times</a> throughout the years. There was/is a bunch of info on internet mentioning the bits with which it's theoretically possible to do this (the so called <cite>System Processor Queue Length</cite>), but I couldn't find any real implementation. A <a class="reference external" href="https://www.google.com/search?client=ubuntu&amp;hs=2EI&amp;channel=fs&amp;ei=LafCXO2ZE8PKswX9kY-wAw&amp;q=windows+load+average&amp;oq=windows+load+average&amp;gs_l=psy-ab.3..0j0i22i30l7.12536.13873..14008...0.0..0.482.2591.4-6......0....1..gws-wiz.......0i71j0i131.37ys3SB25pE">Google search</a> tells there is quite some demand for this, but very few tools out there providing this natively (the only one I could find is this <a class="reference external" href="https://blog.sflow.com/2011/02/windows-load-average.html">sFlowTrend</a> tool and <a class="reference external" href="https://www.zabbix.com/forum/zabbix-help/50423-windows-cpu-load">Zabbix</a>), so I'm very happy this finally landed into psutil / Python.</p>
 <div class="section" id="other-improvements-and-bugfixes-in-psutil-5-6-2">
-<h2>Other improvements and bugfixes in psutil 5.6.2</h2>
+<h2>Other improvements and bugfixes in psutil 5.6.2<a class="headerlink" href="#other-improvements-and-bugfixes-in-psutil-5-6-2" title="Permalink to this headline">¶</a></h2>
 <p>The full list is <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#562">here</a> but I would like to mention a couple:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">1476</a>: the possibility to set process' high I/O priority on Windows</li>
@@ -62,11 +62,11 @@
 </ul>
 </div>
 <div class="section" id="about-me">
-<h2>About me</h2>
+<h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
 <p>I'm currently in China (Shenzhen) for a mix of vacation and work, and I will likely take a break from Open Source for a while (likely 2.5 months, during which I will also go to Philippines and Japan - I love Asia ;-)).</p>
 </div>
 <div class="section" id="external">
-<h2>External</h2>
+<h2>External<a class="headerlink" href="#external" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/bhji0m/new_psutil_562_with_load_average_emulation_on/">Reddit</a></li>
 </ul>
@@ -99,7 +99,7 @@
 </footer><!-- /.post-info -->            <p>Hello world =)</p>
 <p>It was a long time since my last blog post (over 1 year and a half). During this time I moved between Italy, Prague and Shenzhen (China), and also contributed a couple of nice patches for Python I want to blog about when Python 3.8 will be out: zero-copy for <a class="reference external" href="https://bugs.python.org/issue33671">shutil.copy()</a> functions and <a class="reference external" href="https://github.com/python/cpython/pull/11784">socket.create_server()</a> utility function. But let's move on and talk about what this blog post is about: the next major psutil version.</p>
 <div class="section" id="process-parents">
-<h2>Process parents()</h2>
+<h2>Process parents()<a class="headerlink" href="#process-parents" title="Permalink to this headline">¶</a></h2>
 <p>From the doc: return the parents of this process as a list of Process instances. If no parents are known return an empty list.</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="mi">5312</span><span class="p">)</span>
@@ -111,22 +111,22 @@
 <p>Nothing really new here, as it's a convenience method based on the existing <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.parent">parent()</a> method, but still it's something nice to have implemented as a builtin and which can be used to work with process trees in conjunction with <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.children">children()</a> method. The idea was proposed by Ghislain Le Meur.</p>
 </div>
 <div class="section" id="windows">
-<h2>Windows</h2>
+<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
 <p>A bunch of interesting improvements occurred on Windows.</p>
 <p>The first one is that certain Windows APIs requiring to be dynamically loaded from DLL libraries are now loaded only once on startup (instead of on per function call), significantly speeding up different functions and methods. This is described and implemented in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1422">#1422</a> which also provides benchmarks.</p>
 <p>Another one is Process' <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.suspend">suspend()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.resume">resume()</a> methods. Before they were using <cite>CreateToolhelp32Snapshot()</cite> to iterate over all process' threads which was somewhat unorthodox and didn't work if process was suspended via Process Hacker. Now it relies on undocumented <cite>NtSuspendProcess</cite> and <cite>NtResumeProcess</cite> APIs, which is the same approach used by ProcessHacker and other famous Sysinternals tools. The change was proposed and discussed in issue <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1379">#1379</a> and implemented in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1435">#1435</a>. I think I will later propose the addition of suspend() and resume() method in subprocess module in Python.</p>
 <p>Last nice improvement about Windows it's about <cite>SE DEBUG</cite> mode. <cite>SE DEBUG</cite> mode can be seen as a &quot;bit&quot; which you can set on the Python process on startup so that we have more chances of querying processes owned by other users, including many owned by Administrator and Local System. Practically speaking this means we will get less <cite>AccessDenied</cite> exceptions for low PID processes.  It turns out the code doing this has been broken presumably for years, and never set <cite>SE DEBUG</cite>. This is fixed now and the change was made in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1429">#1429</a>.</p>
 </div>
 <div class="section" id="removal-of-process-memory-maps-on-osx">
-<h2>Removal of Process.memory_maps() on OSX</h2>
+<h2>Removal of Process.memory_maps() on OSX<a class="headerlink" href="#removal-of-process-memory-maps-on-osx" title="Permalink to this headline">¶</a></h2>
 <p>This was somewhat <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1291">controversial</a>. The history about <cite>memory_maps()</cite> on OSX is a painful one. It was based on an undocumented and probably broken Apple API called <cite>proc_regionfilename()</cite> which made <cite>memory_maps()</cite> either randomly raise <cite>EINVAL</cite> or result in segfault! Also, <cite>memory_maps()</cite> could only be used for the current process, limiting its usefulness to <cite>os.getpid()</cite> only. For any other process it raised <cite>AccessDenied</cite>. This has been a known problem for a long time but sometime over the last few years I got tired of seeing random test failures on Travis that I couldn't reproduce locally, so I commented the unit-test and forget about it until last week, when I realized the real impact this has on production code. I tried looking for a solution once again, spending quite some time looking for public source codes which managed to do this right with no luck. The only tool I'm aware of which does this right is vmmap from Apple, but it's closed source. After careful thinking, since no solution was found, I decided to just remove <cite>memory_maps()</cite> from OSX. This is not something I took lightly, but considering the alternative is getting a segfault I decided to sacrifice backward compatibility (hence the major version bump).</p>
 </div>
 <div class="section" id="improved-exceptions">
-<h2>Improved exceptions</h2>
+<h2>Improved exceptions<a class="headerlink" href="#improved-exceptions" title="Permalink to this headline">¶</a></h2>
 <p>One problem which afflicted psutil maintenance over the years was receiving bug reports including tracebacks which didn't provide any information on what syscall failed exactly. This was especially painful on Windows where a single routine can invoke different Windows APIs. Now the <cite>OSError</cite> (or <cite>WindowsError</cite>) exception will include the syscall from which the error originated, see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1428">PR-#1428</a>.</p>
 </div>
 <div class="section" id="other-important-bugfixes">
-<h2>Other important bugfixes</h2>
+<h2>Other important bugfixes<a class="headerlink" href="#other-important-bugfixes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1353">#1353</a>: <cite>process_iter()</cite> is now thread safe</li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1411">#1411</a>: [BSD] segfault could occur on Process instantiation</li>

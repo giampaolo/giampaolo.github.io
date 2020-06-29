@@ -73,7 +73,7 @@
 </pre></div>
 <p>Initially I thought to expose and provide a complete set of APIs to handle all aspects of service handling including <tt class="docutils literal">start()</tt>, <tt class="docutils literal">stop()</tt>, <tt class="docutils literal">restart()</tt>, <tt class="docutils literal">install()</tt>, <tt class="docutils literal">uninstall()</tt> and <tt class="docutils literal">modify()</tt> but I soon realized that I would have ended up reimplementing what pywin32 already provides at the cost of overcrowding psutil API (see my reasoning <a class="reference external" href="https://github.com/giampaolo/psutil/blob/d28de253a2e6d7f368e5260d7a4ab14b285c5083/psutil/_pswindows.py#L426">here</a>). I think psutil should really be about monitoring, not about installing and modifying system stuff, especially something as critical as a Windows service.</p>
 <div class="section" id="considerations-about-windows-services">
-<h2>Considerations about Windows services</h2>
+<h2>Considerations about Windows services<a class="headerlink" href="#considerations-about-windows-services" title="Permalink to this headline">¶</a></h2>
 <p>For those of you who are not familiar with Windows, a service is something, generally an executable (.exe), which runs at system startup and keeps running in background. We can say they are the equivalent of a UNIX init script. All service are controlled by a &quot;manager&quot; which keeps track of their status and metadata (e.g. description, startup type) and with that you can start and stop them. It is interesting to note that since (most) services are bound to an executable (and hence a process) you can reference the process via its PID:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">win_service_get</span><span class="p">(</span><span class="s1">&#39;sshd&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">s</span>
@@ -88,7 +88,7 @@
 </pre></div>
 </div>
 <div class="section" id="other-improvements">
-<h2>Other improvements</h2>
+<h2>Other improvements<a class="headerlink" href="#other-improvements" title="Permalink to this headline">¶</a></h2>
 <p>psutil 4.2.0 comes with 2 other enhancements for Linux:</p>
 <ul class="simple">
 <li><tt class="docutils literal">psutil.virtual_memory()</tt> returns a new &quot;shared&quot; memory field. This is the same value reported by <tt class="docutils literal">free</tt> cmdline utility.</li>
@@ -102,7 +102,7 @@
 </ul>
 </div>
 <div class="section" id="external-links">
-<h2>External links</h2>
+<h2>External links<a class="headerlink" href="#external-links" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/4jf8tz/psutil_420_windows_services_and_python/">Reddit</a></li>
 <li><a class="reference external" href="https://news.ycombinator.com/item?id=11700002">Hacker news</a></li>
