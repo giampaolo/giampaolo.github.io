@@ -6,7 +6,7 @@ New Pelican website
 
 Hello there. I present you my new blog / personal website!
 This is something I've been wanting to do for a very long time, since the old blog hosted at https://grodola.blogspot.com/ was... well, too old. =)
-This new site is based on `Pelican <https://docs.getpelican.com/en/stable/>`__, a static website generator similar to `Jekyll <https://jekyllrb.com/>`__. Differently from Jekyll, it uses Python instead of Ruby, and that's why I chose it. It's minimal, straight to the point and I feel I have control of things. This is what pelican gave me out of the box:
+This new site is based on `Pelican <https://docs.getpelican.com/en/stable/>`__, a static website generator similar to `Jekyll <https://jekyllrb.com/>`__. Differently from Jekyll, it uses Python instead of Ruby, and that's why I chose it. It's minimal, straight to the point and I feel I have control of things. This is what Pelican gave me out of the box:
 
 * blog functionality
 * ability to write content by using reStructuredText
@@ -53,11 +53,11 @@ The core of Pelican is `pelicanconf.py <https://github.com/giampaolo/giampaolo.g
 About me
 ========
 
-I spent most of last year (2020) in China, dating my girlfriend, remote working from a shared office space in Shenzen, and I even tought some Python to a class of Chinese folks with no previous programming experience. The course was about the basics of the language + basic filesystem operations, and the most difficult thing to explain was indentation. I guess that shows the difference between knowing a language and knowing how to teach it.
+I spent most of last year (2020) in China, dating my girlfriend, remote working from a shared office space in Shenzhen, and I even taught some Python to a class of Chinese folks with no previous programming experience. The course was about the basics of the language + basic filesystem operations, and the most difficult thing to explain was indentation. I guess that shows the difference between knowing a language and knowing how to teach it.
 
-I got back to Italy on December 2020, just before the pandemic occurred. Because of my connections with China, I knew about the incoming pandemic sooner than the rest of my friends, which for a while (until the lockdown) made them think I was crazy. =)
+I got back to Italy in December 2020, just before the pandemic occurred. Because of my connections with China, I knew about the incoming pandemic sooner than the rest of my friends, which for a while (until the lockdown) made them think I was crazy. =)
 
-Since I knew I would be stuck at home for a long time, I bought a quite nice acustic guitar (Taylor) after many years, and resumed playing (and singing). I learned a bunch of new songs, mostly about Queen, including Bohemian Raphsody, which is something I've been wanting to do since forever.
+Since I knew I would be stuck at home for a long time, I bought a quite nice acoustic guitar (Taylor) after many years, and resumed playing (and singing). I learned a bunch of new songs, mostly about Queen, including Bohemian Rhapsody, which is something I've been wanting to do since forever.
 
 I also spent some time working on a personal project that I'm keeping private for the moment, something to speed up file copies, which follows the experiments I made in `BPO-33671 <https://bugs.python.org/issue33671>`__. It's still very beta, but I managed to make file copies around 170% faster compared to ``cp`` command on Linux, which is pretty impressive (and I think I can push it even further). I will blog about that once I'll have something more solid / stable. Most likely it'll become my next OSS project, even tough I have mixed feelings about that, since the amount of time I'm devoting to psutil is already a lot.
 
