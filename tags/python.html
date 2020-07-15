@@ -29,6 +29,80 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2020/new-pelican-website" rel="bookmark"
+                   title="Permalink to New Pelican website">New Pelican website</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2020-06-26T00:00:00+02:00">
+        Created: 26 Jun 2020,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/announce">announce</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/pelican">pelican</a>,        <a href="https://gmpy.dev/tags/psutil">psutil</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>Hello there. I present you my new blog / personal website!
+This is something I've been wanting to do for a very long time, since the old blog hosted at <a class="reference external" href="https://grodola.blogspot.com/">https://grodola.blogspot.com/</a> was... well, too old. =)
+This new site is based on <a class="reference external" href="https://docs.getpelican.com/en/stable/">Pelican</a>, a static website generator similar to <a class="reference external" href="https://jekyllrb.com/">Jekyll</a>. Differently from Jekyll, it uses Python instead of Ruby, and that's why I chose it. It's minimal, straight to the point and I feel I have control of things. This is what pelican gave me out of the box:</p>
+<ul class="simple">
+<li>blog functionality</li>
+<li>ability to write content by using reStructuredText</li>
+<li>RSS &amp; Atom feed</li>
+<li>easy integration with GitHub pages</li>
+<li>ability to add comments via Disqus</li>
+</ul>
+<p>To this I added a mailing list (I used feedburner), so that users can subscribe and receive an email every time I make a new blog post. As you can see the website is very simple, but it's exactly what I wanted (minimalism). As for the domain name I opted for <a class="reference external" href="https://gmpy.dev/">gmpy.dev</a>, mostly because I know my name is hard to type and pronounce for non-english speakers. And also because I couldn't come up with a better name. ;)</p>
+<div class="section" id="git-based-workflow">
+<h2>GIT-based workflow<a class="headerlink" href="#git-based-workflow" title="Permalink to this headline">¶</a></h2>
+<p>The main reason why I blogged so rarely over the years was mostly because blogger.com provided me no way to edit content in RsT or markdown, and the lack of GIT integration. This made me lazy. With Pelican + GitHub pages the workflow to create and publish new content is very straightforward. I use 2 branches: <a class="reference external" href="https://github.com/giampaolo/giampaolo.github.io/tree/gh-pages">gh-pages</a>, which is the source code of this web-site, and <a class="reference external" href="https://github.com/giampaolo/giampaolo.github.io/tree/master">master</a>, which is where the generated HTML content lives and it is being served by GitHub pages. This is what I do when I have to create a new blog post:</p>
+<ul class="simple">
+<li>under <cite>gh-pages</cite> branch I create a new file, e.g. <cite>content/blog/2020/new-blog-post.rst</cite>:</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="gh">New blog post</span>
+<span class="gh">#############</span>
+
+<span class="nc">:date:</span> 2020-06-26
+<span class="nc">:tags:</span> announce, python
+
+Hello world!
+</pre></div>
+<ul class="simple">
+<li>commit it:</li>
+</ul>
+<div class="highlight"><pre><span></span>git add content/blog/2020/new-blog-post.rst
+git ci -am &quot;new blog post&quot;
+git push
+</pre></div>
+<ul class="simple">
+<li>publish it:</li>
+</ul>
+<div class="highlight"><pre><span></span>make github
+</pre></div>
+<p>Within 1 minute or something, GitHub will automatically serve <a class="reference external" href="https://gmpy.dev/">gmpy.dev</a> with the updated content. And this is why I think I will start blogging more often. =)
+The core of Pelican is <a class="reference external" href="https://github.com/giampaolo/giampaolo.github.io/blob/gh-pages/pelicanconf.py">pelicanconf.py</a>, which lets you customize a lot of things by remaining independent from the theme. I still ended up modifying the default theme though, writing a customized &quot;archives&quot; view and editing CSS to make the site look better on mobile phones. All in all, I am very satisfied with Pelican, and I'm keen on recommending it to anyone who doesn't need dynamism.</p>
+</div>
+<div class="section" id="about-me">
+<h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
+<p>I spent most of last year (2020) in China, dating my girlfriend, remote working from a shared office space in Shenzen, and I even tought some Python to a class of Chinese folks with no previous programming experience. The course was about the basics of the language + basic filesystem operations, and the most difficult thing to explain was indentation. I guess that shows the difference between knowing a language and knowing how to teach it.</p>
+<p>I got back to Italy on December 2020, just before the pandemic occurred. Because of my connections with China, I knew about the incoming pandemic sooner than the rest of my friends, which for a while (until the lockdown) made them think I was crazy. =)</p>
+<p>Since I knew I would be stuck at home for a long time, I bought a quite nice acustic guitar (Taylor) after many years, and resumed playing (and singing). I learned a bunch of new songs, mostly about Queen, including Bohemian Raphsody, which is something I've been wanting to do since forever.</p>
+<p>I also spent some time working on a personal project that I'm keeping private for the moment, something to speed up file copies, which follows the experiments I made in <a class="reference external" href="https://bugs.python.org/issue33671">BPO-33671</a>. It's still very beta, but I managed to make file copies around 170% faster compared to <tt class="docutils literal">cp</tt> command on Linux, which is pretty impressive (and I think I can push it even further). I will blog about that once I'll have something more solid / stable. Most likely it'll become my next OSS project, even tough I have mixed feelings about that, since the amount of time I'm devoting to psutil is already a lot.</p>
+<p>Speaking of which, today I'm also releasing <a class="reference external" href="https://groups.google.com/forum/#!topic/psutil/zT0jUE2IaE4">psutil 5.7.1</a>, which adds support for <strong>Windows Nano</strong>.</p>
+<p>I guess this is all. Cheers and subscribe!</p>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2019/system-load-average-on-windows-in-python" rel="bookmark"
                    title="Permalink to System load average on Windows in Python">System load average on Windows in Python</a></h1>
         </header>
@@ -287,97 +361,6 @@
 <div class="section" id="about-me">
 <h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
 <p>I would like to spend a couple more words about my current situation. Last year (2016) I relocated to Prague and remote worked from there the whole year (it's been cool - great city!). This year I have mainly been resting in Turin (Italy) due to some health issues and travelling across Asia once I started to recover. I am currently in Shenzhen, China, and unless the current situation with North Korea gets worse I'm planning to continue my trip until November and visit Taiwan, South Korea and Japan. Once I'm finished the plan is to briefly return to Turin (Italy) and finally return to Prague. By then I will probably be looking for a new (remote) gig again, so if you have anything for me by November feel free to send me a message. ;-)</p>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2017/psutil-511-system-temperature-battery-and-cpu-frequency" rel="bookmark"
-                   title="Permalink to psutil 5.1.1 system temperature, battery and CPU frequency">psutil 5.1.1 system temperature, battery and CPU frequency</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2017-02-01T00:00:00+01:00">
-        Created: 01 Feb 2017,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> release. Main highlights of this release are sensors-related APIs.</p>
-<div class="section" id="temperatures">
-<h2>Temperatures<a class="headerlink" href="#temperatures" title="Permalink to this headline">¶</a></h2>
-<p>It is now possible to retrieve hardware temperatures. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/962/files">here</a>. Unfortunately this is Linux only. I couldn't manage to implement this on other platforms mainly for two reasons:</p>
-<ul class="simple">
-<li>On Windows it is hard to do this in a hardware agnostic fashion. I bumped into 3 different approaches, all using WMI, and none of them worked with my hardware so I gave up.</li>
-<li>On OSX it appears it is possible to retrieve temperatures relatively easy, but I have a virtualized OSX box which does not support sensors, so basically I gave up on this due to lack of hardware. If somebody wants to give it a try <a class="reference external" href="https://github.com/giampaolo/psutil/issues/371#issuecomment-274961948">be my guest</a>.</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">sensors_temperatures</span><span class="p">()</span>
-<span class="p">{</span><span class="s1">&#39;acpitz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">47.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">103.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">103.0</span><span class="p">)],</span>
- <span class="s1">&#39;asus&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">47.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="kc">None</span><span class="p">)],</span>
- <span class="s1">&#39;coretemp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Physical id 0&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">52.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">),</span>
-              <span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Core 0&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">45.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">),</span>
-              <span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Core 1&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">52.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">),</span>
-              <span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Core 2&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">45.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">),</span>
-              <span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Core 3&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">47.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">)]}</span>
-</pre></div>
-</div>
-<div class="section" id="battery-status">
-<h2>Battery status<a class="headerlink" href="#battery-status" title="Permalink to this headline">¶</a></h2>
-<p>This works on Linux, Windows and FreeBSD and provides battery status information. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/963/files">here</a>.</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">secs2hours</span><span class="p">(</span><span class="n">secs</span><span class="p">):</span>
-<span class="o">...</span>     <span class="n">mm</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">secs</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
-<span class="o">...</span>     <span class="n">hh</span><span class="p">,</span> <span class="n">mm</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
-<span class="o">...</span>     <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">hh</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">ss</span><span class="p">)</span>
-<span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">battery</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">sensors_battery</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">battery</span>
-<span class="n">sbattery</span><span class="p">(</span><span class="n">percent</span><span class="o">=</span><span class="mi">93</span><span class="p">,</span> <span class="n">secsleft</span><span class="o">=</span><span class="mi">16628</span><span class="p">,</span> <span class="n">power_plugged</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;charge = </span><span class="si">%s%%</span><span class="s2">, time left = </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">batt</span><span class="o">.</span><span class="n">percent</span><span class="p">,</span> <span class="n">secs2hours</span><span class="p">(</span><span class="n">batt</span><span class="o">.</span><span class="n">secsleft</span><span class="p">)))</span>
-<span class="n">charge</span> <span class="o">=</span> <span class="mi">93</span><span class="o">%</span><span class="p">,</span> <span class="n">time</span> <span class="n">left</span> <span class="o">=</span> <span class="mi">4</span><span class="p">:</span><span class="mi">37</span><span class="p">:</span><span class="mi">08</span>
-</pre></div>
-</div>
-<div class="section" id="cpu-frequency">
-<h2>CPU frequency<a class="headerlink" href="#cpu-frequency" title="Permalink to this headline">¶</a></h2>
-<p>Available under Linux, Windows and OSX. Relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/952/files">here</a>. Linux is the only platform which reports the real-time value (always changing), on all other platforms current frequency is represented as the nominal “fixed” value.</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_freq</span><span class="p">()</span>
-<span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">931.42925</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_freq</span><span class="p">(</span><span class="n">percpu</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="p">[</span><span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">2394.945</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">),</span>
- <span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">2236.812</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">),</span>
- <span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">1703.609</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">),</span>
- <span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">1754.289</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">)]</span>
-</pre></div>
-</div>
-<div class="section" id="what-cpu-a-process-is-on">
-<h2>What CPU a process is on<a class="headerlink" href="#what-cpu-a-process-is-on" title="Permalink to this headline">¶</a></h2>
-<p>This will let you know what CPU number a process is currently running on, which is somewhat related to the existent <a class="reference external" href="https://pythonhosted.org/psutil/#psutil.Process.cpu_affinity">cpu_affinity()</a> functionality. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/954/files">here</a>. It is interesting to use this method to visualize how the OS scheduler continuously evenly reassigns processes to different CPUs  (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/cpu_distribution.py">cpu_distribution.py</a> script).</p>
-</div>
-<div class="section" id="cpu-affinity">
-<h2>CPU affinity<a class="headerlink" href="#cpu-affinity" title="Permalink to this headline">¶</a></h2>
-<p>A new syntax can now be used as an alias for &quot;set affinity against all eligible CPUs&quot;.</p>
-<div class="highlight"><pre><span></span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">cpu_affinity</span><span class="p">([])</span>
-</pre></div>
-<p>This was implemented because it turns out <a class="reference external" href="https://github.com/giampaolo/psutil/issues/956">on Linux</a> it is not always possible to set affinity against all CPUs. Having such an alias is also a shortcut to avoid doing this, which is kinda verbose:</p>
-<div class="highlight"><pre><span></span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">cpu_affinity</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())))</span>
-</pre></div>
-</div>
-<div class="section" id="other-bug-fixes">
-<h2>Other bug fixes<a class="headerlink" href="#other-bug-fixes" title="Permalink to this headline">¶</a></h2>
-<p>See <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#510">full list</a>.</p>
 </div>
 
         </div>

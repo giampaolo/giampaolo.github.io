@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - announce</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.announce.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2020-06-26T00:00:00+02:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>New Pelican website</title><link href="https://gmpy.dev/blog/2020/new-pelican-website" rel="alternate"></link><published>2020-06-26T00:00:00+02:00</published><updated>2020-06-26T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2020-06-26:/blog/2020/new-pelican-website</id><summary type="html">&lt;p&gt;Hello there. I present you my new blog / personal website!
+This is something I've been wanting to do for a very long time, since the old blog hosted at &lt;a class="reference external" href="https://grodola.blogspot.com/"&gt;https://grodola.blogspot.com/&lt;/a&gt; was... well, too old. =)
+This new site is based on &lt;a class="reference external" href="https://docs.getpelican.com/en/stable/"&gt;Pelican&lt;/a&gt;, a static website generator similar to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Hello there. I present you my new blog / personal website!
+This is something I've been wanting to do for a very long time, since the old blog hosted at &lt;a class="reference external" href="https://grodola.blogspot.com/"&gt;https://grodola.blogspot.com/&lt;/a&gt; was... well, too old. =)
+This new site is based on &lt;a class="reference external" href="https://docs.getpelican.com/en/stable/"&gt;Pelican&lt;/a&gt;, a static website generator similar to &lt;a class="reference external" href="https://jekyllrb.com/"&gt;Jekyll&lt;/a&gt;. Differently from Jekyll, it uses Python instead of Ruby, and that's why I chose it. It's minimal, straight to the point and I feel I have control of things. This is what pelican gave me out of the box:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;blog functionality&lt;/li&gt;
+&lt;li&gt;ability to write content by using reStructuredText&lt;/li&gt;
+&lt;li&gt;RSS &amp;amp; Atom feed&lt;/li&gt;
+&lt;li&gt;easy integration with GitHub pages&lt;/li&gt;
+&lt;li&gt;ability to add comments via Disqus&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To this I added a mailing list (I used feedburner), so that users can subscribe and receive an email every time I make a new blog post. As you can see the website is very simple, but it's exactly what I wanted (minimalism). As for the domain name I opted for &lt;a class="reference external" href="https://gmpy.dev/"&gt;gmpy.dev&lt;/a&gt;, mostly because I know my name is hard to type and pronounce for non-english speakers. And also because I couldn't come up with a better name. ;)&lt;/p&gt;
+&lt;div class="section" id="git-based-workflow"&gt;
+&lt;h2&gt;GIT-based workflow&lt;a class="headerlink" href="#git-based-workflow" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The main reason why I blogged so rarely over the years was mostly because blogger.com provided me no way to edit content in RsT or markdown, and the lack of GIT integration. This made me lazy. With Pelican + GitHub pages the workflow to create and publish new content is very straightforward. I use 2 branches: &lt;a class="reference external" href="https://github.com/giampaolo/giampaolo.github.io/tree/gh-pages"&gt;gh-pages&lt;/a&gt;, which is the source code of this web-site, and &lt;a class="reference external" href="https://github.com/giampaolo/giampaolo.github.io/tree/master"&gt;master&lt;/a&gt;, which is where the generated HTML content lives and it is being served by GitHub pages. This is what I do when I have to create a new blog post:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;under &lt;cite&gt;gh-pages&lt;/cite&gt; branch I create a new file, e.g. &lt;cite&gt;content/blog/2020/new-blog-post.rst&lt;/cite&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gh"&gt;New blog post&lt;/span&gt;
+&lt;span class="gh"&gt;#############&lt;/span&gt;
+
+&lt;span class="nc"&gt;:date:&lt;/span&gt; 2020-06-26
+&lt;span class="nc"&gt;:tags:&lt;/span&gt; announce, python
+
+Hello world!
+&lt;/pre&gt;&lt;/div&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;commit it:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git add content/blog/2020/new-blog-post.rst
+git ci -am &amp;quot;new blog post&amp;quot;
+git push
+&lt;/pre&gt;&lt;/div&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;publish it:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;make github
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Within 1 minute or something, GitHub will automatically serve &lt;a class="reference external" href="https://gmpy.dev/"&gt;gmpy.dev&lt;/a&gt; with the updated content. And this is why I think I will start blogging more often. =)
+The core of Pelican is &lt;a class="reference external" href="https://github.com/giampaolo/giampaolo.github.io/blob/gh-pages/pelicanconf.py"&gt;pelicanconf.py&lt;/a&gt;, which lets you customize a lot of things by remaining independent from the theme. I still ended up modifying the default theme though, writing a customized &amp;quot;archives&amp;quot; view and editing CSS to make the site look better on mobile phones. All in all, I am very satisfied with Pelican, and I'm keen on recommending it to anyone who doesn't need dynamism.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="about-me"&gt;
+&lt;h2&gt;About me&lt;a class="headerlink" href="#about-me" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;I spent most of last year (2020) in China, dating my girlfriend, remote working from a shared office space in Shenzen, and I even tought some Python to a class of Chinese folks with no previous programming experience. The course was about the basics of the language + basic filesystem operations, and the most difficult thing to explain was indentation. I guess that shows the difference between knowing a language and knowing how to teach it.&lt;/p&gt;
+&lt;p&gt;I got back to Italy on December 2020, just before the pandemic occurred. Because of my connections with China, I knew about the incoming pandemic sooner than the rest of my friends, which for a while (until the lockdown) made them think I was crazy. =)&lt;/p&gt;
+&lt;p&gt;Since I knew I would be stuck at home for a long time, I bought a quite nice acustic guitar (Taylor) after many years, and resumed playing (and singing). I learned a bunch of new songs, mostly about Queen, including Bohemian Raphsody, which is something I've been wanting to do since forever.&lt;/p&gt;
+&lt;p&gt;I also spent some time working on a personal project that I'm keeping private for the moment, something to speed up file copies, which follows the experiments I made in &lt;a class="reference external" href="https://bugs.python.org/issue33671"&gt;BPO-33671&lt;/a&gt;. It's still very beta, but I managed to make file copies around 170% faster compared to &lt;tt class="docutils literal"&gt;cp&lt;/tt&gt; command on Linux, which is pretty impressive (and I think I can push it even further). I will blog about that once I'll have something more solid / stable. Most likely it'll become my next OSS project, even tough I have mixed feelings about that, since the amount of time I'm devoting to psutil is already a lot.&lt;/p&gt;
+&lt;p&gt;Speaking of which, today I'm also releasing &lt;a class="reference external" href="https://groups.google.com/forum/#!topic/psutil/zT0jUE2IaE4"&gt;psutil 5.7.1&lt;/a&gt;, which adds support for &lt;strong&gt;Windows Nano&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;I guess this is all. Cheers and subscribe!&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="2020"></category><category term="announce"></category><category term="python"></category><category term="pelican"></category><category term="psutil"></category></entry></feed>
