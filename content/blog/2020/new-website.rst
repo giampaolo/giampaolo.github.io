@@ -53,7 +53,7 @@ The core of Pelican is `pelicanconf.py <https://github.com/giampaolo/giampaolo.g
 About me
 ========
 
-I spent most of last year (2020) in China, dating my girlfriend, remote working from a shared office space in Shenzhen, and I even taught some Python to a class of Chinese folks with no previous programming experience. The course was about the basics of the language + basic filesystem operations, and the most difficult thing to explain was indentation. I guess that shows the difference between knowing a language and knowing how to teach it.
+I spent most of last year (2019) in China, dating my girlfriend, remote working from a shared office space in Shenzhen, and I even taught some Python to a class of Chinese folks with no previous programming experience. The course was about the basics of the language + basic filesystem operations, and the most difficult thing to explain was indentation. I guess that shows the difference between knowing a language and knowing how to teach it.
 
 I got back to Italy in December 2020, just before the pandemic occurred. Because of my connections with China, I knew about the incoming pandemic sooner than the rest of my friends, which for a while (until the lockdown) made them think I was crazy. =)
 
