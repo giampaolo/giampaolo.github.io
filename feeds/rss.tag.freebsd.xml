@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Giampaolo Rodola - freebsd</title><link>https://gmpy.dev/</link><description>Python enthusiast, core developer, psutil author</description><lastBuildDate>Sat, 24 Oct 2020 00:00:00 +0200</lastBuildDate><item><title>FreeBSD process environ and resource limits</title><link>https://gmpy.dev/blog/2020/freebsd-process-environ-and-resource-limits</link><description>&lt;p&gt;New psutil 5.7.3 is out. This release adds support for 2 functionalities which
+were not available on BSD platforms: the ability to get the process environment
+(all BSD) and to get or set process resource limits (FreeBSD only), similarly
+to what can be done on Linux.&lt;/p&gt;
+&lt;div class="section" id="process-environ"&gt;
+&lt;h2&gt;Process environ …&lt;/h2&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giampaolo Rodola</dc:creator><pubDate>Sat, 24 Oct 2020 00:00:00 +0200</pubDate><guid isPermaLink="false">tag:gmpy.dev,2020-10-24:/blog/2020/freebsd-process-environ-and-resource-limits</guid><category>2020</category><category>announce</category><category>python</category><category>psutil</category><category>freebsd</category></item></channel></rss>
