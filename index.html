@@ -41,307 +41,6 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
-            <h1><a href="https://gmpy.dev/blog/2020/freebsd-process-environ-and-resource-limits" rel="bookmark"
-                   title="Permalink to FreeBSD process environ and resource limits">FreeBSD process environ and resource limits</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2020-10-24T00:00:00+02:00">
-        Created: 24 Oct 2020,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/announce">announce</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/freebsd">freebsd</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>New psutil 5.7.3 is out. This release adds support for 2 functionalities which
-were not available on BSD platforms: the ability to get the process environment
-(all BSD) and to get or set process resource limits (FreeBSD only), similarly
-to what can be done on Linux.</p>
-<div class="section" id="process-environ">
-<h2>Process environ<a class="headerlink" href="#process-environ" title="Permalink to this headline">¶</a></h2>
-<p>Quite simply:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span><span class="o">,</span> <span class="nn">pprint</span><span class="o">,</span> <span class="nn">os</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span><span class="o">.</span><span class="n">environ</span><span class="p">())</span>
-<span class="p">{</span><span class="s1">&#39;BLOCKSIZE&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span>
- <span class="s1">&#39;EDITOR&#39;</span><span class="p">:</span> <span class="s1">&#39;vi&#39;</span><span class="p">,</span>
- <span class="s1">&#39;GROUP&#39;</span><span class="p">:</span> <span class="s1">&#39;vagrant&#39;</span><span class="p">,</span>
- <span class="s1">&#39;HOME&#39;</span><span class="p">:</span> <span class="s1">&#39;/home/vagrant&#39;</span><span class="p">,</span>
- <span class="s1">&#39;HOST&#39;</span><span class="p">:</span> <span class="s1">&#39;freebsd&#39;</span><span class="p">,</span>
- <span class="s1">&#39;HOSTTYPE&#39;</span><span class="p">:</span> <span class="s1">&#39;FreeBSD&#39;</span><span class="p">,</span>
- <span class="s1">&#39;LOGNAME&#39;</span><span class="p">:</span> <span class="s1">&#39;vagrant&#39;</span><span class="p">,</span>
- <span class="s1">&#39;MACHTYPE&#39;</span><span class="p">:</span> <span class="s1">&#39;x86_64&#39;</span><span class="p">,</span>
- <span class="s1">&#39;MAIL&#39;</span><span class="p">:</span> <span class="s1">&#39;/var/mail/vagrant&#39;</span><span class="p">,</span>
- <span class="s1">&#39;OSTYPE&#39;</span><span class="p">:</span> <span class="s1">&#39;FreeBSD&#39;</span><span class="p">,</span>
- <span class="s1">&#39;PAGER&#39;</span><span class="p">:</span> <span class="s1">&#39;less&#39;</span><span class="p">,</span>
- <span class="s1">&#39;PATH&#39;</span><span class="p">:</span> <span class="s1">&#39;/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/home/vagrant/bin&#39;</span><span class="p">,</span>
- <span class="s1">&#39;PWD&#39;</span><span class="p">:</span> <span class="s1">&#39;/home/vagrant/psutil&#39;</span><span class="p">,</span>
- <span class="s1">&#39;REMOTEHOST&#39;</span><span class="p">:</span> <span class="s1">&#39;10.0.2.2&#39;</span><span class="p">,</span>
- <span class="s1">&#39;SHELL&#39;</span><span class="p">:</span> <span class="s1">&#39;/bin/csh&#39;</span><span class="p">,</span>
- <span class="s1">&#39;SHLVL&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
- <span class="s1">&#39;SSH_CLIENT&#39;</span><span class="p">:</span> <span class="s1">&#39;10.0.2.2 58102 22&#39;</span><span class="p">,</span>
- <span class="s1">&#39;SSH_CONNECTION&#39;</span><span class="p">:</span> <span class="s1">&#39;10.0.2.2 58102 10.0.2.15 22&#39;</span><span class="p">,</span>
- <span class="s1">&#39;SSH_TTY&#39;</span><span class="p">:</span> <span class="s1">&#39;/dev/pts/0&#39;</span><span class="p">,</span>
- <span class="s1">&#39;TERM&#39;</span><span class="p">:</span> <span class="s1">&#39;xterm-256color&#39;</span><span class="p">,</span>
- <span class="s1">&#39;USER&#39;</span><span class="p">:</span> <span class="s1">&#39;vagrant&#39;</span><span class="p">,</span>
- <span class="s1">&#39;VENDOR&#39;</span><span class="p">:</span> <span class="s1">&#39;amd&#39;</span><span class="p">}</span>
-</pre></div>
-<p>This feature was already available on all other platforms except BSD.
-It was contributed by <a class="reference external" href="https://github.com/ArminGruner">Armin Gruner</a>
-in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1800">PR-1800</a>
-and supports all BSD variants (FreeBSD, NetBSD and OpenBSD).
-BSD kernels expose this information via
-<a class="reference external" href="https://www.freebsd.org/cgi/man.cgi?kvm_getenvv">kvm_getenvv</a>
-syscall, but there are subtle differences between BSD variants which made this
-integration particularly thorny. This is how it's done:</p>
-<div class="highlight"><pre><span></span><span class="n">PyObject</span> <span class="o">*</span>
-<span class="nf">psutil_proc_environ</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">cnt</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="kt">long</span> <span class="n">pid</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="o">**</span><span class="n">envs</span><span class="p">,</span> <span class="n">errbuf</span><span class="p">[</span><span class="n">_POSIX2_LINE_MAX</span><span class="p">];</span>
-    <span class="n">PyObject</span> <span class="o">*</span><span class="n">py_value</span><span class="o">=</span><span class="nb">NULL</span><span class="p">,</span> <span class="o">*</span><span class="n">py_retdict</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>
-    <span class="n">kvm_t</span> <span class="o">*</span><span class="n">kd</span><span class="p">;</span>
-<span class="cp">#ifdef PSUTIL_NETBSD</span>
-    <span class="k">struct</span> <span class="n">kinfo_proc2</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
-<span class="cp">#else</span>
-    <span class="k">struct</span> <span class="n">kinfo_proc</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
-<span class="cp">#endif</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">PyArg_ParseTuple</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s">&quot;l&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pid</span><span class="p">))</span>
-        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-
-<span class="cp">#if defined(PSUTIL_FREEBSD)</span>
-    <span class="n">kd</span> <span class="o">=</span> <span class="n">kvm_openfiles</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="s">&quot;/dev/null&quot;</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">errbuf</span><span class="p">);</span>
-<span class="cp">#else</span>
-    <span class="n">kd</span> <span class="o">=</span> <span class="n">kvm_openfiles</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">KVM_NO_FILES</span><span class="p">,</span> <span class="n">errbuf</span><span class="p">);</span>
-<span class="cp">#endif</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">kd</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">convert_kvm_err</span><span class="p">(</span><span class="s">&quot;kvm_openfiles&quot;</span><span class="p">,</span> <span class="n">errbuf</span><span class="p">);</span>
-        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="n">py_retdict</span> <span class="o">=</span> <span class="n">PyDict_New</span><span class="p">();</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">py_retdict</span><span class="p">)</span>
-        <span class="k">goto</span> <span class="n">error</span><span class="p">;</span>
-
-<span class="cp">#if defined(PSUTIL_FREEBSD)</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">kvm_getprocs</span><span class="p">(</span><span class="n">kd</span><span class="p">,</span> <span class="n">KERN_PROC_PID</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">cnt</span><span class="p">);</span>
-<span class="cp">#elif defined(PSUTIL_OPENBSD)</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">kvm_getprocs</span><span class="p">(</span><span class="n">kd</span><span class="p">,</span> <span class="n">KERN_PROC_PID</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">cnt</span><span class="p">);</span>
-<span class="cp">#elif defined(PSUTIL_NETBSD)</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">kvm_getproc2</span><span class="p">(</span><span class="n">kd</span><span class="p">,</span> <span class="n">KERN_PROC_PID</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">cnt</span><span class="p">);</span>
-<span class="cp">#endif</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">NoSuchProcess</span><span class="p">(</span><span class="s">&quot;kvm_getprocs&quot;</span><span class="p">);</span>
-        <span class="k">goto</span> <span class="n">error</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">NoSuchProcess</span><span class="p">(</span><span class="n">cnt</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="n">kvm_geterr</span><span class="p">(</span><span class="n">kd</span><span class="p">)</span> <span class="o">:</span> <span class="s">&quot;kvm_getprocs: cnt==0&quot;</span><span class="p">);</span>
-        <span class="k">goto</span> <span class="n">error</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="c1">// On *BSD kernels there are a few kernel-only system processes without an</span>
-    <span class="c1">// environment (See e.g. &quot;procstat -e 0 | 1 | 2 ...&quot; on FreeBSD.)</span>
-    <span class="c1">// Some system process have no stats attached at all</span>
-    <span class="c1">// (they are marked with P_SYSTEM.)</span>
-    <span class="c1">// On FreeBSD, it&#39;s possible that the process is swapped or paged out,</span>
-    <span class="c1">// then there no access to the environ stored in the process&#39; user area.</span>
-    <span class="c1">// On NetBSD, we cannot call kvm_getenvv2() for a zombie process.</span>
-    <span class="c1">// To make unittest suite happy, return an empty environment.</span>
-<span class="cp">#if defined(PSUTIL_FREEBSD)</span>
-<span class="cp">#if (defined(__FreeBSD_version) &amp;&amp; __FreeBSD_version &gt;= 700000)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">((</span><span class="n">p</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">ki_flag</span> <span class="o">&amp;</span> <span class="n">P_INMEM</span><span class="p">)</span> <span class="o">||</span> <span class="p">((</span><span class="n">p</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">ki_flag</span> <span class="o">&amp;</span> <span class="n">P_SYSTEM</span><span class="p">))</span> <span class="p">{</span>
-<span class="cp">#else</span>
-    <span class="k">if</span> <span class="p">((</span><span class="n">p</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">ki_flag</span> <span class="o">&amp;</span> <span class="n">P_SYSTEM</span><span class="p">)</span> <span class="p">{</span>
-<span class="cp">#endif</span>
-<span class="cp">#elif defined(PSUTIL_NETBSD)</span>
-    <span class="k">if</span> <span class="p">((</span><span class="n">p</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">p_stat</span> <span class="o">==</span> <span class="n">SZOMB</span><span class="p">)</span> <span class="p">{</span>
-<span class="cp">#elif defined(PSUTIL_OPENBSD)</span>
-    <span class="k">if</span> <span class="p">((</span><span class="n">p</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">p_flag</span> <span class="o">&amp;</span> <span class="n">P_SYSTEM</span><span class="p">)</span> <span class="p">{</span>
-<span class="cp">#endif</span>
-        <span class="n">kvm_close</span><span class="p">(</span><span class="n">kd</span><span class="p">);</span>
-        <span class="k">return</span> <span class="n">py_retdict</span><span class="p">;</span>
-    <span class="p">}</span>
-
-<span class="cp">#if defined(PSUTIL_NETBSD)</span>
-    <span class="n">envs</span> <span class="o">=</span> <span class="n">kvm_getenvv2</span><span class="p">(</span><span class="n">kd</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-<span class="cp">#else</span>
-    <span class="n">envs</span> <span class="o">=</span> <span class="n">kvm_getenvv</span><span class="p">(</span><span class="n">kd</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-<span class="cp">#endif</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">envs</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">// Map to &quot;psutil&quot; general high-level exceptions</span>
-        <span class="k">switch</span> <span class="p">(</span><span class="n">errno</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
-                <span class="c1">// Process has cleared it&#39;s environment, return empty one</span>
-                <span class="n">kvm_close</span><span class="p">(</span><span class="n">kd</span><span class="p">);</span>
-                <span class="k">return</span> <span class="n">py_retdict</span><span class="p">;</span>
-            <span class="k">case</span> <span class="nl">EPERM</span><span class="p">:</span>
-                <span class="n">AccessDenied</span><span class="p">(</span><span class="s">&quot;kvm_getenvv&quot;</span><span class="p">);</span>
-                <span class="k">break</span><span class="p">;</span>
-            <span class="k">case</span> <span class="nl">ESRCH</span><span class="p">:</span>
-                <span class="n">NoSuchProcess</span><span class="p">(</span><span class="s">&quot;kvm_getenvv&quot;</span><span class="p">);</span>
-                <span class="k">break</span><span class="p">;</span>
-<span class="cp">#if defined(PSUTIL_FREEBSD)</span>
-            <span class="k">case</span> <span class="nl">ENOMEM</span><span class="p">:</span>
-                <span class="c1">// Unfortunately, under FreeBSD kvm_getenvv() returns</span>
-                <span class="c1">// failure for certain processes ( e.g. try</span>
-                <span class="c1">// &quot;sudo procstat -e &lt;pid of your XOrg server&gt;&quot;.)</span>
-                <span class="c1">// Map the error condition to &#39;AccessDenied&#39;.</span>
-                <span class="n">sprintf</span><span class="p">(</span><span class="n">errbuf</span><span class="p">,</span>
-                        <span class="s">&quot;kvm_getenvv(pid=%ld, ki_uid=%d): errno=ENOMEM&quot;</span><span class="p">,</span>
-                        <span class="n">pid</span><span class="p">,</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">ki_uid</span><span class="p">);</span>
-                <span class="n">AccessDenied</span><span class="p">(</span><span class="n">errbuf</span><span class="p">);</span>
-                <span class="k">break</span><span class="p">;</span>
-<span class="cp">#endif</span>
-            <span class="k">default</span><span class="o">:</span>
-                <span class="n">sprintf</span><span class="p">(</span><span class="n">errbuf</span><span class="p">,</span> <span class="s">&quot;kvm_getenvv(pid=%ld)&quot;</span><span class="p">,</span> <span class="n">pid</span><span class="p">);</span>
-                <span class="n">PyErr_SetFromOSErrnoWithSyscall</span><span class="p">(</span><span class="n">errbuf</span><span class="p">);</span>
-                <span class="k">break</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="k">goto</span> <span class="n">error</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">envs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">strchr</span><span class="p">(</span><span class="n">envs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="sc">&#39;=&#39;</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">s</span><span class="p">)</span>
-            <span class="k">continue</span><span class="p">;</span>
-        <span class="o">*</span><span class="n">s</span><span class="o">++</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="n">py_value</span> <span class="o">=</span> <span class="n">PyUnicode_DecodeFSDefault</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">py_value</span><span class="p">)</span>
-            <span class="k">goto</span> <span class="n">error</span><span class="p">;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">PyDict_SetItemString</span><span class="p">(</span><span class="n">py_retdict</span><span class="p">,</span> <span class="n">envs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">py_value</span><span class="p">))</span> <span class="p">{</span>
-            <span class="k">goto</span> <span class="n">error</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">py_value</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="n">kvm_close</span><span class="p">(</span><span class="n">kd</span><span class="p">);</span>
-    <span class="k">return</span> <span class="n">py_retdict</span><span class="p">;</span>
-
-<span class="nl">error</span><span class="p">:</span>
-    <span class="n">Py_XDECREF</span><span class="p">(</span><span class="n">py_value</span><span class="p">);</span>
-    <span class="n">Py_XDECREF</span><span class="p">(</span><span class="n">py_retdict</span><span class="p">);</span>
-    <span class="n">kvm_close</span><span class="p">(</span><span class="n">kd</span><span class="p">);</span>
-    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<div class="section" id="process-resource-limits">
-<h2>Process resource limits<a class="headerlink" href="#process-resource-limits" title="Permalink to this headline">¶</a></h2>
-<p>There's a Linux-only syscall named <a class="reference external" href="https://linux.die.net/man/2/prlimit">prlimit</a>
-which lets you get or set process limits on a per-process basis.
-I found out very recently that this can be emulated on FreeBSD via
-<a class="reference external" href="https://www.freebsd.org/cgi/man.cgi?query=sysctl&amp;sektion=8">sysctl</a> +
-<tt class="docutils literal">KERN_PROC_RLIMIT</tt>. Here's the <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1859">PR</a>
-and here's the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/89ae354ab7704db69a3f6c880234d21719558511/psutil/arch/freebsd/specific.c#L1082-L1164">relevant part</a>. Example on how to get/set resource
-limits:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span><span class="o">,</span> <span class="nn">os</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">rlimit</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">RLIMIT_NOFILE</span><span class="p">,</span> <span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>   <span class="c1"># process can open max 128 file descriptors</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">rlimit</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">RLIMIT_FSIZE</span><span class="p">,</span> <span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1024</span><span class="p">))</span>  <span class="c1"># can create files no bigger than 1024 bytes</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">rlimit</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">RLIMIT_FSIZE</span><span class="p">)</span>                <span class="c1"># get</span>
-<span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span>
-</pre></div>
-<p>Relevant C code:</p>
-<div class="highlight"><pre><span></span><span class="n">PyObject</span> <span class="o">*</span>
-<span class="nf">psutil_proc_getrlimit</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">pid_t</span> <span class="n">pid</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">resource</span><span class="p">;</span>
-    <span class="kt">size_t</span> <span class="n">len</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">name</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
-    <span class="k">struct</span> <span class="n">rlimit</span> <span class="n">rlp</span><span class="p">;</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="n">PyArg_ParseTuple</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">_Py_PARSE_PID</span> <span class="s">&quot;i&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pid</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">resource</span><span class="p">))</span>
-        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-
-    <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">CTL_KERN</span><span class="p">;</span>
-    <span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">KERN_PROC</span><span class="p">;</span>
-    <span class="n">name</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">KERN_PROC_RLIMIT</span><span class="p">;</span>
-    <span class="n">name</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">pid</span><span class="p">;</span>
-    <span class="n">name</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">resource</span><span class="p">;</span>
-    <span class="n">len</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rlp</span><span class="p">);</span>
-
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">sysctl</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rlp</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">len</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">PyErr_SetFromErrno</span><span class="p">(</span><span class="n">PyExc_OSError</span><span class="p">);</span>
-
-<span class="cp">#if defined(HAVE_LONG_LONG)</span>
-    <span class="k">return</span> <span class="n">Py_BuildValue</span><span class="p">(</span><span class="s">&quot;LL&quot;</span><span class="p">,</span>
-                         <span class="p">(</span><span class="n">PY_LONG_LONG</span><span class="p">)</span> <span class="n">rlp</span><span class="p">.</span><span class="n">rlim_cur</span><span class="p">,</span>
-                         <span class="p">(</span><span class="n">PY_LONG_LONG</span><span class="p">)</span> <span class="n">rlp</span><span class="p">.</span><span class="n">rlim_max</span><span class="p">);</span>
-<span class="cp">#else</span>
-    <span class="k">return</span> <span class="n">Py_BuildValue</span><span class="p">(</span><span class="s">&quot;ll&quot;</span><span class="p">,</span>
-                         <span class="p">(</span><span class="kt">long</span><span class="p">)</span> <span class="n">rlp</span><span class="p">.</span><span class="n">rlim_cur</span><span class="p">,</span>
-                         <span class="p">(</span><span class="kt">long</span><span class="p">)</span> <span class="n">rlp</span><span class="p">.</span><span class="n">rlim_max</span><span class="p">);</span>
-<span class="cp">#endif</span>
-<span class="p">}</span>
-
-
-<span class="n">PyObject</span> <span class="o">*</span>
-<span class="nf">psutil_proc_setrlimit</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">pid_t</span> <span class="n">pid</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">resource</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">name</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
-    <span class="k">struct</span> <span class="n">rlimit</span> <span class="n">new</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">rlimit</span> <span class="o">*</span><span class="n">newp</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-    <span class="n">PyObject</span> <span class="o">*</span><span class="n">py_soft</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-    <span class="n">PyObject</span> <span class="o">*</span><span class="n">py_hard</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="n">PyArg_ParseTuple</span><span class="p">(</span>
-            <span class="n">args</span><span class="p">,</span> <span class="n">_Py_PARSE_PID</span> <span class="s">&quot;iOO&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pid</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">resource</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">py_soft</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">py_hard</span><span class="p">))</span>
-        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-
-    <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">CTL_KERN</span><span class="p">;</span>
-    <span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">KERN_PROC</span><span class="p">;</span>
-    <span class="n">name</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">KERN_PROC_RLIMIT</span><span class="p">;</span>
-    <span class="n">name</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">pid</span><span class="p">;</span>
-    <span class="n">name</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">resource</span><span class="p">;</span>
-
-<span class="cp">#if defined(HAVE_LONG_LONG)</span>
-    <span class="n">new</span><span class="p">.</span><span class="n">rlim_cur</span> <span class="o">=</span> <span class="n">PyLong_AsLongLong</span><span class="p">(</span><span class="n">py_soft</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">new</span><span class="p">.</span><span class="n">rlim_cur</span> <span class="o">==</span> <span class="p">(</span><span class="kt">rlim_t</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">PyErr_Occurred</span><span class="p">())</span>
-        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-    <span class="n">new</span><span class="p">.</span><span class="n">rlim_max</span> <span class="o">=</span> <span class="n">PyLong_AsLongLong</span><span class="p">(</span><span class="n">py_hard</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">new</span><span class="p">.</span><span class="n">rlim_max</span> <span class="o">==</span> <span class="p">(</span><span class="kt">rlim_t</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">PyErr_Occurred</span><span class="p">())</span>
-        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="cp">#else</span>
-    <span class="n">new</span><span class="p">.</span><span class="n">rlim_cur</span> <span class="o">=</span> <span class="n">PyLong_AsLong</span><span class="p">(</span><span class="n">py_soft</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">new</span><span class="p">.</span><span class="n">rlim_cur</span> <span class="o">==</span> <span class="p">(</span><span class="kt">rlim_t</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">PyErr_Occurred</span><span class="p">())</span>
-        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-    <span class="n">new</span><span class="p">.</span><span class="n">rlim_max</span> <span class="o">=</span> <span class="n">PyLong_AsLong</span><span class="p">(</span><span class="n">py_hard</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">new</span><span class="p">.</span><span class="n">rlim_max</span> <span class="o">==</span> <span class="p">(</span><span class="kt">rlim_t</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">PyErr_Occurred</span><span class="p">())</span>
-        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="cp">#endif</span>
-    <span class="n">newp</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">new</span><span class="p">;</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">sysctl</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">newp</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">newp</span><span class="p">));</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">PyErr_SetFromErrno</span><span class="p">(</span><span class="n">PyExc_OSError</span><span class="p">);</span>
-    <span class="n">Py_RETURN_NONE</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-<p>It turns out some of this can probably also be emulated on Windows via
-<a class="reference external" href="https://docs.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-setinformationjobobject?redirectedfrom=MSDN">SetInformationObject</a> and
-<a class="reference external" href="https://docs.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-queryinformationjobobject">QueryInformationJobObject</a>
-(see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1149">ticket</a>), so that is
-something I'm looking forward to experiment with.</p>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
             <h1><a href="https://gmpy.dev/blog/2020/new-pelican-website" rel="bookmark"
                    title="Permalink to New Pelican website">New Pelican website</a></h1>
         </header>
@@ -557,6 +256,123 @@ The core of Pelican is <a class="reference external" href="https://github.com/gi
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/75wsfu/psutil_540_with_aix_support_is_out/">Reddit</a></li>
 <li><a class="reference external" href="http://grodola.blogspot.com/2017/10/psutil-540-with-aix-support-is-out.html">HackerNews</a></li>
 </ul>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2017/psutil-530-and-full-unicode-support" rel="bookmark"
+                   title="Permalink to psutil 5.3.0 and full unicode support">psutil 5.3.0 and full unicode support</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2017-09-03T00:00:00+02:00">
+        Created: 03 Sep 2017,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/travel">travel</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.3.0 is finally out. This release is a major one, as it includes tons of improvements and bugfixes, probably like no other previous release. It is interesting to notice how huge the <a class="reference external" href="https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket">diff</a> between 5.2.2 and 5.3.0 is. This is due to the fact that I've been travelling quite a lot this year, so I kept postponing it. It may sound weird but I consider publishing a new release and write a blog post about more stressful than working on the release itself. =). Anyway, here goes.</p>
+<div class="section" id="full-unicode-support">
+<h2>Full Unicode support<a class="headerlink" href="#full-unicode-support" title="Permalink to this headline">¶</a></h2>
+<p>This is the biggest change. In order to achieve this I had to refactor all functions and internals either returning or accepting a string. Incidentally this helped me having a better understanding of how Unicode works and how it should be handled at the C level in terms of differences between Python 2 and 3. Issue <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1040">#1040</a> includes all the reasonings I've been through and potentially serves as a documentation for people who are facing a similar task (handling Unicode in C for both Python 2 and 3). Up until version 5.2.x psutil functions returning a string had different problems as they could:</p>
+<ul class="simple">
+<li>raise decoding error on Python 3 in case of non-ASCII string</li>
+<li>return unicode instead of str (Python 2)</li>
+<li>return incorrect / invalid encoded data in case of non-ASCII string</li>
+</ul>
+<p>5.3.0 fixes these three issues and consolidates the correct handling of Unicode strings. On Windows this was achieved by using Unicode-specific Windows APIs. The notes below describe how Unicode and strings in general are handled internally by psutil and they apply to any API returning a string such as <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.exe">Process.exe</a> or <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.cwd">Process.cwd</a>, including non-filesystem related methods such as <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.username">Process.username</a> or <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.WindowsService.description">WindowsService.description</a>:</p>
+<ul class="simple">
+<li>all strings are encoded by using the OS filesystem encoding (<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.getfilesystemencoding">sys.getfilesystemencoding()</a>) which varies depending on the platform (e.g. &quot;UTF-8&quot; on OSX, &quot;mbcs&quot; on Win)</li>
+<li>no API call is supposed to crash with <cite>UnicodeDecodeError</cite></li>
+<li>instead, in case of badly encoded data returned by the OS, the following error handlers are used to replace the corrupted characters in the string:<ul>
+<li>Python 3: <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.getfilesystemencodeerrors">sys.getfilesystemencodeerrors()</a> (PY 3.6+) or <tt class="docutils literal">&quot;surrogatescape&quot;</tt> on POSIX and &quot;replace&quot; on Windows</li>
+<li>Python 2: &quot;replace&quot;</li>
+</ul>
+</li>
+<li>on Python 2 all APIs return bytes (str type), never unicode</li>
+<li>on Python 2 you can go back to unicode by doing:</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">unicode</span><span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">exe</span><span class="p">(),</span> <span class="n">sys</span><span class="o">.</span><span class="n">getdefaultencoding</span><span class="p">(),</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="improved-process-iter-function">
+<h2>Improved process_iter() function<a class="headerlink" href="#improved-process-iter-function" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.process_iter">process_iter()</a> accepts two new parameters in order to invoke <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.as_dict">Process.as_dict()</a> internally: <cite>&quot;attrs&quot;</cite> and <cite>&quot;ad_value&quot;</cite>. With this you can iterate over all processes in one shot without having to catch <cite>NoSuchProcess</cite> explicitly. Before:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
+<span class="o">...</span>     <span class="k">try</span><span class="p">:</span>
+<span class="o">...</span>         <span class="n">pinfo</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">])</span>
+<span class="o">...</span>     <span class="k">except</span> <span class="n">psutil</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">:</span>
+<span class="o">...</span>         <span class="k">pass</span>
+<span class="o">...</span>     <span class="k">else</span><span class="p">:</span>
+<span class="o">...</span>         <span class="nb">print</span><span class="p">(</span><span class="n">pinfo</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;systemd&#39;</span><span class="p">}</span>
+<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;kthreadd&#39;</span><span class="p">}</span>
+<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ksoftirqd/0&#39;</span><span class="p">}</span>
+<span class="o">...</span>
+</pre></div>
+<p>Now:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">]):</span>
+<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">info</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;systemd&#39;</span><span class="p">}</span>
+<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;kthreadd&#39;</span><span class="p">}</span>
+<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ksoftirqd/0&#39;</span><span class="p">}</span>
+</pre></div>
+<p>This improves expressiveness as it makes it possible to use nice list/dict comprehensions. Here's some examples.</p>
+<p>Processes having &quot;python&quot; in their name:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">info</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="s1">&#39;python&#39;</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]])</span>
+<span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;python3&#39;</span><span class="p">,</span> <span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">21947</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">23835</span><span class="p">}]</span>
+</pre></div>
+<p>Processes owned by user:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">getpass</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">([(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getuser</span><span class="p">()])</span>
+<span class="p">(</span><span class="mi">16832</span><span class="p">,</span> <span class="s1">&#39;bash&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">19772</span><span class="p">,</span> <span class="s1">&#39;ssh&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">20492</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">)]</span>
+</pre></div>
+<p>Processes actively running:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">([(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">psutil</span><span class="o">.</span><span class="n">STATUS_RUNNING</span><span class="p">])</span>
+<span class="p">[(</span><span class="mi">1150</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Xorg&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;running&#39;</span><span class="p">}),</span>
+<span class="p">(</span><span class="mi">1776</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;unity-panel-service&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;running&#39;</span><span class="p">}),</span>
+<span class="p">(</span><span class="mi">20492</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;running&#39;</span><span class="p">})]</span>
+</pre></div>
+</div>
+<div class="section" id="automatic-overflow-handling-of-numbers">
+<h2>Automatic overflow handling of numbers<a class="headerlink" href="#automatic-overflow-handling-of-numbers" title="Permalink to this headline">¶</a></h2>
+<p>On very busy or long-lived system systems numbers returned by <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.disk_io_counters">disk_io_counters()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_io_counters">net_io_counters()</a> functions may wrap (restart from zero). Up to version 5.2.x you had to take this into account while now this is automatically handled by psutil (see: <a class="reference external" href="https://github.com/giampaolo/psutil/issues/802">#802</a>). If a &quot;counter&quot; restarts from 0 psutil will add the value from the previous call for you so that numbers will never decrease. This is crucial for applications monitoring disk or network I/O in real time. Old behavior can be resumed by passing <cite>nowrap=True</cite> argument.</p>
+</div>
+<div class="section" id="sunos-process-environ">
+<h2>SunOS Process environ()<a class="headerlink" href="#sunos-process-environ" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.environ">Process.environ()</a> is now available also on SunOS (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1091">#1091</a>).</p>
+</div>
+<div class="section" id="other-improvements-and-bug-fixes">
+<h2>Other improvements and bug fixes<a class="headerlink" href="#other-improvements-and-bug-fixes" title="Permalink to this headline">¶</a></h2>
+<p>Amongst others, here's a couple of important bug fixes I'd like to mention:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/pull/1044">#1044</a>: on OSX different <cite>Process</cite> methods could incorrectly raise <cite>AccessDenied</cite> for zombie processes. This was due to poor proc_pidpath OSX API.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/pull/1094">#1094</a>: on Windows, <cite>pid_exists()</cite> may lie due to the poor <cite>OpenProcess</cite> Windows API which can return a handle even when a process PID no longer exists. This had repercussions for many Process methods such as <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.cmdline">cmdline()</a>, <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.environ">environ()</a>, <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.cwd">cwd()</a>, <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.connections">connections()</a> and others which could have unpredictable behaviors such as returning empty data or erroneously raise <cite>NoSuchProcess</cite> exceptions. For the same reason (broken <cite>OpenProcess</cite> API), processes could unexpectedly stick around after using <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.terminate">terminate()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.wait">wait()</a>.</li>
+</ul>
+<p>BSD systems also received some love (NetBSD and OpenBSD in particular). Different memory leaks were fixed and functions returning connected sockets were partially rewritten. The full list of enhancement and bug fixes can be seen <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#530">here</a>.</p>
+</div>
+<div class="section" id="about-me">
+<h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
+<p>I would like to spend a couple more words about my current situation. Last year (2016) I relocated to Prague and remote worked from there the whole year (it's been cool - great city!). This year I have mainly been resting in Turin (Italy) due to some health issues and travelling across Asia once I started to recover. I am currently in Shenzhen, China, and unless the current situation with North Korea gets worse I'm planning to continue my trip until November and visit Taiwan, South Korea and Japan. Once I'm finished the plan is to briefly return to Turin (Italy) and finally return to Prague. By then I will probably be looking for a new (remote) gig again, so if you have anything for me by November feel free to send me a message. ;-)</p>
 </div>
 
         </div>
