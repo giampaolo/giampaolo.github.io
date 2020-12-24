@@ -19,7 +19,11 @@ Sponsors
 Recurring donations
 ===================
 
-None yet.
++------------------------+--------------------------+-------------------------+
+| Name                   | Project                  | Country                 |
++========================+==========================+=========================+
+| `Daniel Widdis`_       | `psutil`_                | Washington, USA         |
++------------------------+--------------------------+-------------------------+
 
 Companies one-time donations (> $100)
 =====================================
@@ -38,8 +42,6 @@ People one-time donations (< $100)
 +------------------------+--------------------------+-------------------------+
 | Name                   | Project                  | Country                 |
 +========================+==========================+=========================+
-| Daniel Widdis          | `psutil`_                | Washington, USA         |
-+------------------------+--------------------------+-------------------------+
 | Kim Gräsman            | `psutil`_                | Malmo, Sweden           |
 +------------------------+--------------------------+-------------------------+
 | Ranec Temp             | `pyftpdlib`_             | Belarus                 |
@@ -109,3 +111,4 @@ People one-time donations (< $100)
 .. _`multicraft.org`: https://www.multicraft.org
 .. _`psutil`: https://github.com/giampaolo/psutil
 .. _`pyftpdlib`: https://github.com/giampaolo/pyftpdlib
+.. _`Daniel Widdis`: https://github.com/dbwiddis
