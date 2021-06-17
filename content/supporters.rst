@@ -9,16 +9,16 @@ Sponsors
 
 .. raw:: html
 
-    <div style="background-color:#4B5168; width:228px; height:42px">
+    <div>
         <a href="https://tidelift.com/subscription/pkg/pypi-psutil?utm_source=pypi-psutil&utm_medium=referral&utm_campaign=readme">
-            <img src="/images/tidelift-logo.svg" />
+            <img width="185" src="https://github.com/giampaolo/psutil/raw/master/docs/_static/tidelift-logo.svg" />
         </a>
         &nbsp;&nbsp
         <a href="https://sansec.io/">
             <img src="https://sansec.io/assets/images/logo.svg" />
         </a>
-        <br />
     </div>
+
 
 Recurring donations
 ===================
