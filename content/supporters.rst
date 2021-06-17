@@ -13,6 +13,7 @@ Sponsors
         <a href="https://tidelift.com/subscription/pkg/pypi-psutil?utm_source=pypi-psutil&utm_medium=referral&utm_campaign=readme">
             <img src="/images/tidelift-logo.svg" />
         </a>
+        &nbsp;&nbsp
         <a href="https://sansec.io/">
             <img src="https://sansec.io/assets/images/logo.svg" />
         </a>
