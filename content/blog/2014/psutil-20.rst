@@ -10,7 +10,7 @@ There were some difficult decisions because many of the changes I introduced are
 API changes
 -----------
 
-I already wrote a detailed `blog post <psutil-20-api-redesign/>`_ about what changed so I recommend you to use that as the official reference on how to port your code.
+I already wrote a detailed `blog post <psutil-20-api-redesign>`_ about what changed so I recommend you to use that as the official reference on how to port your code.
 
 RST documentation
 -----------------
