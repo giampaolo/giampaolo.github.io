@@ -26,7 +26,7 @@
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;strong&gt;Why I did it&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;I already talked about this more extensively in this &lt;a class="reference external" href="../../2013/making-constants-part-of-your-api-is-evil/"&gt;blog post&lt;/a&gt;. In short: other than introducing unnecessary slowdowns, calculating a module level constant at import time is dangerous because in case of error the whole app will crash. Also, the represented values may be subject to change (think about the system clock) but the constant cannot be updated.
+&lt;p&gt;I already talked about this more extensively in this &lt;a class="reference external" href="../2013/making-constants-part-of-your-api-is-evil"&gt;blog post&lt;/a&gt;. In short: other than introducing unnecessary slowdowns, calculating a module level constant at import time is dangerous because in case of error the whole app will crash. Also, the represented values may be subject to change (think about the system clock) but the constant cannot be updated.
 Thanks to this hack accessing the old constants still works and produces a DeprecationWarning.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="module-functions-renamings"&gt;

@@ -75,7 +75,7 @@
 </tbody>
 </table>
 <p><strong>Why I did it</strong></p>
-<p>I already talked about this more extensively in this <a class="reference external" href="../../2013/making-constants-part-of-your-api-is-evil/">blog post</a>. In short: other than introducing unnecessary slowdowns, calculating a module level constant at import time is dangerous because in case of error the whole app will crash. Also, the represented values may be subject to change (think about the system clock) but the constant cannot be updated.
+<p>I already talked about this more extensively in this <a class="reference external" href="../2013/making-constants-part-of-your-api-is-evil">blog post</a>. In short: other than introducing unnecessary slowdowns, calculating a module level constant at import time is dangerous because in case of error the whole app will crash. Also, the represented values may be subject to change (think about the system clock) but the constant cannot be updated.
 Thanks to this hack accessing the old constants still works and produces a DeprecationWarning.</p>
 </div>
 <div class="section" id="module-functions-renamings">
