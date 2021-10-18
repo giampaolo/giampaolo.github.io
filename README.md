@@ -36,7 +36,7 @@ Link to an internal blog post
 =============================
 
 ```
-`blog post <../../2013/making-constants-part-of-your-api-is-evil/>`_
+`blog post <../2013/making-constants-part-of-your-api-is-evil>`_
 ```
 
 Image

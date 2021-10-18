@@ -23,7 +23,7 @@ Module constants turned into functions
 
 **Why I did it**
 
-I already talked about this more extensively in this `blog post <../../2013/making-constants-part-of-your-api-is-evil/>`_. In short: other than introducing unnecessary slowdowns, calculating a module level constant at import time is dangerous because in case of error the whole app will crash. Also, the represented values may be subject to change (think about the system clock) but the constant cannot be updated.
+I already talked about this more extensively in this `blog post <../2013/making-constants-part-of-your-api-is-evil>`_. In short: other than introducing unnecessary slowdowns, calculating a module level constant at import time is dangerous because in case of error the whole app will crash. Also, the represented values may be subject to change (think about the system clock) but the constant cannot be updated.
 Thanks to this hack accessing the old constants still works and produces a DeprecationWarning.
 
 Module functions renamings
