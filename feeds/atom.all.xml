@@ -1517,7 +1517,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 There were some difficult decisions because many of the changes I introduced are not backward compatible so I was concerned with the pain this may cause existing users. I kind of still am, but I'm sure the transition will be well perceived on the long run as it will result in more manageable user code. OK, enough with the preface and let's see what changed.&lt;/p&gt;
 &lt;div class="section" id="api-changes"&gt;
 &lt;h2&gt;API changes&lt;a class="headerlink" href="#api-changes" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;I already wrote a detailed &lt;a class="reference external" href="../../2014/psutil-20-api-redesign/"&gt;blog post&lt;/a&gt; about what changed so I recommend you to use that as the official reference on how to port your code.&lt;/p&gt;
+&lt;p&gt;I already wrote a detailed &lt;a class="reference external" href="psutil-20-api-redesign/"&gt;blog post&lt;/a&gt; about what changed so I recommend you to use that as the official reference on how to port your code.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="rst-documentation"&gt;
 &lt;h2&gt;RST documentation&lt;a class="headerlink" href="#rst-documentation" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
