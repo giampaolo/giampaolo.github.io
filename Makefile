@@ -51,6 +51,7 @@ publish:  ## Publish
 	$(PY) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)
 
 github:  ## Git push and publish changes on GitHub.
+	${MAKE} clean
 	${MAKE} publish
 	git push
 	ghp-import -m "Generate Pelican site" -b $(GITHUB_PAGES_BRANCH) $(OUTPUTDIR)
