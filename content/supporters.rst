@@ -23,11 +23,19 @@ Sponsors
 Recurring donations
 ===================
 
-+------------------------+--------------------------+-------------------------+
-| Name                   | Project                  | Country                 |
-+========================+==========================+=========================+
-| `Daniel Widdis`_       | `psutil`_                | Washington, USA         |
-+------------------------+--------------------------+-------------------------+
++--------------------------+--------------------------+-------------------------+
+| Name                     | Project                  | Country                 |
++==========================+==========================+=========================+
+| `Daniel Widdis`_         | `psutil`_                | Washington, USA         |
++--------------------------+--------------------------+-------------------------+
+| `aristocratos`_          | `psutil`_                |                         |
++--------------------------+--------------------------+-------------------------+
+| `cybersecgeek`_          | `psutil`_                |                         |
++--------------------------+--------------------------+-------------------------+
+| `scoutapm-sponsorships`_ | `psutil`_                |                         |
++--------------------------+--------------------------+-------------------------+
+| `Chenyoo Hao`_           | `psutil`_                |                         |
++--------------------------+--------------------------+-------------------------+
 
 Companies one-time donations (> $100)
 =====================================
@@ -116,3 +124,8 @@ People one-time donations (< $100)
 .. _`psutil`: https://github.com/giampaolo/psutil
 .. _`pyftpdlib`: https://github.com/giampaolo/pyftpdlib
 .. _`Daniel Widdis`: https://github.com/dbwiddis
+.. _`aristocratos`: https://github.com/aristocratos
+.. _`cybersecgeek`: https://github.com/cybersecgeek
+.. _`scoutapm-sponsorships`: https://github.com/scoutapm-sponsorships
+.. _`Chenyoo Hao`: https://opencollective.com/chenyoo-hao
+.. _`Alexey Vazhnov`: https://opencollective.com/alexey-vazhnov
