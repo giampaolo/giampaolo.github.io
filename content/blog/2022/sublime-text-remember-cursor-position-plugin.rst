@@ -1,5 +1,5 @@
-Sublime Text remember cursors plugin
-####################################
+Sublime Text: remember cursor position plugin
+#############################################
 
 :date: 2022-03-18
 :tags: sublime, python
