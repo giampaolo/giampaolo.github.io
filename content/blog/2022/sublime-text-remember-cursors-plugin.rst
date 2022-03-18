@@ -20,6 +20,11 @@ surprise, I couldn't find any plugin which implements such a simple feature.
 Therefore today I decided to bite the bullet and try to implement this myself,
 by writing my first ST plugin, which I paste below.
 
+What it does is this:
+
+* every time a file is closed, save the cursor position (x and y axis) to a JSON file
+* if that same file is re-opened, restore the cursor at that position
+
 What's neat about ST plugins is that they are just Python files which you can
 install by copying them in ST's config directory. On Linux you can copy the
 script below in
