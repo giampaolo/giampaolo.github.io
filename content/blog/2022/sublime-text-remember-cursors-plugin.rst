@@ -6,10 +6,11 @@ Sublime Text remember cursors plugin
 
 My editor of choice for Python development is Sublime Text.
 It has been for a very long time (10 years).
-It's fast, simple and straight to the point, which is why I always resisted
-the temptation to use more advanced and modern IDEs such as PyCharm or VS code.
+It's fast, minimalist and straight to the point, which is why I always resisted
+the temptation to use more advanced and modern IDEs such as PyCharm or VS code,
+which admittedly have superior auto-completion and refactoring tools.
 
-There is a very simple feature I've always missed in Sublime Text: the
+There is a very simple feature I've always missed in ST: the
 possibility to "remember" / save the cursor position when a file is closed.
 The only plugin promising to do such a thing is called
 `BufferScroll <https://github.com/titoBouzout/BufferScroll>`__, but for some
@@ -18,13 +19,15 @@ since then.
 I spent a considerable amount of time Googling for an alternative but, to my
 surprise, I couldn't find any plugin which implements such a simple feature.
 Therefore today I decided to bite the bullet and try to implement this myself,
-by writing my first Sublime Text plugin, which I paste below.
+by writing my first ST plugin, which I paste below.
 
-What's neat about Sublime Text plugins is that they are just Python scripts
-which you can install by copying them in ``~/.config/sublime-text-3/Packages/User/``
-directory (on Linux).
-
-Anyway, here goes:
+What's neat about ST plugins is that they are just Python files which you can
+install by copying them in ST's config directory. On Linux you can copy the
+script below in
+``~/.config/sublime-text-3/Packages/User/cursor_positions.py`` and with will
+work out of the box.
+This is exactly the kind of minimalism which I love about ST, and which I've
+always missed in other IDEs.
 
 .. code-block:: python
 
