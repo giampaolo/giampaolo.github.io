@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - python</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.python.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2022-03-18T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Sublime remember cursors plugin</title><link href="https://gmpy.dev/blog/2022/sublime-remember-cursors-plugin" rel="alternate"></link><published>2022-03-18T00:00:00+01:00</published><updated>2022-03-18T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2022-03-18:/blog/2022/sublime-remember-cursors-plugin</id><summary type="html">&lt;p&gt;My editor of choice for Python development is Sublime Text.
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - python</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.python.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2022-03-18T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Sublime Text remember cursors plugin</title><link href="https://gmpy.dev/blog/2022/sublime-text-remember-cursors-plugin" rel="alternate"></link><published>2022-03-18T00:00:00+01:00</published><updated>2022-03-18T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2022-03-18:/blog/2022/sublime-text-remember-cursors-plugin</id><summary type="html">&lt;p&gt;My editor of choice for Python development is Sublime Text.
 It has been for a very long time (10 years).
 It's fast, simple and straight to the point, which is why I always resisted
 the temptation to use more advanced and modern IDEs such as PyCharm or VS code.&lt;/p&gt;
@@ -38,6 +38,7 @@ directory (on Linux).&lt;/p&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;tempfile&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;threading&lt;/span&gt;
+
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sublime&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sublime_plugin&lt;/span&gt;
 
