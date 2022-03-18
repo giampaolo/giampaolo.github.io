@@ -14,8 +14,7 @@ There is a very simple feature I've always missed in ST: the
 possibility to "remember" / save the cursor position when a file is closed.
 The only plugin promising to do such a thing is called
 `BufferScroll <https://github.com/titoBouzout/BufferScroll>`__, but for some
-reason it ceased working for me at some point, and never managed to fix it
-since then.
+reason it ceased working for me at some point.
 I spent a considerable amount of time Googling for an alternative but, to my
 surprise, I couldn't find any plugin which implements such a simple feature.
 Therefore today I decided to bite the bullet and try to implement this myself,
