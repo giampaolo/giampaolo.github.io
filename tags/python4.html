@@ -29,6 +29,39 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2014/psutil-212-and-python-wheels" rel="bookmark"
+                   title="Permalink to psutil 2.1.2 and Python wheels">psutil 2.1.2 and Python wheels</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2014-09-21T00:00:00+02:00">
+        Created: 21 Sep 2014,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/wheels">wheels</a>,        <a href="https://gmpy.dev/tags/travel">travel</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate to the project. The main new &quot;feature&quot; of this release is that other than the exe files, Windows users can now also benefit of <a class="reference external" href="http://pythonwheels.com/">Python wheels</a> (full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/505">here</a>) which are available on PYPI. Frankly I don't know much about the new wheels packaging system but long story short is that Windows users can now install psutil via pip and therefore also include it as a dependency into requirements.txt. Other than this 2.1.2 can basically be considered a bug-fix release, including some important fixes amongst which:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/506">#506</a>: restored Python 2.4 compatibility</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/340">#340</a>: <cite>Process.get_open_files()</cite> no longer hangs on Windows (this was a very old and high-priority issue)</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/501">#501</a>: <cite>disk_io_counters()</cite> may return negative values on Windows</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/504">#504</a>: (Linux) couldn't build RPM packages via setup.py</li>
+</ul>
+<p>The list of all fixes can be found <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">here</a>. For the next release I plan to drop support for Python 2.4 and 2.5 and hopefully network interfaces information similarly to <a class="reference external" href="https://github.com/giampaolo/psutil/issues/376">ifconfig</a>.</p>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2014/python-and-sendfile" rel="bookmark"
                    title="Permalink to Python and sendfile">Python and sendfile</a></h1>
         </header>
@@ -748,104 +781,14 @@ If on the other hand you want to write a code which works with both versions I s
 </div>
 
         </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2013/making-constants-part-of-your-api-is-evil" rel="bookmark"
-                   title="Permalink to Making constants part of your API is evil">Making constants part of your API is evil</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2013-12-21T00:00:00+01:00">
-        Created: 21 Dec 2013,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>One of the initial features which were included in <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> since day one (5 years ago) were system's boot time, number of CPUs and total physical memory. These metrics have one thing in common: they are (apparently) not supposed to change over time. That is why we (me and <a class="reference external" href="http://www.jayloden.com/">Jay</a>) decided that exposing them as module constants calculated at import time was the way to go.</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">NUM_CPUS</span>
-<span class="mi">2</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">BOOT_TIME</span>  <span class="c1"># as seconds since the epoch</span>
-<span class="mf">1387579049.799092</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">TOTAL_PHYMEM</span>
-<span class="mi">8374120448</span>
-</pre></div>
-<p>5 years later I regret that decision and I'm going to explain you why you don't want to do the same mistake.</p>
-<div class="section" id="a-constant-should-not-change">
-<h2>A constant should not change<a class="headerlink" href="#a-constant-should-not-change" title="Permalink to this headline">¶</a></h2>
-<p>When we think of  'constants', our expectations are that they should not change over time. It may be obvious, but before thinking about introducing a constant be absolutely sure the value it represents is going to remain the same.
-Now, back then we thought these 3 metrics were not supposed to change, at least until the system is rebooted. Well, we were wrong: it turns out 2 of them actually can.
-Apparently virtualized systems can change physical installed memory at runtime (see <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=140#c5">here</a> and <a class="reference external" href="http://technet.microsoft.com/en-us/library/hh831766.aspx">here</a>) and system boot time can easily be altered every time you update the system clock.
-In both of these cases, of course, the constants will not reflect the updated values.</p>
-</div>
-<div class="section" id="doing-things-at-import-time-is-dangerous">
-<h2>Doing things at import time is dangerous<a class="headerlink" href="#doing-things-at-import-time-is-dangerous" title="Permalink to this headline">¶</a></h2>
-<p>That's because import time usually means startup time and if something goes wrong the whole application will crash. In general the only reason for a module to crash at import time is because of a missing dependancy or because it's not supposed to run on that platform in the first place.
-Now, here's a couple of bug reports which were collected over time: <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=188">issue 188</a>, <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=133">issue 313</a>.
-The inconvenience was so severe that I had to release different fixed versions ASAP and the fix consisted of a <a class="reference external" href="https://code.google.com/p/psutil/source/browse/psutil/_psosx.py?name=release-1.2.1#24">stinky workaround</a>.
-That's when I started thinking about getting rid of those constants once and for all and introduce functions instead. But how to do that without breaking everybody's code?</p>
-</div>
-<div class="section" id="backward-compatibility-matters">
-<h2>Backward compatibility matters<a class="headerlink" href="#backward-compatibility-matters" title="Permalink to this headline">¶</a></h2>
-<p>Now here's the crucial part: every time you deliver a library to someone else you just cannot remove an API all of the sudden, especially if they are 3 and have been around since day one.
-It should first be deprecated, possibly turned into an alias pointing to a newer API and finally be removed after 1 or 2 major releases. Also, you want the deprecated API to explicitly raise a DeprecationWarning informing the user he's relying on something which will eventually be removed. With a module constant you cannot do any of that. What you would need is a module property.</p>
-</div>
-<div class="section" id="module-properties">
-<h2>Module properties<a class="headerlink" href="#module-properties" title="Permalink to this headline">¶</a></h2>
-<p>One of the greatest things about Python is that it's so dynamic that it lets you do all sort of nasty things with objects, including injecting names into modules (which are also objects) and make them behave like actual class properties!
-For this I have to thank <a class="reference external" href="http://www.dr-josiah.com/2013/12/properties-on-python-modules.html">Josiah Carlson</a> who came up with this very simple yet effective solution:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ModuleWrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="p">)</span>
-    <span class="fm">__str__</span> <span class="o">=</span> <span class="fm">__repr__</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">NUM_CPUS</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;NUM_CPUS constant is deprecated; use cpu_count() instead&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">cpu_count</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">BOOT_TIME</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;BOOT_TIME constant is deprecated; &quot;</span> \
-              <span class="s2">&quot;use get_boot_time() instead&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">get_boot_time</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">TOTAL_PHYMEM</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;TOTAL_PHYMEM constant is deprecated; &quot;</span> \
-              <span class="s2">&quot;use virtual_memory().total instead&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">total</span>
-
-<span class="n">mod</span> <span class="o">=</span> <span class="n">ModuleWrapper</span><span class="p">()</span>
-<span class="n">mod</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()</span>
-<span class="n">mod</span><span class="o">.</span><span class="n">_module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">]</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">mod</span>
-</pre></div>
-<p>You can put this at the bottom of your module and you'll have fully working module constants (tested on Python from 2.4 to 3.4)!</p>
-<p><strong>EDIT</strong>: the only reason I applied this hack is to turn the old constants into aliases pointing to the newly introduced functions and produce a deprecation warning. That aside I can't think of a case where the use of a module property would be justified.</p>
-</div>
-
-        </div>
     </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://gmpy.dev/tags/python.html">&#8647;</a>
         <a href="https://gmpy.dev/tags/python3.html">&laquo;</a>
-    Page 4 / 4
+    Page 4 / 5
+        <a href="https://gmpy.dev/tags/python5.html">&raquo;</a>
+        <a href="https://gmpy.dev/tags/python5.html">&#8649;</a>
 </p>
  <!-- /blog posts -->
 </section>
