@@ -24,9 +24,9 @@ by writing my first ST plugin, which I paste below.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;p&gt;What's neat about ST plugins is that they are just Python files which you can
 install by copying them in ST's config directory. On Linux you can copy the
-script below in
-&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;~/.config/sublime-text-3/Packages/User/cursor_positions.py&lt;/span&gt;&lt;/tt&gt; and with will
-work out of the box.
+script below in:&lt;/p&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;~/.config/sublime-text-3/Packages/User/cursor_positions.py&lt;/span&gt;&lt;/tt&gt;&lt;/p&gt;
+&lt;p&gt;...and will work out of the box.
 This is exactly the kind of minimalism which I love about ST, and which I've
 always missed in other IDEs.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# cursor_positions.py&lt;/span&gt;
