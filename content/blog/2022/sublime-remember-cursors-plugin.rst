@@ -1,5 +1,5 @@
-Sublime remember cursors plugin
-###############################
+Sublime Text remember cursors plugin
+####################################
 
 :date: 2022-03-18
 :tags: sublime, python
@@ -45,6 +45,7 @@ Anyway, here goes:
     import os
     import tempfile
     import threading
+
     import sublime
     import sublime_plugin
 
