@@ -71,11 +71,6 @@ always missed in other IDEs.
 
 
     class Session:
-        """A wrapper on top of the session "DB" file
-        ~/.config/sublime-text-3/Local/cursor_positions.json
-        ...where we save info about opened files and their
-        cursors' positions.
-        """
 
         def __init__(self):
             self._lock = threading.Lock()
