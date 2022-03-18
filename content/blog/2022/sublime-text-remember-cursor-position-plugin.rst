@@ -27,9 +27,11 @@ What it does is this:
 
 What's neat about ST plugins is that they are just Python files which you can
 install by copying them in ST's config directory. On Linux you can copy the
-script below in
-``~/.config/sublime-text-3/Packages/User/cursor_positions.py`` and with will
-work out of the box.
+script below in:
+
+``~/.config/sublime-text-3/Packages/User/cursor_positions.py``
+
+...and will work out of the box.
 This is exactly the kind of minimalism which I love about ST, and which I've
 always missed in other IDEs.
 
