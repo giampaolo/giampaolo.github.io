@@ -65,11 +65,6 @@ always missed in other IDEs.&lt;/p&gt;
 
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Session&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;A wrapper on top of the session &amp;quot;DB&amp;quot; file&lt;/span&gt;
-&lt;span class="sd"&gt;    ~/.config/sublime-text-3/Local/cursor_positions.json&lt;/span&gt;
-&lt;span class="sd"&gt;    ...where we save info about opened files and their&lt;/span&gt;
-&lt;span class="sd"&gt;    cursors&amp;#39; positions.&lt;/span&gt;
-&lt;span class="sd"&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_lock&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;threading&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Lock&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
