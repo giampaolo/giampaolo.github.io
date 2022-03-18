@@ -62,9 +62,10 @@
 -->
 </footer><!-- /.post-info -->            <p>My editor of choice for Python development is Sublime Text.
 It has been for a very long time (10 years).
-It's fast, simple and straight to the point, which is why I always resisted
-the temptation to use more advanced and modern IDEs such as PyCharm or VS code.</p>
-<p>There is a very simple feature I've always missed in Sublime Text: the
+It's fast, minimalist and straight to the point, which is why I always resisted
+the temptation to use more advanced and modern IDEs such as PyCharm or VS code,
+which admittedly have superior auto-completion and refactoring tools.</p>
+<p>There is a very simple feature I've always missed in ST: the
 possibility to &quot;remember&quot; / save the cursor position when a file is closed.
 The only plugin promising to do such a thing is called
 <a class="reference external" href="https://github.com/titoBouzout/BufferScroll">BufferScroll</a>, but for some
@@ -73,11 +74,14 @@ since then.
 I spent a considerable amount of time Googling for an alternative but, to my
 surprise, I couldn't find any plugin which implements such a simple feature.
 Therefore today I decided to bite the bullet and try to implement this myself,
-by writing my first Sublime Text plugin, which I paste below.</p>
-<p>What's neat about Sublime Text plugins is that they are just Python scripts
-which you can install by copying them in <tt class="docutils literal"><span class="pre">~/.config/sublime-text-3/Packages/User/</span></tt>
-directory (on Linux).</p>
-<p>Anyway, here goes:</p>
+by writing my first ST plugin, which I paste below.</p>
+<p>What's neat about ST plugins is that they are just Python files which you can
+install by copying them in ST's config directory. On Linux you can copy the
+script below in
+<tt class="docutils literal"><span class="pre">~/.config/sublime-text-3/Packages/User/cursor_positions.py</span></tt> and with will
+work out of the box.
+This is exactly the kind of minimalism which I love about ST, and which I've
+always missed in other IDEs.</p>
 <div class="highlight"><pre><span></span><span class="c1"># cursor_positions.py</span>
 
 <span class="sd">&quot;&quot;&quot;</span>

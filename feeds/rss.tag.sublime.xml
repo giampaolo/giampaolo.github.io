@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0"><channel><title>Giampaolo Rodola - sublime</title><link>https://gmpy.dev/</link><description>Python enthusiast, core developer, psutil author</description><lastBuildDate>Fri, 18 Mar 2022 00:00:00 +0100</lastBuildDate><item><title>Sublime Text remember cursors plugin</title><link>https://gmpy.dev/blog/2022/sublime-text-remember-cursors-plugin</link><description>&lt;p&gt;My editor of choice for Python development is Sublime Text.
 It has been for a very long time (10 years).
-It's fast, simple and straight to the point, which is why I always resisted
-the temptation to use more advanced and modern IDEs such as PyCharm or VS code.&lt;/p&gt;
-&lt;p&gt;There …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giampaolo Rodola</dc:creator><pubDate>Fri, 18 Mar 2022 00:00:00 +0100</pubDate><guid isPermaLink="false">tag:gmpy.dev,2022-03-18:/blog/2022/sublime-text-remember-cursors-plugin</guid><category>2022</category><category>sublime</category><category>python</category></item></channel></rss>
+It's fast, minimalist and straight to the point, which is why I always resisted
+the temptation to use more advanced and modern IDEs such as PyCharm or VS code,
+which …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giampaolo Rodola</dc:creator><pubDate>Fri, 18 Mar 2022 00:00:00 +0100</pubDate><guid isPermaLink="false">tag:gmpy.dev,2022-03-18:/blog/2022/sublime-text-remember-cursors-plugin</guid><category>2022</category><category>sublime</category><category>python</category></item></channel></rss>
