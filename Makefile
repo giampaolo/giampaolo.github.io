@@ -24,23 +24,21 @@ endif
 help: ## Display callable targets.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
+install-pydeps:  ## Install Pelican / pydeps
+	$(PY) -m pip install pelican
+
 html:  ## Generate html.
 	$(PY) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
 clean:  ## Remove build files
 	[ ! -d $(OUTPUTDIR) ] || rm -rf $(OUTPUTDIR)
+	@rm -rfv `find . -type d -name __pycache__ \
+		-o -type f -name \*.pyc`
 
 regenerate:  ## Regenerate
 	$(PY) -m pelican -r $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
-serve:  ## HTTP serve
-ifdef PORT
-	$(PY) -m pelican -l $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS) -p $(PORT)
-else
-	$(PY) -m pelican -l $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
-endif
-
-devserver:  ## HTTP serve in dev mode
+serve:  ## HTTP serve in dev mode
 ifdef PORT
 	$(PY) -m pelican -lr $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS) -p $(PORT)
 else
@@ -57,7 +55,7 @@ github:  ## Git push and publish changes on GitHub.
 	ghp-import -m "Generate Pelican site" -b $(GITHUB_PAGES_BRANCH) $(OUTPUTDIR)
 	git push origin $(GITHUB_PAGES_BRANCH)
 
-blogpost:  ## Create a new blog post template.
+create-blogpost:  ## Create a new blog post template.
 	@$(PY) -c \
 		"import os, datetime; \
 		now = datetime.datetime.now(); \
