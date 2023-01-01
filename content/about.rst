@@ -28,23 +28,33 @@ Projects
 
 * `psutil`_: a cross-platform library for retrieving information on running processes and system utilization (CPU, memory, disks, network) in Python.  *(2008 - now)*
 
+  .. image:: https://img.shields.io/github/stars/giampaolo/psutil.svg
+    :target: https://github.com/giampaolo/psutil/stargazers
+    :alt: Github stars
+
   .. image:: https://img.shields.io/pypi/dm/psutil?color=%232980B9&style=flat
     :target: https://pepy.tech/project/psutil
     :alt: Downloads
 
 * `pyftpdlib`_: a very fast, asynchronous, pure-python FTP server.  *(2006 - now)*
 
+  .. image:: https://img.shields.io/github/stars/giampaolo/pyftpdlib.svg
+    :target: https://github.com/giampaolo/psutil/stargazers
+    :alt: Github stars
+
   .. image:: https://img.shields.io/pypi/dm/pyftpdlib?color=%232980B9&style=flat
     :target: https://pepy.tech/project/pyftpdlib
     :alt: Downloads
 
-
 * `pysendfile`_: a binding to `sendfile(2)` syscall which lets you send a file twice as fast as with a common socket.  *(2011 - now)*
+
+  .. image:: https://img.shields.io/github/stars/giampaolo/pysendfile.svg
+    :target: https://github.com/giampaolo/psutil/stargazers
+    :alt: Github stars
 
   .. image:: https://img.shields.io/pypi/dm/pysendfile?color=%232980B9&style=flat
     :target: https://pepy.tech/project/pysendfile
     :alt: Downloads
-
 
 python-dev contributions
 ------------------------
