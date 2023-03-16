@@ -41,11 +41,11 @@ into errors like these:
         return self._sslobj.write(data)
     socket.timeout: The write operation timed out
 
-Production logs revealed a considerable amount of SSL-related errors as well. I
+Production logs also revealed a considerable amount of SSL-related errors. I
 was uncertain what to do about those. The app is supposed to gracefully handle
 them, so theoretically they should represent a bug. Still, they are
-unequivocally related to the connection stream, and represent a failed
-attempt to send data, so we want to retry it. Example of logs I found:
+unequivocally related to the connection stream, and represent a failed attempt
+to send data, so we want to retry it. Example of logs I found:
 
 ::
 
