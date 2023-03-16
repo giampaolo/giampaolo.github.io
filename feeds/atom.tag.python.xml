@@ -52,8 +52,10 @@ ssl.SSLError: [SSL: BAD_LENGTH] bad length
 &lt;p&gt;Looking at production logs revealed what sort of brutal, rough and tumble place
 the Internet is, and how a network app must be ready to handle all sorts of
 unexpected error conditions which hardly show up during testing. To handle all
-of these cases, I came up with this solution, which I think is worth sharing
-as it's generic enough to be reused in similar situations:&lt;/p&gt;
+of these cases I came up with this solution which I think is worth sharing,
+as it's generic enough to be reused in similar situations. This can easily be
+extended to include specific exceptions of third party libraries, like
+&lt;cite&gt;requests.exceptions.ConnectionError&lt;/cite&gt;.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;errno&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nn"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nn"&gt;ssl&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Network errors, usually related to DHCP or wpa_supplicant (Wi-Fi).&lt;/span&gt;
@@ -86,7 +88,7 @@ as it's generic enough to be reused in similar situations:&lt;/p&gt;
     &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ssl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SSLError&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="c1"&gt;# Let&amp;#39;s consider any SSL error a connection error. Usually this is:&lt;/span&gt;
         &lt;span class="c1"&gt;# * ssl.SSLZeroReturnError: &amp;quot;TLS/SSL connection has been closed&amp;quot;&lt;/span&gt;
-        &lt;span class="c1"&gt;# * ssl.SSLError: [SSL: BAD_LENGTH] bad length&lt;/span&gt;
+        &lt;span class="c1"&gt;# * ssl.SSLError: [SSL: BAD_LENGTH]&lt;/span&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;False&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
