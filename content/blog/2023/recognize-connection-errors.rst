@@ -6,9 +6,9 @@ Recognize connection errors
 
 Lately I've been dealing with an asynchronous TCP client app which sends
 messages to a remote server. Some of these messages are important, and cannot
-get lost. Because the connection may drop at any time, I was asked to
-implement a mechanism to resend the message once the client reconnects. As
-such, I needed a way to identify what constitutes a **connection error**.
+get lost. Because the connection may drop at any time, I had to implement a
+mechanism to resend the message once the client reconnects. As such, I needed
+a way to identify what constitutes a **connection error**.
 
 Python provides a builtin ConnectionError_ exception precisely for this
 purpose, but it turns out it's not enough. After observing logs in production,
