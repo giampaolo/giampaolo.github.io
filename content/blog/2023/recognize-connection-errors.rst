@@ -60,7 +60,9 @@ Looking at production logs revealed what sort of brutal, rough and tumble place
 the Internet is, and how a network app must be ready to handle all sorts of
 unexpected error conditions which hardly show up during testing. To handle all
 of these cases I came up with this solution which I think is worth sharing,
-as it's generic enough to be reused in similar situations:
+as it's generic enough to be reused in similar situations. This can easily be
+extended to include specific exceptions of third party libraries, like
+`requests.exceptions.ConnectionError`.
 
 .. code-block:: python
 
@@ -96,7 +98,7 @@ as it's generic enough to be reused in similar situations:
         if isinstance(exc, ssl.SSLError):
             # Let's consider any SSL error a connection error. Usually this is:
             # * ssl.SSLZeroReturnError: "TLS/SSL connection has been closed"
-            # * ssl.SSLError: [SSL: BAD_LENGTH] bad length
+            # * ssl.SSLError: [SSL: BAD_LENGTH]
             return True
         return False
 
