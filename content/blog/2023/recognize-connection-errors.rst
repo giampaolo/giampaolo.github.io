@@ -44,7 +44,7 @@ Production logs revealed a considerable amount of SSL-related errors as well. I
 was uncertain what to do about those. The app is supposed to gracefully handle
 them, so theoretically they should represent a bug. Still, they are
 unequivocally related to the connection stream, and represent a failed
-attempt to send data which we want to retry. Example of logs I found:
+attempt to send data, so we want to retry it. Example of logs I found:
 
 ::
 
@@ -59,9 +59,9 @@ attempt to send data which we want to retry. Example of logs I found:
 Looking at production logs revealed what sort of brutal, rough and tumble place
 the Internet is, and how a network app must be ready to handle all sorts of
 unexpected error conditions which hardly show up during testing. To handle all
-of these cases I came up with this solution which I think is worth sharing,
-as it's generic enough to be reused in similar situations. This can easily be
-extended to include specific exceptions of third party libraries, like
+of these cases I came up with this solution which I think is worth sharing, as
+it's generic enough to be reused in similar situations. If needed, this can be
+easily extended to include specific exceptions of third party libraries, like
 `requests.exceptions.ConnectionError`.
 
 .. code-block:: python
