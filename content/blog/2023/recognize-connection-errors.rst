@@ -44,7 +44,7 @@ Production logs revealed a considerable amount of SSL-related errors as well. I
 was uncertain what to do about those. The app is supposed to gracefully handle
 them, so theoretically they should represent a bug. Still, they are
 unequivocally related to the connection stream, and represent a failed
-attempt to send data that we want to retry. Example of logs I found:
+attempt to send data which we want to retry. Example of logs I found:
 
 ::
 
