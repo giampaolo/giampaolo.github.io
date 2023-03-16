@@ -59,7 +59,7 @@ attempt to send data that we want to retry. Example of logs I found:
 Looking at production logs revealed what sort of brutal, rough and tumble place
 the Internet is, and how a network app must be ready to handle all sorts of
 unexpected error conditions which hardly show up during testing. To handle all
-of these cases, I came up with this solution, which I think is worth sharing
+of these cases I came up with this solution which I think is worth sharing,
 as it's generic enough to be reused in similar situations:
 
 .. code-block:: python
