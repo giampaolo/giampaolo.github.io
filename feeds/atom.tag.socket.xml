@@ -1,5 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - python-dev</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.python-dev.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2014-06-13T00:00:00+02:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Python and sendfile</title><link href="https://gmpy.dev/blog/2014/python-and-sendfile" rel="alternate"></link><published>2014-06-13T00:00:00+02:00</published><updated>2014-06-13T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2014-06-13:/blog/2014/python-and-sendfile</id><summary type="html">&lt;p&gt;&lt;a class="reference external" href="http://linux.die.net/man/2/sendfile"&gt;sendfile(2)&lt;/a&gt; is a UNIX system call which provides a &amp;quot;zero-copy&amp;quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, &lt;cite&gt;sendfile(2)&lt;/cite&gt; is more efficient than the combination of &lt;cite&gt;file.read()&lt;/cite&gt; and &lt;cite&gt;socket.send()&lt;/cite&gt;, which requires …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="http://linux.die.net/man/2/sendfile"&gt;sendfile(2)&lt;/a&gt; is a UNIX system call which provides a &amp;quot;zero-copy&amp;quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, &lt;cite&gt;sendfile(2)&lt;/cite&gt; is more efficient than the combination of &lt;cite&gt;file.read()&lt;/cite&gt; and &lt;cite&gt;socket.send()&lt;/cite&gt;, which requires transferring data to and from user space.  This copying of the data twice imposes some performance and resource penalties which &lt;cite&gt;sendfile(2)&lt;/cite&gt; syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of &lt;a class="reference external" href="http://linux.die.net/man/2/read"&gt;read(2)&lt;/a&gt; / &lt;a class="reference external" href="http://linux.die.net/man/2/write"&gt;write(2)&lt;/a&gt; system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how &lt;cite&gt;sendfile(2)&lt;/cite&gt; works is available &lt;a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/"&gt;here&lt;/a&gt;, but long story short is that sending a file with &lt;cite&gt;sendfile()&lt;/cite&gt; is usually &lt;a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark"&gt;twice as fast&lt;/a&gt; than using plain &lt;a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send"&gt;socket.send()&lt;/a&gt;. Typical applications which can benefit from using &lt;cite&gt;sendfile()&lt;/cite&gt; are FTP and HTTP servers.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - socket</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.socket.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2023-03-16T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Recognize connection errors</title><link href="https://gmpy.dev/blog/2023/recognize-connection-errors" rel="alternate"></link><published>2023-03-16T00:00:00+01:00</published><updated>2023-03-16T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2023-03-16:/blog/2023/recognize-connection-errors</id><summary type="html">&lt;p&gt;Lately I've been dealing with an asynchronous TCP client app which sends
+messages to a remote server. Some of these messages are important, and cannot
+get lost. Because the connection may drop at any time, I was asked to
+implement a mechanism to resend the message once the client reconnects …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Lately I've been dealing with an asynchronous TCP client app which sends
+messages to a remote server. Some of these messages are important, and cannot
+get lost. Because the connection may drop at any time, I was asked to
+implement a mechanism to resend the message once the client reconnects. As
+such, I needed a way to identify what constitutes a &lt;strong&gt;connection error&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Python provides a builtin &lt;a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ConnectionError"&gt;ConnectionError&lt;/a&gt; exception precisely for this
+purpose, but it turns out it's not enough. After observing logs in production,
+I found some errors that were not related to the socket connection per se, but
+rather to the &lt;strong&gt;system connectivity&lt;/strong&gt;, like &lt;cite&gt;ENETUNREACH&lt;/cite&gt;
+(&amp;quot;network unreachable&amp;quot;) or &lt;cite&gt;ENETDOWN&lt;/cite&gt; (&amp;quot;network down&amp;quot;).  It's interesting to
+note how this distinction is reflected in the UNIX &lt;a class="reference external" href="https://www.thegeekstuff.com/2010/10/linux-error-codes/"&gt;errno&lt;/a&gt;  code prefixes:
+&lt;cite&gt;ECONN*&lt;/cite&gt; (connection errors) vs. &lt;cite&gt;ENET*&lt;/cite&gt; (network errors). I've noticed
+&lt;cite&gt;ENET*&lt;/cite&gt; errors usually occur on a DHCP renewal, or more in general when the
+Wi-Fi signal is weak or absent. Because this code runs on a moving cleaning
+robot connected to the Wi-Fi, connection may become unstable when the robot
+gets far from the Access Point, so it's pretty common to bump into one these:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+File &amp;quot;/usr/lib/python3.7/ssl.py&amp;quot;, line 934, in send
+    return self._sslobj.write(data)
+OSError: [Errno 101] Network is unreachable
+
+File &amp;quot;/usr/lib/python3.7/socket.py&amp;quot;, line 222, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -3] Temporary failure in name resolution
+
+File &amp;quot;/usr/lib/python3.7/ssl.py&amp;quot;, line 934, in send
+    return self._sslobj.write(data)
+BrokenPipeError: [Errno 32] Broken pipe
+
+File &amp;quot;/usr/lib/python3.7/ssl.py&amp;quot;, line 934, in send
+    return self._sslobj.write(data)
+socket.timeout: The write operation timed out
+&lt;/pre&gt;
+&lt;p&gt;Production logs revealed a considerable amount of SSL-related errors as well. I
+was uncertain what to do about those. The app is supposed to gracefully handle
+them, so theoretically they should represent a bug. Still, they are
+unequivocally related to the connection stream, and represent a failed
+attempt to send data that we want to retry. Example of logs I found:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+File &amp;quot;/usr/lib/python3.7/ssl.py&amp;quot;, line 934, in send
+    return self._sslobj.write(data)
+ssl.SSLZeroReturnError: TLS/SSL connection has been closed (EOF)
+
+File &amp;quot;/usr/lib/python3.7/ssl.py&amp;quot;, line 934, in send
+    return self._sslobj.write(data)
+ssl.SSLError: [SSL: BAD_LENGTH] bad length
+&lt;/pre&gt;
+&lt;p&gt;Looking at production logs revealed what sort of brutal, rough and tumble place
+the Internet is, and how a network app must be ready to handle all sorts of
+unexpected error conditions which hardly show up during testing. To handle all
+of these cases, I came up with this solution, which I think is worth sharing
+as it's generic enough to be reused in similar situations:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;errno&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nn"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nn"&gt;ssl&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Network errors, usually related to DHCP or wpa_supplicant (Wi-Fi).&lt;/span&gt;
+&lt;span class="n"&gt;NETWORK_ERRNOS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;frozenset&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;
+    &lt;span class="n"&gt;errno&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ENETUNREACH&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="c1"&gt;# &amp;quot;Network is unreachable&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;errno&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ENETDOWN&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="c1"&gt;# &amp;quot;Network is down&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;errno&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ENETRESET&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="c1"&gt;# &amp;quot;Network dropped connection on reset&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;errno&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ENONET&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="c1"&gt;# &amp;quot;Machine is not on the network&amp;quot;&lt;/span&gt;
+&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;is_connection_err&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Return True if an exception is connection-related.&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ne"&gt;ConnectionError&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c1"&gt;# https://docs.python.org/3/library/exceptions.html#ConnectionError&lt;/span&gt;
+        &lt;span class="c1"&gt;# ConnectionError includes:&lt;/span&gt;
+        &lt;span class="c1"&gt;# * BrokenPipeError (EPIPE, ESHUTDOWN)&lt;/span&gt;
+        &lt;span class="c1"&gt;# * ConnectionAbortedError (ECONNABORTED)&lt;/span&gt;
+        &lt;span class="c1"&gt;# * ConnectionRefusedError (ECONNREFUSED)&lt;/span&gt;
+        &lt;span class="c1"&gt;# * ConnectionResetError (ECONNRESET)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gaierror&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c1"&gt;# failed DNS resolution on connect()&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ne"&gt;TimeoutError&lt;/span&gt;&lt;span class="p"&gt;)):&lt;/span&gt;
+        &lt;span class="c1"&gt;# timeout on connect(), recv(), send()&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ne"&gt;OSError&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c1"&gt;# ENOTCONN == &amp;quot;Transport endpoint is not connected&amp;quot;&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;errno&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;NETWORK_ERRNOS&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;errno&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;errno&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ENOTCONN&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ssl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SSLError&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c1"&gt;# Let&amp;#39;s consider any SSL error a connection error. Usually this is:&lt;/span&gt;
+        &lt;span class="c1"&gt;# * ssl.SSLZeroReturnError: &amp;quot;TLS/SSL connection has been closed&amp;quot;&lt;/span&gt;
+        &lt;span class="c1"&gt;# * ssl.SSLError: [SSL: BAD_LENGTH] bad length&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;False&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;To use it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;sock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sendall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;hello there&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;Exception&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;err&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;is_connection_err&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;err&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;schedule_on_reconnect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;sock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sendall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;hello there&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+</content><category term="2023"></category><category term="python"></category><category term="socket"></category><category term="network"></category></entry><entry><title>Python and sendfile</title><link href="https://gmpy.dev/blog/2014/python-and-sendfile" rel="alternate"></link><published>2014-06-13T00:00:00+02:00</published><updated>2014-06-13T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2014-06-13:/blog/2014/python-and-sendfile</id><summary type="html">&lt;p&gt;&lt;a class="reference external" href="http://linux.die.net/man/2/sendfile"&gt;sendfile(2)&lt;/a&gt; is a UNIX system call which provides a &amp;quot;zero-copy&amp;quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, &lt;cite&gt;sendfile(2)&lt;/cite&gt; is more efficient than the combination of &lt;cite&gt;file.read()&lt;/cite&gt; and &lt;cite&gt;socket.send()&lt;/cite&gt;, which requires …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="http://linux.die.net/man/2/sendfile"&gt;sendfile(2)&lt;/a&gt; is a UNIX system call which provides a &amp;quot;zero-copy&amp;quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, &lt;cite&gt;sendfile(2)&lt;/cite&gt; is more efficient than the combination of &lt;cite&gt;file.read()&lt;/cite&gt; and &lt;cite&gt;socket.send()&lt;/cite&gt;, which requires transferring data to and from user space.  This copying of the data twice imposes some performance and resource penalties which &lt;cite&gt;sendfile(2)&lt;/cite&gt; syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of &lt;a class="reference external" href="http://linux.die.net/man/2/read"&gt;read(2)&lt;/a&gt; / &lt;a class="reference external" href="http://linux.die.net/man/2/write"&gt;write(2)&lt;/a&gt; system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how &lt;cite&gt;sendfile(2)&lt;/cite&gt; works is available &lt;a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/"&gt;here&lt;/a&gt;, but long story short is that sending a file with &lt;cite&gt;sendfile()&lt;/cite&gt; is usually &lt;a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark"&gt;twice as fast&lt;/a&gt; than using plain &lt;a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send"&gt;socket.send()&lt;/a&gt;. Typical applications which can benefit from using &lt;cite&gt;sendfile()&lt;/cite&gt; are FTP and HTTP servers.&lt;/p&gt;
 &lt;div class="section" id="socket-sendfile"&gt;
 &lt;h2&gt;socket.sendfile()&lt;a class="headerlink" href="#socket-sendfile" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;I recently contributed a patch for Python's socket module which adds a high-level &lt;a class="reference external" href="https://docs.python.org/3.5/library/socket.html#socket.socket.sendfile"&gt;socket.sendfile()&lt;/a&gt; method (see full discussion at &lt;a class="reference external" href="http://bugs.python.org/issue17552"&gt;BPO-17552&lt;/a&gt;). &lt;cite&gt;socket.sendfile()&lt;/cite&gt; will transmit a file until EOF is reached by attempting to use &lt;a class="reference external" href="https://docs.python.org/3/library/os.html#os.sendfile"&gt;os.sendfile()&lt;/a&gt;, if available, else it falls back on using plain &lt;cite&gt;socket.send()&lt;/cite&gt;. Internally, it takes care of handling socket timeouts and provides two optional parameters to move the file offset or to send only a limited amount of bytes. I came up with this idea because getting all of that right is a bit tricky, so a generic wrapper seemed to be convenient to have. &lt;cite&gt;socket.sendfile()&lt;/cite&gt; will make its appearance in Python 3.5.&lt;/p&gt;

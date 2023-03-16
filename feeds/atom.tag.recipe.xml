@@ -428,4 +428,4 @@
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;_sendfile_use_send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sock&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;file&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;offset&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
-</content><category term="2014"></category><category term="python"></category><category term="python-dev"></category><category term="sendfile"></category><category term="zerocopy"></category><category term="network"></category><category term="recipe"></category></entry></feed>
+</content><category term="2014"></category><category term="python"></category><category term="python-dev"></category><category term="sendfile"></category><category term="zerocopy"></category><category term="network"></category><category term="recipe"></category><category term="socket"></category></entry></feed>

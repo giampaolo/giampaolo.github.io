@@ -41,13 +41,134 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2023/recognize-connection-errors" rel="bookmark"
+                   title="Permalink to Recognize connection errors">Recognize connection errors</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2023-03-16T00:00:00+01:00">
+        Created: 16 mar 2023,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/socket">socket</a>,        <a href="https://gmpy.dev/tags/network">network</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>Lately I've been dealing with an asynchronous TCP client app which sends
+messages to a remote server. Some of these messages are important, and cannot
+get lost. Because the connection may drop at any time, I was asked to
+implement a mechanism to resend the message once the client reconnects. As
+such, I needed a way to identify what constitutes a <strong>connection error</strong>.</p>
+<p>Python provides a builtin <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ConnectionError">ConnectionError</a> exception precisely for this
+purpose, but it turns out it's not enough. After observing logs in production,
+I found some errors that were not related to the socket connection per se, but
+rather to the <strong>system connectivity</strong>, like <cite>ENETUNREACH</cite>
+(&quot;network unreachable&quot;) or <cite>ENETDOWN</cite> (&quot;network down&quot;).  It's interesting to
+note how this distinction is reflected in the UNIX <a class="reference external" href="https://www.thegeekstuff.com/2010/10/linux-error-codes/">errno</a>  code prefixes:
+<cite>ECONN*</cite> (connection errors) vs. <cite>ENET*</cite> (network errors). I've noticed
+<cite>ENET*</cite> errors usually occur on a DHCP renewal, or more in general when the
+Wi-Fi signal is weak or absent. Because this code runs on a moving cleaning
+robot connected to the Wi-Fi, connection may become unstable when the robot
+gets far from the Access Point, so it's pretty common to bump into one these:</p>
+<pre class="literal-block">
+File &quot;/usr/lib/python3.7/ssl.py&quot;, line 934, in send
+    return self._sslobj.write(data)
+OSError: [Errno 101] Network is unreachable
+
+File &quot;/usr/lib/python3.7/socket.py&quot;, line 222, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -3] Temporary failure in name resolution
+
+File &quot;/usr/lib/python3.7/ssl.py&quot;, line 934, in send
+    return self._sslobj.write(data)
+BrokenPipeError: [Errno 32] Broken pipe
+
+File &quot;/usr/lib/python3.7/ssl.py&quot;, line 934, in send
+    return self._sslobj.write(data)
+socket.timeout: The write operation timed out
+</pre>
+<p>Production logs revealed a considerable amount of SSL-related errors as well. I
+was uncertain what to do about those. The app is supposed to gracefully handle
+them, so theoretically they should represent a bug. Still, they are
+unequivocally related to the connection stream, and represent a failed
+attempt to send data that we want to retry. Example of logs I found:</p>
+<pre class="literal-block">
+File &quot;/usr/lib/python3.7/ssl.py&quot;, line 934, in send
+    return self._sslobj.write(data)
+ssl.SSLZeroReturnError: TLS/SSL connection has been closed (EOF)
+
+File &quot;/usr/lib/python3.7/ssl.py&quot;, line 934, in send
+    return self._sslobj.write(data)
+ssl.SSLError: [SSL: BAD_LENGTH] bad length
+</pre>
+<p>Looking at production logs revealed what sort of brutal, rough and tumble place
+the Internet is, and how a network app must be ready to handle all sorts of
+unexpected error conditions which hardly show up during testing. To handle all
+of these cases, I came up with this solution, which I think is worth sharing
+as it's generic enough to be reused in similar situations:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">errno</span><span class="o">,</span> <span class="nn">socket</span><span class="o">,</span> <span class="nn">ssl</span>
+
+<span class="c1"># Network errors, usually related to DHCP or wpa_supplicant (Wi-Fi).</span>
+<span class="n">NETWORK_ERRNOS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span>
+    <span class="n">errno</span><span class="o">.</span><span class="n">ENETUNREACH</span><span class="p">,</span>  <span class="c1"># &quot;Network is unreachable&quot;</span>
+    <span class="n">errno</span><span class="o">.</span><span class="n">ENETDOWN</span><span class="p">,</span>  <span class="c1"># &quot;Network is down&quot;</span>
+    <span class="n">errno</span><span class="o">.</span><span class="n">ENETRESET</span><span class="p">,</span>  <span class="c1"># &quot;Network dropped connection on reset&quot;</span>
+    <span class="n">errno</span><span class="o">.</span><span class="n">ENONET</span><span class="p">,</span>  <span class="c1"># &quot;Machine is not on the network&quot;</span>
+<span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">is_connection_err</span><span class="p">(</span><span class="n">exc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return True if an exception is connection-related.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="ne">ConnectionError</span><span class="p">):</span>
+        <span class="c1"># https://docs.python.org/3/library/exceptions.html#ConnectionError</span>
+        <span class="c1"># ConnectionError includes:</span>
+        <span class="c1"># * BrokenPipeError (EPIPE, ESHUTDOWN)</span>
+        <span class="c1"># * ConnectionAbortedError (ECONNABORTED)</span>
+        <span class="c1"># * ConnectionRefusedError (ECONNREFUSED)</span>
+        <span class="c1"># * ConnectionResetError (ECONNRESET)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+        <span class="c1"># failed DNS resolution on connect()</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">,</span> <span class="ne">TimeoutError</span><span class="p">)):</span>
+        <span class="c1"># timeout on connect(), recv(), send()</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
+        <span class="c1"># ENOTCONN == &quot;Transport endpoint is not connected&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">exc</span><span class="o">.</span><span class="n">errno</span> <span class="ow">in</span> <span class="n">NETWORK_ERRNOS</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">exc</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOTCONN</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">ssl</span><span class="o">.</span><span class="n">SSLError</span><span class="p">):</span>
+        <span class="c1"># Let&#39;s consider any SSL error a connection error. Usually this is:</span>
+        <span class="c1"># * ssl.SSLZeroReturnError: &quot;TLS/SSL connection has been closed&quot;</span>
+        <span class="c1"># * ssl.SSLError: [SSL: BAD_LENGTH] bad length</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+<p>To use it:</p>
+<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;hello there&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">is_connection_err</span><span class="p">(</span><span class="n">err</span><span class="p">):</span>
+        <span class="n">schedule_on_reconnect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">sock</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;hello there&quot;</span><span class="p">))</span>
+    <span class="k">raise</span>
+</pre></div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2022/sublime-text-remember-cursor-position-plugin" rel="bookmark"
                    title="Permalink to Sublime Text: remember cursor position plugin">Sublime Text: remember cursor position plugin</a></h1>
         </header>
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2022-03-18T00:00:00+01:00">
-        Created: 18 Mar 2022,
+        Created: 18 mar 2022,
         </a>
 <!--
         <address class="vcard author">
@@ -235,7 +356,7 @@ always missed in other IDEs.</p>
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2020-06-26T00:00:00+02:00">
-        Created: 26 Jun 2020,
+        Created: 26 giu 2020,
         </a>
 <!--
         <address class="vcard author">
@@ -309,7 +430,7 @@ The core of Pelican is <a class="reference external" href="https://github.com/gi
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2019-05-29T00:00:00+02:00">
-        Created: 29 May 2019,
+        Created: 29 mag 2019,
         </a>
 <!--
         <address class="vcard author">
@@ -357,7 +478,7 @@ The core of Pelican is <a class="reference external" href="https://github.com/gi
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2019-03-05T00:00:00+01:00">
-        Created: 05 Mar 2019,
+        Created: 05 mar 2019,
         </a>
 <!--
         <address class="vcard author">
@@ -408,42 +529,6 @@ The core of Pelican is <a class="reference external" href="https://github.com/gi
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1447">#1447</a>: original exception wasn't turned into <cite>NoSuchProcess</cite> / <cite>AccessDenied</cite> exceptions when using <cite>Process.oneshot()</cite> ctx manager.</li>
 </ul>
 <p>A full list of enhancements and bug fixes is available <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#560">here</a>.</p>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2017/psutil-540-and-aix-support" rel="bookmark"
-                   title="Permalink to psutil 5.4.0 and AIX support">psutil 5.4.0 and AIX support</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2017-10-12T00:00:00+02:00">
-        Created: 12 Oct 2017,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/aix">aix</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>After a long time <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> finally adds support for a brand new exotic platform: AIX! Honestly I am not sure how many AIX Python users are out there (I suppose not many) but still, here it is. For this we have to thank <a class="reference external" href="https://github.com/wiggin15">Arnon Yaari</a> who started working on the porting a <a class="reference external" href="https://github.com/giampaolo/psutil/issues/605">couple of years ago</a>. To be honest I was skeptical at first because AIX is the only platform which I cannot virtualize and test on my laptop so that made me a bit nervous but Arnon did a very good job. The final <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1123">PR</a> is huge, it required a considerable amount of work on his part and a review process of over 140 messages which were exchanged between me and him over the course of over 1 month during which I was travelling through China. The final result is very good, basically (almost) all original unit tests pass and the quality of the submitted code is awesome which (I must say) is kind of unusual for an external contribution like this one. Kudos to you Arnon! ;-)</p>
-<p>Other than AIX support, release 5.4.0 also includes a couple of important bug fixes for <cite>sensors_temperatures()</cite> and <cite>sensors_fans()</cite> functions on Linux and the fix of a bug on OSX which could cause a segmentation fault when using <cite>Process.open_files()</cite>. Complete list of bugfixes is <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#540">here</a>.</p>
-<p>In terms of future contributions for exotic and still unsupported platforms it is worth mentioning a (still incomplete) PR for <a class="reference external" href="https://github.com/giampaolo/psutil/pull/998">Cygwin</a> which looks promising and <a class="reference external" href="https://github.com/giampaolo/psutil/pull/845">Mingw32</a> compiler support on Windows. It looks like psutil is gradually getting to a point where the addition of new functionalities is becoming more rare, so it is good that support for new platforms happens now when the API is mature and stable. Future development in this direction can also include Android and (hopefully) IOS support. Now <em>that</em> would be really awesome to have! =)</p>
-<p>Stay tuned.</p>
-<div class="section" id="external-links">
-<h2>External links<a class="headerlink" href="#external-links" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/75wsfu/psutil_540_with_aix_support_is_out/">Reddit</a></li>
-<li><a class="reference external" href="http://grodola.blogspot.com/2017/10/psutil-540-with-aix-support-is-out.html">HackerNews</a></li>
-</ul>
 </div>
 
         </div>

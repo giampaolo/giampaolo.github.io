@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <!--<title>Giampaolo Rodola - 2023</title>-->
+    <title>Giampaolo Rodola</title>
+    <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
+    <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
+    <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
+    <link rel="icon" type="image/x-icon" href="https://gmpy.dev/favicon.ico">
+</head>
+
+<body id="index" class="home">
+    <header id="banner" class="body">
+        <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+        <nav><ul>
+            <li><a href="/">Blog</a></li>
+            <li><a href="/archives">Archives</a></li>
+            <li><a href="/donate">Donate</a></li>
+            <li><a href="/supporters">Supporters</a></li>
+            <li><a href="/about">About</a></li>
+        </ul></nav>
+    </header><!-- /#banner -->
+
+<section id="content" class="body">
+    <h1 class="entry-title">Blog posts for category/2023</h1>
+
+<!-- blog posts -->
+        <ol id="posts-list" class="hfeed" start="4">
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2023/recognize-connection-errors" rel="bookmark"
+                   title="Permalink to Recognize connection errors">Recognize connection errors</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2023-03-16T00:00:00+01:00">
+        Created: 16 mar 2023,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/socket">socket</a>,        <a href="https://gmpy.dev/tags/network">network</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>Lately I've been dealing with an asynchronous TCP client app which sends
+messages to a remote server. Some of these messages are important, and cannot
+get lost. Because the connection may drop at any time, I was asked to
+implement a mechanism to resend the message once the client reconnects. As
+such, I needed a way to identify what constitutes a <strong>connection error</strong>.</p>
+<p>Python provides a builtin <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ConnectionError">ConnectionError</a> exception precisely for this
+purpose, but it turns out it's not enough. After observing logs in production,
+I found some errors that were not related to the socket connection per se, but
+rather to the <strong>system connectivity</strong>, like <cite>ENETUNREACH</cite>
+(&quot;network unreachable&quot;) or <cite>ENETDOWN</cite> (&quot;network down&quot;).  It's interesting to
+note how this distinction is reflected in the UNIX <a class="reference external" href="https://www.thegeekstuff.com/2010/10/linux-error-codes/">errno</a>  code prefixes:
+<cite>ECONN*</cite> (connection errors) vs. <cite>ENET*</cite> (network errors). I've noticed
+<cite>ENET*</cite> errors usually occur on a DHCP renewal, or more in general when the
+Wi-Fi signal is weak or absent. Because this code runs on a moving cleaning
+robot connected to the Wi-Fi, connection may become unstable when the robot
+gets far from the Access Point, so it's pretty common to bump into one these:</p>
+<pre class="literal-block">
+File &quot;/usr/lib/python3.7/ssl.py&quot;, line 934, in send
+    return self._sslobj.write(data)
+OSError: [Errno 101] Network is unreachable
+
+File &quot;/usr/lib/python3.7/socket.py&quot;, line 222, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -3] Temporary failure in name resolution
+
+File &quot;/usr/lib/python3.7/ssl.py&quot;, line 934, in send
+    return self._sslobj.write(data)
+BrokenPipeError: [Errno 32] Broken pipe
+
+File &quot;/usr/lib/python3.7/ssl.py&quot;, line 934, in send
+    return self._sslobj.write(data)
+socket.timeout: The write operation timed out
+</pre>
+<p>Production logs revealed a considerable amount of SSL-related errors as well. I
+was uncertain what to do about those. The app is supposed to gracefully handle
+them, so theoretically they should represent a bug. Still, they are
+unequivocally related to the connection stream, and represent a failed
+attempt to send data that we want to retry. Example of logs I found:</p>
+<pre class="literal-block">
+File &quot;/usr/lib/python3.7/ssl.py&quot;, line 934, in send
+    return self._sslobj.write(data)
+ssl.SSLZeroReturnError: TLS/SSL connection has been closed (EOF)
+
+File &quot;/usr/lib/python3.7/ssl.py&quot;, line 934, in send
+    return self._sslobj.write(data)
+ssl.SSLError: [SSL: BAD_LENGTH] bad length
+</pre>
+<p>Looking at production logs revealed what sort of brutal, rough and tumble place
+the Internet is, and how a network app must be ready to handle all sorts of
+unexpected error conditions which hardly show up during testing. To handle all
+of these cases, I came up with this solution, which I think is worth sharing
+as it's generic enough to be reused in similar situations:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">errno</span><span class="o">,</span> <span class="nn">socket</span><span class="o">,</span> <span class="nn">ssl</span>
+
+<span class="c1"># Network errors, usually related to DHCP or wpa_supplicant (Wi-Fi).</span>
+<span class="n">NETWORK_ERRNOS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span>
+    <span class="n">errno</span><span class="o">.</span><span class="n">ENETUNREACH</span><span class="p">,</span>  <span class="c1"># &quot;Network is unreachable&quot;</span>
+    <span class="n">errno</span><span class="o">.</span><span class="n">ENETDOWN</span><span class="p">,</span>  <span class="c1"># &quot;Network is down&quot;</span>
+    <span class="n">errno</span><span class="o">.</span><span class="n">ENETRESET</span><span class="p">,</span>  <span class="c1"># &quot;Network dropped connection on reset&quot;</span>
+    <span class="n">errno</span><span class="o">.</span><span class="n">ENONET</span><span class="p">,</span>  <span class="c1"># &quot;Machine is not on the network&quot;</span>
+<span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">is_connection_err</span><span class="p">(</span><span class="n">exc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return True if an exception is connection-related.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="ne">ConnectionError</span><span class="p">):</span>
+        <span class="c1"># https://docs.python.org/3/library/exceptions.html#ConnectionError</span>
+        <span class="c1"># ConnectionError includes:</span>
+        <span class="c1"># * BrokenPipeError (EPIPE, ESHUTDOWN)</span>
+        <span class="c1"># * ConnectionAbortedError (ECONNABORTED)</span>
+        <span class="c1"># * ConnectionRefusedError (ECONNREFUSED)</span>
+        <span class="c1"># * ConnectionResetError (ECONNRESET)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+        <span class="c1"># failed DNS resolution on connect()</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">,</span> <span class="ne">TimeoutError</span><span class="p">)):</span>
+        <span class="c1"># timeout on connect(), recv(), send()</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
+        <span class="c1"># ENOTCONN == &quot;Transport endpoint is not connected&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">exc</span><span class="o">.</span><span class="n">errno</span> <span class="ow">in</span> <span class="n">NETWORK_ERRNOS</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">exc</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOTCONN</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">ssl</span><span class="o">.</span><span class="n">SSLError</span><span class="p">):</span>
+        <span class="c1"># Let&#39;s consider any SSL error a connection error. Usually this is:</span>
+        <span class="c1"># * ssl.SSLZeroReturnError: &quot;TLS/SSL connection has been closed&quot;</span>
+        <span class="c1"># * ssl.SSLError: [SSL: BAD_LENGTH] bad length</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+<p>To use it:</p>
+<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;hello there&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">is_connection_err</span><span class="p">(</span><span class="n">err</span><span class="p">):</span>
+        <span class="n">schedule_on_reconnect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">sock</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;hello there&quot;</span><span class="p">))</span>
+    <span class="k">raise</span>
+</pre></div>
+
+        </div>
+    </article></li>
+ <!-- /blog posts -->
+</section>
+
+    <!-- Footer -->
+    <section id="extras" class="body">
+
+        <div class="social">
+            <h2>Social</h2>
+            <ul>
+                <li><a href="https://github.com/giampaolo">github</a></li>
+                <li><a href="https://www.linkedin.com/in/grodola/">linkedin</a></li>
+                <li><a href="https://twitter.com/grodola">twitter</a></li>
+            </ul>
+        </div><!-- /.social -->
+
+        <div class="feeds">
+            <h2>Feeds</h2>
+            <ul>
+                <li><a href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate">atom</a></li>
+                <li><a href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate">rss</a></li>
+            </ul>
+        </div>
+    </div>
+    </section>
+    <!-- /Footer -->
+
+    <footer id="contentinfo" class="body">
+        <!--
+            <address id="about" class="vcard body">
+            Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+            </address>
+
+            <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        -->
+    </footer>
+
+    <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164357405-2', 'auto');
+    ga('send', 'pageview');
+    </script>
+<script type="text/javascript">
+    var disqus_shortname = 'gmpy-dev';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
