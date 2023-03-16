@@ -36,7 +36,7 @@ clean:  ## Remove build files
 		-o -type f -name \*.pyc`
 
 regenerate:  ## Regenerate
-	$(PY) -m pelican -r $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
+	$(PY) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
 serve:  ## HTTP serve in dev mode
 ifdef PORT
@@ -61,7 +61,8 @@ create-blogpost:  ## Create a new blog post template.
 		now = datetime.datetime.now(); \
 		root = os.path.join('content', 'blog', str(now.year)); \
 		os.mkdir(root) if not os.path.exists(root) else 0; \
-		file = os.path.join(root, 'new.rst'); \
+		fname = input('file name (e.g. new-blog-post.rst): '); \
+		file = os.path.join(root, fname); \
 		f = open(file, 'w'); \
 		f.write('title\n'); \
 		f.write('#####\n\n'); \

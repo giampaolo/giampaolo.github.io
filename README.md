@@ -17,6 +17,13 @@ New blog post
 Hello world!
 ```
 
+* test it:
+
+```bash
+# after this connect to http://127.0.0.1:8000/
+make clean regenerate serve
+```
+
 * commit it:
 
 ```bash
