@@ -111,5 +111,11 @@ To use it:
             schedule_on_reconnect(lambda: sock.sendall(b"hello there"))
         raise
 
+External Links
+--------------
+
+* Github Gist_
+
 .. _ConnectionError: https://docs.python.org/3/library/exceptions.html#ConnectionError
 .. _errno: https://www.thegeekstuff.com/2010/10/linux-error-codes/
+.. _Gist: https://gist.github.com/giampaolo/905b38a5ea9d5179eb0138e2f37a01a8
