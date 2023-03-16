@@ -98,6 +98,12 @@ as it's generic enough to be reused in similar situations:&lt;/p&gt;
         &lt;span class="n"&gt;schedule_on_reconnect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;sock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sendall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;hello there&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
     &lt;span class="k"&gt;raise&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="external-links"&gt;
+&lt;h2&gt;External Links&lt;a class="headerlink" href="#external-links" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Github &lt;a class="reference external" href="https://gist.github.com/giampaolo/905b38a5ea9d5179eb0138e2f37a01a8"&gt;Gist&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
 </content><category term="2023"></category><category term="python"></category><category term="socket"></category><category term="network"></category></entry><entry><title>Sublime Text: remember cursor position plugin</title><link href="https://gmpy.dev/blog/2022/sublime-text-remember-cursor-position-plugin" rel="alternate"></link><published>2022-03-18T00:00:00+01:00</published><updated>2022-03-18T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2022-03-18:/blog/2022/sublime-text-remember-cursor-position-plugin</id><summary type="html">&lt;p&gt;My editor of choice for Python development is Sublime Text.
 It has been for a very long time (10 years).
 It's fast, minimalist and straight to the point, which is why I always resisted
