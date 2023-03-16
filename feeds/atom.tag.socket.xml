@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - socket</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.socket.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2023-03-16T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Recognize connection errors</title><link href="https://gmpy.dev/blog/2023/recognize-connection-errors" rel="alternate"></link><published>2023-03-16T00:00:00+01:00</published><updated>2023-03-16T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2023-03-16:/blog/2023/recognize-connection-errors</id><summary type="html">&lt;p&gt;Lately I've been dealing with an asynchronous TCP client app which sends
 messages to a remote server. Some of these messages are important, and cannot
-get lost. Because the connection may drop at any time, I was asked to
-implement a mechanism to resend the message once the client reconnects …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Lately I've been dealing with an asynchronous TCP client app which sends
+get lost. Because the connection may drop at any time, I had to implement a
+mechanism to resend the message once the client reconnects. As …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Lately I've been dealing with an asynchronous TCP client app which sends
 messages to a remote server. Some of these messages are important, and cannot
-get lost. Because the connection may drop at any time, I was asked to
-implement a mechanism to resend the message once the client reconnects. As
-such, I needed a way to identify what constitutes a &lt;strong&gt;connection error&lt;/strong&gt;.&lt;/p&gt;
+get lost. Because the connection may drop at any time, I had to implement a
+mechanism to resend the message once the client reconnects. As such, I needed
+a way to identify what constitutes a &lt;strong&gt;connection error&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Python provides a builtin &lt;a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ConnectionError"&gt;ConnectionError&lt;/a&gt; exception precisely for this
 purpose, but it turns out it's not enough. After observing logs in production,
 I found some errors that were not related to the socket connection per se, but

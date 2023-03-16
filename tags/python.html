@@ -50,9 +50,9 @@
 -->
 </footer><!-- /.post-info -->            <p>Lately I've been dealing with an asynchronous TCP client app which sends
 messages to a remote server. Some of these messages are important, and cannot
-get lost. Because the connection may drop at any time, I was asked to
-implement a mechanism to resend the message once the client reconnects. As
-such, I needed a way to identify what constitutes a <strong>connection error</strong>.</p>
+get lost. Because the connection may drop at any time, I had to implement a
+mechanism to resend the message once the client reconnects. As such, I needed
+a way to identify what constitutes a <strong>connection error</strong>.</p>
 <p>Python provides a builtin <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ConnectionError">ConnectionError</a> exception precisely for this
 purpose, but it turns out it's not enough. After observing logs in production,
 I found some errors that were not related to the socket connection per se, but
