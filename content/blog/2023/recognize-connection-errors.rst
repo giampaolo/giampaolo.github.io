@@ -18,9 +18,10 @@ rather to the **system connectivity**, like `ENETUNREACH`
 note how this distinction is reflected in the UNIX errno_  code prefixes:
 `ECONN*` (connection errors) vs. `ENET*` (network errors). I've noticed
 `ENET*` errors usually occur on a DHCP renewal, or more in general when the
-Wi-Fi signal is weak or absent. Because this code runs on a moving cleaning
-robot connected to Wi-Fi, connection may become unstable when the robot gets
-far from the Access Point, so it's pretty common to bump into one these:
+Wi-Fi signal is weak or absent. Because this code runs on a cleaning robot
+which constantly moves around the house, connection can become unstable when
+the robot gets far from the Wi-Fi Access Point, so it's pretty common to bump
+into errors like these:
 
 ::
 
