@@ -128,4 +128,3 @@ People one-time donations (< $100)
 .. _`cybersecgeek`: https://github.com/cybersecgeek
 .. _`scoutapm-sponsorships`: https://github.com/scoutapm-sponsorships
 .. _`Chenyoo Hao`: https://opencollective.com/chenyoo-hao
-.. _`Alexey Vazhnov`: https://opencollective.com/alexey-vazhnov

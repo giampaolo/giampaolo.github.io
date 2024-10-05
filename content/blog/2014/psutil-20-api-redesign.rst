@@ -198,7 +198,7 @@ Except for Process properties (`name`, `exe`, `cmdline`, etc.) all the old APIs 
 If you have a solid test suite you can run tests and fix the warnings one by one.
 As for the the Process properties which were turned into methods it's more difficult because whereas psutil 1.2.1 returns the actual value, psutil 2.0.0 will return the bound method:
 
-.. code-block:: python
+.. code-block:: python.
 
     # psutil 1.2.1
     >>> psutil.Process().name
@@ -252,4 +252,3 @@ Ok, enough with the bad news. =) psutil 2.0.0 is not only about code breakage. I
 * `#461 <https://code.google.com/p/psutil/issues/detail?id=461>`__: functions returning namedtuples are now pickle-able
 * `#459 <https://code.google.com/p/psutil/issues/detail?id=459>`__: a Makefile is now available to automatize repetitive tasks such as build, install, running tests etc. There's also a make.bat for Windows.
 * introduced `unittest2` module as a requirement for running tests
-
