@@ -1,4 +1,4 @@
-PY?=python3
+PYTHON?=python3
 PELICAN?=pelican
 PELICANOPTS=
 
@@ -25,10 +25,10 @@ help: ## Display callable targets.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 install-pydeps:  ## Install Pelican / pydeps
-	$(PY) -m pip install pelican ghp-import
+	$(PYTHON) -m pip install pelican ghp-import
 
 html:  ## Generate html.
-	$(PY) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
+	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
 clean:  ## Remove build files
 	[ ! -d $(OUTPUTDIR) ] || rm -rf $(OUTPUTDIR)
@@ -36,17 +36,17 @@ clean:  ## Remove build files
 		-o -type f -name \*.pyc`
 
 regenerate:  ## Regenerate
-	$(PY) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
+	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
 serve:  ## HTTP serve in dev mode
 ifdef PORT
-	$(PY) -m pelican -lr $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS) -p $(PORT)
+	$(PYTHON) -m pelican -lr $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS) -p $(PORT)
 else
-	$(PY) -m pelican -lr $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
+	$(PYTHON) -m pelican -lr $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 endif
 
 publish:  ## Publish
-	$(PY) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)
+	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)
 
 github:  ## Git push and publish changes on GitHub.
 	${MAKE} clean
@@ -56,7 +56,7 @@ github:  ## Git push and publish changes on GitHub.
 	git push origin $(GITHUB_PAGES_BRANCH)
 
 create-blogpost:  ## Create a new blog post template.
-	@$(PY) -c \
+	@$(PYTHON) -c \
 		"import os, datetime; \
 		now = datetime.datetime.now(); \
 		root = os.path.join('content', 'blog', str(now.year)); \
@@ -70,3 +70,31 @@ create-blogpost:  ## Create a new blog post template.
 		f.write(':tags: psutil, python\n\n'); \
 		f.close(); \
 		print(file);"
+
+# ===================================================================
+# Linters
+# ===================================================================
+
+ruff:  ## Run ruff linter.
+	@git ls-files '*.py' | xargs $(PYTHON) -m ruff check --no-cache --output-format=concise
+
+black:  ## Python files linting (via black)
+	@git ls-files '*.py' | xargs $(PYTHON) -m black --check --safe
+
+lint-all:  ## Run all linters
+	${MAKE} black
+	${MAKE} ruff
+
+# ===================================================================
+# Fixers
+# ===================================================================
+
+fix-black:
+	@git ls-files '*.py' | xargs $(PYTHON) -m black
+
+fix-ruff:
+	@git ls-files '*.py' | xargs $(PYTHON) -m ruff check --no-cache --fix --output-format=concise $(ARGS)
+
+fix-all:  ## Run all code fixers.
+	${MAKE} fix-ruff
+	${MAKE} fix-black
