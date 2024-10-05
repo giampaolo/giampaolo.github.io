@@ -28,7 +28,7 @@ clean:  ## Remove build files
 		-o -type f -name \*.pyc`
 
 install-pydeps:  ## Install Pelican / pydeps
-	$(PYTHON) -m pip install pelican ghp-import
+	$(PYTHON) -m pip install -r requirements.txt
 
 html:  ## Generate html.
 	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
