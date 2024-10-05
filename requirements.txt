@@ -1,4 +1,6 @@
+black
 ghp-import
 pelican
 pytest
 rstcheck
+ruff
