@@ -7,7 +7,7 @@ import os
 import sys
 
 sys.path.append(os.curdir)
-from pelicanconf import *
+from pelicanconf import *  # noqa
 
 SITEURL = "https://gmpy.dev"
 RELATIVE_URLS = False
