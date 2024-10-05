@@ -1,6 +1,7 @@
 Source code for https://gmpy.dev/ / https://giampaolo.github.io/. Dev branch is
-`gh-pages` while `master` branch is never touched and only stores the generated
-HTML content.
+[gh-pages](https://github.com/giampaolo/giampaolo.github.io/tree/gh-pages).
+`master` branch is never touched and only stores the auto-generated HTML
+content based off of `gh-pages` branch.
 
 Setup
 =====
