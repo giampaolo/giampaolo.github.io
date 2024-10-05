@@ -9,7 +9,8 @@ CONFFILE=$(BASEDIR)/pelicanconf.py
 PUBLISHCONF=$(BASEDIR)/publishconf.py
 
 GITHUB_PAGES_BRANCH=master
-
+PYTEST_ARGS = -v -s --tb=short
+ARGS =
 
 DEBUG ?= 0
 ifeq ($(DEBUG), 1)
@@ -21,8 +22,10 @@ ifeq ($(RELATIVE), 1)
 	PELICANOPTS += --relative-urls
 endif
 
-help: ## Display callable targets.
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+clean:  ## Remove build files
+	rm -rf $(OUTPUTDIR)
+	rm -rfv `find . -type d -name __pycache__ \
+		-o -type f -name \*.pyc`
 
 install-pydeps:  ## Install Pelican / pydeps
 	$(PYTHON) -m pip install pelican ghp-import
@@ -30,13 +33,11 @@ install-pydeps:  ## Install Pelican / pydeps
 html:  ## Generate html.
 	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
-clean:  ## Remove build files
-	[ ! -d $(OUTPUTDIR) ] || rm -rf $(OUTPUTDIR)
-	@rm -rfv `find . -type d -name __pycache__ \
-		-o -type f -name \*.pyc`
-
 regenerate:  ## Regenerate
 	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
+
+publish:  ## Publish
+	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)
 
 serve:  ## HTTP serve in dev mode
 ifdef PORT
@@ -44,9 +45,6 @@ ifdef PORT
 else
 	$(PYTHON) -m pelican -lr $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 endif
-
-publish:  ## Publish
-	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)
 
 github:  ## Git push and publish changes on GitHub.
 	${MAKE} clean
@@ -57,6 +55,9 @@ github:  ## Git push and publish changes on GitHub.
 
 create-blogpost:  ## Create a new blog post template.
 	@$(PYTHON) scripts/create_blogpost.py
+
+test:  ## Run tests.
+	$(PYTHON) -m pytest $(PYTEST_ARGS) --ignore=psutil/tests/test_memleaks.py $(ARGS) tests.py
 
 # ===================================================================
 # Linters
@@ -85,3 +86,10 @@ fix-ruff:
 fix-all:  ## Run all code fixers.
 	${MAKE} fix-ruff
 	${MAKE} fix-black
+
+# ===================================================================
+# Misc
+# ===================================================================
+
+help: ## Display callable targets.
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'

@@ -37,7 +37,7 @@ Hello world!
 
 ```bash
 # after this connect to http://127.0.0.1:8000/
-make clean regenerate serve
+make clean html serve
 ```
 
 * commit it:
