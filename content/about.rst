@@ -140,7 +140,6 @@ Contacts
 .. _`os.sendfile`: https://docs.python.org/3/library/os.html#os.sendfile
 .. _`socket.sendfile`: https://docs.python.org/3/library/socket.html#socket.socket.sendfile
 .. _`ftplib.TLS_FTP`: https://docs.python.org/3/library/ftplib.html#ftplib.FTP_TLS
-.. _`os.getpriority`: https://docs.python.org/3/library/os.html#os.getpriority
 .. _`os.setpriority`: https://docs.python.org/3/library/os.html#os.setpriority
 .. _`signal`: https://docs.python.org/3/library/signal.html
 .. _`unittest`: https://docs.python.org/3/library/unittest.html

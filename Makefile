@@ -22,6 +22,9 @@ ifeq ($(RELATIVE), 1)
 	PELICANOPTS += --relative-urls
 endif
 
+# install git hook
+_ := $(shell mkdir -p .git/hooks/ && ln -sf ../../scripts/git_pre_commit.py .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit)
+
 clean:  ## Remove build files
 	rm -rf $(OUTPUTDIR)
 	rm -rfv `find . -type d -name __pycache__ \
@@ -69,9 +72,13 @@ ruff:  ## Run ruff linter.
 black:  ## Python files linting (via black)
 	@git ls-files '*.py' | xargs $(PYTHON) -m black --check --safe
 
+lint-rst:  ## Lint rst files.
+	@git ls-files '*.rst' | xargs rstcheck --config=pyproject.toml
+
 lint-all:  ## Run all linters
 	${MAKE} black
 	${MAKE} ruff
+	${MAKE} lint-rst
 
 # ===================================================================
 # Fixers
@@ -90,6 +97,10 @@ fix-all:  ## Run all code fixers.
 # ===================================================================
 # Misc
 # ===================================================================
+
+install-git-hook:  ## Install GIT pre-commit hook.
+	ln -sf ../../scripts/internal/git_pre_commit.py .git/hooks/pre-commit
+	chmod +x .git/hooks/pre-commit
 
 help: ## Display callable targets.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'

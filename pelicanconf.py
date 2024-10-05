@@ -98,7 +98,9 @@ DIRECT_TEMPLATES = ["index", "tags", "categories", "archives"]
 
 JINJA_FILTERS = {
     "sort_by_tags": functools.partial(
-        sorted, key=lambda tags: (len(tags[1]), -ord(tags[0].name[0])), reverse=True
+        sorted,
+        key=lambda tags: (len(tags[1]), -ord(tags[0].name[0])),
+        reverse=True,
     )
 }
 

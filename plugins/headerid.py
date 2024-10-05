@@ -31,8 +31,8 @@ def register():
                 # add permalink anchor
                 if close_tag.startswith("</h"):
                     self.body.append(
-                        '<a class="headerlink" href="#%s" title="Permalink to this headline">%s</a>'
-                        % (anchor_name, LINK_CHAR)
+                        '<a class="headerlink" href="#%s" title="Permalink to'
+                        ' this headline">%s</a>' % (anchor_name, LINK_CHAR)
                     )
             PelicanHTMLTranslator.depart_title(self, node)
 
