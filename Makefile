@@ -56,20 +56,7 @@ github:  ## Git push and publish changes on GitHub.
 	git push origin $(GITHUB_PAGES_BRANCH)
 
 create-blogpost:  ## Create a new blog post template.
-	@$(PYTHON) -c \
-		"import os, datetime; \
-		now = datetime.datetime.now(); \
-		root = os.path.join('content', 'blog', str(now.year)); \
-		os.mkdir(root) if not os.path.exists(root) else 0; \
-		fname = input('file name (e.g. new-blog-post.rst): '); \
-		file = os.path.join(root, fname); \
-		f = open(file, 'w'); \
-		f.write('title\n'); \
-		f.write('#####\n\n'); \
-		f.write(':date: %s\n' % (now.strftime('%Y-%m-%d'))); \
-		f.write(':tags: psutil, python\n\n'); \
-		f.close(); \
-		print(file);"
+	@$(PYTHON) scripts/create_blogpost.py
 
 # ===================================================================
 # Linters
