@@ -92,7 +92,7 @@ All methods lost their ``get_`` and ``set_`` prefixes. A single method can now b
 | p.getcwd()               | p.cwd()                       |
 +--------------------------+-------------------------------+
 
-...as for set_* methods:
+...as for `set_*` methods:
 
 +--------------------------+---------------------------------+
 | Old name                 | Replacement                     |
