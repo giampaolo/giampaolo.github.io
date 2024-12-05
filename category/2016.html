@@ -17,7 +17,6 @@
             <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
             <li><a href="/donate">Donate</a></li>
-            <li><a href="/supporters">Supporters</a></li>
             <li><a href="/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
@@ -84,7 +83,7 @@ With psutil 5.0.0 the code above can be rewritten like this, and on Linux it wil
 <h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
 <p>One great thing about psutil design is its abstraction. It is dived in 3 &quot;layers&quot;. The first layer is represented by the main <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/__init__.py#L340">Process class</a> (python), which is what dictates the end-user high-level API. The second layer is the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_pslinux.py#L1097">OS-specific Python module</a> which is thin wrapper on top of the OS-specific <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_linux.c">C extension module</a> (third layer). Because this was organized this way (modularly) the refactoring was reasonably smooth. In order to do this I first refactored those C functions collecting multiple info and grouped them in a single function (e.g. see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_bsd.c#L198-L338">BSD implementation</a>). Then I wrote a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_common.py#L264-L314">decorator</a> which enables the cache only when requested (when entering the context manager) and decorated the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psbsd.py#L491">&quot;grouped functions&quot;</a> with with it. The whole thing is enabled on request by the highest-level <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/__init__.py#L458-L518">oneshot()</a> context manager, which is the only thing which is exposed to the end user. Here's the decorator:</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">memoize_when_activated</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A memoize decorator which is disabled by default. It can be</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A memoize decorator which is disabled by default. It can be</span>
 <span class="sd">    activated and deactivated on request.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
@@ -99,11 +98,11 @@ With psutil 5.0.0 the code above can be rewritten like this, and on Linux it wil
             <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="nf">cache_activate</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot;Activate cache.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Activate cache.&quot;&quot;&quot;</span>
         <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">cache_deactivate</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot;Deactivate and clear cache.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deactivate and clear cache.&quot;&quot;&quot;</span>
         <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
@@ -572,11 +571,13 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
         </div>
     </article></li>
             </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 2
-        <a href="https://gmpy.dev/category/20162.html">&raquo;</a>
-        <a href="https://gmpy.dev/category/20162.html">&#8649;</a>
-</p>
+  <nav>
+    <ul>
+      <li>Page 1 / 2</li>
+        <li><a href="https://gmpy.dev/category/20162.html">&rang;</a></li>
+        <li><a href="https://gmpy.dev/category/20162.html">&Rang;</a></li>
+    </ul>
+  </nav>
  <!-- /blog posts -->
 </section>
 

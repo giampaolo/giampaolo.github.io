@@ -17,7 +17,6 @@
             <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
             <li><a href="/donate">Donate</a></li>
-            <li><a href="/supporters">Supporters</a></li>
             <li><a href="/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
@@ -106,7 +105,7 @@
 
 <span class="k">def</span> <span class="nf">register_exit_fun</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">signals</span><span class="o">=</span><span class="p">[</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">],</span>
                       <span class="n">logfun</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)):</span>
-    <span class="sd">&quot;&quot;&quot;Register a function which will be executed on &quot;normal&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register a function which will be executed on &quot;normal&quot;</span>
 <span class="sd">    interpreter exit or in case one of the `signals` is received</span>
 <span class="sd">    by this process (differently from `atexit.register() &lt;https://docs.python.org/3/library/atexit.html#atexit.register&gt;`__).</span>
 <span class="sd">    Also, it makes sure to execute any other function which was</span>
@@ -173,7 +172,7 @@
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">signum</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{!r}</span><span class="s2"> is not callable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fun</span><span class="p">))</span>
         <span class="nb">set</span><span class="p">([</span><span class="n">fun</span><span class="p">])</span>  <span class="c1"># raise exc if obj is not hash-able</span>
 
@@ -186,7 +185,7 @@
             <span class="n">old_handler</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">signal_wrapper</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">old_handler</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIG_DFL</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_IGN</span><span class="p">):</span>
                 <span class="c1"># ...just for extra safety.</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">old_handler</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">old_handler</span><span class="p">):</span>
                     <span class="k">continue</span>
                 <span class="c1"># This is needed otherwise we&#39;ll get a KeyboardInterrupt</span>
                 <span class="c1"># strace on interpreter exit, even if the process exited</span>
@@ -260,11 +259,13 @@
         </div>
     </article></li>
             </ol><!-- /#posts-list -->
-<p class="paginator">
-        <a href="https://gmpy.dev/category/2016.html">&#8647;</a>
-        <a href="https://gmpy.dev/category/2016.html">&laquo;</a>
-    Page 2 / 2
-</p>
+  <nav>
+    <ul>
+        <li><a href="https://gmpy.dev/category/2016.html">&Lang;</a></li>
+        <li><a href="https://gmpy.dev/category/2016.html">&lang;</a></li>
+      <li>Page 2 / 2</li>
+    </ul>
+  </nav>
  <!-- /blog posts -->
 </section>
 

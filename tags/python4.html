@@ -17,7 +17,6 @@
             <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
             <li><a href="/donate">Donate</a></li>
-            <li><a href="/supporters">Supporters</a></li>
             <li><a href="/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
@@ -601,7 +600,7 @@
 
 
 <span class="k">def</span> <span class="nf">sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;sendfile(sock, file[, offset[, count]]) -&gt; sent</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;sendfile(sock, file[, offset[, count]]) -&gt; sent</span>
 
 <span class="sd">    Send a *file* over a connected socket *sock* until EOF is</span>
 <span class="sd">    reached by using high-performance sendfile(2) and return the</span>
@@ -747,7 +746,7 @@ There were some difficult decisions because many of the changes I introduced are
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">psutil</span>
 
 <span class="k">def</span> <span class="nf">check_listening_port</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return True if the given TCP port is busy and in LISTEN mode.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if the given TCP port is busy and in LISTEN mode.&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">conn</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">net_connections</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;tcp&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">conn</span><span class="o">.</span><span class="n">laddr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">port</span> <span class="ow">and</span> <span class="n">conn</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">psutil</span><span class="o">.</span><span class="n">CONN_LISTEN</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -775,13 +774,15 @@ There were some difficult decisions because many of the changes I introduced are
         </div>
     </article></li>
             </ol><!-- /#posts-list -->
-<p class="paginator">
-        <a href="https://gmpy.dev/tags/python.html">&#8647;</a>
-        <a href="https://gmpy.dev/tags/python3.html">&laquo;</a>
-    Page 4 / 5
-        <a href="https://gmpy.dev/tags/python5.html">&raquo;</a>
-        <a href="https://gmpy.dev/tags/python5.html">&#8649;</a>
-</p>
+  <nav>
+    <ul>
+        <li><a href="https://gmpy.dev/tags/python.html">&Lang;</a></li>
+        <li><a href="https://gmpy.dev/tags/python3.html">&lang;</a></li>
+      <li>Page 4 / 5</li>
+        <li><a href="https://gmpy.dev/tags/python5.html">&rang;</a></li>
+        <li><a href="https://gmpy.dev/tags/python5.html">&Rang;</a></li>
+    </ul>
+  </nav>
  <!-- /blog posts -->
 </section>
 

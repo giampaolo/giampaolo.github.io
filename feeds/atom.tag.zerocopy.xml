@@ -197,7 +197,7 @@
 
 
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;sendfile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sock&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;file&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;offset&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;sendfile(sock, file[, offset[, count]]) -&amp;gt; sent&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;sendfile(sock, file[, offset[, count]]) -&amp;gt; sent&lt;/span&gt;
 
 &lt;span class="sd"&gt;    Send a *file* over a connected socket *sock* until EOF is&lt;/span&gt;
 &lt;span class="sd"&gt;    reached by using high-performance sendfile(2) and return the&lt;/span&gt;

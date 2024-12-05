@@ -17,7 +17,6 @@
             <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
             <li><a href="/donate">Donate</a></li>
-            <li><a href="/supporters">Supporters</a></li>
             <li><a href="/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
@@ -111,7 +110,7 @@ easily extended to include specific exceptions of third party libraries, like
 <span class="p">))</span>
 
 <span class="k">def</span> <span class="nf">is_connection_err</span><span class="p">(</span><span class="n">exc</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return True if an exception is connection-related.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if an exception is connection-related.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="ne">ConnectionError</span><span class="p">):</span>
         <span class="c1"># https://docs.python.org/3/library/exceptions.html#ConnectionError</span>
         <span class="c1"># ConnectionError includes:</span>

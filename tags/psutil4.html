@@ -17,7 +17,6 @@
             <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
             <li><a href="/donate">Donate</a></li>
-            <li><a href="/supporters">Supporters</a></li>
             <li><a href="/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
@@ -179,7 +178,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 </tr>
 </tbody>
 </table>
-<p>...as for set_* methods:</p>
+<p>...as for <cite>set_*</cite> methods:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="44%" />
@@ -303,15 +302,15 @@ pcputimes(user=0.08, system=0.03)
 </pre>
 <p>If you have a solid test suite you can run tests and fix the warnings one by one.
 As for the the Process properties which were turned into methods it's more difficult because whereas psutil 1.2.1 returns the actual value, psutil 2.0.0 will return the bound method:</p>
-<div class="highlight"><pre><span></span><span class="c1"># psutil 1.2.1</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
-<span class="s1">&#39;python&#39;</span>
-<span class="o">&gt;&gt;&gt;</span>
+<div class="highlight"><pre><span></span># psutil 1.2.1
+&gt;&gt;&gt; psutil.Process().name
+&#39;python&#39;
+&gt;&gt;&gt;
 
-<span class="c1"># psutil 2.0.0</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
-<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Process</span><span class="o">.</span><span class="n">name</span> <span class="n">of</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">19816</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">139845631328144</span><span class="o">&gt;</span>
-<span class="o">&gt;&gt;&gt;</span>
+# psutil 2.0.0
+&gt;&gt;&gt; psutil.Process().name
+&lt;bound method Process.name of psutil.Process(pid=19816, name=&#39;python&#39;) at 139845631328144&gt;
+&gt;&gt;&gt;
 </pre></div>
 <p>What I would recommend if you want to drop support with 1.2.1 is to grep for <cite>&quot;.name&quot;</cite>, <cite>&quot;.exe&quot;</cite> etc. and just replace them with <cite>&quot;.exe()&quot;</cite> and <cite>&quot;.name()&quot;</cite> one by one.
 If on the other hand you want to write a code which works with both versions I see two possibilities:</p>
@@ -357,11 +356,13 @@ If on the other hand you want to write a code which works with both versions I s
         </div>
     </article></li>
             </ol><!-- /#posts-list -->
-<p class="paginator">
-        <a href="https://gmpy.dev/tags/psutil.html">&#8647;</a>
-        <a href="https://gmpy.dev/tags/psutil3.html">&laquo;</a>
-    Page 4 / 4
-</p>
+  <nav>
+    <ul>
+        <li><a href="https://gmpy.dev/tags/psutil.html">&Lang;</a></li>
+        <li><a href="https://gmpy.dev/tags/psutil3.html">&lang;</a></li>
+      <li>Page 4 / 4</li>
+    </ul>
+  </nav>
  <!-- /blog posts -->
 </section>
 
