@@ -46,7 +46,6 @@ MENUITEMS = (
     ("Blog", "/"),
     ("Archives", "/archives"),
     ("Donate", "/donate"),
-    ("Supporters", "/supporters"),
     ("About", "/about"),
 )
 
