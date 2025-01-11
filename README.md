@@ -1,4 +1,5 @@
-Source code for https://gmpy.dev/ / https://giampaolo.github.io/. Dev branch is
+Source code for <https://gmpy.dev/> / <https://giampaolo.github.io/>. Dev
+branch is
 [gh-pages](https://github.com/giampaolo/giampaolo.github.io/tree/gh-pages).
 `master` branch is never touched and only stores the auto-generated HTML
 content based off of `gh-pages` branch.
@@ -12,7 +13,7 @@ Setup
 make install-pydeps
 ```
 
-* Run server locally (http://127.0.0.1:8000):
+* Run server locally (<http://127.0.0.1:8000>):
 
 ```
 make serve
@@ -21,7 +22,8 @@ make serve
 Make a new blog post
 ====================
 
-* under `gh-pages`, create a new file, e.g. `content/blog/2020/new-blog-post.rst`; use `make create-blogpost`
+* under `gh-pages`, create a new file, e.g.
+  `content/blog/2020/new-blog-post.rst`; use `make create-blogpost`
 
 ```
 New blog post

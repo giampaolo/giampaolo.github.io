@@ -30,7 +30,10 @@ clean:  ## Remove build files
 	rm -rfv `find . -type d -name __pycache__ \
 		-o -type f -name \*.pyc`
 
-install-pydeps:  ## Install Pelican / pydeps
+install-sysdeps:  ## Install system deps
+	sudo apt install markdownlint
+
+install-pydeps:  ## Install python deps
 	$(PYTHON) -m pip install -r requirements.txt
 
 html:  ## Generate html.
@@ -68,10 +71,14 @@ black:  ## Python files linting (via black)
 lint-rst:  ## Lint rst files.
 	@git ls-files '*.rst' | xargs rstcheck --config=pyproject.toml
 
+lint-md:  ## Lint md files.
+	@git ls-files '*.md' | xargs mdl
+
 lint-all:  ## Run all linters
 	${MAKE} black
 	${MAKE} ruff
 	${MAKE} lint-rst
+	${MAKE} lint-md
 
 # ===================================================================
 # Fixers
