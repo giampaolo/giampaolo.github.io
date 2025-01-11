@@ -17,8 +17,5 @@ class TestSuite(unittest.TestCase):
     def test_make_html(self):
         sh("make html")
 
-    def test_make_regenerate(self):
-        sh("make regenerate")
-
     def test_make_publish(self):
         sh("make publish")

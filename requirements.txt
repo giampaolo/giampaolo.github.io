@@ -1,6 +1,7 @@
 black
 ghp-import
 pelican
+pelican[markdown]
 pytest
 rstcheck
 ruff

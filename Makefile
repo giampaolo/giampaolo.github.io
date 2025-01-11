@@ -36,18 +36,11 @@ install-pydeps:  ## Install Pelican / pydeps
 html:  ## Generate html.
 	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
-regenerate:  ## Regenerate
-	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
-
 publish:  ## Publish
 	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)
 
 serve:  ## HTTP serve in dev mode
-ifdef PORT
-	$(PYTHON) -m pelican -lr $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS) -p $(PORT)
-else
 	$(PYTHON) -m pelican -lr $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
-endif
 
 github:  ## Git push and publish changes on GitHub.
 	${MAKE} clean
@@ -60,7 +53,7 @@ create-blogpost:  ## Create a new blog post template.
 	@$(PYTHON) scripts/create_blogpost.py
 
 test:  ## Run tests.
-	$(PYTHON) -m pytest $(PYTEST_ARGS) --ignore=psutil/tests/test_memleaks.py $(ARGS) tests.py
+	$(PYTHON) -m pytest $(PYTEST_ARGS) $(ARGS) tests.py
 
 # ===================================================================
 # Linters
