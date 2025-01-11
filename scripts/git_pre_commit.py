@@ -87,7 +87,10 @@ def git_commit_files():
     rst_files = [
         x for x in out.split("\n") if x.endswith(".rst") and os.path.exists(x)
     ]
-    return (py_files, rst_files)
+    md_files = [
+        x for x in out.split("\n") if x.endswith(".md") and os.path.exists(x)
+    ]
+    return (py_files, rst_files, md_files)
 
 
 def black(files):
@@ -117,13 +120,22 @@ def rstcheck(files):
         return sys.exit("RST code didn't pass style check")
 
 
+def mdlint(files):
+    print("running md linter (%s)" % len(files))
+    cmd = ["mdl"] + files
+    if subprocess.call(cmd) != 0:
+        return sys.exit("MD code didn't pass style check")
+
+
 def main():
-    py_files, rst_files = git_commit_files()
+    py_files, rst_files, md_files = git_commit_files()
     if py_files:
         black(py_files)
         ruff(py_files)
     if rst_files:
         rstcheck(rst_files)
+    if md_files:
+        mdlint(md_files)
 
 
 main()
