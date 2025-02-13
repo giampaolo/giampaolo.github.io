@@ -28,13 +28,137 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2025/psutil-drop-python-27-support" rel="bookmark"
+                   title="Permalink to psutil: drop Python 2.7 support">psutil: drop Python 2.7 support</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2025-02-13T00:00:00+01:00">
+        Created: 13 Feb 2025,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>About dropping Python 2.7 support, 3 years ago <a href="https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432">I stated</a>:</p>
+<blockquote>
+<p>[...] not a chance, for many years to come. [Python 2.7] currently
+represents 7-10% of total downloads, meaning around 70k / 100k downloads per
+day.</p>
+</blockquote>
+<p>Only 3 years later, and to my surprise, <strong>downloads for Python 2.7 dropped to
+0.36%</strong>. As such, as of psutil 7.0.0, I finally decided to drop support for
+Python 2.7!</p>
+<h2>The numbers</h2>
+<p>These are downloads per month:</p>
+<div class="highlight"><pre><span></span><code><span class="o">$</span><span class="w"> </span><span class="n">pypinfo</span><span class="w"> </span><span class="o">--</span><span class="n">percent</span><span class="w"> </span><span class="n">psutil</span><span class="w"> </span><span class="n">pyversion</span>
+<span class="n">Served</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">cache</span><span class="p">:</span><span class="w"> </span><span class="n">False</span>
+<span class="n">Data</span><span class="w"> </span><span class="n">processed</span><span class="p">:</span><span class="w"> </span><span class="mf">4.65</span><span class="w"> </span><span class="n">GiB</span>
+<span class="n">Data</span><span class="w"> </span><span class="n">billed</span><span class="p">:</span><span class="w"> </span><span class="mf">4.65</span><span class="w"> </span><span class="n">GiB</span>
+<span class="n">Estimated</span><span class="w"> </span><span class="n">cost</span><span class="p">:</span><span class="w"> </span><span class="o">$</span><span class="mf">0.03</span>
+
+<span class="o">|</span><span class="w"> </span><span class="n">python_version</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">percent</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">download_count</span><span class="w"> </span><span class="o">|</span>
+<span class="o">|</span><span class="w"> </span><span class="o">--------------</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">-------</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">--------------</span><span class="w"> </span><span class="o">|</span>
+<span class="o">|</span><span class="w"> </span><span class="mf">3.10</span><span class="w">           </span><span class="o">|</span><span class="w">  </span><span class="mf">23.84</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">26</span><span class="p">,</span><span class="mi">354</span><span class="p">,</span><span class="mi">506</span><span class="w"> </span><span class="o">|</span>
+<span class="o">|</span><span class="w"> </span><span class="mf">3.8</span><span class="w">            </span><span class="o">|</span><span class="w">  </span><span class="mf">18.87</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">20</span><span class="p">,</span><span class="mi">862</span><span class="p">,</span><span class="mi">015</span><span class="w"> </span><span class="o">|</span>
+<span class="o">|</span><span class="w"> </span><span class="mf">3.7</span><span class="w">            </span><span class="o">|</span><span class="w">  </span><span class="mf">17.38</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">19</span><span class="p">,</span><span class="mi">217</span><span class="p">,</span><span class="mi">960</span><span class="w"> </span><span class="o">|</span>
+<span class="o">|</span><span class="w"> </span><span class="mf">3.9</span><span class="w">            </span><span class="o">|</span><span class="w">  </span><span class="mf">17.00</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">18</span><span class="p">,</span><span class="mi">798</span><span class="p">,</span><span class="mi">843</span><span class="w"> </span><span class="o">|</span>
+<span class="o">|</span><span class="w"> </span><span class="mf">3.11</span><span class="w">           </span><span class="o">|</span><span class="w">  </span><span class="mf">13.63</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">15</span><span class="p">,</span><span class="mi">066</span><span class="p">,</span><span class="mi">706</span><span class="w"> </span><span class="o">|</span>
+<span class="o">|</span><span class="w"> </span><span class="mf">3.12</span><span class="w">           </span><span class="o">|</span><span class="w">   </span><span class="mf">7.01</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">      </span><span class="mi">7</span><span class="p">,</span><span class="mi">754</span><span class="p">,</span><span class="mi">751</span><span class="w"> </span><span class="o">|</span>
+<span class="o">|</span><span class="w"> </span><span class="mf">3.13</span><span class="w">           </span><span class="o">|</span><span class="w">   </span><span class="mf">1.15</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">      </span><span class="mi">1</span><span class="p">,</span><span class="mi">267</span><span class="p">,</span><span class="mi">008</span><span class="w"> </span><span class="o">|</span>
+<span class="o">|</span><span class="w"> </span><span class="mf">3.6</span><span class="w">            </span><span class="o">|</span><span class="w">   </span><span class="mf">0.73</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">        </span><span class="mi">803</span><span class="p">,</span><span class="mi">189</span><span class="w"> </span><span class="o">|</span>
+<span class="o">|</span><span class="w"> </span><span class="mf">2.7</span><span class="w">            </span><span class="o">|</span><span class="w">   </span><span class="mf">0.36</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">        </span><span class="mi">402</span><span class="p">,</span><span class="mi">111</span><span class="w"> </span><span class="o">|</span>
+<span class="o">|</span><span class="w"> </span><span class="mf">3.5</span><span class="w">            </span><span class="o">|</span><span class="w">   </span><span class="mf">0.03</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">         </span><span class="mi">28</span><span class="p">,</span><span class="mi">656</span><span class="w"> </span><span class="o">|</span>
+<span class="o">|</span><span class="w"> </span><span class="n">Total</span><span class="w">          </span><span class="o">|</span><span class="w">         </span><span class="o">|</span><span class="w">    </span><span class="mi">110</span><span class="p">,</span><span class="mi">555</span><span class="p">,</span><span class="mi">745</span><span class="w"> </span><span class="o">|</span>
+</code></pre></div>
+
+<p>According to <a href="https://archive.is/wip/knzql">pypistats.org</a> Python 2.7 downloads
+are 0.28% of the total, around 15.000 downloads per day.</p>
+<h2>The pain</h2>
+<p>Maintaining 2.7 support in psutil had become increasingly difficult, but still
+possible. E.g. we could still run tests by using <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">old PYPI
+backports</a>.
+GitHub Actions could still be
+<a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112">tweaked</a>
+to run tests and produce wheels on Linux and macOS. Not on Windows though, for
+which we have to use a separate service (Appveyor).
+Still, the amount of hacks in psutil source code necessary to support Python
+2.7 piled up over the years, and became quite big. Some disadvantages that come
+to mind:</p>
+<ul>
+<li>Having to maintain a Python compatibility layers like
+  <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py">psutil/_compat.py</a>.
+  This translated in extra extra code and extra imports.</li>
+<li>Having to maintain a C compatibility layer to differentiate between Python 2
+  and 3 (<code>#if PY_MAJOR_VERSION &lt;= 3</code>, etc.).</li>
+<li>Dealing with the str vs. unicode differences, both in Python and in C.</li>
+<li>Inability to use modern language features, especially f-strings.</li>
+<li>Inability to freely use <code>enum</code>s, which created a difference on how CONSTANTS
+  were exposed in terms of API.</li>
+<li>Having to install a specific version of <code>pip</code> and other (outdated)
+  <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">deps</a>.</li>
+<li>Relying on the third-party Appveyor CI service, just to run tests on python
+  2.7 and produce wheels, when it's easier to rely on a single CI service
+  instead (GitHub).</li>
+<li>Gradual lack of support from third-party libraries and services.</li>
+<li>Running 4 extra CI jobs on every commit (Linux, macOS, Windows 32-bit,
+  Windows 64-bit) making CI slower and more subject to failure (we have quite a
+  bit of flaky tests.</li>
+<li>The distribution of 7 wheels specific for Python 2.7. E.g. specific 2.7 files
+  from previous release were:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>psutil-6.1.1-cp27-cp27m-macosx_10_9_x86_64.whl
+psutil-6.1.1-cp27-none-win32.whl
+psutil-6.1.1-cp27-none-win_amd64.whl
+psutil-6.1.1-cp27-cp27m-manylinux2010_i686.whl
+psutil-6.1.1-cp27-cp27m-manylinux2010_x86_64.whl
+psutil-6.1.1-cp27-cp27mu-manylinux2010_i686.whl
+psutil-6.1.1-cp27-cp27mu-manylinux2010_x86_64.whl
+</code></pre></div>
+
+<h2>The removal</h2>
+<p>The purge was done in <a href="https://github.com/giampaolo/psutil/pull/2481">PR-2841</a>,
+which removed around 1500 lines of code (nice!). <strong>It felt liberating</strong>. In
+doing so, in the doc I still made the promise that the 6.1.* serie will keep
+supporting Python 2.7 and will receive <strong>critical bug-fixes only</strong> (no new
+features). It will be maintained in a specific <a href="https://github.com/giampaolo/psutil/tree/python2">python2
+branch</a>. I kept the
+<a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py">setup.py</a>
+script compatible with Python 2.7 in terms of syntax, so that it can emit an
+informative error message on pip install. E.g. the user trying to install
+psutil on Python 2.7 will see:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip2<span class="w"> </span>install<span class="w"> </span>psutil
+As<span class="w"> </span>of<span class="w"> </span>version<span class="w"> </span><span class="m">7</span>.0.0<span class="w"> </span>psutil<span class="w"> </span>no<span class="w"> </span>longer<span class="w"> </span>supports<span class="w"> </span>Python<span class="w"> </span><span class="m">2</span>.7.
+Latest<span class="w"> </span>version<span class="w"> </span>supporting<span class="w"> </span>Python<span class="w"> </span><span class="m">2</span>.7<span class="w"> </span>is<span class="w"> </span>psutil<span class="w"> </span><span class="m">6</span>.1.X.
+Install<span class="w"> </span>it<span class="w"> </span>with:<span class="w"> </span><span class="s2">&quot;pip2 install psutil==6.1.*&quot;</span>.
+</code></pre></div>
+
+<h2>Related tickets</h2>
+<ul>
+<li>2017-06: <a href="https://github.com/giampaolo/psutil/issues/1053">#1053</a></li>
+<li>2022-04: <a href="https://github.com/giampaolo/psutil/pull/2099">#2099</a></li>
+<li>2023-04: <a href="https://github.com/giampaolo/psutil/pull/2246">#2246</a></li>
+<li>2024-12: <a href="https://github.com/giampaolo/pyftpdlib/pull/635">#635</a></li>
+</ul>
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2023/recognize-connection-errors" rel="bookmark"
                    title="Permalink to Recognize connection errors">Recognize connection errors</a></h1>
         </header>
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2023-03-16T00:00:00+01:00">
-        Created: 16 mar 2023,
+        Created: 16 Mar 2023,
         </a>
 <!--
         <address class="vcard author">
@@ -164,7 +288,7 @@ easily extended to include specific exceptions of third party libraries, like
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2022-03-18T00:00:00+01:00">
-        Created: 18 mar 2022,
+        Created: 18 Mar 2022,
         </a>
 <!--
         <address class="vcard author">
@@ -352,7 +476,7 @@ always missed in other IDEs.</p>
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2020-06-26T00:00:00+02:00">
-        Created: 26 giu 2020,
+        Created: 26 Jun 2020,
         </a>
 <!--
         <address class="vcard author">
@@ -426,7 +550,7 @@ The core of Pelican is <a class="reference external" href="https://github.com/gi
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2019-05-29T00:00:00+02:00">
-        Created: 29 mag 2019,
+        Created: 29 May 2019,
         </a>
 <!--
         <address class="vcard author">
@@ -461,70 +585,6 @@ The core of Pelican is <a class="reference external" href="https://github.com/gi
 <ul class="simple">
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/bhji0m/new_psutil_562_with_load_average_emulation_on/">Reddit</a></li>
 </ul>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2019/psutil-560-and-process-parents" rel="bookmark"
-                   title="Permalink to psutil 5.6.0 and process parents">psutil 5.6.0 and process parents</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2019-03-05T00:00:00+01:00">
-        Created: 05 mar 2019,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>Hello world =)</p>
-<p>It was a long time since my last blog post (over 1 year and a half). During this time I moved between Italy, Prague and Shenzhen (China), and also contributed a couple of nice patches for Python I want to blog about when Python 3.8 will be out: zero-copy for <a class="reference external" href="https://bugs.python.org/issue33671">shutil.copy()</a> functions and <a class="reference external" href="https://github.com/python/cpython/pull/11784">socket.create_server()</a> utility function. But let's move on and talk about what this blog post is about: the next major psutil version.</p>
-<div class="section" id="process-parents">
-<h2>Process parents()<a class="headerlink" href="#process-parents" title="Permalink to this headline">¶</a></h2>
-<p>From the doc: return the parents of this process as a list of Process instances. If no parents are known return an empty list.</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="mi">5312</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">()</span>
-<span class="p">[</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">4699</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;bash&#39;</span><span class="p">,</span> <span class="n">started</span><span class="o">=</span><span class="s1">&#39;09:06:44&#39;</span><span class="p">),</span>
- <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">4689</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;gnome-terminal-server&#39;</span><span class="p">,</span> <span class="n">started</span><span class="o">=</span><span class="s1">&#39;0:06:44&#39;</span><span class="p">),</span>
- <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;systemd&#39;</span><span class="p">,</span> <span class="n">started</span><span class="o">=</span><span class="s1">&#39;05:56:55&#39;</span><span class="p">)]</span>
-</pre></div>
-<p>Nothing really new here, as it's a convenience method based on the existing <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.parent">parent()</a> method, but still it's something nice to have implemented as a builtin and which can be used to work with process trees in conjunction with <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.children">children()</a> method. The idea was proposed by Ghislain Le Meur.</p>
-</div>
-<div class="section" id="windows">
-<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
-<p>A bunch of interesting improvements occurred on Windows.</p>
-<p>The first one is that certain Windows APIs requiring to be dynamically loaded from DLL libraries are now loaded only once on startup (instead of on per function call), significantly speeding up different functions and methods. This is described and implemented in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1422">#1422</a> which also provides benchmarks.</p>
-<p>Another one is Process' <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.suspend">suspend()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.resume">resume()</a> methods. Before they were using <cite>CreateToolhelp32Snapshot()</cite> to iterate over all process' threads which was somewhat unorthodox and didn't work if process was suspended via Process Hacker. Now it relies on undocumented <cite>NtSuspendProcess</cite> and <cite>NtResumeProcess</cite> APIs, which is the same approach used by ProcessHacker and other famous Sysinternals tools. The change was proposed and discussed in issue <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1379">#1379</a> and implemented in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1435">#1435</a>. I think I will later propose the addition of suspend() and resume() method in subprocess module in Python.</p>
-<p>Last nice improvement about Windows it's about <cite>SE DEBUG</cite> mode. <cite>SE DEBUG</cite> mode can be seen as a &quot;bit&quot; which you can set on the Python process on startup so that we have more chances of querying processes owned by other users, including many owned by Administrator and Local System. Practically speaking this means we will get less <cite>AccessDenied</cite> exceptions for low PID processes.  It turns out the code doing this has been broken presumably for years, and never set <cite>SE DEBUG</cite>. This is fixed now and the change was made in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1429">#1429</a>.</p>
-</div>
-<div class="section" id="removal-of-process-memory-maps-on-osx">
-<h2>Removal of Process.memory_maps() on OSX<a class="headerlink" href="#removal-of-process-memory-maps-on-osx" title="Permalink to this headline">¶</a></h2>
-<p>This was somewhat <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1291">controversial</a>. The history about <cite>memory_maps()</cite> on OSX is a painful one. It was based on an undocumented and probably broken Apple API called <cite>proc_regionfilename()</cite> which made <cite>memory_maps()</cite> either randomly raise <cite>EINVAL</cite> or result in segfault! Also, <cite>memory_maps()</cite> could only be used for the current process, limiting its usefulness to <cite>os.getpid()</cite> only. For any other process it raised <cite>AccessDenied</cite>. This has been a known problem for a long time but sometime over the last few years I got tired of seeing random test failures on Travis that I couldn't reproduce locally, so I commented the unit-test and forget about it until last week, when I realized the real impact this has on production code. I tried looking for a solution once again, spending quite some time looking for public source codes which managed to do this right with no luck. The only tool I'm aware of which does this right is vmmap from Apple, but it's closed source. After careful thinking, since no solution was found, I decided to just remove <cite>memory_maps()</cite> from OSX. This is not something I took lightly, but considering the alternative is getting a segfault I decided to sacrifice backward compatibility (hence the major version bump).</p>
-</div>
-<div class="section" id="improved-exceptions">
-<h2>Improved exceptions<a class="headerlink" href="#improved-exceptions" title="Permalink to this headline">¶</a></h2>
-<p>One problem which afflicted psutil maintenance over the years was receiving bug reports including tracebacks which didn't provide any information on what syscall failed exactly. This was especially painful on Windows where a single routine can invoke different Windows APIs. Now the <cite>OSError</cite> (or <cite>WindowsError</cite>) exception will include the syscall from which the error originated, see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1428">PR-#1428</a>.</p>
-</div>
-<div class="section" id="other-important-bugfixes">
-<h2>Other important bugfixes<a class="headerlink" href="#other-important-bugfixes" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1353">#1353</a>: <cite>process_iter()</cite> is now thread safe</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1411">#1411</a>: [BSD] segfault could occur on Process instantiation</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1427">#1427</a>: [OSX] Process <cite>cmdline()</cite> and <cite>environ()</cite> may erroneously raise <cite>OSError</cite> on failed <cite>malloc()</cite>.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1447">#1447</a>: original exception wasn't turned into <cite>NoSuchProcess</cite> / <cite>AccessDenied</cite> exceptions when using <cite>Process.oneshot()</cite> ctx manager.</li>
-</ul>
-<p>A full list of enhancements and bug fixes is available <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#560">here</a>.</p>
 </div>
 
         </div>

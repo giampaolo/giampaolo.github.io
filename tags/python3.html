@@ -28,13 +28,143 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2016/psutil-440-improved-linux-memory-metrics" rel="bookmark"
+                   title="Permalink to psutil 4.4.0: improved Linux memory metrics">psutil 4.4.0: improved Linux memory metrics</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2016-10-23T00:00:00+02:00">
+        Created: 23 Oct 2016,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. Main highlights of this release are more accurate memory metrics on Linux and different OSX fixes. Here goes.</p>
+<div class="section" id="linux-virtual-memory">
+<h2>Linux virtual memory<a class="headerlink" href="#linux-virtual-memory" title="Permalink to this headline">¶</a></h2>
+<p>This new release sets a milestone regarding <tt class="docutils literal">virtual_memory()</tt> metrics on Linux which are now calculated way <a class="reference external" href="https://github.com/giampaolo/psutil/issues/887">more precisely</a> (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/890/files">commit</a>). Across the years different people complained that the numbers reported by <cite>virtual_memory()</cite> were not accurate or did not match the ones reported by <cite>free</cite> command line utility exactly (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/862">#862</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/685">#685</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/538">#538</a>). As such I investigated how &quot;available memory&quot; is calculated on Linux and indeed psutil were doing it wrong. It turns out &quot;free&quot; cmdline itself, and many other similar tools, also did it wrong up until <a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773">2 years ago</a> when somebody finally decided to accurately calculate the available system memory straight into the Linux kernel and expose this info to user-level applications. Starting from Linux kernel 3.14, a new <cite>&quot;MemAvailable&quot;</cite> column was added to <cite>/proc/meminfo</cite> and this is how psutil now determines available memory. Because of this both &quot;available&quot; and &quot;used&quot; memory fields returned by virtual_memory() precisely match <cite>free</cite> command line utility. As for older kernels (&lt; 3.14), psutil tries to determine this value by using the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L291">same algorithm</a> which was used in the original <a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773">Linux kernel commit</a>. Free cmdline utility source code also inspired an additional fix which prevents available memory overflowing total memory on <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L435">LCX containers</a>.</p>
+</div>
+<div class="section" id="osx-fixes">
+<h2>OSX fixes<a class="headerlink" href="#osx-fixes" title="Permalink to this headline">¶</a></h2>
+<p>For many years the OSX development of psutil occurred on a very old OSX 10.5 version, which I emulated via VirtualBox. The OS itself was a hacked version of OSX, called iDeneb. After many years I finally managed to get access to a more recent version of OSX (El Captain) thanks to VirtualBox + Vagrant. With this I finally had the chance to address many long standing OSX bugs. Here's the list:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/514">514</a>: fix <tt class="docutils literal">Process.memory_maps()</tt> segfault (critical!).</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/783">783</a>: <tt class="docutils literal">Process.status()</tt> may erroneously return &quot;running&quot; for zombie processes.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/908">908</a>: different process methods could erroneously mask the real error for high-privileged PIDs and raise NoSuchProcess and <tt class="docutils literal">AccessDenied</tt> instead of <tt class="docutils literal">OSError</tt> and <tt class="docutils literal">RuntimeError</tt>.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/909">909</a>: <tt class="docutils literal">Process.open_files()</tt> and <tt class="docutils literal">Process.connections()</tt> methods may raise <tt class="docutils literal">OSError</tt> with no exception set if process is gone.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/916">916</a>: fix many compilation warnings.</li>
+</ul>
+</div>
+<div class="section" id="improved-procinfo-py-script">
+<h2>Improved procinfo.py script<a class="headerlink" href="#improved-procinfo-py-script" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/procinfo.py">procinfo.py</a> is a script which shows psutil capabilities regarding obtaining different info about processes. I improved it so that now it reports a lot more info. Here's a sample output:</p>
+<pre class="literal-block">
+$ python scripts/procinfo.py
+pid           4600
+name          chrome
+parent        4554 (bash)
+exe           /opt/google/chrome/chrome
+cwd           /home/giampaolo
+cmdline       /opt/google/chrome/chrome
+started       2016-09-19 11:12
+cpu-tspent    27:27.68
+cpu-times     user=8914.32, system=3530.59,
+              children_user=1.46, children_system=1.31
+cpu-affinity  [0, 1, 2, 3, 4, 5, 6, 7]
+memory        rss=520.5M, vms=1.9G, shared=132.6M, text=95.0M, lib=0B,
+              data=816.5M, dirty=0B
+memory %      3.26
+user          giampaolo
+uids          real=1000, effective=1000, saved=1000
+uids          real=1000, effective=1000, saved=1000
+terminal      /dev/pts/2
+status        sleeping
+nice          0
+ionice        class=IOPriority.IOPRIO_CLASS_NONE, value=0
+num-threads   47
+num-fds       379
+I/O           read_count=96.6M, write_count=80.7M,
+              read_bytes=293.2M, write_bytes=24.5G
+ctx-switches  voluntary=30426463, involuntary=460108
+children      PID    NAME
+              4605   cat
+              4606   cat
+              4609   chrome
+              4669   chrome
+open-files    PATH
+              /opt/google/chrome/icudtl.dat
+              /opt/google/chrome/snapshot_blob.bin
+              /opt/google/chrome/natives_blob.bin
+              /opt/google/chrome/chrome_100_percent.pak
+              [...]
+connections   PROTO LOCAL ADDR            REMOTE ADDR               STATUS
+              UDP   10.0.0.3:3693         *:*                       NONE
+              TCP   10.0.0.3:55102        172.217.22.14:443         ESTABLISHED
+              UDP   10.0.0.3:35172        *:*                       NONE
+              TCP   10.0.0.3:32922        172.217.16.163:443        ESTABLISHED
+              UDP   :::5353               *:*                       NONE
+              UDP   10.0.0.3:59925        *:*                       NONE
+threads       TID              USER          SYSTEM
+              11795             0.7            1.35
+              11796            0.68            1.37
+              15887            0.74            0.03
+              19055            0.77            0.01
+              [...]
+              total=47
+res-limits    RLIMIT                     SOFT       HARD
+              virtualmem             infinity   infinity
+              coredumpsize                  0   infinity
+              cputime                infinity   infinity
+              datasize               infinity   infinity
+              filesize               infinity   infinity
+              locks                  infinity   infinity
+              memlock                   65536      65536
+              msgqueue                 819200     819200
+              nice                          0          0
+              openfiles                  8192      65536
+              maxprocesses              63304      63304
+              rss                    infinity   infinity
+              realtimeprio                  0          0
+              rtimesched             infinity   infinity
+              sigspending               63304      63304
+              stack                   8388608   infinity
+mem-maps      RSS      PATH
+              381.4M   [anon]
+              62.8M    /opt/google/chrome/chrome
+              15.8M    /home/giampaolo/.config/google-chrome/Default/History
+              6.6M     /home/giampaolo/.config/google-chrome/Default/Favicons
+              [...]
+</pre>
+</div>
+<div class="section" id="nic-netmask-on-windows">
+<h2>NIC netmask on Windows<a class="headerlink" href="#nic-netmask-on-windows" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal">net_if_addrs()</tt> on Windows is now able to return the netmask.</p>
+</div>
+<div class="section" id="other-improvements-and-bug-fixes">
+<h2>Other improvements and bug fixes<a class="headerlink" href="#other-improvements-and-bug-fixes" title="Permalink to this headline">¶</a></h2>
+<p>Just take a look at the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#440---2016-10-23">HISTORY</a> file.</p>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2016/psutil-420-windows-services-in-python" rel="bookmark"
                    title="Permalink to psutil 4.2.0: Windows services in Python">psutil 4.2.0: Windows services in Python</a></h1>
         </header>
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2016-05-15T00:00:00+02:00">
-        Created: 15 mag 2016,
+        Created: 15 May 2016,
         </a>
 <!--
         <address class="vcard author">
@@ -122,7 +252,7 @@
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2016-02-25T00:00:00+01:00">
-        Created: 25 feb 2016,
+        Created: 25 Feb 2016,
         </a>
 <!--
         <address class="vcard author">
@@ -179,7 +309,7 @@
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2016-02-17T00:00:00+01:00">
-        Created: 17 feb 2016,
+        Created: 17 Feb 2016,
         </a>
 <!--
         <address class="vcard author">
@@ -330,10 +460,10 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2016-02-12T00:00:00+01:00">
-        Created: 12 feb 2016,
+        Created: 12 Feb 2016,
         </a>
                 <a class="modified" title="2016-02-13T00:00:00+01:00">
-                Modified: 13 feb 2016,</a>
+                Modified: 13 Feb 2016,</a>
 <!--
         <address class="vcard author">
                 By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
@@ -549,60 +679,6 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 <ul class="simple">
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/45fvd9/how_to_always_execute_exit_functions_in_python/">Reddit</a></li>
 <li><a class="reference external" href="https://news.ycombinator.com/item?id=11088938">Hacker news</a></li>
-</ul>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2015/psutil-openbsd-support" rel="bookmark"
-                   title="Permalink to psutil OpenBSD support">psutil OpenBSD support</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2015-11-25T00:00:00+01:00">
-        Created: 25 nov 2015,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/bsd">bsd</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>OK, this is a big one: starting from version 3.3.0 (released just now) <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> will officially support OpenBSD platforms. This was contributed by <a class="reference external" href="https://github.com/landryb">Landry Breuil</a> (thanks dude!) and myself in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/615">PR-615</a>. The interesting parts of the code changes are this and this.</p>
-<div class="section" id="differences-with-freebsd">
-<h2>Differences with FreeBSD<a class="headerlink" href="#differences-with-freebsd" title="Permalink to this headline">¶</a></h2>
-<p>As expected, OpenBSD implementation is very similar to FreeBSD's (which was already in place), that is why I decided to merge most of it in a single C file (<a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/psutil/_psutil_bsd.c">_psutil_bsd.c</a>) and use 2 separate C files for when the two implementations differed too much: <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/psutil/arch/bsd/freebsd.c">freebsd.c</a> and <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/psutil/arch/bsd/freebsd.c">openbsd.c</a>. In terms of functionality here's the differences with FreeBSD. Unless specified, these differences are due to the kernel which does not provide the information natively (meaning we can't do anything about it).</p>
-<ul class="simple">
-<li><tt class="docutils literal">Process.memory_maps()</tt> is not implemented. The kernel provides the necessary pieces but I didn't do this yet (hopefully later).</li>
-<li><tt class="docutils literal">Process.num_ctx_switches()</tt>'s involuntary field is always 0. <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fc1e59d08c968898c2ede425a621b62ccf44681c/psutil/_psutil_bsd.c#L335">kinfo_proc</a> provides this info but it is always set to 0.</li>
-<li><tt class="docutils literal">Process.cpu_affinity()</tt> (get and set) is not supported.</li>
-<li><tt class="docutils literal">Process.exe()</tt> is determined by inspecting the command line so it may not always be available (return None).</li>
-<li><tt class="docutils literal">psutil.swap_memory()</tt> sin and sout (swap in and swap out) values are not available and hence are always set to 0.</li>
-<li><tt class="docutils literal">psutil.cpu_count(logical=False)</tt> always return None.</li>
-</ul>
-<p>Similarly to FreeBSD, also OpenBSD implementation of <cite>Process.open_files()</cite> is problematic as it is not able to return file paths (FreeBSD can sometimes). Other than these differences the functionalities are all there and pretty much the same, so overall I'm pretty satisfied with the result.</p>
-</div>
-<div class="section" id="considerations-about-bsd-platforms">
-<h2>Considerations about BSD platforms<a class="headerlink" href="#considerations-about-bsd-platforms" title="Permalink to this headline">¶</a></h2>
-<p>psutil has been supporting FreeBSD basically <a class="reference external" href="https://code.google.com/p/psutil/source/detail?r=5f7c3aee0186#">since the beginning</a> (year 2009). At the time it made sense to support FreeBSD instead of other BSD variants because it is the <a class="reference external" href="https://en.wikipedia.org/wiki/Comparison_of_BSD_operating_systems#Popularity">most popular</a>, followed by OpenBSD and NetBSD. Compared to FreeBSD, OpenBSD appears to be more &quot;minimal&quot; both in terms of facilities provided by the kernel and the number of system administration tools available. One thing which I appreciate a lot about FreeBSD is that the source code of all CLI tools installed on the system is available under /usr/bin/src, which was a big help for implementing all psutil APIs. OpenBSD source code is <a class="reference external" href="http://cvsweb.openbsd.org/cgi-bin/cvsweb/">also available</a> but it uses CSV and I am not sure it includes the source code for all CLI tools. There are still two more BSD variants for which it may be worth to add support for: NetBSD and DragonflyBSD (in this order). About a year ago some guy provided a <a class="reference external" href="https://github.com/giampaolo/psutil/issues/429">patch</a> for adding basic NetBSD support so it is likely that will happen sooner or later.</p>
-</div>
-<div class="section" id="other-enhancements-available-in-this-release">
-<h2>Other enhancements available in this release<a class="headerlink" href="#other-enhancements-available-in-this-release" title="Permalink to this headline">¶</a></h2>
-<p>The only other enhancement is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/558">issue #558</a>, which allows specifying a different location of /proc filesystem on Linux.</p>
-</div>
-<div class="section" id="external-discussions">
-<h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/3u8wm3/openbsd_support_for_psutil_330/">Reddit</a></li>
-<li><a class="reference external" href="https://news.ycombinator.com/item?id=10628726">Hacker news</a></li>
 </ul>
 </div>
 

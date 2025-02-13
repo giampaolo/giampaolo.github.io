@@ -624,7 +624,13 @@ div.code-block-caption:hover > a.headerlink {
     visibility: visible;
 }
 
+code {
+	background: #f0f1f2;
+}
 
+.highlight code {
+	background: none;
+}
 /*
     Mobile
 *****************/
