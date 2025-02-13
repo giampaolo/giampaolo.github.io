@@ -72,7 +72,7 @@ lint-rst:  ## Lint rst files.
 	@git ls-files '*.rst' | xargs rstcheck --config=pyproject.toml
 
 lint-md:  ## Lint md files.
-	@git ls-files '*.md' | xargs mdl
+	@git ls-files '*.md' | xargs mdl -c .mdlrc
 
 lint-all:  ## Run all linters
 	${MAKE} black
