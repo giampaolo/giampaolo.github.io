@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0"><channel><title>Giampaolo Rodola</title><link>https://gmpy.dev/</link><description>Python enthusiast, core developer, psutil author</description><lastBuildDate>Thu, 13 Feb 2025 00:00:00 +0100</lastBuildDate><item><title>psutil: drop Python 2.7 support</title><link>https://gmpy.dev/blog/2025/psutil-drop-python-27-support</link><description>&lt;p&gt;About dropping Python 2.7 support, 3 years ago &lt;a href="https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432"&gt;I stated&lt;/a&gt;:&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;[...] not a chance, for many years to come. [Python 2.7] currently
-represents 7-10% of total downloads, meaning around 70k / 100k downloads per
-day.&lt;/p&gt;
+&lt;p&gt;Not a chance, for many years to come. [Python 2.7] currently represents 7-10%
+of total downloads, meaning around 70k / 100k downloads per day.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Only 3 years later, and to my surprise, &lt;strong&gt;downloads for Python 2.7 dropped to …&lt;/strong&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giampaolo Rodola</dc:creator><pubDate>Thu, 13 Feb 2025 00:00:00 +0100</pubDate><guid isPermaLink="false">tag:gmpy.dev,2025-02-13:/blog/2025/psutil-drop-python-27-support</guid><category>2025</category><category>psutil</category><category>python</category></item><item><title>Recognize connection errors</title><link>https://gmpy.dev/blog/2023/recognize-connection-errors</link><description>&lt;p&gt;Lately I've been dealing with an asynchronous TCP client app which sends
 messages to a remote server. Some of these messages are important, and cannot

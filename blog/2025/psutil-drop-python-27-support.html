@@ -46,12 +46,11 @@
 -->
 </footer><!-- /.post-info -->      <p>About dropping Python 2.7 support, 3 years ago <a href="https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432">I stated</a>:</p>
 <blockquote>
-<p>[...] not a chance, for many years to come. [Python 2.7] currently
-represents 7-10% of total downloads, meaning around 70k / 100k downloads per
-day.</p>
+<p>Not a chance, for many years to come. [Python 2.7] currently represents 7-10%
+of total downloads, meaning around 70k / 100k downloads per day.</p>
 </blockquote>
 <p>Only 3 years later, and to my surprise, <strong>downloads for Python 2.7 dropped to
-0.36%</strong>. As such, as of psutil 7.0.0, I finally decided to drop support for
+0.36%</strong>! As such, as of psutil 7.0.0, I finally decided to drop support for
 Python 2.7!</p>
 <h2>The numbers</h2>
 <p>These are downloads per month:</p>
@@ -80,7 +79,7 @@ Python 2.7!</p>
 are 0.28% of the total, around 15.000 downloads per day.</p>
 <h2>The pain</h2>
 <p>Maintaining 2.7 support in psutil had become increasingly difficult, but still
-possible. E.g. we could still run tests by using <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">old PYPI
+possible. E.g. I could still run tests by using <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">old PYPI
 backports</a>.
 GitHub Actions could still be
 <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112">tweaked</a>
@@ -93,23 +92,21 @@ to mind:</p>
 <li>Having to maintain a Python compatibility layers like
   <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py">psutil/_compat.py</a>.
   This translated in extra extra code and extra imports.</li>
-<li>Having to maintain a C compatibility layer to differentiate between Python 2
-  and 3 (<code>#if PY_MAJOR_VERSION &lt;= 3</code>, etc.).</li>
-<li>Dealing with the str vs. unicode differences, both in Python and in C.</li>
+<li>The C compatibility layer to differentiate between Python 2 and 3 (<code>#if
+  PY_MAJOR_VERSION &lt;= 3</code>, etc.).</li>
+<li>Dealing with the string vs. unicode differences, both in Python and in C.</li>
 <li>Inability to use modern language features, especially f-strings.</li>
 <li>Inability to freely use <code>enum</code>s, which created a difference on how CONSTANTS
   were exposed in terms of API.</li>
 <li>Having to install a specific version of <code>pip</code> and other (outdated)
   <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">deps</a>.</li>
-<li>Relying on the third-party Appveyor CI service, just to run tests on python
-  2.7 and produce wheels, when it's easier to rely on a single CI service
-  instead (GitHub).</li>
-<li>Gradual lack of support from third-party libraries and services.</li>
+<li>Relying on the third-party Appveyor CI service to run tests and produce 2.7
+  wheels.</li>
 <li>Running 4 extra CI jobs on every commit (Linux, macOS, Windows 32-bit,
-  Windows 64-bit) making CI slower and more subject to failure (we have quite a
-  bit of flaky tests.</li>
-<li>The distribution of 7 wheels specific for Python 2.7. E.g. specific 2.7 files
-  from previous release were:</li>
+  Windows 64-bit) making the CI slower and more subject to failures (we have
+  quite a bit of flaky tests).</li>
+<li>The distribution of 7 wheels specific for Python 2.7. E.g. in the previous
+  release I had to upload:</li>
 </ul>
 <div class="highlight"><pre><span></span><code>psutil-6.1.1-cp27-cp27m-macosx_10_9_x86_64.whl
 psutil-6.1.1-cp27-none-win32.whl
@@ -121,16 +118,18 @@ psutil-6.1.1-cp27-cp27mu-manylinux2010_x86_64.whl
 </code></pre></div>
 
 <h2>The removal</h2>
-<p>The purge was done in <a href="https://github.com/giampaolo/psutil/pull/2481">PR-2841</a>,
-which removed around 1500 lines of code (nice!). <strong>It felt liberating</strong>. In
-doing so, in the doc I still made the promise that the 6.1.* serie will keep
-supporting Python 2.7 and will receive <strong>critical bug-fixes only</strong> (no new
-features). It will be maintained in a specific <a href="https://github.com/giampaolo/psutil/tree/python2">python2
-branch</a>. I kept the
+<p>The removal was done in
+<a href="https://github.com/giampaolo/psutil/pull/2481">PR-2841</a>, which removed around
+1500 lines of code (nice!). <strong>It felt liberating</strong>. In doing so, in the doc I
+still made the promise that the 6.1.* serie will keep supporting Python 2.7
+and will receive <strong>critical bug-fixes only</strong> (no new features). It will be
+maintained in a specific <a href="https://github.com/giampaolo/psutil/tree/python2">python2
+branch</a>. I explicitly kept
+the
 <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py">setup.py</a>
 script compatible with Python 2.7 in terms of syntax, so that it can emit an
-informative error message on pip install. E.g. the user trying to install
-psutil on Python 2.7 will see:</p>
+informative error message on pip install. The user trying to install psutil on
+Python 2.7 will see:</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip2<span class="w"> </span>install<span class="w"> </span>psutil
 As<span class="w"> </span>of<span class="w"> </span>version<span class="w"> </span><span class="m">7</span>.0.0<span class="w"> </span>psutil<span class="w"> </span>no<span class="w"> </span>longer<span class="w"> </span>supports<span class="w"> </span>Python<span class="w"> </span><span class="m">2</span>.7.
 Latest<span class="w"> </span>version<span class="w"> </span>supporting<span class="w"> </span>Python<span class="w"> </span><span class="m">2</span>.7<span class="w"> </span>is<span class="w"> </span>psutil<span class="w"> </span><span class="m">6</span>.1.X.
