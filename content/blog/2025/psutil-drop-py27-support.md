@@ -117,4 +117,4 @@ pip2 install psutil==6.1.*
 * 2017-06: [#1053](https://github.com/giampaolo/psutil/issues/1053)
 * 2022-04: [#2099](https://github.com/giampaolo/psutil/pull/2099)
 * 2023-04: [#2246](https://github.com/giampaolo/psutil/pull/2246)
-* 2024-12: [#635](https://github.com/giampaolo/pyftpdlib/pull/635)
+* 2024-12: [PR-635](https://github.com/giampaolo/psutil/pull/2481)

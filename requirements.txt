@@ -1,4 +1,4 @@
-black
+black==24.10.0
 ghp-import
 pelican
 pelican[markdown]
