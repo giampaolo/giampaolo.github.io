@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - python</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.python.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2025-02-13T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>psutil: drop Python 2.7 support</title><link href="https://gmpy.dev/blog/2025/psutil-drop-python-27-support" rel="alternate"></link><published>2025-02-13T00:00:00+01:00</published><updated>2025-02-13T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-02-13:/blog/2025/psutil-drop-python-27-support</id><summary type="html">&lt;p&gt;About dropping Python 2.7 support, 3 years ago &lt;a href="https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432"&gt;I stated&lt;/a&gt;:&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - python</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.python.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2025-02-13T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>psutil: drop Python 2.7 support</title><link href="https://gmpy.dev/blog/2025/psutil-drop-python-27-support" rel="alternate"></link><published>2025-02-13T00:00:00+01:00</published><updated>2025-02-13T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-02-13:/blog/2025/psutil-drop-python-27-support</id><summary type="html">&lt;p&gt;About dropping Python 2.7 support in psutil, 3 years ago
+&lt;a href="https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432"&gt;I stated&lt;/a&gt;:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Not a chance, for many years to come. [Python 2.7] currently represents 7-10%
 of total downloads, meaning around 70k / 100k downloads per day.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;Only 3 years later, and to my surprise, &lt;strong&gt;downloads for Python 2.7 dropped to …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;About dropping Python 2.7 support, 3 years ago &lt;a href="https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432"&gt;I stated&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;Only 3 years later, and to my surprise, &lt;strong&gt;downloads for Python 2.7 …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;About dropping Python 2.7 support in psutil, 3 years ago
+&lt;a href="https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432"&gt;I stated&lt;/a&gt;:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Not a chance, for many years to come. [Python 2.7] currently represents 7-10%
 of total downloads, meaning around 70k / 100k downloads per day.&lt;/p&gt;
@@ -36,18 +38,17 @@ Python 2.7!&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;According to &lt;a href="https://archive.is/wip/knzql"&gt;pypistats.org&lt;/a&gt; Python 2.7 downloads
-are 0.28% of the total, around 15.000 downloads per day.&lt;/p&gt;
+represents the 0.28% of the total, around 15.000 downloads per day.&lt;/p&gt;
 &lt;h2&gt;The pain&lt;/h2&gt;
 &lt;p&gt;Maintaining 2.7 support in psutil had become increasingly difficult, but still
 possible. E.g. I could still run tests by using &lt;a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85"&gt;old PYPI
 backports&lt;/a&gt;.
 GitHub Actions could still be
 &lt;a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112"&gt;tweaked&lt;/a&gt;
-to run tests and produce wheels on Linux and macOS. Not on Windows though, for
-which we have to use a separate service (Appveyor).
-Still, the amount of hacks in psutil source code necessary to support Python
-2.7 piled up over the years, and became quite big. Some disadvantages that come
-to mind:&lt;/p&gt;
+to run tests and produce 2.7 wheels on Linux and macOS. Not on Windows though,
+for which I had to use a separate service (Appveyor). Still, the amount of
+hacks in psutil source code necessary to support Python 2.7 piled up over the
+years, and became quite big. Some disadvantages that come to mind:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Having to maintain a Python compatibility layers like
   &lt;a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py"&gt;psutil/_compat.py&lt;/a&gt;.
@@ -87,13 +88,18 @@ maintained in a specific &lt;a href="https://github.com/giampaolo/psutil/tree/py
 branch&lt;/a&gt;. I explicitly kept
 the
 &lt;a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py"&gt;setup.py&lt;/a&gt;
-script compatible with Python 2.7 in terms of syntax, so that it can emit an
-informative error message on pip install. The user trying to install psutil on
-Python 2.7 will see:&lt;/p&gt;
+script compatible with Python 2.7 in terms of syntax, so that, when the tarball
+is fetched from PYPI, it will emit an informative error message on &lt;code&gt;pip install
+psutil&lt;/code&gt;. The user trying to install psutil on Python 2.7 will see:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;pip2&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;psutil
 As&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;version&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;7&lt;/span&gt;.0.0&lt;span class="w"&gt; &lt;/span&gt;psutil&lt;span class="w"&gt; &lt;/span&gt;no&lt;span class="w"&gt; &lt;/span&gt;longer&lt;span class="w"&gt; &lt;/span&gt;supports&lt;span class="w"&gt; &lt;/span&gt;Python&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;.7.
 Latest&lt;span class="w"&gt; &lt;/span&gt;version&lt;span class="w"&gt; &lt;/span&gt;supporting&lt;span class="w"&gt; &lt;/span&gt;Python&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;.7&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;psutil&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;.1.X.
 Install&lt;span class="w"&gt; &lt;/span&gt;it&lt;span class="w"&gt; &lt;/span&gt;with:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;pip2 install psutil==6.1.*&amp;quot;&lt;/span&gt;.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;As the informative message states, users that are still on Python 2.7 can still
+use psutil with:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pip2 install psutil==6.1.*
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Related tickets&lt;/h2&gt;

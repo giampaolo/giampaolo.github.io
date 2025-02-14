@@ -59,7 +59,8 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>About dropping Python 2.7 support, 3 years ago <a href="https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432">I stated</a>:</p>
+</footer><!-- /.post-info -->            <p>About dropping Python 2.7 support in psutil, 3 years ago
+<a href="https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432">I stated</a>:</p>
 <blockquote>
 <p>Not a chance, for many years to come. [Python 2.7] currently represents 7-10%
 of total downloads, meaning around 70k / 100k downloads per day.</p>
@@ -91,18 +92,17 @@ Python 2.7!</p>
 </code></pre></div>
 
 <p>According to <a href="https://archive.is/wip/knzql">pypistats.org</a> Python 2.7 downloads
-are 0.28% of the total, around 15.000 downloads per day.</p>
+represents the 0.28% of the total, around 15.000 downloads per day.</p>
 <h2>The pain</h2>
 <p>Maintaining 2.7 support in psutil had become increasingly difficult, but still
 possible. E.g. I could still run tests by using <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">old PYPI
 backports</a>.
 GitHub Actions could still be
 <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112">tweaked</a>
-to run tests and produce wheels on Linux and macOS. Not on Windows though, for
-which we have to use a separate service (Appveyor).
-Still, the amount of hacks in psutil source code necessary to support Python
-2.7 piled up over the years, and became quite big. Some disadvantages that come
-to mind:</p>
+to run tests and produce 2.7 wheels on Linux and macOS. Not on Windows though,
+for which I had to use a separate service (Appveyor). Still, the amount of
+hacks in psutil source code necessary to support Python 2.7 piled up over the
+years, and became quite big. Some disadvantages that come to mind:</p>
 <ul>
 <li>Having to maintain a Python compatibility layers like
   <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py">psutil/_compat.py</a>.
@@ -142,13 +142,18 @@ maintained in a specific <a href="https://github.com/giampaolo/psutil/tree/pytho
 branch</a>. I explicitly kept
 the
 <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py">setup.py</a>
-script compatible with Python 2.7 in terms of syntax, so that it can emit an
-informative error message on pip install. The user trying to install psutil on
-Python 2.7 will see:</p>
+script compatible with Python 2.7 in terms of syntax, so that, when the tarball
+is fetched from PYPI, it will emit an informative error message on <code>pip install
+psutil</code>. The user trying to install psutil on Python 2.7 will see:</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip2<span class="w"> </span>install<span class="w"> </span>psutil
 As<span class="w"> </span>of<span class="w"> </span>version<span class="w"> </span><span class="m">7</span>.0.0<span class="w"> </span>psutil<span class="w"> </span>no<span class="w"> </span>longer<span class="w"> </span>supports<span class="w"> </span>Python<span class="w"> </span><span class="m">2</span>.7.
 Latest<span class="w"> </span>version<span class="w"> </span>supporting<span class="w"> </span>Python<span class="w"> </span><span class="m">2</span>.7<span class="w"> </span>is<span class="w"> </span>psutil<span class="w"> </span><span class="m">6</span>.1.X.
 Install<span class="w"> </span>it<span class="w"> </span>with:<span class="w"> </span><span class="s2">&quot;pip2 install psutil==6.1.*&quot;</span>.
+</code></pre></div>
+
+<p>As the informative message states, users that are still on Python 2.7 can still
+use psutil with:</p>
+<div class="highlight"><pre><span></span><code>pip2 install psutil==6.1.*
 </code></pre></div>
 
 <h2>Related tickets</h2>
