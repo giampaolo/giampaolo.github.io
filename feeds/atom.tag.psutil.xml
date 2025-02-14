@@ -107,7 +107,7 @@ use psutil with:&lt;/p&gt;
 &lt;li&gt;2017-06: &lt;a href="https://github.com/giampaolo/psutil/issues/1053"&gt;#1053&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;2022-04: &lt;a href="https://github.com/giampaolo/psutil/pull/2099"&gt;#2099&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;2023-04: &lt;a href="https://github.com/giampaolo/psutil/pull/2246"&gt;#2246&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;2024-12: &lt;a href="https://github.com/giampaolo/pyftpdlib/pull/635"&gt;#635&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;2024-12: &lt;a href="https://github.com/giampaolo/psutil/pull/2481"&gt;PR-635&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</content><category term="2025"></category><category term="psutil"></category><category term="python"></category></entry><entry><title>New Pelican website</title><link href="https://gmpy.dev/blog/2020/new-pelican-website" rel="alternate"></link><published>2020-06-26T00:00:00+02:00</published><updated>2020-06-26T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2020-06-26:/blog/2020/new-pelican-website</id><summary type="html">&lt;p&gt;Hello there. I present you my new blog / personal website!
 This is something I've been wanting to do for a very long time, since the old blog hosted at &lt;a class="reference external" href="https://grodola.blogspot.com/"&gt;https://grodola.blogspot.com/&lt;/a&gt; was... well, too old. =)
 This new site is based on &lt;a class="reference external" href="https://docs.getpelican.com/en/stable/"&gt;Pelican&lt;/a&gt;, a static website generator similar to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Hello there. I present you my new blog / personal website!

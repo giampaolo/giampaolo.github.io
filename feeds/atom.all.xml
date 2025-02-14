@@ -107,7 +107,7 @@ use psutil with:&lt;/p&gt;
 &lt;li&gt;2017-06: &lt;a href="https://github.com/giampaolo/psutil/issues/1053"&gt;#1053&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;2022-04: &lt;a href="https://github.com/giampaolo/psutil/pull/2099"&gt;#2099&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;2023-04: &lt;a href="https://github.com/giampaolo/psutil/pull/2246"&gt;#2246&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;2024-12: &lt;a href="https://github.com/giampaolo/pyftpdlib/pull/635"&gt;#635&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;2024-12: &lt;a href="https://github.com/giampaolo/psutil/pull/2481"&gt;PR-635&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</content><category term="2025"></category><category term="psutil"></category><category term="python"></category></entry><entry><title>Recognize connection errors</title><link href="https://gmpy.dev/blog/2023/recognize-connection-errors" rel="alternate"></link><published>2023-03-16T00:00:00+01:00</published><updated>2023-03-16T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2023-03-16:/blog/2023/recognize-connection-errors</id><summary type="html">&lt;p&gt;Lately I've been dealing with an asynchronous TCP client app which sends
 messages to a remote server. Some of these messages are important, and cannot
 get lost. Because the connection may drop at any time, I had to implement a
