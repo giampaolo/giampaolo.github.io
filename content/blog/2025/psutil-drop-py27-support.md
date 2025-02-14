@@ -5,12 +5,11 @@ Authors: Giampaolo Rodola
 
 About dropping Python 2.7 support, 3 years ago [I stated](https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432):
 
-> [...] not a chance, for many years to come. [Python 2.7] currently
-> represents 7-10% of total downloads, meaning around 70k / 100k downloads per
-> day.
+> Not a chance, for many years to come. [Python 2.7] currently represents 7-10%
+> of total downloads, meaning around 70k / 100k downloads per day.
 
 Only 3 years later, and to my surprise, **downloads for Python 2.7 dropped to
-0.36%**. As such, as of psutil 7.0.0, I finally decided to drop support for
+0.36%**! As such, as of psutil 7.0.0, I finally decided to drop support for
 Python 2.7!
 
 ## The numbers
@@ -45,7 +44,7 @@ are 0.28% of the total, around 15.000 downloads per day.
 ## The pain
 
 Maintaining 2.7 support in psutil had become increasingly difficult, but still
-possible. E.g. we could still run tests by using [old PYPI
+possible. E.g. I could still run tests by using [old PYPI
 backports](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85).
 GitHub Actions could still be
 [tweaked](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112)
@@ -58,23 +57,21 @@ to mind:
 * Having to maintain a Python compatibility layers like
   [psutil/_compat.py](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py).
   This translated in extra extra code and extra imports.
-* Having to maintain a C compatibility layer to differentiate between Python 2
-  and 3 (`#if PY_MAJOR_VERSION <= 3`, etc.).
-* Dealing with the str vs. unicode differences, both in Python and in C.
+* The C compatibility layer to differentiate between Python 2 and 3 (`#if
+  PY_MAJOR_VERSION <= 3`, etc.).
+* Dealing with the string vs. unicode differences, both in Python and in C.
 * Inability to use modern language features, especially f-strings.
 * Inability to freely use `enum`s, which created a difference on how CONSTANTS
   were exposed in terms of API.
 * Having to install a specific version of `pip` and other (outdated)
   [deps](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85).
-* Relying on the third-party Appveyor CI service, just to run tests on python
-  2.7 and produce wheels, when it's easier to rely on a single CI service
-  instead (GitHub).
-* Gradual lack of support from third-party libraries and services.
+* Relying on the third-party Appveyor CI service to run tests and produce 2.7
+  wheels.
 * Running 4 extra CI jobs on every commit (Linux, macOS, Windows 32-bit,
-  Windows 64-bit) making CI slower and more subject to failure (we have quite a
-  bit of flaky tests.
-* The distribution of 7 wheels specific for Python 2.7. E.g. specific 2.7 files
-  from previous release were:
+  Windows 64-bit) making the CI slower and more subject to failures (we have
+  quite a bit of flaky tests).
+* The distribution of 7 wheels specific for Python 2.7. E.g. in the previous
+  release I had to upload:
 
 ```
 psutil-6.1.1-cp27-cp27m-macosx_10_9_x86_64.whl
@@ -88,16 +85,18 @@ psutil-6.1.1-cp27-cp27mu-manylinux2010_x86_64.whl
 
 ## The removal
 
-The purge was done in [PR-2841](https://github.com/giampaolo/psutil/pull/2481),
-which removed around 1500 lines of code (nice!). **It felt liberating**. In
-doing so, in the doc I still made the promise that the 6.1.\* serie will keep
-supporting Python 2.7 and will receive **critical bug-fixes only** (no new
-features). It will be maintained in a specific [python2
-branch](https://github.com/giampaolo/psutil/tree/python2). I kept the
+The removal was done in
+[PR-2841](https://github.com/giampaolo/psutil/pull/2481), which removed around
+1500 lines of code (nice!). **It felt liberating**. In doing so, in the doc I
+still made the promise that the 6.1.\* serie will keep supporting Python 2.7
+and will receive **critical bug-fixes only** (no new features). It will be
+maintained in a specific [python2
+branch](https://github.com/giampaolo/psutil/tree/python2). I explicitly kept
+the
 [setup.py](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py)
 script compatible with Python 2.7 in terms of syntax, so that it can emit an
-informative error message on pip install. E.g. the user trying to install
-psutil on Python 2.7 will see:
+informative error message on pip install. The user trying to install psutil on
+Python 2.7 will see:
 
 ```
 $ pip2 install psutil
