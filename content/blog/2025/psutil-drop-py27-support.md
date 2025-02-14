@@ -3,7 +3,8 @@ Date: 2025-02-13
 Tags: psutil, python
 Authors: Giampaolo Rodola
 
-About dropping Python 2.7 support, 3 years ago [I stated](https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432):
+About dropping Python 2.7 support in psutil, 3 years ago
+[I stated](https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432):
 
 > Not a chance, for many years to come. [Python 2.7] currently represents 7-10%
 > of total downloads, meaning around 70k / 100k downloads per day.
@@ -39,7 +40,7 @@ Estimated cost: $0.03
 ```
 
 According to [pypistats.org](https://archive.is/wip/knzql) Python 2.7 downloads
-are 0.28% of the total, around 15.000 downloads per day.
+represents the 0.28% of the total, around 15.000 downloads per day.
 
 ## The pain
 
@@ -48,11 +49,10 @@ possible. E.g. I could still run tests by using [old PYPI
 backports](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85).
 GitHub Actions could still be
 [tweaked](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112)
-to run tests and produce wheels on Linux and macOS. Not on Windows though, for
-which we have to use a separate service (Appveyor).
-Still, the amount of hacks in psutil source code necessary to support Python
-2.7 piled up over the years, and became quite big. Some disadvantages that come
-to mind:
+to run tests and produce 2.7 wheels on Linux and macOS. Not on Windows though,
+for which I had to use a separate service (Appveyor). Still, the amount of
+hacks in psutil source code necessary to support Python 2.7 piled up over the
+years, and became quite big. Some disadvantages that come to mind:
 
 * Having to maintain a Python compatibility layers like
   [psutil/_compat.py](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py).
@@ -94,15 +94,22 @@ maintained in a specific [python2
 branch](https://github.com/giampaolo/psutil/tree/python2). I explicitly kept
 the
 [setup.py](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py)
-script compatible with Python 2.7 in terms of syntax, so that it can emit an
-informative error message on pip install. The user trying to install psutil on
-Python 2.7 will see:
+script compatible with Python 2.7 in terms of syntax, so that, when the tarball
+is fetched from PYPI, it will emit an informative error message on `pip install
+psutil`. The user trying to install psutil on Python 2.7 will see:
 
 ```
 $ pip2 install psutil
 As of version 7.0.0 psutil no longer supports Python 2.7.
 Latest version supporting Python 2.7 is psutil 6.1.X.
 Install it with: "pip2 install psutil==6.1.*".
+```
+
+As the informative message states, users that are still on Python 2.7 can still
+use psutil with:
+
+```
+pip2 install psutil==6.1.*
 ```
 
 ## Related tickets
