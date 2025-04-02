@@ -40,6 +40,57 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2014/goodbye-google-code-i-am-moving-to-github" rel="bookmark"
+                   title="Permalink to Goodbye Google Code, I am moving to GitHub">Goodbye Google Code, I am moving to GitHub</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2014-05-26T00:00:00+02:00">
+        Created: 26 May 2014,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/rant">rant</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>8 years ago I started hosting my first open source project (<a class="reference external" href="https://code.google.com/p/pyftpdlib/">pyftpdlib</a>) on Google Code and I later ended up also hosting <a class="reference external" href="https://code.google.com/p/psutil/">psutil</a> and <a class="reference external" href="https://code.google.com/p/pysendfile/">pysendfile</a>. Back then GC had just been released and similarly to other Google products I appreciated the clean and minimalistic interface, the excellent bug tracker and the freedom to choose between different revision control systems (SVN, GIT and Mercurial, which is my favourite one). Unfortunately as the years passed Google completely lost interest in maintaining GC to the point that now GC can basically be considered an <a class="reference external" href="https://groups.google.com/forum/#!topic/google-code-hosting/PEhNMdtBGt4">abandoned project</a>.  If you take a look at <a class="reference external" href="https://code.google.com/p/support/issues/list">GC bug tracker</a> you can see literally hundreds of issues which have been open for years, even some apparently easy ones such as <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=60">#60</a> and <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=919">#919</a>. The lack of interest from Google is absolutely astonishing and it is the main reason why I ultimately decided to change. After at least a couple of years of thinking about migrating to github I finally bite the bullet and as of today psutil is now <a class="reference external" href="https://github.com/giampaolo/psutil">hosted on github</a> (update: now also <a class="reference external" href="https://github.com/giampaolo/pyftpdlib">pyftpdlib</a> and <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a>).</p>
+<div class="section" id="what-i-will-miss-the-most-about-gc">
+<h2>What I will miss the most about GC<a class="headerlink" href="#what-i-will-miss-the-most-about-gc" title="Permalink to this headline">¶</a></h2>
+<p>First of all I must say that despite the unfortunate situation of GC I'm also sad for abandoning it. It started as a really great hosting platform, and it still has some peculiar aspects which I know I will be missing. In order of importance:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://code.google.com/p/psutil/issues/list">The bug tracker</a>: it is much more powerful than <a class="reference external" href="https://github.com/giampaolo/psutil/issues?state=open">github's</a>, especially for the extremely customizable labeling system which is pure gold, the excellent searching system and the <a class="reference external" href="https://code.google.com/p/psutil/issues/list?can=2&amp;q=&amp;colspec=ID+Summary+Type+Opsys+Status+Priority+Opened+Owner&amp;groupby=&amp;sort=&amp;x=&amp;y=&amp;cells=tiles&amp;mode=grid">grid view</a>. GC bug tracker seriously kicks some ass so kudos to whoever was behind its design! By comparison github bug tracker is too minimalistic and it has no good way to order issues or list them in a more compact form. I'm totally gonna miss psutil bug tracker.</li>
+<li>Mercurial: I'm a big fan of Mercurial and I consider it way more pleasant to work with <a class="reference external" href="https://twitter.com/grodola/status/456238397690875905">compared to GIT</a>. I don't know exactly why GIT ended up being so much more used than Mercurial (probably because of github?) but I'm sure that many other guys like me who know both systems will agree that Mercurial is simply so much easier to use. Unfortunately once you decide to stick with github you have no other choice. Mercurial, I'm gonna miss you too!</li>
+<li>GC layout: it is much simpler than github's! Everything is easy to find, even for a non-geek person. The home page alone is perfect to summarize what the project is about and doesn't have tens of icons all over the place. github layout is <a class="reference external" href="https://twitter.com/JoshHelfferich/status/423680220126650368">more complicated</a> and needs some time to get used to, even for a programmer. If these projects (psutil and others) weren't about programming I wouldn't have chosen github because it's &quot;not for the masses&quot;.</li>
+</ul>
+</div>
+<div class="section" id="what-i-appreciate-about-github">
+<h2>What I appreciate about github<a class="headerlink" href="#what-i-appreciate-about-github" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Travis integration: there's this totally awesome free continuos integration service called <a class="reference external" href="https://travis-ci.org/giampaolo/psutil">Travis</a> which given a configuration file <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/.travis.yml">like this</a> it will automatically run tests on multiple python versions every time a commit is pushed. They recently added <a class="reference external" href="http://blog.travis-ci.com/2014-05-13-multi-os-feature-available/">OSX support</a> and <a class="reference external" href="https://github.com/travis-ci/travis-ci/issues/216">Windows support</a> is on the way. This way I will finally be able to quickly test psutil on Linux, OSX and Windows without using virtualized systems except for FreeBSD and Solaris! To me this is like the ultimate Christmas gift and I couldn't ask for any better. Note: as of today Travis only works with github.</li>
+<li>forks and pull requests: honestly I'm not a big fan of them (yet?), probably because I'm used to the python-dev development workflow consisting in uploading patches on the bug tracker and reviewing them (see <a class="reference external" href="http://bugs.python.org/issue17552">this</a> for example). Nevertheless to my understanding most people use pull requests in order to contribute to open source projects so basically this is a service I'm glad to offer to my users who hopefully will be able to contribute back more easily. GC has a <a class="reference external" href="https://code.google.com/p/psutil/source/clones">cloning system</a> but isn't anywhere near github's and I'm not even sure how it works (never cared).</li>
+<li>the &quot;social&quot; side of github including the fact that you can &quot;star&quot; developers and receive notifications about their activity was another big incentive for migrating. The <a class="reference external" href="https://github.com/giampaolo">personal landing page</a> collecting all your contributions to different projects is absolutely cool. GC had something similar but they stupidly <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=24324">removed it</a> all of the sudden and never reintroduced it back. <a class="reference external" href="https://groups.google.com/forum/#!topic/google-code-hosting/0XbdStxE_uw">A lot of people were angry</a> but again, they didn't care. Actually this was the feature I appreciated the most about GC after the bug tracker and that is when I seriously started thinking about flipping off GC for good.</li>
+<li>the enormous user base: the fact that github is the most used code hosting platform out there will hopefully help me and my projects have a little more visibility. Also, in many job interviews I've been asked what my github profile was so it seems github also became an active part in getting jobs.</li>
+<li><a class="reference external" href="https://gist.github.com/">gists</a>: gists are &quot;a simple way to share code snippets and pastes with others. All gists are Git repositories, so they are automatically versioned, forkable and usable from Git&quot;. Seriously, they are  beautiful. In order to share <a class="reference external" href="https://code.activestate.com/recipes/users/4178764/">my code snippets</a> I've always used Active State but I think I will eventually migrate them as well in order to have everything in one place.</li>
+<li>the fact that if you mention an issue number as part of your commit message that specific issue will automatically be updated. As I said GC bug tracker is superior in basically any aspect but since I always took care of updating issues by mentioning the specific cset which fixed them (see for example <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=463">here</a>) having this little extra feature will save me some time.</li>
+<li>SSH keys: using Mercurial on GC means using password based authentication. Incredibly they still do not support SSH key based auth. Simply &quot;git push&quot;ing without entering any password when I'm not on my laptop is nice, and of course, it is also much more secure.</li>
+</ul>
+</div>
+<div class="section" id="migration">
+<h2>Migration<a class="headerlink" href="#migration" title="Permalink to this headline">¶</a></h2>
+<p>For those of you who are interested in knowing how I did it, here goes: as for moving the issue from GC bug tracker to github's I used <a class="reference external" href="https://github.com/arthur-debert/google-code-issues-migrator">this tool</a>. I managed to preserve the issue IDs but unfortunately not the real owners nor the real issue dates, which kind of sucks. As for migrating the code from mercurial to git I just used <a class="reference external" href="http://stackoverflow.com/a/16037861/376587">this</a>. The Mercurial -&gt; GIT transition was perfect and I also managed to preserve the original Mercurial named branches and tags, which for me it was crucial. In conclusion, psutil is a 5 years, medium sized  project with hundreds of issues: the transition in this case is definitively possible but not painless so if you plan on migrating, the sooner you do it the better.</p>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2014/psutil-20" rel="bookmark"
                    title="Permalink to psutil 2.0">psutil 2.0</a></h1>
         </header>

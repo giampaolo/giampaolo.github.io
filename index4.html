@@ -40,6 +40,239 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2016/how-to-always-execute-exit-functions-in-python" rel="bookmark"
+                   title="Permalink to How to always execute exit functions in Python">How to always execute exit functions in Python</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2016-02-12T00:00:00+01:00">
+        Created: 12 Feb 2016,
+        </a>
+                <a class="modified" title="2016-02-13T00:00:00+01:00">
+                Modified: 13 Feb 2016,</a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/recipe">recipe</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p><em>...or why atexit.register() and signal.signal() are evil</em></p>
+<ul class="simple">
+<li><strong>UPDATE (2016-02-13)</strong>: this recipe no longer handles <tt class="docutils literal">SIGINT</tt>, <tt class="docutils literal">SIGQUIT</tt> and <tt class="docutils literal">SIGABRT</tt> as aliases for &quot;application exit&quot; because it was a <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038471.html">bad idea</a>. It only handles <tt class="docutils literal">SIGTERM</tt>. Also it no longer support Windows because <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> implementation is <a class="reference external" href="http://bugs.python.org/issue26350">too different</a> than POSIX.*</li>
+</ul>
+<p>Many people erroneously think that any function registered via <a class="reference external" href="https://docs.python.org/3/library/atexit.html">atexit module</a> is guaranteed to always be executed when the program terminates. You may have noticed this is not the case when, for example, you daemonize your app in production then try to stop it or restart it: the cleanup functions will not be executed. This is because functions registered wth atexit module are <strong>not called</strong> when the program is killed by a signal:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">atexit</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">signal</span>
+
+<span class="nd">@atexit</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;on exit&quot;</span><span class="p">)</span>  <span class="c1"># XXX this never gets printed</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
+</pre></div>
+<p>It must be noted that the same thing would happen if instead of <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> we would use a &quot;finally&quot; clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. That has a drawback though: in case a third-party module has already registered a function for that signal (<tt class="docutils literal">SIGTERM</tt> or whatever), your new function will <strong>overwrite</strong> the old one:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">signal</span>
+
+<span class="k">def</span> <span class="nf">old</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;old&quot;</span><span class="p">)</span>  <span class="c1"># XXX this never gets printed</span>
+
+<span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">)</span>
+
+<span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">old</span><span class="p">)</span>
+<span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
+</pre></div>
+<p>Also, we would still have to use <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> so that the function is called also on &quot;clean&quot; interpreter exit <span class="strike">and take into account other signals other than SIGTERM which would cause the process to terminate</span>. This recipe attempts to address all these issues so that:</p>
+<ul class="simple">
+<li>the exit function is always executed <span class="strike">for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT)</span> on <tt class="docutils literal">SIGTERM</tt> and on &quot;clean&quot; interpreter exit.</li>
+<li>any exit function(s) previously registered via <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> or <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> will be executed as well (after the new one).</li>
+<li>It must be noted that the exit function will never be executed in case of <tt class="docutils literal">SIGKILL</tt>, <tt class="docutils literal">SIGSTOP</tt> or <tt class="docutils literal">os._exit()</tt>.</li>
+</ul>
+<div class="section" id="the-code">
+<h2>The code<a class="headerlink" href="#the-code" title="Permalink to this headline">¶</a></h2>
+<div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Function / decorator which tries very hard to register a function to</span>
+<span class="sd">be executed at importerer exit.</span>
+
+<span class="sd">Author: Giampaolo Rodola&#39;</span>
+<span class="sd">License: MIT</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">atexit</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+
+<span class="n">_registered_exit_funs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="n">_executed_exit_funs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">register_exit_fun</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">signals</span><span class="o">=</span><span class="p">[</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">],</span>
+                      <span class="n">logfun</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register a function which will be executed on &quot;normal&quot;</span>
+<span class="sd">    interpreter exit or in case one of the `signals` is received</span>
+<span class="sd">    by this process (differently from `atexit.register() &lt;https://docs.python.org/3/library/atexit.html#atexit.register&gt;`__).</span>
+<span class="sd">    Also, it makes sure to execute any other function which was</span>
+<span class="sd">    previously registered via signal.signal(). If any, it will be</span>
+<span class="sd">    executed after our own `fun`.</span>
+
+<span class="sd">    Functions which were already registered or executed via this</span>
+<span class="sd">    function will be ignored.</span>
+
+<span class="sd">    Note: there&#39;s no way to escape SIGKILL, SIGSTOP or os._exit(0)</span>
+<span class="sd">    so don&#39;t bother trying.</span>
+
+<span class="sd">    You can use this either as a function or as a decorator:</span>
+
+<span class="sd">        @register_exit_fun</span>
+<span class="sd">        def cleanup():</span>
+<span class="sd">            pass</span>
+
+<span class="sd">        # ...or</span>
+
+<span class="sd">        register_exit_fun(cleanup)</span>
+
+<span class="sd">    Note about Windows: I tested this some time ago and didn&#39;t work</span>
+<span class="sd">    exactly the same as on UNIX, then I didn&#39;t care about it</span>
+<span class="sd">    anymore and didn&#39;t test since then so may not work on Windows.</span>
+
+<span class="sd">    Parameters:</span>
+
+<span class="sd">    - fun: a callable</span>
+<span class="sd">    - signals: a list of signals for which this function will be</span>
+<span class="sd">      executed (default SIGTERM)</span>
+<span class="sd">    - logfun: a logging function which is called when a signal is</span>
+<span class="sd">      received. Default: print to standard error. May be set to</span>
+<span class="sd">      None if no logging is desired.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">stringify_sig</span><span class="p">(</span><span class="n">signum</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+            <span class="n">smap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+                         <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SIG&#39;</span><span class="p">)])</span>
+            <span class="k">return</span> <span class="n">smap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">signum</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">signum</span>
+
+    <span class="k">def</span> <span class="nf">fun_wrapper</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">fun</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_executed_exit_funs</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fun</span><span class="p">()</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">_executed_exit_funs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">signal_wrapper</span><span class="p">(</span><span class="n">signum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">signum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">logfun</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logfun</span><span class="p">(</span><span class="s2">&quot;signal </span><span class="si">{}</span><span class="s2"> received by process with PID </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">stringify_sig</span><span class="p">(</span><span class="n">signum</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()))</span>
+        <span class="n">fun_wrapper</span><span class="p">()</span>
+        <span class="c1"># Only return the original signal this process was hit with</span>
+        <span class="c1"># in case fun returns with no errors, otherwise process will</span>
+        <span class="c1"># return with sig 1.</span>
+        <span class="k">if</span> <span class="n">signum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">signum</span> <span class="o">==</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyboardInterrupt</span>
+            <span class="c1"># XXX - should we do the same for SIGTERM / SystemExit?</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">signum</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{!r}</span><span class="s2"> is not callable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fun</span><span class="p">))</span>
+        <span class="nb">set</span><span class="p">([</span><span class="n">fun</span><span class="p">])</span>  <span class="c1"># raise exc if obj is not hash-able</span>
+
+        <span class="n">signals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">signals</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">sig</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
+            <span class="c1"># Register function for this signal and pop() the previously</span>
+            <span class="c1"># registered one (if any). This can either be a callable,</span>
+            <span class="c1"># SIG_IGN (ignore signal) or SIG_DFL (perform default action</span>
+            <span class="c1"># for signal).</span>
+            <span class="n">old_handler</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">signal_wrapper</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">old_handler</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIG_DFL</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_IGN</span><span class="p">):</span>
+                <span class="c1"># ...just for extra safety.</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">old_handler</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="c1"># This is needed otherwise we&#39;ll get a KeyboardInterrupt</span>
+                <span class="c1"># strace on interpreter exit, even if the process exited</span>
+                <span class="c1"># with sig 0.</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">sig</span> <span class="o">==</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span> <span class="ow">and</span>
+                        <span class="n">old_handler</span> <span class="ow">is</span> <span class="n">signal</span><span class="o">.</span><span class="n">default_int_handler</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="c1"># There was a function which was already registered for this</span>
+                <span class="c1"># signal. Register it again so it will get executed (after our</span>
+                <span class="c1"># new fun).</span>
+                <span class="k">if</span> <span class="n">old_handler</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_registered_exit_funs</span><span class="p">:</span>
+                    <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">old_handler</span><span class="p">)</span>
+                    <span class="n">_registered_exit_funs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">old_handler</span><span class="p">)</span>
+
+        <span class="c1"># This further registration will be executed in case of clean</span>
+        <span class="c1"># interpreter exit (no signals received).</span>
+        <span class="k">if</span> <span class="n">fun</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_registered_exit_funs</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">signals</span><span class="p">:</span>
+            <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">fun_wrapper</span><span class="p">)</span>
+            <span class="n">_registered_exit_funs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
+
+    <span class="c1"># This piece of machinery handles 3 usage cases. register_exit_fun()</span>
+    <span class="c1"># used as:</span>
+    <span class="c1"># - a function</span>
+    <span class="c1"># - a decorator without parentheses</span>
+    <span class="c1"># - a decorator with parentheses</span>
+    <span class="k">if</span> <span class="n">fun</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span>
+        <span class="k">def</span> <span class="nf">outer</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">outer</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fun</span>
+</pre></div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>As a function:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cleanup&quot;</span><span class="p">)</span>
+
+<span class="n">register_exit_fun</span><span class="p">(</span><span class="n">cleanup</span><span class="p">)</span>
+</pre></div>
+<p>As a decorator:</p>
+<div class="highlight"><pre><span></span><span class="nd">@register_exit_fun</span>
+<span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cleanup&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="unit-tests">
+<h2>Unit tests<a class="headerlink" href="#unit-tests" title="Permalink to this headline">¶</a></h2>
+<p>This recipe is hosted on <a class="reference external" href="https://code.activestate.com/recipes/580672-register-exit-function/">ActiveState</a> and has a full set of unittests. It works with Python 2 and 3.</p>
+</div>
+<div class="section" id="notes-about-windows">
+<h2>Notes about Windows<a class="headerlink" href="#notes-about-windows" title="Permalink to this headline">¶</a></h2>
+<p><span class="strike">On Windows signals are only partially supported meaning a function which was previously registered via signal.signal() will be executed only on interpreter exit, but not if the process receives a signal. Apparently this is a limitation either of Windows or the signal module.</span></p>
+<p>Because of how different <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> behaves on Windows, this code is UNIX only, see <a class="reference external" href="https://bugs.python.org/issue26350">BPO-26350</a>.</p>
+</div>
+<div class="section" id="proposal-for-stdlib-inclusion">
+<h2>Proposal for stdlib inclusion<a class="headerlink" href="#proposal-for-stdlib-inclusion" title="Permalink to this headline">¶</a></h2>
+<p>The fact that atexit module <a class="reference external" href="http://stackoverflow.com/a/2546397/376587">does not handle signals</a> and that <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> overwrites previously registered handlers is unfortunate. It is also <a class="reference external" href="http://ambracode.com/index/show/92669">confusing</a> because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the times you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. To me this suggests there could be space for something like <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038431.html">atexit.register_w_signals</a>.</p>
+</div>
+<div class="section" id="external-discussions">
+<h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/45fvd9/how_to_always_execute_exit_functions_in_python/">Reddit</a></li>
+<li><a class="reference external" href="https://news.ycombinator.com/item?id=11088938">Hacker news</a></li>
+</ul>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2015/psutil-openbsd-support" rel="bookmark"
                    title="Permalink to psutil OpenBSD support">psutil OpenBSD support</a></h1>
         </header>
@@ -688,57 +921,6 @@
     <span class="k">except</span> <span class="n">_GiveupOnSendfile</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_sendfile_use_send</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
 </pre></div>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2014/goodbye-google-code-i-am-moving-to-github" rel="bookmark"
-                   title="Permalink to Goodbye Google Code, I am moving to GitHub">Goodbye Google Code, I am moving to GitHub</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2014-05-26T00:00:00+02:00">
-        Created: 26 May 2014,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/rant">rant</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>8 years ago I started hosting my first open source project (<a class="reference external" href="https://code.google.com/p/pyftpdlib/">pyftpdlib</a>) on Google Code and I later ended up also hosting <a class="reference external" href="https://code.google.com/p/psutil/">psutil</a> and <a class="reference external" href="https://code.google.com/p/pysendfile/">pysendfile</a>. Back then GC had just been released and similarly to other Google products I appreciated the clean and minimalistic interface, the excellent bug tracker and the freedom to choose between different revision control systems (SVN, GIT and Mercurial, which is my favourite one). Unfortunately as the years passed Google completely lost interest in maintaining GC to the point that now GC can basically be considered an <a class="reference external" href="https://groups.google.com/forum/#!topic/google-code-hosting/PEhNMdtBGt4">abandoned project</a>.  If you take a look at <a class="reference external" href="https://code.google.com/p/support/issues/list">GC bug tracker</a> you can see literally hundreds of issues which have been open for years, even some apparently easy ones such as <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=60">#60</a> and <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=919">#919</a>. The lack of interest from Google is absolutely astonishing and it is the main reason why I ultimately decided to change. After at least a couple of years of thinking about migrating to github I finally bite the bullet and as of today psutil is now <a class="reference external" href="https://github.com/giampaolo/psutil">hosted on github</a> (update: now also <a class="reference external" href="https://github.com/giampaolo/pyftpdlib">pyftpdlib</a> and <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a>).</p>
-<div class="section" id="what-i-will-miss-the-most-about-gc">
-<h2>What I will miss the most about GC<a class="headerlink" href="#what-i-will-miss-the-most-about-gc" title="Permalink to this headline">¶</a></h2>
-<p>First of all I must say that despite the unfortunate situation of GC I'm also sad for abandoning it. It started as a really great hosting platform, and it still has some peculiar aspects which I know I will be missing. In order of importance:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/list">The bug tracker</a>: it is much more powerful than <a class="reference external" href="https://github.com/giampaolo/psutil/issues?state=open">github's</a>, especially for the extremely customizable labeling system which is pure gold, the excellent searching system and the <a class="reference external" href="https://code.google.com/p/psutil/issues/list?can=2&amp;q=&amp;colspec=ID+Summary+Type+Opsys+Status+Priority+Opened+Owner&amp;groupby=&amp;sort=&amp;x=&amp;y=&amp;cells=tiles&amp;mode=grid">grid view</a>. GC bug tracker seriously kicks some ass so kudos to whoever was behind its design! By comparison github bug tracker is too minimalistic and it has no good way to order issues or list them in a more compact form. I'm totally gonna miss psutil bug tracker.</li>
-<li>Mercurial: I'm a big fan of Mercurial and I consider it way more pleasant to work with <a class="reference external" href="https://twitter.com/grodola/status/456238397690875905">compared to GIT</a>. I don't know exactly why GIT ended up being so much more used than Mercurial (probably because of github?) but I'm sure that many other guys like me who know both systems will agree that Mercurial is simply so much easier to use. Unfortunately once you decide to stick with github you have no other choice. Mercurial, I'm gonna miss you too!</li>
-<li>GC layout: it is much simpler than github's! Everything is easy to find, even for a non-geek person. The home page alone is perfect to summarize what the project is about and doesn't have tens of icons all over the place. github layout is <a class="reference external" href="https://twitter.com/JoshHelfferich/status/423680220126650368">more complicated</a> and needs some time to get used to, even for a programmer. If these projects (psutil and others) weren't about programming I wouldn't have chosen github because it's &quot;not for the masses&quot;.</li>
-</ul>
-</div>
-<div class="section" id="what-i-appreciate-about-github">
-<h2>What I appreciate about github<a class="headerlink" href="#what-i-appreciate-about-github" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>Travis integration: there's this totally awesome free continuos integration service called <a class="reference external" href="https://travis-ci.org/giampaolo/psutil">Travis</a> which given a configuration file <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/.travis.yml">like this</a> it will automatically run tests on multiple python versions every time a commit is pushed. They recently added <a class="reference external" href="http://blog.travis-ci.com/2014-05-13-multi-os-feature-available/">OSX support</a> and <a class="reference external" href="https://github.com/travis-ci/travis-ci/issues/216">Windows support</a> is on the way. This way I will finally be able to quickly test psutil on Linux, OSX and Windows without using virtualized systems except for FreeBSD and Solaris! To me this is like the ultimate Christmas gift and I couldn't ask for any better. Note: as of today Travis only works with github.</li>
-<li>forks and pull requests: honestly I'm not a big fan of them (yet?), probably because I'm used to the python-dev development workflow consisting in uploading patches on the bug tracker and reviewing them (see <a class="reference external" href="http://bugs.python.org/issue17552">this</a> for example). Nevertheless to my understanding most people use pull requests in order to contribute to open source projects so basically this is a service I'm glad to offer to my users who hopefully will be able to contribute back more easily. GC has a <a class="reference external" href="https://code.google.com/p/psutil/source/clones">cloning system</a> but isn't anywhere near github's and I'm not even sure how it works (never cared).</li>
-<li>the &quot;social&quot; side of github including the fact that you can &quot;star&quot; developers and receive notifications about their activity was another big incentive for migrating. The <a class="reference external" href="https://github.com/giampaolo">personal landing page</a> collecting all your contributions to different projects is absolutely cool. GC had something similar but they stupidly <a class="reference external" href="https://code.google.com/p/support/issues/detail?id=24324">removed it</a> all of the sudden and never reintroduced it back. <a class="reference external" href="https://groups.google.com/forum/#!topic/google-code-hosting/0XbdStxE_uw">A lot of people were angry</a> but again, they didn't care. Actually this was the feature I appreciated the most about GC after the bug tracker and that is when I seriously started thinking about flipping off GC for good.</li>
-<li>the enormous user base: the fact that github is the most used code hosting platform out there will hopefully help me and my projects have a little more visibility. Also, in many job interviews I've been asked what my github profile was so it seems github also became an active part in getting jobs.</li>
-<li><a class="reference external" href="https://gist.github.com/">gists</a>: gists are &quot;a simple way to share code snippets and pastes with others. All gists are Git repositories, so they are automatically versioned, forkable and usable from Git&quot;. Seriously, they are  beautiful. In order to share <a class="reference external" href="https://code.activestate.com/recipes/users/4178764/">my code snippets</a> I've always used Active State but I think I will eventually migrate them as well in order to have everything in one place.</li>
-<li>the fact that if you mention an issue number as part of your commit message that specific issue will automatically be updated. As I said GC bug tracker is superior in basically any aspect but since I always took care of updating issues by mentioning the specific cset which fixed them (see for example <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=463">here</a>) having this little extra feature will save me some time.</li>
-<li>SSH keys: using Mercurial on GC means using password based authentication. Incredibly they still do not support SSH key based auth. Simply &quot;git push&quot;ing without entering any password when I'm not on my laptop is nice, and of course, it is also much more secure.</li>
-</ul>
-</div>
-<div class="section" id="migration">
-<h2>Migration<a class="headerlink" href="#migration" title="Permalink to this headline">¶</a></h2>
-<p>For those of you who are interested in knowing how I did it, here goes: as for moving the issue from GC bug tracker to github's I used <a class="reference external" href="https://github.com/arthur-debert/google-code-issues-migrator">this tool</a>. I managed to preserve the issue IDs but unfortunately not the real owners nor the real issue dates, which kind of sucks. As for migrating the code from mercurial to git I just used <a class="reference external" href="http://stackoverflow.com/a/16037861/376587">this</a>. The Mercurial -&gt; GIT transition was perfect and I also managed to preserve the original Mercurial named branches and tags, which for me it was crucial. In conclusion, psutil is a 5 years, medium sized  project with hundreds of issues: the transition in this case is definitively possible but not painless so if you plan on migrating, the sooner you do it the better.</p>
 </div>
 
         </div>
