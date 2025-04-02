@@ -35,13 +35,9 @@ should also work for Chrome.
 `background.js`:
 
 ```js
-function log(msg) {
-    console.log(msg);
-}
-
 function move_tab(tab, index) {
     if (tab.index != index) {
-        log(`moving tab '${tab.url}' to position ${index}`);
+        console.log(`moving tab '${tab.url}' to position ${index}`);
         chrome.tabs.move(tab.id, { index: index });
     }
 }
