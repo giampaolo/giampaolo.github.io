@@ -1,4 +1,4 @@
-Title: A Brave / Chrome extension to reorder tabs
+Title: A Brave / Chrome extension to reorder new tabs
 Date: 2025-04-02
 Tags: js, brave, dotfiles
 Authors: Giampaolo Rodola
