@@ -269,9 +269,9 @@ $ python3 -m pytest --collect-only
 With these small optimizations, I managed to reduce `pytest` startup time by
 ~0.12 seconds, bringing it down from 0.42 seconds. While this improvement is
 insignificant for full test runs, it somewhat makes a noticeable difference
-when repeatedly running individual tests from the command line, which is
-something I do frequently during development. Final result is visible in
-[PR-2538](https://github.com/giampaolo/psutil/pull/2538).
+(~28% faster) when repeatedly running individual tests from the command line,
+which is something I do frequently during development. Final result is visible
+in [PR-2538](https://github.com/giampaolo/psutil/pull/2538).
 
 # Other links which may be useful
 
