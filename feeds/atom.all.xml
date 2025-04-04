@@ -227,9 +227,9 @@ are located:&lt;/p&gt;
 &lt;p&gt;With these small optimizations, I managed to reduce &lt;code&gt;pytest&lt;/code&gt; startup time by
 ~0.12 seconds, bringing it down from 0.42 seconds. While this improvement is
 insignificant for full test runs, it somewhat makes a noticeable difference
-when repeatedly running individual tests from the command line, which is
-something I do frequently during development. Final result is visible in
-&lt;a href="https://github.com/giampaolo/psutil/pull/2538"&gt;PR-2538&lt;/a&gt;.&lt;/p&gt;
+(~28% faster) when repeatedly running individual tests from the command line,
+which is something I do frequently during development. Final result is visible
+in &lt;a href="https://github.com/giampaolo/psutil/pull/2538"&gt;PR-2538&lt;/a&gt;.&lt;/p&gt;
 &lt;h1&gt;Other links which may be useful&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://github.com/zupo/awesome-pytest-speedup"&gt;https://github.com/zupo/awesome-pytest-speedup&lt;/a&gt;&lt;/li&gt;
