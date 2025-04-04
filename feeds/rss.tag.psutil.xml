@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Giampaolo Rodola - psutil</title><link>https://gmpy.dev/</link><description>Python enthusiast, core developer, psutil author</description><lastBuildDate>Thu, 13 Feb 2025 00:00:00 +0100</lastBuildDate><item><title>psutil: drop Python 2.7 support</title><link>https://gmpy.dev/blog/2025/psutil-drop-python-27-support</link><description>&lt;p&gt;About dropping Python 2.7 support in psutil, 3 years ago
+<rss version="2.0"><channel><title>Giampaolo Rodola - psutil</title><link>https://gmpy.dev/</link><description>Python enthusiast, core developer, psutil author</description><lastBuildDate>Fri, 04 Apr 2025 00:00:00 +0200</lastBuildDate><item><title>Speedup pytest startup</title><link>https://gmpy.dev/blog/2025/speedup-pytest-startup</link><description>&lt;h1&gt;Preface: the migration to pytest&lt;/h1&gt;
+&lt;p&gt;Last year, after 17 years since the inception of the project, I decided to
+start adopting pytest into psutil (see
+&lt;a href="https://github.com/giampaolo/psutil/issues/2446"&gt;psutil/#2446&lt;/a&gt;). The
+advantages over unittest are numerous, but the two I cared about most are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Being able to use base &lt;code&gt;assert&lt;/code&gt; statements instead of …&lt;/li&gt;&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giampaolo Rodola</dc:creator><pubDate>Fri, 04 Apr 2025 00:00:00 +0200</pubDate><guid isPermaLink="false">tag:gmpy.dev,2025-04-04:/blog/2025/speedup-pytest-startup</guid><category>2025</category><category>psutil</category><category>python</category><category>pytest</category><category>performance</category></item><item><title>psutil: drop Python 2.7 support</title><link>https://gmpy.dev/blog/2025/psutil-drop-python-27-support</link><description>&lt;p&gt;About dropping Python 2.7 support in psutil, 3 years ago
 &lt;a href="https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432"&gt;I stated&lt;/a&gt;:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Not a chance, for many years to come. [Python 2.7] currently represents 7-10%

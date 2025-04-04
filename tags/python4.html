@@ -28,6 +28,239 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2016/how-to-always-execute-exit-functions-in-python" rel="bookmark"
+                   title="Permalink to How to always execute exit functions in Python">How to always execute exit functions in Python</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2016-02-12T00:00:00+01:00">
+        Created: 12 Feb 2016,
+        </a>
+                <a class="modified" title="2016-02-13T00:00:00+01:00">
+                Modified: 13 Feb 2016,</a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/recipe">recipe</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p><em>...or why atexit.register() and signal.signal() are evil</em></p>
+<ul class="simple">
+<li><strong>UPDATE (2016-02-13)</strong>: this recipe no longer handles <tt class="docutils literal">SIGINT</tt>, <tt class="docutils literal">SIGQUIT</tt> and <tt class="docutils literal">SIGABRT</tt> as aliases for &quot;application exit&quot; because it was a <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038471.html">bad idea</a>. It only handles <tt class="docutils literal">SIGTERM</tt>. Also it no longer support Windows because <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> implementation is <a class="reference external" href="http://bugs.python.org/issue26350">too different</a> than POSIX.*</li>
+</ul>
+<p>Many people erroneously think that any function registered via <a class="reference external" href="https://docs.python.org/3/library/atexit.html">atexit module</a> is guaranteed to always be executed when the program terminates. You may have noticed this is not the case when, for example, you daemonize your app in production then try to stop it or restart it: the cleanup functions will not be executed. This is because functions registered wth atexit module are <strong>not called</strong> when the program is killed by a signal:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">atexit</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">signal</span>
+
+<span class="nd">@atexit</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;on exit&quot;</span><span class="p">)</span>  <span class="c1"># XXX this never gets printed</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
+</pre></div>
+<p>It must be noted that the same thing would happen if instead of <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> we would use a &quot;finally&quot; clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. That has a drawback though: in case a third-party module has already registered a function for that signal (<tt class="docutils literal">SIGTERM</tt> or whatever), your new function will <strong>overwrite</strong> the old one:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">signal</span>
+
+<span class="k">def</span> <span class="nf">old</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;old&quot;</span><span class="p">)</span>  <span class="c1"># XXX this never gets printed</span>
+
+<span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">)</span>
+
+<span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">old</span><span class="p">)</span>
+<span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
+</pre></div>
+<p>Also, we would still have to use <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> so that the function is called also on &quot;clean&quot; interpreter exit <span class="strike">and take into account other signals other than SIGTERM which would cause the process to terminate</span>. This recipe attempts to address all these issues so that:</p>
+<ul class="simple">
+<li>the exit function is always executed <span class="strike">for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT)</span> on <tt class="docutils literal">SIGTERM</tt> and on &quot;clean&quot; interpreter exit.</li>
+<li>any exit function(s) previously registered via <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> or <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> will be executed as well (after the new one).</li>
+<li>It must be noted that the exit function will never be executed in case of <tt class="docutils literal">SIGKILL</tt>, <tt class="docutils literal">SIGSTOP</tt> or <tt class="docutils literal">os._exit()</tt>.</li>
+</ul>
+<div class="section" id="the-code">
+<h2>The code<a class="headerlink" href="#the-code" title="Permalink to this headline">¶</a></h2>
+<div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Function / decorator which tries very hard to register a function to</span>
+<span class="sd">be executed at importerer exit.</span>
+
+<span class="sd">Author: Giampaolo Rodola&#39;</span>
+<span class="sd">License: MIT</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">atexit</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+
+<span class="n">_registered_exit_funs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="n">_executed_exit_funs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">register_exit_fun</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">signals</span><span class="o">=</span><span class="p">[</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">],</span>
+                      <span class="n">logfun</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register a function which will be executed on &quot;normal&quot;</span>
+<span class="sd">    interpreter exit or in case one of the `signals` is received</span>
+<span class="sd">    by this process (differently from `atexit.register() &lt;https://docs.python.org/3/library/atexit.html#atexit.register&gt;`__).</span>
+<span class="sd">    Also, it makes sure to execute any other function which was</span>
+<span class="sd">    previously registered via signal.signal(). If any, it will be</span>
+<span class="sd">    executed after our own `fun`.</span>
+
+<span class="sd">    Functions which were already registered or executed via this</span>
+<span class="sd">    function will be ignored.</span>
+
+<span class="sd">    Note: there&#39;s no way to escape SIGKILL, SIGSTOP or os._exit(0)</span>
+<span class="sd">    so don&#39;t bother trying.</span>
+
+<span class="sd">    You can use this either as a function or as a decorator:</span>
+
+<span class="sd">        @register_exit_fun</span>
+<span class="sd">        def cleanup():</span>
+<span class="sd">            pass</span>
+
+<span class="sd">        # ...or</span>
+
+<span class="sd">        register_exit_fun(cleanup)</span>
+
+<span class="sd">    Note about Windows: I tested this some time ago and didn&#39;t work</span>
+<span class="sd">    exactly the same as on UNIX, then I didn&#39;t care about it</span>
+<span class="sd">    anymore and didn&#39;t test since then so may not work on Windows.</span>
+
+<span class="sd">    Parameters:</span>
+
+<span class="sd">    - fun: a callable</span>
+<span class="sd">    - signals: a list of signals for which this function will be</span>
+<span class="sd">      executed (default SIGTERM)</span>
+<span class="sd">    - logfun: a logging function which is called when a signal is</span>
+<span class="sd">      received. Default: print to standard error. May be set to</span>
+<span class="sd">      None if no logging is desired.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">stringify_sig</span><span class="p">(</span><span class="n">signum</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+            <span class="n">smap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+                         <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SIG&#39;</span><span class="p">)])</span>
+            <span class="k">return</span> <span class="n">smap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">signum</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">signum</span>
+
+    <span class="k">def</span> <span class="nf">fun_wrapper</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">fun</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_executed_exit_funs</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fun</span><span class="p">()</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">_executed_exit_funs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">signal_wrapper</span><span class="p">(</span><span class="n">signum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">signum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">logfun</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logfun</span><span class="p">(</span><span class="s2">&quot;signal </span><span class="si">{}</span><span class="s2"> received by process with PID </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">stringify_sig</span><span class="p">(</span><span class="n">signum</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()))</span>
+        <span class="n">fun_wrapper</span><span class="p">()</span>
+        <span class="c1"># Only return the original signal this process was hit with</span>
+        <span class="c1"># in case fun returns with no errors, otherwise process will</span>
+        <span class="c1"># return with sig 1.</span>
+        <span class="k">if</span> <span class="n">signum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">signum</span> <span class="o">==</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyboardInterrupt</span>
+            <span class="c1"># XXX - should we do the same for SIGTERM / SystemExit?</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">signum</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{!r}</span><span class="s2"> is not callable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fun</span><span class="p">))</span>
+        <span class="nb">set</span><span class="p">([</span><span class="n">fun</span><span class="p">])</span>  <span class="c1"># raise exc if obj is not hash-able</span>
+
+        <span class="n">signals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">signals</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">sig</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
+            <span class="c1"># Register function for this signal and pop() the previously</span>
+            <span class="c1"># registered one (if any). This can either be a callable,</span>
+            <span class="c1"># SIG_IGN (ignore signal) or SIG_DFL (perform default action</span>
+            <span class="c1"># for signal).</span>
+            <span class="n">old_handler</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">signal_wrapper</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">old_handler</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIG_DFL</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_IGN</span><span class="p">):</span>
+                <span class="c1"># ...just for extra safety.</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">old_handler</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="c1"># This is needed otherwise we&#39;ll get a KeyboardInterrupt</span>
+                <span class="c1"># strace on interpreter exit, even if the process exited</span>
+                <span class="c1"># with sig 0.</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">sig</span> <span class="o">==</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span> <span class="ow">and</span>
+                        <span class="n">old_handler</span> <span class="ow">is</span> <span class="n">signal</span><span class="o">.</span><span class="n">default_int_handler</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="c1"># There was a function which was already registered for this</span>
+                <span class="c1"># signal. Register it again so it will get executed (after our</span>
+                <span class="c1"># new fun).</span>
+                <span class="k">if</span> <span class="n">old_handler</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_registered_exit_funs</span><span class="p">:</span>
+                    <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">old_handler</span><span class="p">)</span>
+                    <span class="n">_registered_exit_funs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">old_handler</span><span class="p">)</span>
+
+        <span class="c1"># This further registration will be executed in case of clean</span>
+        <span class="c1"># interpreter exit (no signals received).</span>
+        <span class="k">if</span> <span class="n">fun</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_registered_exit_funs</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">signals</span><span class="p">:</span>
+            <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">fun_wrapper</span><span class="p">)</span>
+            <span class="n">_registered_exit_funs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
+
+    <span class="c1"># This piece of machinery handles 3 usage cases. register_exit_fun()</span>
+    <span class="c1"># used as:</span>
+    <span class="c1"># - a function</span>
+    <span class="c1"># - a decorator without parentheses</span>
+    <span class="c1"># - a decorator with parentheses</span>
+    <span class="k">if</span> <span class="n">fun</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span>
+        <span class="k">def</span> <span class="nf">outer</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">outer</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fun</span>
+</pre></div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>As a function:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cleanup&quot;</span><span class="p">)</span>
+
+<span class="n">register_exit_fun</span><span class="p">(</span><span class="n">cleanup</span><span class="p">)</span>
+</pre></div>
+<p>As a decorator:</p>
+<div class="highlight"><pre><span></span><span class="nd">@register_exit_fun</span>
+<span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cleanup&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="unit-tests">
+<h2>Unit tests<a class="headerlink" href="#unit-tests" title="Permalink to this headline">¶</a></h2>
+<p>This recipe is hosted on <a class="reference external" href="https://code.activestate.com/recipes/580672-register-exit-function/">ActiveState</a> and has a full set of unittests. It works with Python 2 and 3.</p>
+</div>
+<div class="section" id="notes-about-windows">
+<h2>Notes about Windows<a class="headerlink" href="#notes-about-windows" title="Permalink to this headline">¶</a></h2>
+<p><span class="strike">On Windows signals are only partially supported meaning a function which was previously registered via signal.signal() will be executed only on interpreter exit, but not if the process receives a signal. Apparently this is a limitation either of Windows or the signal module.</span></p>
+<p>Because of how different <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> behaves on Windows, this code is UNIX only, see <a class="reference external" href="https://bugs.python.org/issue26350">BPO-26350</a>.</p>
+</div>
+<div class="section" id="proposal-for-stdlib-inclusion">
+<h2>Proposal for stdlib inclusion<a class="headerlink" href="#proposal-for-stdlib-inclusion" title="Permalink to this headline">¶</a></h2>
+<p>The fact that atexit module <a class="reference external" href="http://stackoverflow.com/a/2546397/376587">does not handle signals</a> and that <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> overwrites previously registered handlers is unfortunate. It is also <a class="reference external" href="http://ambracode.com/index/show/92669">confusing</a> because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the times you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. To me this suggests there could be space for something like <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038431.html">atexit.register_w_signals</a>.</p>
+</div>
+<div class="section" id="external-discussions">
+<h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/45fvd9/how_to_always_execute_exit_functions_in_python/">Reddit</a></li>
+<li><a class="reference external" href="https://news.ycombinator.com/item?id=11088938">Hacker news</a></li>
+</ul>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2015/psutil-openbsd-support" rel="bookmark"
                    title="Permalink to psutil OpenBSD support">psutil OpenBSD support</a></h1>
         </header>
@@ -676,84 +909,6 @@
     <span class="k">except</span> <span class="n">_GiveupOnSendfile</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_sendfile_use_send</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
 </pre></div>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2014/psutil-20" rel="bookmark"
-                   title="Permalink to psutil 2.0">psutil 2.0</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2014-03-10T00:00:00+01:00">
-        Created: 10 Mar 2014,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>The time has finally come: <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0 is out! This is a release which took me a considerable amount of effort and careful thinking during the past 4 months as I went through a major <strong>rewrite and reorganization</strong> of both python and C extension modules. To get a sense of how much has changed you can compare the differences with old 1.2.1 version by running &quot;hg diff -r release-1.2.1:release-2.0.0&quot; which will produce more than <strong>22,000 lines</strong> of output! In those 22k lines I tried to nail down all the quirks the project had accumulated since its start 4 years ago and the resulting code base is now cleaner than ever, more manageable and fully compliant with PEP-7 and PEP-8 guidelines.
-There were some difficult decisions because many of the changes I introduced are not backward compatible so I was concerned with the pain this may cause existing users. I kind of still am, but I'm sure the transition will be well perceived on the long run as it will result in more manageable user code. OK, enough with the preface and let's see what changed.</p>
-<div class="section" id="api-changes">
-<h2>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h2>
-<p>I already wrote a detailed <a class="reference external" href="psutil-20-api-redesign">blog post</a> about what changed so I recommend you to use that as the official reference on how to port your code.</p>
-</div>
-<div class="section" id="rst-documentation">
-<h2>RST documentation<a class="headerlink" href="#rst-documentation" title="Permalink to this headline">¶</a></h2>
-<p>I've never been happy with old doc hosted on Google Code. The markup language provided by Google is pretty limited, plus it's not put under revision control. New doc is more detailed, it uses reStructuredText as the markup language, it lives in the same code repository as psutil's and it is hosted on the excellent readthedocs web site: <a class="reference external" href="http://psutil.readthedocs.org/">http://psutil.readthedocs.org/</a></p>
-</div>
-<div class="section" id="physical-cpus-count">
-<h2>Physical CPUs count<a class="headerlink" href="#physical-cpus-count" title="Permalink to this headline">¶</a></h2>
-<p>You're now able to distinguish between logical and physical CPUs:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
-<span class="mi">4</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># physical cores only</span>
-<span class="mi">2</span>
-</pre></div>
-<p>Full story is in <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427">issue 427</a>.</p>
-</div>
-<div class="section" id="process-instances-are-hashable">
-<h2>Process instances are hashable<a class="headerlink" href="#process-instances-are-hashable" title="Permalink to this headline">¶</a></h2>
-<p>Basically this means process instances can now be checked for equality and can be used with set()s:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p1</span> <span class="o">==</span> <span class="n">p2</span>
-<span class="kc">True</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">set</span><span class="p">((</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">))</span>
-<span class="nb">set</span><span class="p">([</span><span class="o">&lt;</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">8217</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">140007043550608</span><span class="o">&gt;</span><span class="p">])</span>
-</pre></div>
-<p>Full story is in <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=452">issue 452</a>.</p>
-</div>
-<div class="section" id="speedups">
-<h2>Speedups<a class="headerlink" href="#speedups" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=477">#477</a>: process <cite>cpu_percent()</cite> is about 30% faster.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=478">#478</a>: (Linux) almost all APIs are about 30% faster on Python 3.X.</li>
-</ul>
-</div>
-<div class="section" id="other-improvements-and-bugfixes">
-<h2>Other improvements and bugfixes<a class="headerlink" href="#other-improvements-and-bugfixes" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=424">#424</a>: Windows installers for Python 3.X 64-bit</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447">#447</a>: <cite>psutil.wait_procs()</cite> timeout parameter is now optional.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=459">#459</a>: a Makefile is now available for running tests and other repetitive tasks (also on Windows)</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=463">#463</a>: timeout parameter of <tt class="docutils literal">cpu_percent*</tt> functions default to 0.0 because it was a common trap to introduce slowdowns.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=340">#340</a>: (Windows) process <cite>open_files()</cite> no longer hangs.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=448">#448</a>: (Windows) fixed a memory leak affecting <cite>children()</cite> and <cite>ppid()</cite> methods.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=461">#461</a>: namedtuples are now pickle-able.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=474">#474</a>: (Windows) <cite>Process.cpu_percent()</cite> is no longer capped at 100%</li>
-</ul>
-<p>OK, that's all folks. I hope you will enjoy this new version and report your feedback.</p>
 </div>
 
         </div>

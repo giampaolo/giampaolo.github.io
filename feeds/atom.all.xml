@@ -1,5 +1,240 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.all.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2025-04-02T00:00:00+02:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>A Brave / Chrome extension to reorder new tabs</title><link href="https://gmpy.dev/blog/2025/a-brave-chrome-extension-to-reorder-new-tabs" rel="alternate"></link><published>2025-04-02T00:00:00+02:00</published><updated>2025-04-02T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-04-02:/blog/2025/a-brave-chrome-extension-to-reorder-new-tabs</id><summary type="html">&lt;p&gt;While browsing, I almost always keep three tabs open: Gmail, Slack, and
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.all.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2025-04-04T00:00:00+02:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Speedup pytest startup</title><link href="https://gmpy.dev/blog/2025/speedup-pytest-startup" rel="alternate"></link><published>2025-04-04T00:00:00+02:00</published><updated>2025-04-04T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-04-04:/blog/2025/speedup-pytest-startup</id><summary type="html">&lt;h1&gt;Preface: the migration to pytest&lt;/h1&gt;
+&lt;p&gt;Last year, after 17 years since the inception of the project, I decided to
+start adopting pytest into psutil (see
+&lt;a href="https://github.com/giampaolo/psutil/issues/2446"&gt;psutil/#2446&lt;/a&gt;). The
+advantages over unittest are numerous, but the two I cared about most are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Being able to use base &lt;code&gt;assert&lt;/code&gt; statements instead of …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;h1&gt;Preface: the migration to pytest&lt;/h1&gt;
+&lt;p&gt;Last year, after 17 years since the inception of the project, I decided to
+start adopting pytest into psutil (see
+&lt;a href="https://github.com/giampaolo/psutil/issues/2446"&gt;psutil/#2446&lt;/a&gt;). The
+advantages over unittest are numerous, but the two I cared about most are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Being able to use base &lt;code&gt;assert&lt;/code&gt; statements instead of unittest's
+  &lt;code&gt;self.assert*()&lt;/code&gt; APIs.&lt;/li&gt;
+&lt;li&gt;The excellent &lt;a href="https://pypi.org/project/pytest-xdist/"&gt;pytest-xdist&lt;/a&gt;
+  extension, that lets you run tests in parallel, basically for free.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Beyond that, I don't rely on any pytest-specific features in the code, like
+&lt;a href="https://docs.pytest.org/en/6.2.x/fixture.html"&gt;fixtures&lt;/a&gt; or conftest.py. I
+still organize tests in classes, with each one inheriting from
+&lt;code&gt;unittest.TestCase&lt;/code&gt;. Why?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;I like unittest's &lt;code&gt;self.addCleanup&lt;/code&gt; too much to give it up (see some
+  &lt;a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/__init__.py#L984-L1010"&gt;usages&lt;/a&gt;).
+  I find it superior to fixtures. Less magical and more explicit.&lt;/li&gt;
+&lt;li&gt;I want users to be able to test their psutil installation in production
+  environments where pytest might not be installed. To accommodate this, I
+  created a minimal "fake" pytest class that emulates essential features like
+  &lt;code&gt;pytest.raises&lt;/code&gt;, &lt;code&gt;@pytest.skip&lt;/code&gt; etc. (see
+  &lt;a href="https://github.com/giampaolo/psutil/pull/2456"&gt;PR-2456&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;But that's a separate topic. What I want to focus on here is one of pytest's
+most frustrating aspects: slow startup times.&lt;/p&gt;
+&lt;h1&gt;pytest invocation is slow&lt;/h1&gt;
+&lt;p&gt;To measure pytest's startup time, let's run a very &lt;a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236"&gt;simple
+test&lt;/a&gt;
+where execution time won't significantly affect the results:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
+============================= test session starts =============================
+collected 1 item
+psutil/tests/test_misc.py::TestMisc::test_version PASSED
+============================== 1 passed in 0.05s ==============================
+
+real    0m0,427s
+user    0m0,375s
+sys     0m0,051s
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;0,427s. Almost half of a second. That's excessive for something I frequently
+execute during development. For comparison, running the same test with
+&lt;code&gt;unittest&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time python3 -m unittest psutil.tests.test_misc.TestMisc.test_version
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+OK
+
+real    0m0,204s
+user    0m0,169s
+sys     0m0,035s
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;0,204 secs. Meaning unittest is roughly twice as fast as pytest. But why?&lt;/p&gt;
+&lt;h1&gt;Where is time being spent?&lt;/h1&gt;
+&lt;p&gt;A significant portion of pytest's overhead comes from import time:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time python3 -c &amp;quot;import pytest&amp;quot;
+real    0m0,151s
+user    0m0,135s
+sys     0m0,016s
+
+$ time python3 -c &amp;quot;import unittest&amp;quot;
+real    0m0,065s
+user    0m0,055s
+sys     0m0,010s
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;There's nothing I can do about that. For the record, psutil import timing is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time python3 -c &amp;quot;import psutil&amp;quot;
+real    0m0,056s
+user    0m0,050s
+sys     0m0,006s
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h1&gt;Disable plugin auto loading&lt;/h1&gt;
+&lt;p&gt;After some research, I discovered that pytest automatically loads all plugins
+installed on the system, even if they aren't used. Here's how to list them
+(output is cut):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --trace-config --collect-only
+...
+active plugins:
+    ...
+    setupplan           : ~/.local/lib/python3.12/site-packages/_pytest/setupplan.py
+    stepwise            : ~/.local/lib/python3.12/site-packages/_pytest/stepwise.py
+    warnings            : ~/.local/lib/python3.12/site-packages/_pytest/warnings.py
+    logging             : ~/.local/lib/python3.12/site-packages/_pytest/logging.py
+    reports             : ~/.local/lib/python3.12/site-packages/_pytest/reports.py
+    python_path         : ~/.local/lib/python3.12/site-packages/_pytest/python_path.py
+    unraisableexception : ~/.local/lib/python3.12/site-packages/_pytest/unraisableexception.py
+    threadexception     : ~/.local/lib/python3.12/site-packages/_pytest/threadexception.py
+    faulthandler        : ~/.local/lib/python3.12/site-packages/_pytest/faulthandler.py
+    instafail           : ~/.local/lib/python3.12/site-packages/pytest_instafail.py
+    anyio               : ~/.local/lib/python3.12/site-packages/anyio/pytest_plugin.py
+    pytest_cov          : ~/.local/lib/python3.12/site-packages/pytest_cov/plugin.py
+    subtests            : ~/.local/lib/python3.12/site-packages/pytest_subtests/plugin.py
+    xdist               : ~/.local/lib/python3.12/site-packages/xdist/plugin.py
+    xdist.looponfail    : ~/.local/lib/python3.12/site-packages/xdist/looponfail.py
+    ...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;It turns out &lt;code&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD&lt;/code&gt; environment variable can be used
+to disable them. By running &lt;code&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
+--trace-config --collect-only&lt;/code&gt; again I can see that the following plugins
+disappeared:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;anyio
+pytest_cov
+pytest_instafail
+pytest_subtests
+xdist
+xdist.looponfail
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now let's run the test again by using &lt;code&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
+============================= test session starts =============================
+collected 1 item
+psutil/tests/test_misc.py::TestMisc::test_version PASSED
+============================== 1 passed in 0.05s ==============================
+
+real    0m0,285s
+user    0m0,267s
+sys     0m0,040s
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;We went from 0,427 secs to 0,285 secs, a ~40% improvement. Not bad. We now need
+to selectively enable only the plugins we actually use, via &lt;code&gt;-p&lt;/code&gt; CLI option.
+Plugins used by psutil are &lt;code&gt;pytest-instafail&lt;/code&gt; and &lt;code&gt;pytest-subtests&lt;/code&gt; (we'll
+think about &lt;code&gt;pytest-xdist&lt;/code&gt; later):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests --no-header psutil/tests/test_misc.py::TestMisc::test_version
+========================================================= test session starts =========================================================
+collected 1 item
+psutil/tests/test_misc.py::TestMisc::test_version PASSED
+========================================================== 1 passed in 0.05s ==========================================================
+real    0m0,320s
+user    0m0,283s
+sys     0m0,037s
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Time went up again, from 0,285 secs to 0,320s. Quite a slowdown, but still
+better than the initial 0,427s. Now, let's add &lt;code&gt;pytest-xdist&lt;/code&gt; to the mix:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests -p xdist --no-header psutil/tests/test_misc.py::TestMisc::test_version
+========================================================= test session starts =========================================================
+collected 1 item
+psutil/tests/test_misc.py::TestMisc::test_version PASSED
+========================================================== 1 passed in 0.05s ==========================================================
+
+real    0m0,369s
+user    0m0,286s
+sys     0m0,049s
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;We now went from 0,320s to 0,369s. Not too much, but still it's a pity to pay
+the price when NOT running tests in parallel.&lt;/p&gt;
+&lt;h1&gt;Handling pytest-xdist&lt;/h1&gt;
+&lt;p&gt;If we disable &lt;code&gt;pytest-xdist&lt;/code&gt; psutil tests still run, but we get a warning:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;psutil/tests/test_testutils.py:367
+  ~/svn/psutil/psutil/tests/test_testutils.py:367: PytestUnknownMarkWarning: Unknown pytest.mark.xdist_group - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.xdist_group(name=&amp;quot;serial&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This warning appears for methods that are intended to run serially, those
+decorated with &lt;code&gt;@pytest.mark.xdist_group(name="serial")&lt;/code&gt;. However, since
+&lt;code&gt;pytest-xdist&lt;/code&gt; is now disabled, the decorator no longer exists. To address
+this, I implemented the following solution in &lt;code&gt;psutil/tests/__init__.py&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pytest&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nn"&gt;functools&lt;/span&gt;
+
+&lt;span class="n"&gt;PYTEST_PARALLEL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;PYTEST_XDIST_WORKER&amp;quot;&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;  &lt;span class="c1"&gt;# True if running parallel tests&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;PYTEST_PARALLEL&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fake_xdist_group&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;_args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;_kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Mimics `@pytest.mark.xdist_group` decorator. No-op: it just&lt;/span&gt;
+&lt;span class="sd"&gt;        calls the test method or return the decorated class.&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+        &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;wrapper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="nd"&gt;@functools&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wraps&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;inner&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;obj&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="n"&gt;inner&lt;/span&gt;
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;wrapper&lt;/span&gt;
+
+    &lt;span class="n"&gt;pytest&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mark&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xdist_group&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fake_xdist_group&lt;/span&gt;  &lt;span class="c1"&gt;# monkey patch&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;With this in place the warning disappears when running tests serially. To run
+tests in parallel, we'll manually enable &lt;code&gt;xdist&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python3 -m pytest -p xdist -n auto --dist loadgroup
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h1&gt;Disable some default plugins&lt;/h1&gt;
+&lt;p&gt;pytests also loads quite a bunch of plugins by default (see output of &lt;code&gt;pytest
+--trace-config --collect-only&lt;/code&gt;). I tried to disable some of them with:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pytest -p no:junitxml -p no:doctest -p no:nose -p no:pastebin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;...but that didn't make much of a difference.&lt;/p&gt;
+&lt;h1&gt;Optimizing test collection time&lt;/h1&gt;
+&lt;p&gt;By default, pytest searches the entire directory for tests, adding unnecessary
+overhead. In &lt;code&gt;pyproject.toml&lt;/code&gt; you can tell pytest where test files
+are located:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[tool.pytest.ini_options]&lt;/span&gt;
+&lt;span class="n"&gt;testpaths&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;psutil/tests/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;With this I saved another 0.03 seconds. Before:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python3 -m pytest --collect-only
+...
+======================== 685 tests collected in 0.20s =========================
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;After:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python3 -m pytest --collect-only
+...
+======================== 685 tests collected in 0.17s =========================
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h1&gt;Putting it all together&lt;/h1&gt;
+&lt;p&gt;With these small optimizations, I managed to reduce &lt;code&gt;pytest&lt;/code&gt; startup time by
+~0.12 seconds, bringing it down from 0.42 seconds. While this improvement is
+insignificant for full test runs, it somewhat makes a noticeable difference
+when repeatedly running individual tests from the command line, which is
+something I do frequently during development. Final result is visible in
+&lt;a href="https://github.com/giampaolo/psutil/pull/2538"&gt;PR-2538&lt;/a&gt;.&lt;/p&gt;
+&lt;h1&gt;Other links which may be useful&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/zupo/awesome-pytest-speedup"&gt;https://github.com/zupo/awesome-pytest-speedup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://projects.gentoo.org/python/guide/pytest.html"&gt;https://projects.gentoo.org/python/guide/pytest.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="pytest"></category><category term="performance"></category></entry><entry><title>A Brave / Chrome extension to reorder new tabs</title><link href="https://gmpy.dev/blog/2025/a-brave-chrome-extension-to-reorder-new-tabs" rel="alternate"></link><published>2025-04-02T00:00:00+02:00</published><updated>2025-04-02T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-04-02:/blog/2025/a-brave-chrome-extension-to-reorder-new-tabs</id><summary type="html">&lt;p&gt;While browsing, I almost always keep three tabs open: Gmail, Slack, and
 Microsoft Teams (for work). I find it convenient to have them always in the
 same position (1, 2, and 3), so I can quickly switch to them using keyboard
 shortcuts (&lt;code&gt;alt+1&lt;/code&gt;, &lt;code&gt;alt+2&lt;/code&gt;, &lt;code&gt;alt+3&lt;/code&gt;). While the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While browsing, I almost always keep three tabs open: Gmail, Slack, and
