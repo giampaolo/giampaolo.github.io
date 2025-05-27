@@ -46,7 +46,7 @@
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2025-04-04T00:00:00+02:00">
-        Created: 04 Apr 2025,
+        Created: 04 apr 2025,
         </a>
 <!--
         <address class="vcard author">
@@ -300,7 +300,7 @@ in <a href="https://github.com/giampaolo/psutil/pull/2538">PR-2538</a>.</p>
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2025-04-02T00:00:00+02:00">
-        Created: 02 Apr 2025,
+        Created: 02 apr 2025,
         </a>
 <!--
         <address class="vcard author">
@@ -373,13 +373,38 @@ should also work for Chrome.</p>
     </article></li>
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2025/my-title" rel="bookmark"
+                   title="Permalink to My title">My title</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2025-02-26T00:00:00+01:00">
+        Created: 26 feb 2025,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <h2></h2>
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2025/psutil-drop-python-27-support" rel="bookmark"
                    title="Permalink to psutil: drop Python 2.7 support">psutil: drop Python 2.7 support</a></h1>
         </header>
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2025-02-13T00:00:00+01:00">
-        Created: 13 Feb 2025,
+        Created: 13 feb 2025,
         </a>
 <!--
         <address class="vcard author">
@@ -507,7 +532,7 @@ use psutil with:</p>
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2023-03-16T00:00:00+01:00">
-        Created: 16 Mar 2023,
+        Created: 16 mar 2023,
         </a>
 <!--
         <address class="vcard author">
@@ -625,194 +650,6 @@ easily extended to include specific exceptions of third party libraries, like
 <li>Github <a class="reference external" href="https://gist.github.com/giampaolo/905b38a5ea9d5179eb0138e2f37a01a8">Gist</a></li>
 </ul>
 </div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2022/sublime-text-remember-cursor-position-plugin" rel="bookmark"
-                   title="Permalink to Sublime Text: remember cursor position plugin">Sublime Text: remember cursor position plugin</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2022-03-18T00:00:00+01:00">
-        Created: 18 Mar 2022,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/sublime">sublime</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>My editor of choice for Python development is Sublime Text.
-It has been for a very long time (10 years).
-It's fast, minimalist and straight to the point, which is why I always resisted
-the temptation to use more advanced and modern IDEs such as PyCharm or VS code,
-which admittedly have superior auto-completion and refactoring tools.</p>
-<p>There is a very simple feature I've always missed in ST: the
-possibility to &quot;remember&quot; / save the cursor position when a file is closed.
-The only plugin promising to do such a thing is called
-<a class="reference external" href="https://github.com/titoBouzout/BufferScroll">BufferScroll</a>, but for some
-reason it ceased working for me at some point.
-I spent a considerable amount of time Googling for an alternative but, to my
-surprise, I couldn't find any plugin which implements such a simple feature.
-Therefore today I decided to bite the bullet and try to implement this myself,
-by writing my first ST plugin, which I paste below.</p>
-<p>What it does is this:</p>
-<ul class="simple">
-<li>every time a file is closed, save the cursor position (x and y axis) to a JSON file</li>
-<li>if that same file is re-opened, restore the cursor at that position</li>
-</ul>
-<p>What's neat about ST plugins is that they are just Python files which you can
-install by copying them in ST's config directory. On Linux you can copy the
-script below in:</p>
-<p><tt class="docutils literal"><span class="pre">~/.config/sublime-text-3/Packages/User/cursor_positions.py</span></tt></p>
-<p>...and will work out of the box.
-This is exactly the kind of minimalism which I love about ST, and which I've
-always missed in other IDEs.</p>
-<div class="highlight"><pre><span></span><span class="c1"># cursor_positions.py</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">A plugin for SublimeText which saves (remembers) cursor position when</span>
-<span class="sd">a file is closed.</span>
-<span class="sd">Install it by copying this file in ~/.config/sublime-text-3/Packages/User/</span>
-<span class="sd">directory (Linux).</span>
-
-<span class="sd">Author: Giampaolo Rodola&#39;</span>
-<span class="sd">License: MIT</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">import</span> <span class="nn">threading</span>
-
-<span class="kn">import</span> <span class="nn">sublime</span>
-<span class="kn">import</span> <span class="nn">sublime_plugin</span>
-
-
-<span class="n">SUBLIME_ROOT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sublime</span><span class="o">.</span><span class="n">packages_path</span><span class="p">(),</span> <span class="s1">&#39;..&#39;</span><span class="p">))</span>
-<span class="n">SESSION_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-    <span class="n">SUBLIME_ROOT</span><span class="p">,</span> <span class="s2">&quot;Local&quot;</span><span class="p">,</span> <span class="s2">&quot;cursor_positions.session.json&quot;</span><span class="p">)</span>
-<span class="c1"># when reading the session file on startup, we&#39;ll remove entries</span>
-<span class="c1"># older than X days</span>
-<span class="n">RM_FILE_OLDER_THAN_DAYS</span> <span class="o">=</span> <span class="mi">180</span>
-
-
-<span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    </span><span class="si">%s</span><span class="s2">: &quot;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-
-
-<span class="k">class</span> <span class="nc">Session</span><span class="p">:</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">SESSION_FILE</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">prune_old_entries</span><span class="p">()</span>
-
-    <span class="c1"># --- file</span>
-
-    <span class="k">def</span> <span class="nf">read_session_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">SESSION_FILE</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">{}</span>
-
-    <span class="k">def</span> <span class="nf">write_session_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
-        <span class="c1"># Use the same FS so that the move operation is atomic:</span>
-        <span class="c1"># https://stackoverflow.com/a/18706666</span>
-        <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span>
-                <span class="s2">&quot;wt&quot;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">SESSION_FILE</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">SESSION_FILE</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">prune_old_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_session_file</span><span class="p">()</span>
-        <span class="n">new</span> <span class="o">=</span> <span class="n">old</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">file</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">old</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">tstamp</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;last_update&quot;</span><span class="p">]</span>
-            <span class="n">last_update</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-                <span class="n">tstamp</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">delta_days</span> <span class="o">=</span> <span class="p">(</span><span class="n">now</span> <span class="o">-</span> <span class="n">last_update</span><span class="p">)</span><span class="o">.</span><span class="n">days</span>
-            <span class="k">if</span> <span class="n">delta_days</span> <span class="o">&gt;</span> <span class="n">RM_FILE_OLDER_THAN_DAYS</span><span class="p">:</span>
-                <span class="n">log</span><span class="p">(</span><span class="s2">&quot;removing old saved file </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">file</span><span class="p">)</span>
-                <span class="k">del</span> <span class="n">new</span><span class="p">[</span><span class="n">file</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">new</span> <span class="o">!=</span> <span class="n">old</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_session_file</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
-
-    <span class="c1"># --- operations</span>
-
-    <span class="k">def</span> <span class="nf">add_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_session_file</span><span class="p">()</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">file</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-            <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
-            <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
-            <span class="n">last_update</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()),</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_session_file</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">load_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_session_file</span><span class="p">()</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">d</span><span class="p">[</span><span class="n">file</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-
-<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
-
-
-<span class="k">class</span> <span class="nc">Events</span><span class="p">(</span><span class="n">sublime_plugin</span><span class="o">.</span><span class="n">EventListener</span><span class="p">):</span>
-
-    <span class="c1"># --- utils</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">):</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">rowcol</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">sel</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">begin</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">set_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="n">pt</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">text_point</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        <span class="n">view</span><span class="o">.</span><span class="n">sel</span><span class="p">()</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="n">view</span><span class="o">.</span><span class="n">sel</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sublime</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">pt</span><span class="p">))</span>
-        <span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">save_cursor_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="n">file_name</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">file_name</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">file_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span>  <span class="c1"># non-existent file</span>
-        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;saving cursor position for </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">file_name</span><span class="p">)</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
-        <span class="n">session</span><span class="o">.</span><span class="n">add_entry</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">load_cursor_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="n">entry</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">load_entry</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">file_name</span><span class="p">())</span>
-        <span class="k">if</span> <span class="n">entry</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span>
-
-    <span class="c1"># --- callbacks</span>
-
-    <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="c1"># called when a file is closed</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_cursor_position</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="c1"># called when a file is opened</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">load_cursor_position</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
-</pre></div>
 
         </div>
     </article></li>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <!--<title>psutil NetBSD support</title>-->
+    <!--<title>My title</title>-->
     <title>Giampaolo Rodola</title>
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
@@ -24,14 +24,14 @@
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="https://gmpy.dev/blog/2016/psutil-netbsd-support" rel="bookmark"
-           title="Permalink to psutil NetBSD support">psutil NetBSD support</a></h1>
+        <a href="https://gmpy.dev/blog/2025/my-title" rel="bookmark"
+           title="Permalink to My title">My title</a></h1>
     </header>
 
     <div class="entry-content">
 <footer class="post-info">
-        <a class="published" title="2016-02-25T00:00:00+01:00">
-        Created: 25 feb 2016,
+        <a class="published" title="2025-02-26T00:00:00+01:00">
+        Created: 26 feb 2025,
         </a>
 <!--
         <address class="vcard author">
@@ -39,52 +39,20 @@
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/bsd">bsd</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->      <p>Roughly two months have passed since I last announced <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> added support for OpenBSD platforms. Today I am happy to announce we also have NetBSD support! This was contributed by <a class="reference external" href="https://github.com/0-wiz-0">Thomas Klausner</a>, <a class="reference external" href="https://github.com/ryoon">Ryo Onodera</a> and myself in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">#570</a>.</p>
-<div class="section" id="differences-with-freebsd-and-openbsd">
-<h2>Differences with FreeBSD (and OpenBSD)<a class="headerlink" href="#differences-with-freebsd-and-openbsd" title="Permalink to this headline">¶</a></h2>
-<p>NetBSD implementation has similar limitations as the ones I encountered with OpenBSD. Again, FreeBSD presents itself as the BSD variant with the best support in terms of kernel functionalities.</p>
-<ul class="simple">
-<li><tt class="docutils literal">Process.memory_maps()</tt> is not implemented. The kernel provides the necessary pieces but I didn't do this yet (hopefully later).</li>
-<li><tt class="docutils literal">Process.num_ctx_switches()</tt>'s involuntary field is always 0. <tt class="docutils literal">kinfo_proc</tt> syscall provides this info but it is always set to 0.</li>
-<li><tt class="docutils literal">Process.cpu_affinity()</tt> (get and set) is not supported.</li>
-<li><tt class="docutils literal">psutil.cpu_count(logical=False)</tt> always return <tt class="docutils literal">None</tt>.</li>
-</ul>
-<p>As for the rest: it is all there. All memory, disk, network and process APIs are fully supported and functioning.</p>
-</div>
-<div class="section" id="other-enhancements-available-in-this-psutil-release">
-<h2>Other enhancements available in this psutil release<a class="headerlink" href="#other-enhancements-available-in-this-psutil-release" title="Permalink to this headline">¶</a></h2>
-<p>Other than NetBSD support this new release has a couple of interesting enhancements:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/708">#708</a>: [Linux] <tt class="docutils literal">psutil.net_connections()</tt> and <tt class="docutils literal">Process.connections()</tt> on Python can be up to 3x faster in case of many connections.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/718">#718</a>: <tt class="docutils literal">process_iter()</tt> is now thread safe.</li>
-</ul>
-<p>You can read the rest in the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">HISTORY</a> file, as usual.</p>
-</div>
-<div class="section" id="move-to-prague">
-<h2>Move to Prague<a class="headerlink" href="#move-to-prague" title="Permalink to this headline">¶</a></h2>
-<p>As a personal note I'd like to add that I'm currently in Prague (Czech Republic) and I'm thinking about moving down here for a while. The city is great and girls are beautiful. ;-)</p>
-</div>
-<div class="section" id="external-discussions">
-<h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/4131q2/netbsd_support_for_psutil/">Reddit</a></li>
-<li><a class="reference external" href="https://news.ycombinator.com/item?id=10909101">Hacker news</a></li>
-</ul>
-</div>
-
+</footer><!-- /.post-info -->      <h2></h2>
     </div><!-- /.entry-content -->
     <div class="comments">
       <h2>Comments</h2>
       <div id="disqus_thread"></div>
       <script type="text/javascript">
         var disqus_shortname = 'gmpy-dev';
-        var disqus_identifier = 'blog/2016/psutil-netbsd-support';
-        var disqus_url = 'https://gmpy.dev/blog/2016/psutil-netbsd-support';
+        var disqus_identifier = 'blog/2025/my-title';
+        var disqus_url = 'https://gmpy.dev/blog/2025/my-title';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//gmpy-dev.disqus.com/embed.js';
