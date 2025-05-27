@@ -27,8 +27,12 @@ _ := $(shell mkdir -p .git/hooks/ && ln -sf ../../scripts/git_pre_commit.py .git
 
 clean:  ## Remove build files
 	rm -rf $(OUTPUTDIR)
-	rm -rfv `find . -type d -name __pycache__ \
+	@rm -rfv `find . \
+		-type d -name __pycache__ \
 		-o -type f -name \*.pyc`
+	@rm -rfv \
+		.pytest_cache \
+		.ruff_cache/
 
 install-sysdeps:  ## Install system deps
 	sudo apt install markdownlint
