@@ -116,10 +116,11 @@ These are from when I started moving my first steps with Python in 2005. Listed 
 Contacts
 --------
 
-* Email: `g.rodola@gmail.com <g.rodola@gmail.com>`__
 * `GitHub <http://github.com/giampaolo>`__
 * `Twitter <https://twitter.com/grodola>`__
 * `Linkedin <https://www.linkedin.com/in/grodola/>`__
+* Email: `g.rodola@gmail.com <g.rodola@gmail.com>`__ (`PGP public key
+  </static/pgp.txt>`__, `keybase.io <https://keybase.io/grodola>`__)
 
 .. _`psutil`: https://github.com/giampaolo/psutil
 .. _`pyftpdlib`: https://github.com/giampaolo/pyftpdlib
