@@ -45,8 +45,8 @@ represents the 0.28% of the total, around 15.000 downloads per day.
 ## The pain
 
 Maintaining 2.7 support in psutil had become increasingly difficult, but still
-possible. E.g. I could still run tests by using [old PYPI
-backports](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85).
+possible. E.g. I could still run tests by using
+[old PYPI backports](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85).
 GitHub Actions could still be
 [tweaked](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112)
 to run tests and produce 2.7 wheels on Linux and macOS. Not on Windows though,
@@ -54,23 +54,24 @@ for which I had to use a separate service (Appveyor). Still, the amount of
 hacks in psutil source code necessary to support Python 2.7 piled up over the
 years, and became quite big. Some disadvantages that come to mind:
 
-* Having to maintain a Python compatibility layers like
+- Having to maintain a Python compatibility layers like
   [psutil/_compat.py](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py).
   This translated in extra extra code and extra imports.
-* The C compatibility layer to differentiate between Python 2 and 3 (`#if
+- The C compatibility layer to differentiate between Python 2 and 3
+  (`#if
   PY_MAJOR_VERSION <= 3`, etc.).
-* Dealing with the string vs. unicode differences, both in Python and in C.
-* Inability to use modern language features, especially f-strings.
-* Inability to freely use `enum`s, which created a difference on how CONSTANTS
+- Dealing with the string vs. unicode differences, both in Python and in C.
+- Inability to use modern language features, especially f-strings.
+- Inability to freely use `enum`s, which created a difference on how CONSTANTS
   were exposed in terms of API.
-* Having to install a specific version of `pip` and other (outdated)
+- Having to install a specific version of `pip` and other (outdated)
   [deps](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85).
-* Relying on the third-party Appveyor CI service to run tests and produce 2.7
+- Relying on the third-party Appveyor CI service to run tests and produce 2.7
   wheels.
-* Running 4 extra CI jobs on every commit (Linux, macOS, Windows 32-bit,
+- Running 4 extra CI jobs on every commit (Linux, macOS, Windows 32-bit,
   Windows 64-bit) making the CI slower and more subject to failures (we have
   quite a bit of flaky tests).
-* The distribution of 7 wheels specific for Python 2.7. E.g. in the previous
+- The distribution of 7 wheels specific for Python 2.7. E.g. in the previous
   release I had to upload:
 
 ```
@@ -90,12 +91,13 @@ The removal was done in
 1500 lines of code (nice!). **It felt liberating**. In doing so, in the doc I
 still made the promise that the 6.1.\* serie will keep supporting Python 2.7
 and will receive **critical bug-fixes only** (no new features). It will be
-maintained in a specific [python2
-branch](https://github.com/giampaolo/psutil/tree/python2). I explicitly kept
-the
+maintained in a specific
+[python2 branch](https://github.com/giampaolo/psutil/tree/python2). I
+explicitly kept the
 [setup.py](https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py)
 script compatible with Python 2.7 in terms of syntax, so that, when the tarball
-is fetched from PYPI, it will emit an informative error message on `pip install
+is fetched from PYPI, it will emit an informative error message on
+`pip install
 psutil`. The user trying to install psutil on Python 2.7 will see:
 
 ```
@@ -114,7 +116,7 @@ pip2 install psutil==6.1.*
 
 ## Related tickets
 
-* 2017-06: [#1053](https://github.com/giampaolo/psutil/issues/1053)
-* 2022-04: [#2099](https://github.com/giampaolo/psutil/pull/2099)
-* 2023-04: [#2246](https://github.com/giampaolo/psutil/pull/2246)
-* 2024-12: [PR-635](https://github.com/giampaolo/psutil/pull/2481)
+- 2017-06: [#1053](https://github.com/giampaolo/psutil/issues/1053)
+- 2022-04: [#2099](https://github.com/giampaolo/psutil/pull/2099)
+- 2023-04: [#2246](https://github.com/giampaolo/psutil/pull/2246)
+- 2024-12: [PR-635](https://github.com/giampaolo/psutil/pull/2481)

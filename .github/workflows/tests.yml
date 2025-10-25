@@ -35,11 +35,11 @@ jobs:
   linters:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-    - name: 'Run linters'
-      run: |
-        sudo apt install markdownlint
-        python3 -m pip install --upgrade black ruff rstcheck
-        python3 -m pip freeze
-        make lint-all
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - name: "Run linters"
+        run: |
+          sudo apt install markdownlint
+          python3 -m pip install --upgrade black ruff rstcheck
+          python3 -m pip freeze
+          make lint-all

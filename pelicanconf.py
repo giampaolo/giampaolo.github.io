@@ -95,12 +95,33 @@ DIRECT_TEMPLATES = ["index", "tags", "categories", "archives"]
 
 # --- others
 
+
+def month_abbr(dt):
+    months = [
+        "",
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ]
+    return months[dt.month]
+
+
 JINJA_FILTERS = {
     "sort_by_tags": functools.partial(
         sorted,
         key=lambda tags: (len(tags[1]), -ord(tags[0].name[0])),
         reverse=True,
-    )
+    ),
+    "month_abbr": month_abbr,
 }
 
 DEFAULT_DATE_FORMAT = "%d %b %Y"

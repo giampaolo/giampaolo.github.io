@@ -3,7 +3,6 @@
 import os
 import datetime
 
-
 MD_TEMPLATE = """\
 Title: My title
 Date: {}
