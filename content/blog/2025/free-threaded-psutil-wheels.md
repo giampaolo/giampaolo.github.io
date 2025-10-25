@@ -37,9 +37,10 @@ binary package** without having to build it from source. This is especially
 important for packages with **C extensions**, like psutil, which is largely
 written in C. Such packages often have complex build requirements and require a
 working C compiler. On Windows, that means installing **Visual Studio** or the
-Build Tools, which can take several gigabytes and a significant setup effort.
+Build Tools, which can take several gigabytes and a *significant* setup effort.
 Providing wheels spare users from this hassle, makes installation far simpler
-and is effectively **essential for the users** of that package.
+and is effectively **essential for the users** of that package. You basically
+`pip install psutil` and you're done.
 
 ## What it means for library authors
 
@@ -64,6 +65,8 @@ psutil-7.1.2-cp314-cp314t-win_amd64.whl
 psutil-7.1.2-cp314-cp314t-win_arm64.whl
 ```
 
+This also multiplies CI jobs and slows down the test matrix (see
+[build.yml](https://github.com/giampaolo/psutil/blob/7dfd0ed34fe70ffd879ae62d21aabd4a8ed06d6f/.github/workflows/build.yml)).
 A **true universal wheel** would greatly reduce this overhead, allowing a
 single wheel to support multiple Python versions and platforms. Hopefully,
 **Python 3.15** will simplify this process. Two competing proposals, [PEP
