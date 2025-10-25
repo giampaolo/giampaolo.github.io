@@ -1,4 +1,4 @@
-Title: Wheels for Free-Threaded Python Now Available in psutil
+Title: Wheels for free-threaded Python now available in psutil
 Date: 2025-10-25
 Tags: psutil, python, wheels
 Authors: Giampaolo Rodola
@@ -36,19 +36,18 @@ When a library author provides a wheel, users can install a **pre-compiled
 binary package** without having to build it from source. This is especially
 important for packages with **C extensions**, like psutil, which is largely
 written in C. Such packages often have complex build requirements and require a
-working C compiler. On Windows, that means installing **Visual Studio** or the
-Build Tools, which can take several gigabytes and a *significant* setup effort.
-Providing wheels spare users from this hassle, makes installation far simpler
-and is effectively **essential for the users** of that package. You basically
-`pip install psutil` and you're done.
+installing a C compiler. On Windows, that means installing **Visual Studio** or
+the Build Tools, which can take several gigabytes and a *significant* setup
+effort. Providing wheels spare users from this hassle, makes installation far
+simpler, and is effectively **essential for the users** of that package. You
+basically `pip install psutil` and you're done.
 
 ## What it means for library authors
 
 Currently, **universal wheels for free-threaded Python do not exist**. Each
-wheel must be built specifically for a Python version and its GIL
-configuration. For example, authors need to create separate wheels for Python
-3.13 and 3.14. In practical terms, this means that on each release you have to
-distribute *a lot* of files:
+wheel must be built specifically for a Python version. Right now authors must
+create separate wheels for Python 3.13 and 3.14. Which means distributing *a
+lot* of files already:
 
 ```
 psutil-7.1.2-cp313-cp313t-macosx_10_13_x86_64.whl
@@ -72,9 +71,10 @@ single wheel to support multiple Python versions and platforms. Hopefully,
 **Python 3.15** will simplify this process. Two competing proposals, [PEP
 803](https://www.python.org/dev/peps/pep-0803/) and [PEP
 809](https://www.python.org/dev/peps/pep-0809/), aim to standardize wheel
-naming and metadata to allow **a single wheel to cover multiple Python versions
-and platforms**. That would drastically reduce distribution complexity for
-library authors.
+naming and metadata to allow producing **a single wheel that cover multiple
+Python versions**. That would drastically reduce distribution complexity for
+library authors, and it's fair to say it's essential for free-threaded CPython
+to truly succeed.
 
 ## How to install free-threaded psutil
 
