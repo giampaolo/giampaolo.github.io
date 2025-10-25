@@ -73,7 +73,7 @@ free-threaded Python.</p>
 <p>When a library author provides a wheel, users can install a <strong>pre-compiled
 binary package</strong> without having to build it from source. This is especially
 important for packages with <strong>C extensions</strong>, like psutil, which is largely
-written in C. Such packages often have complex build requirements and require a
+written in C. Such packages often have complex build requirements and require
 installing a C compiler. On Windows, that means installing <strong>Visual Studio</strong> or
 the Build Tools, which can take several gigabytes and a <em>significant</em> setup
 effort. Providing wheels spare users from this hassle, makes installation far
@@ -105,7 +105,7 @@ single wheel to support multiple Python versions and platforms. Hopefully,
 <strong>Python 3.15</strong> will simplify this process. Two competing proposals, <a href="https://www.python.org/dev/peps/pep-0803/">PEP
 803</a> and <a href="https://www.python.org/dev/peps/pep-0809/">PEP
 809</a>, aim to standardize wheel
-naming and metadata to allow producing <strong>a single wheel that cover multiple
+naming and metadata to allow producing <strong>a single wheel that covers multiple
 Python versions</strong>. That would drastically reduce distribution complexity for
 library authors, and it's fair to say it's essential for free-threaded CPython
 to truly succeed.</p>
