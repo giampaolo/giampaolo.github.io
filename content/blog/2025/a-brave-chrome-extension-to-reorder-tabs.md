@@ -15,7 +15,7 @@ decided to spend a little time writing my own. It turns out it's incredibly
 easy. Here's how you can create a simple Brave extension. The same process
 should also work for Chrome.
 
-* Put these 2 files in a folder:
+- Put these 2 files in a folder:
 
 `manifest.json`:
 
@@ -55,8 +55,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 ```
 
-* Go to `brave://extensions/` (`chrome://extensions/` for Chrome).
-* Enable `Developer Mode` (top right).
-* Click `Load unpacked` and select your folder.
-* To observe debug messages printed in the console, click on `Service Worker`.
-* After editing `background.js`, click the refresh icon to apply the changes.
+- Go to `brave://extensions/` (`chrome://extensions/` for Chrome).
+- Enable `Developer Mode` (top right).
+- Click `Load unpacked` and select your folder.
+- To observe debug messages printed in the console, click on `Service Worker`.
+- After editing `background.js`, click the refresh icon to apply the changes.

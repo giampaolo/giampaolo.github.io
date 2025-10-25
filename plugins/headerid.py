@@ -3,7 +3,6 @@ from pelican.readers import PelicanHTMLTranslator
 from pelican import signals
 from docutils import nodes
 
-
 LINK_CHAR = "¶"
 
 

@@ -4,25 +4,23 @@ branch is
 `master` branch is never touched and only stores the auto-generated HTML
 content based off of `gh-pages` branch.
 
-Setup
-=====
+# Setup
 
-* Install python deps:
+- Install python deps:
 
 ```
 make install-pydeps
 ```
 
-* Run server locally (<http://127.0.0.1:8000>):
+- Run server locally (<http://127.0.0.1:8000>):
 
 ```
 make serve
 ```
 
-Make a new blog post
-====================
+# Make a new blog post
 
-* under `gh-pages`, create a new file, e.g.
+- under `gh-pages`, create a new file, e.g.
   `content/blog/2020/new-blog-post.rst`; use `make create-blogpost`
 
 ```
@@ -35,14 +33,14 @@ New blog post
 Hello world!
 ```
 
-* test it:
+- test it:
 
 ```bash
 # after this connect to http://127.0.0.1:8000/
 make clean html serve
 ```
 
-* commit it:
+- commit it:
 
 ```bash
 git add content/blog/2020/new-blog-post.rst
@@ -50,23 +48,22 @@ git ci -am "new blog post"
 git push
 ```
 
-* publish it:
+- publish it:
 
 ```bash
 make github
 ```
 
-* within 1 minute or something, GitHub will automatically update gmpy.dev content.
+- within 1 minute or something, GitHub will automatically update gmpy.dev
+  content.
 
-Link to an internal blog post
-=============================
+# Link to an internal blog post
 
 ```
 `blog post <../2013/making-constants-part-of-your-api-is-evil>`_
 ```
 
-Image
-=====
+# Image
 
 ```
 .. raw:: html

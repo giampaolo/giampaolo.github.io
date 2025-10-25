@@ -10,9 +10,9 @@ start adopting pytest into psutil (see
 [psutil/#2446](https://github.com/giampaolo/psutil/issues/2446)). The
 advantages over unittest are numerous, but the two I cared about most are:
 
-* Being able to use base `assert` statements instead of unittest's
+- Being able to use base `assert` statements instead of unittest's
   `self.assert*()` APIs.
-* The excellent [pytest-xdist](https://pypi.org/project/pytest-xdist/)
+- The excellent [pytest-xdist](https://pypi.org/project/pytest-xdist/)
   extension, that lets you run tests in parallel, basically for free.
 
 Beyond that, I don't rely on any pytest-specific features in the code, like
@@ -20,10 +20,10 @@ Beyond that, I don't rely on any pytest-specific features in the code, like
 still organize tests in classes, with each one inheriting from
 `unittest.TestCase`. Why?
 
-* I like unittest's `self.addCleanup` too much to give it up (see some
+- I like unittest's `self.addCleanup` too much to give it up (see some
   [usages](https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/__init__.py#L984-L1010)).
   I find it superior to fixtures. Less magical and more explicit.
-* I want users to be able to test their psutil installation in production
+- I want users to be able to test their psutil installation in production
   environments where pytest might not be installed. To accommodate this, I
   created a minimal "fake" pytest class that emulates essential features like
   `pytest.raises`, `@pytest.skip` etc. (see
@@ -34,8 +34,8 @@ most frustrating aspects: slow startup times.
 
 # pytest invocation is slow
 
-To measure pytest's startup time, let's run a very [simple
-test](https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236)
+To measure pytest's startup time, let's run a very
+[simple test](https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236)
 where execution time won't significantly affect the results:
 
 ```text
@@ -122,9 +122,10 @@ active plugins:
 ```
 
 It turns out `PYTEST_DISABLE_PLUGIN_AUTOLOAD` environment variable can be used
-to disable them. By running `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
---trace-config --collect-only` again I can see that the following plugins
-disappeared:
+to disable them. By running
+`PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
+--trace-config --collect-only` again I
+can see that the following plugins disappeared:
 
 ```text
 anyio
@@ -228,7 +229,8 @@ $ python3 -m pytest -p xdist -n auto --dist loadgroup
 
 # Disable some default plugins
 
-pytests also loads quite a bunch of plugins by default (see output of `pytest
+pytests also loads quite a bunch of plugins by default (see output of
+`pytest
 --trace-config --collect-only`). I tried to disable some of them with:
 
 ```
@@ -240,8 +242,7 @@ pytest -p no:junitxml -p no:doctest -p no:nose -p no:pastebin
 # Optimizing test collection time
 
 By default, pytest searches the entire directory for tests, adding unnecessary
-overhead. In `pyproject.toml` you can tell pytest where test files
-are located:
+overhead. In `pyproject.toml` you can tell pytest where test files are located:
 
 ```toml
 [tool.pytest.ini_options]
@@ -275,5 +276,5 @@ in [PR-2538](https://github.com/giampaolo/psutil/pull/2538).
 
 # Other links which may be useful
 
-* [https://github.com/zupo/awesome-pytest-speedup](https://github.com/zupo/awesome-pytest-speedup)
-* [https://projects.gentoo.org/python/guide/pytest.html](https://projects.gentoo.org/python/guide/pytest.html)
+- [https://github.com/zupo/awesome-pytest-speedup](https://github.com/zupo/awesome-pytest-speedup)
+- [https://projects.gentoo.org/python/guide/pytest.html](https://projects.gentoo.org/python/guide/pytest.html)

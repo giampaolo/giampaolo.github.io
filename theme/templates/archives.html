@@ -30,7 +30,7 @@
             {% for year, articles in date_year|groupby( 'date.year' )|sort(reverse=True) %}
                 {% for article in articles %}
                     <li>
-                    <a>{{ article.date.strftime('%b')  }}</a>: <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a>
+                    <a>{{ article.date|month_abbr  }}</a>: <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a>
                     <!--
                     —
                     {% for tag in article.tags|sort %}
