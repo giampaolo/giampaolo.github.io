@@ -1,5 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - python</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.python.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2025-04-04T00:00:00+02:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Speedup pytest startup</title><link href="https://gmpy.dev/blog/2025/speedup-pytest-startup" rel="alternate"></link><published>2025-04-04T00:00:00+02:00</published><updated>2025-04-04T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-04-04:/blog/2025/speedup-pytest-startup</id><summary type="html">&lt;h1&gt;Preface: the migration to pytest&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - python</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.python.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2025-10-25T00:00:00+02:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Wheels for free-threaded Python now available in psutil</title><link href="https://gmpy.dev/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil" rel="alternate"></link><published>2025-10-25T00:00:00+02:00</published><updated>2025-10-25T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-10-25:/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil</id><summary type="html">&lt;p&gt;With the release of &lt;strong&gt;psutil 7.1.2&lt;/strong&gt;, wheels for free-threaded Python are now
+available. This milestone was achieved largely through a &lt;strong&gt;community effort&lt;/strong&gt;,
+as several internal refactorings to the C code were required to make it
+possible (see &lt;a href="https://github.com/giampaolo/psutil/issues/2565#issuecomment-2910225647"&gt;issue #2565&lt;/a&gt;).
+Many of these changes were contributed by &lt;a href="https://github.com/lysnikolaou"&gt;Lysandros
+Nikolaou …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;With the release of &lt;strong&gt;psutil 7.1.2&lt;/strong&gt;, wheels for free-threaded Python are now
+available. This milestone was achieved largely through a &lt;strong&gt;community effort&lt;/strong&gt;,
+as several internal refactorings to the C code were required to make it
+possible (see &lt;a href="https://github.com/giampaolo/psutil/issues/2565#issuecomment-2910225647"&gt;issue #2565&lt;/a&gt;).
+Many of these changes were contributed by &lt;a href="https://github.com/lysnikolaou"&gt;Lysandros
+Nikolaou&lt;/a&gt;.
+Thanks to him for the effort and for bearing with me in code reviews! ;-)&lt;/p&gt;
+&lt;h2&gt;What is free-threaded Python?&lt;/h2&gt;
+&lt;p&gt;Free-threaded Python (available since &lt;strong&gt;Python 3.13&lt;/strong&gt;) refers to Python builds
+that are compiled with the &lt;strong&gt;GIL (Global Interpreter Lock) disabled&lt;/strong&gt;, allowing
+true parallel execution of Python bytecodes across multiple threads. This is
+particularly beneficial for &lt;strong&gt;CPU-bound applications&lt;/strong&gt;, as it enables better
+utilization of multi-core processors.&lt;/p&gt;
+&lt;h2&gt;The state of free-threaded wheels&lt;/h2&gt;
+&lt;p&gt;According to Hugo van Kemenade's &lt;a href="https://hugovk.github.io/free-threaded-wheels/"&gt;free-threaded wheels
+tracker&lt;/a&gt;, the adoption of
+free-threaded wheels among the &lt;strong&gt;top 360 most-downloaded PyPI packages with C
+extensions&lt;/strong&gt; is still limited. Only &lt;strong&gt;128 out of these 360 packages&lt;/strong&gt; provide
+wheels compiled for free-threaded Python, meaning they can run on Python builds
+with the GIL disabled. This shows that, while progress has been made, most
+popular packages with C extensions still do not offer ready-made wheels for
+free-threaded Python.&lt;/p&gt;
+&lt;h2&gt;What it means for users&lt;/h2&gt;
+&lt;p&gt;When a library author provides a wheel, users can install a &lt;strong&gt;pre-compiled
+binary package&lt;/strong&gt; without having to build it from source. This is especially
+important for packages with &lt;strong&gt;C extensions&lt;/strong&gt;, like psutil, which is largely
+written in C. Such packages often have complex build requirements and require a
+installing a C compiler. On Windows, that means installing &lt;strong&gt;Visual Studio&lt;/strong&gt; or
+the Build Tools, which can take several gigabytes and a &lt;em&gt;significant&lt;/em&gt; setup
+effort. Providing wheels spare users from this hassle, makes installation far
+simpler, and is effectively &lt;strong&gt;essential for the users&lt;/strong&gt; of that package. You
+basically &lt;code&gt;pip install psutil&lt;/code&gt; and you're done.&lt;/p&gt;
+&lt;h2&gt;What it means for library authors&lt;/h2&gt;
+&lt;p&gt;Currently, &lt;strong&gt;universal wheels for free-threaded Python do not exist&lt;/strong&gt;. Each
+wheel must be built specifically for a Python version. Right now authors must
+create separate wheels for Python 3.13 and 3.14. Which means distributing &lt;em&gt;a
+lot&lt;/em&gt; of files already:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;psutil-7.1.2-cp313-cp313t-macosx_10_13_x86_64.whl
+psutil-7.1.2-cp313-cp313t-macosx_11_0_arm64.whl
+psutil-7.1.2-cp313-cp313t-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl
+psutil-7.1.2-cp313-cp313t-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
+psutil-7.1.2-cp313-cp313t-win_amd64.whl
+psutil-7.1.2-cp313-cp313t-win_arm64.whl
+psutil-7.1.2-cp314-cp314t-macosx_10_15_x86_64.whl
+psutil-7.1.2-cp314-cp314t-macosx_11_0_arm64.whl
+psutil-7.1.2-cp314-cp314t-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl
+psutil-7.1.2-cp314-cp314t-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
+psutil-7.1.2-cp314-cp314t-win_amd64.whl
+psutil-7.1.2-cp314-cp314t-win_arm64.whl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This also multiplies CI jobs and slows down the test matrix (see
+&lt;a href="https://github.com/giampaolo/psutil/blob/7dfd0ed34fe70ffd879ae62d21aabd4a8ed06d6f/.github/workflows/build.yml"&gt;build.yml&lt;/a&gt;).
+A &lt;strong&gt;true universal wheel&lt;/strong&gt; would greatly reduce this overhead, allowing a
+single wheel to support multiple Python versions and platforms. Hopefully,
+&lt;strong&gt;Python 3.15&lt;/strong&gt; will simplify this process. Two competing proposals, &lt;a href="https://www.python.org/dev/peps/pep-0803/"&gt;PEP
+803&lt;/a&gt; and &lt;a href="https://www.python.org/dev/peps/pep-0809/"&gt;PEP
+809&lt;/a&gt;, aim to standardize wheel
+naming and metadata to allow producing &lt;strong&gt;a single wheel that cover multiple
+Python versions&lt;/strong&gt;. That would drastically reduce distribution complexity for
+library authors, and it's fair to say it's essential for free-threaded CPython
+to truly succeed.&lt;/p&gt;
+&lt;h2&gt;How to install free-threaded psutil&lt;/h2&gt;
+&lt;p&gt;You can now install psutil for free-threaded Python directly via &lt;code&gt;pip&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pip&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;psutil&lt;span class="w"&gt; &lt;/span&gt;--only-binary&lt;span class="o"&gt;=&lt;/span&gt;:all:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This ensures you get the &lt;strong&gt;pre-compiled wheels&lt;/strong&gt; without triggering a source
+build.&lt;/p&gt;</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="wheels"></category></entry><entry><title>Speedup pytest startup</title><link href="https://gmpy.dev/blog/2025/speedup-pytest-startup" rel="alternate"></link><published>2025-04-04T00:00:00+02:00</published><updated>2025-04-04T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-04-04:/blog/2025/speedup-pytest-startup</id><summary type="html">&lt;h1&gt;Preface: the migration to pytest&lt;/h1&gt;
 &lt;p&gt;Last year, after 17 years since the inception of the project, I decided to
 start adopting pytest into psutil (see
 &lt;a href="https://github.com/giampaolo/psutil/issues/2446"&gt;psutil/#2446&lt;/a&gt;). The
@@ -33,8 +106,8 @@ still organize tests in classes, with each one inheriting from
 &lt;p&gt;But that's a separate topic. What I want to focus on here is one of pytest's
 most frustrating aspects: slow startup times.&lt;/p&gt;
 &lt;h1&gt;pytest invocation is slow&lt;/h1&gt;
-&lt;p&gt;To measure pytest's startup time, let's run a very &lt;a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236"&gt;simple
-test&lt;/a&gt;
+&lt;p&gt;To measure pytest's startup time, let's run a very
+&lt;a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236"&gt;simple test&lt;/a&gt;
 where execution time won't significantly affect the results:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
 ============================= test session starts =============================
@@ -108,9 +181,10 @@ active plugins:
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;It turns out &lt;code&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD&lt;/code&gt; environment variable can be used
-to disable them. By running &lt;code&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
---trace-config --collect-only&lt;/code&gt; again I can see that the following plugins
-disappeared:&lt;/p&gt;
+to disable them. By running
+&lt;code&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
+--trace-config --collect-only&lt;/code&gt; again I
+can see that the following plugins disappeared:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;anyio
 pytest_cov
 pytest_instafail
@@ -197,7 +271,8 @@ tests in parallel, we'll manually enable &lt;code&gt;xdist&lt;/code&gt;:&lt;/p&g
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;Disable some default plugins&lt;/h1&gt;
-&lt;p&gt;pytests also loads quite a bunch of plugins by default (see output of &lt;code&gt;pytest
+&lt;p&gt;pytests also loads quite a bunch of plugins by default (see output of
+&lt;code&gt;pytest
 --trace-config --collect-only&lt;/code&gt;). I tried to disable some of them with:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pytest -p no:junitxml -p no:doctest -p no:nose -p no:pastebin
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -205,8 +280,7 @@ tests in parallel, we'll manually enable &lt;code&gt;xdist&lt;/code&gt;:&lt;/p&g
 &lt;p&gt;...but that didn't make much of a difference.&lt;/p&gt;
 &lt;h1&gt;Optimizing test collection time&lt;/h1&gt;
 &lt;p&gt;By default, pytest searches the entire directory for tests, adding unnecessary
-overhead. In &lt;code&gt;pyproject.toml&lt;/code&gt; you can tell pytest where test files
-are located:&lt;/p&gt;
+overhead. In &lt;code&gt;pyproject.toml&lt;/code&gt; you can tell pytest where test files are located:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[tool.pytest.ini_options]&lt;/span&gt;
 &lt;span class="n"&gt;testpaths&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;psutil/tests/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -234,7 +308,7 @@ in &lt;a href="https://github.com/giampaolo/psutil/pull/2538"&gt;PR-2538&lt;/a&g
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://github.com/zupo/awesome-pytest-speedup"&gt;https://github.com/zupo/awesome-pytest-speedup&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://projects.gentoo.org/python/guide/pytest.html"&gt;https://projects.gentoo.org/python/guide/pytest.html&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="pytest"></category><category term="performance"></category></entry><entry><title>My title</title><link href="https://gmpy.dev/blog/2025/my-title" rel="alternate"></link><published>2025-02-26T00:00:00+01:00</published><updated>2025-02-26T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-02-26:/blog/2025/my-title</id><content type="html">&lt;h2&gt;&lt;/h2&gt;</content><category term="2025"></category><category term="psutil"></category><category term="python"></category></entry><entry><title>psutil: drop Python 2.7 support</title><link href="https://gmpy.dev/blog/2025/psutil-drop-python-27-support" rel="alternate"></link><published>2025-02-13T00:00:00+01:00</published><updated>2025-02-13T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-02-13:/blog/2025/psutil-drop-python-27-support</id><summary type="html">&lt;p&gt;About dropping Python 2.7 support in psutil, 3 years ago
+&lt;/ul&gt;</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="pytest"></category><category term="performance"></category></entry><entry><title>psutil: drop Python 2.7 support</title><link href="https://gmpy.dev/blog/2025/psutil-drop-python-27-support" rel="alternate"></link><published>2025-02-13T00:00:00+01:00</published><updated>2025-02-13T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-02-13:/blog/2025/psutil-drop-python-27-support</id><summary type="html">&lt;p&gt;About dropping Python 2.7 support in psutil, 3 years ago
 &lt;a href="https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432"&gt;I stated&lt;/a&gt;:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Not a chance, for many years to come. [Python 2.7] currently represents 7-10%
@@ -276,8 +350,8 @@ Python 2.7!&lt;/p&gt;
 represents the 0.28% of the total, around 15.000 downloads per day.&lt;/p&gt;
 &lt;h2&gt;The pain&lt;/h2&gt;
 &lt;p&gt;Maintaining 2.7 support in psutil had become increasingly difficult, but still
-possible. E.g. I could still run tests by using &lt;a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85"&gt;old PYPI
-backports&lt;/a&gt;.
+possible. E.g. I could still run tests by using
+&lt;a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85"&gt;old PYPI backports&lt;/a&gt;.
 GitHub Actions could still be
 &lt;a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112"&gt;tweaked&lt;/a&gt;
 to run tests and produce 2.7 wheels on Linux and macOS. Not on Windows though,
@@ -288,7 +362,8 @@ years, and became quite big. Some disadvantages that come to mind:&lt;/p&gt;
 &lt;li&gt;Having to maintain a Python compatibility layers like
   &lt;a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py"&gt;psutil/_compat.py&lt;/a&gt;.
   This translated in extra extra code and extra imports.&lt;/li&gt;
-&lt;li&gt;The C compatibility layer to differentiate between Python 2 and 3 (&lt;code&gt;#if
+&lt;li&gt;The C compatibility layer to differentiate between Python 2 and 3
+  (&lt;code&gt;#if
   PY_MAJOR_VERSION &amp;lt;= 3&lt;/code&gt;, etc.).&lt;/li&gt;
 &lt;li&gt;Dealing with the string vs. unicode differences, both in Python and in C.&lt;/li&gt;
 &lt;li&gt;Inability to use modern language features, especially f-strings.&lt;/li&gt;
@@ -319,12 +394,13 @@ psutil-6.1.1-cp27-cp27mu-manylinux2010_x86_64.whl
 1500 lines of code (nice!). &lt;strong&gt;It felt liberating&lt;/strong&gt;. In doing so, in the doc I
 still made the promise that the 6.1.* serie will keep supporting Python 2.7
 and will receive &lt;strong&gt;critical bug-fixes only&lt;/strong&gt; (no new features). It will be
-maintained in a specific &lt;a href="https://github.com/giampaolo/psutil/tree/python2"&gt;python2
-branch&lt;/a&gt;. I explicitly kept
-the
+maintained in a specific
+&lt;a href="https://github.com/giampaolo/psutil/tree/python2"&gt;python2 branch&lt;/a&gt;. I
+explicitly kept the
 &lt;a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py"&gt;setup.py&lt;/a&gt;
 script compatible with Python 2.7 in terms of syntax, so that, when the tarball
-is fetched from PYPI, it will emit an informative error message on &lt;code&gt;pip install
+is fetched from PYPI, it will emit an informative error message on
+&lt;code&gt;pip install
 psutil&lt;/code&gt;. The user trying to install psutil on Python 2.7 will see:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;pip2&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;psutil
 As&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;version&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;7&lt;/span&gt;.0.0&lt;span class="w"&gt; &lt;/span&gt;psutil&lt;span class="w"&gt; &lt;/span&gt;no&lt;span class="w"&gt; &lt;/span&gt;longer&lt;span class="w"&gt; &lt;/span&gt;supports&lt;span class="w"&gt; &lt;/span&gt;Python&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;.7.

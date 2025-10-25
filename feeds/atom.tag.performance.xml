@@ -33,8 +33,8 @@ still organize tests in classes, with each one inheriting from
 &lt;p&gt;But that's a separate topic. What I want to focus on here is one of pytest's
 most frustrating aspects: slow startup times.&lt;/p&gt;
 &lt;h1&gt;pytest invocation is slow&lt;/h1&gt;
-&lt;p&gt;To measure pytest's startup time, let's run a very &lt;a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236"&gt;simple
-test&lt;/a&gt;
+&lt;p&gt;To measure pytest's startup time, let's run a very
+&lt;a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236"&gt;simple test&lt;/a&gt;
 where execution time won't significantly affect the results:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
 ============================= test session starts =============================
@@ -108,9 +108,10 @@ active plugins:
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;It turns out &lt;code&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD&lt;/code&gt; environment variable can be used
-to disable them. By running &lt;code&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
---trace-config --collect-only&lt;/code&gt; again I can see that the following plugins
-disappeared:&lt;/p&gt;
+to disable them. By running
+&lt;code&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
+--trace-config --collect-only&lt;/code&gt; again I
+can see that the following plugins disappeared:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;anyio
 pytest_cov
 pytest_instafail
@@ -197,7 +198,8 @@ tests in parallel, we'll manually enable &lt;code&gt;xdist&lt;/code&gt;:&lt;/p&g
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;Disable some default plugins&lt;/h1&gt;
-&lt;p&gt;pytests also loads quite a bunch of plugins by default (see output of &lt;code&gt;pytest
+&lt;p&gt;pytests also loads quite a bunch of plugins by default (see output of
+&lt;code&gt;pytest
 --trace-config --collect-only&lt;/code&gt;). I tried to disable some of them with:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pytest -p no:junitxml -p no:doctest -p no:nose -p no:pastebin
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -205,8 +207,7 @@ tests in parallel, we'll manually enable &lt;code&gt;xdist&lt;/code&gt;:&lt;/p&g
 &lt;p&gt;...but that didn't make much of a difference.&lt;/p&gt;
 &lt;h1&gt;Optimizing test collection time&lt;/h1&gt;
 &lt;p&gt;By default, pytest searches the entire directory for tests, adding unnecessary
-overhead. In &lt;code&gt;pyproject.toml&lt;/code&gt; you can tell pytest where test files
-are located:&lt;/p&gt;
+overhead. In &lt;code&gt;pyproject.toml&lt;/code&gt; you can tell pytest where test files are located:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[tool.pytest.ini_options]&lt;/span&gt;
 &lt;span class="n"&gt;testpaths&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;psutil/tests/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;

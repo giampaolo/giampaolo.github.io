@@ -75,8 +75,8 @@ still organize tests in classes, with each one inheriting from
 <p>But that's a separate topic. What I want to focus on here is one of pytest's
 most frustrating aspects: slow startup times.</p>
 <h1>pytest invocation is slow</h1>
-<p>To measure pytest's startup time, let's run a very <a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236">simple
-test</a>
+<p>To measure pytest's startup time, let's run a very
+<a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236">simple test</a>
 where execution time won't significantly affect the results:</p>
 <div class="highlight"><pre><span></span><code>$ time python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
 ============================= test session starts =============================
@@ -150,9 +150,10 @@ active plugins:
 </code></pre></div>
 
 <p>It turns out <code>PYTEST_DISABLE_PLUGIN_AUTOLOAD</code> environment variable can be used
-to disable them. By running <code>PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
---trace-config --collect-only</code> again I can see that the following plugins
-disappeared:</p>
+to disable them. By running
+<code>PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
+--trace-config --collect-only</code> again I
+can see that the following plugins disappeared:</p>
 <div class="highlight"><pre><span></span><code>anyio
 pytest_cov
 pytest_instafail
@@ -239,7 +240,8 @@ tests in parallel, we'll manually enable <code>xdist</code>:</p>
 </code></pre></div>
 
 <h1>Disable some default plugins</h1>
-<p>pytests also loads quite a bunch of plugins by default (see output of <code>pytest
+<p>pytests also loads quite a bunch of plugins by default (see output of
+<code>pytest
 --trace-config --collect-only</code>). I tried to disable some of them with:</p>
 <div class="highlight"><pre><span></span><code>pytest -p no:junitxml -p no:doctest -p no:nose -p no:pastebin
 </code></pre></div>
@@ -247,8 +249,7 @@ tests in parallel, we'll manually enable <code>xdist</code>:</p>
 <p>...but that didn't make much of a difference.</p>
 <h1>Optimizing test collection time</h1>
 <p>By default, pytest searches the entire directory for tests, adding unnecessary
-overhead. In <code>pyproject.toml</code> you can tell pytest where test files
-are located:</p>
+overhead. In <code>pyproject.toml</code> you can tell pytest where test files are located:</p>
 <div class="highlight"><pre><span></span><code><span class="k">[tool.pytest.ini_options]</span>
 <span class="n">testpaths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;psutil/tests/&quot;</span><span class="p">]</span>
 </code></pre></div>

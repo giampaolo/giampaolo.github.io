@@ -80,8 +80,8 @@ Python 2.7!</p>
 represents the 0.28% of the total, around 15.000 downloads per day.</p>
 <h2>The pain</h2>
 <p>Maintaining 2.7 support in psutil had become increasingly difficult, but still
-possible. E.g. I could still run tests by using <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">old PYPI
-backports</a>.
+possible. E.g. I could still run tests by using
+<a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">old PYPI backports</a>.
 GitHub Actions could still be
 <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112">tweaked</a>
 to run tests and produce 2.7 wheels on Linux and macOS. Not on Windows though,
@@ -92,7 +92,8 @@ years, and became quite big. Some disadvantages that come to mind:</p>
 <li>Having to maintain a Python compatibility layers like
   <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py">psutil/_compat.py</a>.
   This translated in extra extra code and extra imports.</li>
-<li>The C compatibility layer to differentiate between Python 2 and 3 (<code>#if
+<li>The C compatibility layer to differentiate between Python 2 and 3
+  (<code>#if
   PY_MAJOR_VERSION &lt;= 3</code>, etc.).</li>
 <li>Dealing with the string vs. unicode differences, both in Python and in C.</li>
 <li>Inability to use modern language features, especially f-strings.</li>
@@ -123,12 +124,13 @@ psutil-6.1.1-cp27-cp27mu-manylinux2010_x86_64.whl
 1500 lines of code (nice!). <strong>It felt liberating</strong>. In doing so, in the doc I
 still made the promise that the 6.1.* serie will keep supporting Python 2.7
 and will receive <strong>critical bug-fixes only</strong> (no new features). It will be
-maintained in a specific <a href="https://github.com/giampaolo/psutil/tree/python2">python2
-branch</a>. I explicitly kept
-the
+maintained in a specific
+<a href="https://github.com/giampaolo/psutil/tree/python2">python2 branch</a>. I
+explicitly kept the
 <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py">setup.py</a>
 script compatible with Python 2.7 in terms of syntax, so that, when the tarball
-is fetched from PYPI, it will emit an informative error message on <code>pip install
+is fetched from PYPI, it will emit an informative error message on
+<code>pip install
 psutil</code>. The user trying to install psutil on Python 2.7 will see:</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip2<span class="w"> </span>install<span class="w"> </span>psutil
 As<span class="w"> </span>of<span class="w"> </span>version<span class="w"> </span><span class="m">7</span>.0.0<span class="w"> </span>psutil<span class="w"> </span>no<span class="w"> </span>longer<span class="w"> </span>supports<span class="w"> </span>Python<span class="w"> </span><span class="m">2</span>.7.
