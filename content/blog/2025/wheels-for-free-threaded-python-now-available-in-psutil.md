@@ -66,5 +66,18 @@ A **true universal wheel** would greatly reduce this overhead, allowing a
 single wheel to support multiple Python versions and platforms. Hopefully,
 **Python 3.15** will simplify this process. Two competing proposals, [PEP
 803](https://www.python.org/dev/peps/pep-0803/) and [PEP
-809](https://www.python.org/dev/peps/pep-0809/), are exploring standardized
-wheel naming and metadata to support free-threaded builds more transparently.
+809](https://www.python.org/dev/peps/pep-0809/), are meant to solve this
+problem: allowing a **single wheel to cover multiple Python versions and
+platforms**. That would drastically reduce distribution complexity for library
+authors.
+
+## How to install free-threaded psutil
+
+You can now install psutil for free-threaded Python directly via `pip`:
+
+```bash
+pip install psutil --only-binary=:all:
+```
+
+This ensures you get the **pre-compiled** wheels without triggering a source
+build.
