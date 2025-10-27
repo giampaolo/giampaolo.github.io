@@ -86,3 +86,7 @@ pip install psutil --only-binary=:all:
 
 This ensures you get the **pre-compiled wheels** without triggering a source
 build.
+
+## External links
+
+* [Reddit](https://www.reddit.com/r/Python/comments/1ofrx8v/comment/nllztz6/)
