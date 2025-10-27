@@ -72,7 +72,11 @@ to truly succeed.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This ensures you get the &lt;strong&gt;pre-compiled wheels&lt;/strong&gt; without triggering a source
-build.&lt;/p&gt;</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="wheels"></category></entry><entry><title>Speedup pytest startup</title><link href="https://gmpy.dev/blog/2025/speedup-pytest-startup" rel="alternate"></link><published>2025-04-04T00:00:00+02:00</published><updated>2025-04-04T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-04-04:/blog/2025/speedup-pytest-startup</id><summary type="html">&lt;h1&gt;Preface: the migration to pytest&lt;/h1&gt;
+build.&lt;/p&gt;
+&lt;h2&gt;External links&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.reddit.com/r/Python/comments/1ofrx8v/comment/nllztz6/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="wheels"></category></entry><entry><title>Speedup pytest startup</title><link href="https://gmpy.dev/blog/2025/speedup-pytest-startup" rel="alternate"></link><published>2025-04-04T00:00:00+02:00</published><updated>2025-04-04T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-04-04:/blog/2025/speedup-pytest-startup</id><summary type="html">&lt;h1&gt;Preface: the migration to pytest&lt;/h1&gt;
 &lt;p&gt;Last year, after 17 years since the inception of the project, I decided to
 start adopting pytest into psutil (see
 &lt;a href="https://github.com/giampaolo/psutil/issues/2446"&gt;psutil/#2446&lt;/a&gt;). The
