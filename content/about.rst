@@ -56,6 +56,8 @@ Projects
     :target: https://pepy.tech/project/pysendfile
     :alt: Downloads
 
+* `psleak`_: test framework to detect memory and resource leaks in Python C extensions.  *(2025 - now)*
+
 python-dev contributions
 ------------------------
 
@@ -125,6 +127,7 @@ Contacts
 .. _`psutil`: https://github.com/giampaolo/psutil
 .. _`pyftpdlib`: https://github.com/giampaolo/pyftpdlib
 .. _`pysendfile`: https://github.com/giampaolo/pysendfile
+.. _`psleak`: https://github.com/giampaolo/psleak
 .. _`33671`: https://bugs.python.org/issue33671
 .. _`10882`: https://bugs.python.org/issue10882
 .. _`17552`: https://bugs.python.org/issue17552
