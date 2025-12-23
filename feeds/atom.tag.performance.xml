@@ -207,9 +207,11 @@ tests in parallel, we'll manually enable &lt;code&gt;xdist&lt;/code&gt;:&lt;/p&g
 &lt;p&gt;...but that didn't make much of a difference.&lt;/p&gt;
 &lt;h1&gt;Optimizing test collection time&lt;/h1&gt;
 &lt;p&gt;By default, pytest searches the entire directory for tests, adding unnecessary
-overhead. In &lt;code&gt;pyproject.toml&lt;/code&gt; you can tell pytest where test files are located:&lt;/p&gt;
+overhead. In &lt;code&gt;pyproject.toml&lt;/code&gt; you can tell pytest where test files are located,
+and only to consider &lt;code&gt;test_*.py&lt;/code&gt; files:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[tool.pytest.ini_options]&lt;/span&gt;
 &lt;span class="n"&gt;testpaths&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;psutil/tests/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;python_files&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;test_*.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;With this I saved another 0.03 seconds. Before:&lt;/p&gt;

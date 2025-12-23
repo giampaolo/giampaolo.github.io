@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!--<title>Giampaolo Rodola</title>-->
     <title>Giampaolo Rodola</title>
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
@@ -38,6 +40,75 @@
 
 <!-- blog posts -->
         <ol id="posts-list" class="hfeed" start="4">
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2014/reimplementing-netstat-in-python" rel="bookmark"
+                   title="Permalink to Reimplementing netstat in Python">Reimplementing netstat in Python</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2014-03-10T00:00:00+01:00">
+        Created: 10 mar 2014,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/network">network</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.0 is out and with it I finally managed to implement something I've been wanting to have for a long time: netstat-like functionalities (see <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=387">ticket</a>). Similarly to <cite>&quot;netstat -antp&quot;</cite> on UNIX you can now list system-wide connections in pure python and also determine <strong>what process (PID) is using a particular connection</strong>:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_connections</span><span class="p">())</span>
+<span class="p">[</span><span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">587</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+ <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">6379</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+ <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.1.1&#39;</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+ <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;10.0.3.1&#39;</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+ <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">631</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+ <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+ <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="mi">3389</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+ <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">34785</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="mi">3591</span><span class="p">),</span>
+ <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">56359</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="mi">3591</span><span class="p">),</span>
+ <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;::&#39;</span><span class="p">,</span> <span class="mi">56720</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">)]</span>
+<span class="o">&gt;&gt;&gt;</span>
+</pre></div>
+<p>This is yet another functionality which can be used for monitoring purposes. For example, say you want to make sure your HTTP server is running on port 80, you can do something like this:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">psutil</span>
+
+<span class="k">def</span> <span class="nf">check_listening_port</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if the given TCP port is busy and in LISTEN mode.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">conn</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">net_connections</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;tcp&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">conn</span><span class="o">.</span><span class="n">laddr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">port</span> <span class="ow">and</span> <span class="n">conn</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">psutil</span><span class="o">.</span><span class="n">CONN_LISTEN</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">check_listening_port</span><span class="p">(</span><span class="mi">80</span><span class="p">))</span>
+</pre></div>
+<div class="section" id="netstat-in-pure-python">
+<h2>Netstat in pure python<a class="headerlink" href="#netstat-in-pure-python" title="Permalink to this headline">¶</a></h2>
+<p>Here it is, in 65 lines of code: <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/netstat.py">netstat.py</a>. Pretty neat right? ;-)</p>
+</div>
+<div class="section" id="implementation-s">
+<h2>Implementation(s)<a class="headerlink" href="#implementation-s" title="Permalink to this headline">¶</a></h2>
+<p>As always, each platform required its own, different, implementation. Luckily for some platforms (OSX, Windows) I was able to reuse and customize some code from the existing <cite>Process.connections()</cite> implementation which was already in place. For those of you who are interested in knowing how this was done here's the source code references:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/_pslinux.py#L741">Linux</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/arch/windows/socks.c">Windows</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/arch/freebsd/sys_socks.c">FreeBSD</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/_psutil_sunos.c#L1115">Solaris</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/_psutil_osx.c#L1072">OSX</a></li>
+</ul>
+<p>Hopefully this will help whoever needs to do this into another language. The only platform where this is sort of clunky is OSX, which does not expose anything to list all system-wide sockets in a single shot, so you're forced to query each process. That means you'll need root privileges otherwise you'll get an access denied error. For what it's worth, I took a look at <cite>lsof</cite> and it has the same limitation and netstat runs with SUID. Well, I guess this is it. I'll leave you with <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_connections">some docs</a>. For the next one I'm planning on working on a couple of other network-related functionalities: <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=376">&quot;ifconfig&quot;</a> and <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=250">NIC speeds</a>. But that's for another time...</p>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
     <li><article class="hentry">
         <header>
             <h1><a href="https://gmpy.dev/blog/2014/psutil-20-api-redesign" rel="bookmark"

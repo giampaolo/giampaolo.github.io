@@ -1,5 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - psutil</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.psutil.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2025-10-25T00:00:00+02:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Wheels for free-threaded Python now available in psutil</title><link href="https://gmpy.dev/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil" rel="alternate"></link><published>2025-10-25T00:00:00+02:00</published><updated>2025-10-25T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-10-25:/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil</id><summary type="html">&lt;p&gt;With the release of &lt;strong&gt;psutil 7.1.2&lt;/strong&gt;, wheels for free-threaded Python are now
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - psutil</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.psutil.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2025-12-23T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>C heap introspection in psutil</title><link href="https://gmpy.dev/blog/2025/psutil-heap-introspection-apis" rel="alternate"></link><published>2025-12-23T00:00:00+01:00</published><updated>2025-12-23T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-12-23:/blog/2025/psutil-heap-introspection-apis</id><summary type="html">&lt;p&gt;Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
+track Python object counts, follow reference graphs. But leaks inside &lt;strong&gt;C
+extension modules&lt;/strong&gt; are another story. Traditional memory metrics such as RSS
+and VMS frequently fail to reveal them because Python's memory allocator sits
+above the platform's …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
+track Python object counts, follow reference graphs. But leaks inside &lt;strong&gt;C
+extension modules&lt;/strong&gt; are another story. Traditional memory metrics such as RSS
+and VMS frequently fail to reveal them because Python's memory allocator sits
+above the platform's native heap (see
+&lt;a href="https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator"&gt;pymalloc&lt;/a&gt;).
+If something in an extension calls &lt;code&gt;malloc()&lt;/code&gt; without a corresponding
+&lt;code&gt;free()&lt;/code&gt;, that memory often won't show up where you expect it. You have a
+leak, and &lt;strong&gt;you don't know&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;psutil 7.2.0 introduces two new APIs for &lt;strong&gt;C heap introspection&lt;/strong&gt;, designed
+specifically to catch these kinds of native leaks. They give you a window
+directly into the underlying platform allocator (e.g. glibc's malloc), letting
+you track how much memory the C layer is actually consuming.&lt;/p&gt;
+&lt;p&gt;These C functions bypass Python entirely. They don't reflect Python object
+memory, arenas, pools, or anything managed by
+&lt;a href="https://docs.python.org/3/c-api/memory.html"&gt;pymalloc&lt;/a&gt;. Instead, they examine
+the allocator that C extensions actually use. If your RSS is flat but your C
+heap usage climbs, you now have a way to see it.&lt;/p&gt;
+&lt;h2&gt;Why native heap introspection matters&lt;/h2&gt;
+&lt;p&gt;Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL,
+cryptography, lxml, psycopg, PyTorch, custom in-house modules, etc. And even
+cPython itself, which implements many of its standard library modules in C. If
+any of these components mishandle memory at the C level, you get a leak that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Doesn't show up in Python reference counts (&lt;a href="https://docs.python.org/dev/library/sys.html#sys.getrefcount"&gt;sys.getrefcount&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Doesn't show up in &lt;a href="https://docs.python.org/3/library/tracemalloc.html"&gt;tracemalloc module&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Doesn't show up in Python's &lt;a href="https://docs.python.org/dev/library/gc.html"&gt;gc&lt;/a&gt; stats.&lt;/li&gt;
+&lt;li&gt;Often don't show up RSS, VMS or
+  &lt;a href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python"&gt;USS&lt;/a&gt;
+  due to allocator caching, especially for small objects. This can happen, for
+  example, when you forget to &lt;code&gt;Py_DECREF&lt;/code&gt; a Python object.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;psutil's new functions solve this by inspecting platform-native allocator
+state, in a manner similar to Valgrind.&lt;/p&gt;
+&lt;h2&gt;heap_info(): direct allocator statistics&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;heap_info()&lt;/code&gt; exposes the following metrics:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;heap_used&lt;/code&gt;: total number of bytes currently allocated via &lt;code&gt;malloc()&lt;/code&gt;
+  (small allocations).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mmap_used&lt;/code&gt;: total number of bytes currently allocated via &lt;code&gt;mmap()&lt;/code&gt; or
+  via large &lt;code&gt;malloc()&lt;/code&gt; allocations.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;heap_count&lt;/code&gt;: (Windows only) number of private heaps created via
+  &lt;code&gt;HeapCreate()&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_info&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;pheap&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;heap_used&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;5177792&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mmap_used&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;819200&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Reference for what contributes to each field:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Platform&lt;/th&gt;
+&lt;th&gt;Allocation type&lt;/th&gt;
+&lt;th&gt;Field affected&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;UNIX / Windows&lt;/td&gt;
+&lt;td&gt;small &lt;code&gt;malloc()&lt;/code&gt; ≤128 KB without &lt;code&gt;free()&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;heap_used&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;UNIX / Windows&lt;/td&gt;
+&lt;td&gt;large &lt;code&gt;malloc()&lt;/code&gt; &amp;gt;128 KB without &lt;code&gt;free()&lt;/code&gt;, or &lt;code&gt;mmap()&lt;/code&gt; without &lt;code&gt;munmap()&lt;/code&gt; (UNIX)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;mmap_used&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Windows&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;HeapAlloc()&lt;/code&gt; without &lt;code&gt;HeapFree()&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;heap_used&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Windows&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;VirtualAlloc()&lt;/code&gt; without &lt;code&gt;VirtualFree()&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;mmap_used&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Windows&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;HeapCreate()&lt;/code&gt; without &lt;code&gt;HeapDestroy()&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;heap_count&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;heap_trim(): returning unused heap memory&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;heap_trim()&lt;/code&gt; provides a cross-platform way to request that the underlying
+allocator free any unused memory it's holding in the heap (typically small
+&lt;code&gt;malloc()&lt;/code&gt; allocations).&lt;/p&gt;
+&lt;p&gt;In practice, modern allocators rarely comply, so this is not a general-purpose
+memory-reduction tool and won't meaningfully shrink RSS in real programs. Its
+primary value is in &lt;strong&gt;leak detection tools&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Calling &lt;code&gt;heap_trim()&lt;/code&gt; before taking measurements helps reduce allocator
+noise, giving you a cleaner baseline so that changes in &lt;code&gt;heap_used&lt;/code&gt; come from
+the code you're testing, not from internal allocator caching or fragmentation.&lt;/p&gt;
+&lt;h2&gt;Real-world use: finding a C extension leak&lt;/h2&gt;
+&lt;p&gt;The workflow is simple:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Take a baseline snapshot of the heap.&lt;/li&gt;
+&lt;li&gt;Call the C extension hundreds of times.&lt;/li&gt;
+&lt;li&gt;Take another snapshot.&lt;/li&gt;
+&lt;li&gt;Compare.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;psutil&lt;/span&gt;
+
+&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_trim&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;  &lt;span class="c1"&gt;# reduce noise&lt;/span&gt;
+
+&lt;span class="n"&gt;before&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_info&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;my_cext_function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;after&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_info&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;delta heap_used =&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;after&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_used&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;before&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_used&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;delta mmap_used =&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;after&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mmap_used&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;before&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mmap_used&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;If &lt;code&gt;heap_used&lt;/code&gt; or &lt;code&gt;mmap_used&lt;/code&gt;  values increase consistently, you've found a
+native leak.&lt;/p&gt;
+&lt;p&gt;To reduce false positives, repeat the test multiple times, increasing the
+number of calls on each retry. This approach helps distinguish real leaks from
+random noise or transient allocations.&lt;/p&gt;
+&lt;h2&gt;A new tool: psleak&lt;/h2&gt;
+&lt;p&gt;The strategy described above is exactly what I implemented in a new PyPI
+package, which I called &lt;strong&gt;&lt;a href="https://github.com/giampaolo/psleak"&gt;psleak&lt;/a&gt;&lt;/strong&gt;. It
+runs the target function repeatedly, trims the allocator before each run, and
+tracks differences across retries. Memory that grows consistently after several
+runs is flagged as a leak.&lt;/p&gt;
+&lt;p&gt;A minimal test suite looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;psleak&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;MemoryLeakTestCase&lt;/span&gt;
+
+  &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TestLeaks&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MemoryLeakTestCase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+      &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_fun&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+          &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;some_c_function&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;If the C function leaks memory, the test will fail with a descriptive exception:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;psleak.MemoryLeakError: memory kept increasing after 10 runs
+Run # 1: heap=+388160  | uss=+356352  | rss=+327680  | (calls= 200, avg/call=+1940)
+Run # 2: heap=+584848  | uss=+614400  | rss=+491520  | (calls= 300, avg/call=+1949)
+Run # 3: heap=+778320  | uss=+782336  | rss=+819200  | (calls= 400, avg/call=+1945)
+Run # 4: heap=+970512  | uss=+1032192 | rss=+1146880 | (calls= 500, avg/call=+1941)
+Run # 5: heap=+1169024 | uss=+1171456 | rss=+1146880 | (calls= 600, avg/call=+1948)
+Run # 6: heap=+1357360 | uss=+1413120 | rss=+1310720 | (calls= 700, avg/call=+1939)
+Run # 7: heap=+1552336 | uss=+1634304 | rss=+1638400 | (calls= 800, avg/call=+1940)
+Run # 8: heap=+1752032 | uss=+1781760 | rss=+1802240 | (calls= 900, avg/call=+1946)
+Run # 9: heap=+1945056 | uss=+2031616 | rss=+2129920 | (calls=1000, avg/call=+1945)
+Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+1946)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Psleak is now part of the psutil test suite, to make sure that the C code does
+not leak memory. All psutil APIs are tested (see
+&lt;a href="https://github.com/giampaolo/psutil/blob/1a946cfe738045cecf031222cd5078da21946af4/tests/test_memleaks.py"&gt;test_memleaks.py&lt;/a&gt;),
+making it a de facto &lt;strong&gt;regression-testing tool&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;It's worth noting that without inspecting heap metrics, missing calls such as
+&lt;code&gt;Py_CLEAR&lt;/code&gt; and &lt;code&gt;Py_DECREF&lt;/code&gt; often go unnoticed, because they don't affect RSS,
+VMS, and USS. Something I confirmed from experimenting by commenting them
+out. Monitoring the heap is therefore essential to reliably detect memory
+leaks in Python C extensions.&lt;/p&gt;
+&lt;h2&gt;Under the hood&lt;/h2&gt;
+&lt;p&gt;For those interested in seeing how I did this in terms of code:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/linux/heap.c"&gt;Linux&lt;/a&gt;&lt;/strong&gt;:
+  uses glibc's
+  &lt;a href="https://man7.org/linux/man-pages/man3/mallinfo.3.html"&gt;mallinfo2()&lt;/a&gt; to report
+  &lt;code&gt;uordblks&lt;/code&gt; (heap allocations) and &lt;code&gt;hblkhd&lt;/code&gt; (mmap-backed blocks).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/windows/heap.c"&gt;Windows&lt;/a&gt;&lt;/strong&gt;:
+  enumerates heaps and aggregates &lt;code&gt;HeapAlloc&lt;/code&gt; / &lt;code&gt;VirtualAlloc&lt;/code&gt; usage.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/osx/heap.c"&gt;macOS&lt;/a&gt;&lt;/strong&gt;:
+  uses malloc zone statistics.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/bsd/heap.c"&gt;BSD&lt;/a&gt;&lt;/strong&gt;:
+  uses jemalloc's arena and stats interfaces.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Summary&lt;/h2&gt;
+&lt;p&gt;psutil 7.2.0 fills a long-standing observability gap: native-level memory leaks
+in C extensions are now visible directly from Python. You now have a simple
+method to &lt;strong&gt;test C extensions for leaks&lt;/strong&gt;. This turns psutil into not just a
+monitoring library, but a practical debugging tool for Python projects that
+rely on native C extension modules.&lt;/p&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://github.com/giampaolo/psleak"&gt;psleak&lt;/a&gt;&lt;/strong&gt;, the new memory leak
+  testing framework.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://github.com/giampaolo/psutil/pull/2692/"&gt;psutil PR #2692&lt;/a&gt;&lt;/strong&gt;, the
+  implementation.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://github.com/giampaolo/psutil/issues/1275"&gt;psutil issue #1275&lt;/a&gt;&lt;/strong&gt;,
+  the original proposal from 8 years earlier.&lt;/li&gt;
+&lt;/ul&gt;</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="c"></category><category term="memory-leak"></category></entry><entry><title>Wheels for free-threaded Python now available in psutil</title><link href="https://gmpy.dev/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil" rel="alternate"></link><published>2025-10-25T00:00:00+02:00</published><updated>2025-10-25T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-10-25:/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil</id><summary type="html">&lt;p&gt;With the release of &lt;strong&gt;psutil 7.1.2&lt;/strong&gt;, wheels for free-threaded Python are now
 available. This milestone was achieved largely through a &lt;strong&gt;community effort&lt;/strong&gt;,
 as several internal refactorings to the C code were required to make it
 possible (see &lt;a href="https://github.com/giampaolo/psutil/issues/2565#issuecomment-2910225647"&gt;issue #2565&lt;/a&gt;).
@@ -284,9 +476,11 @@ tests in parallel, we'll manually enable &lt;code&gt;xdist&lt;/code&gt;:&lt;/p&g
 &lt;p&gt;...but that didn't make much of a difference.&lt;/p&gt;
 &lt;h1&gt;Optimizing test collection time&lt;/h1&gt;
 &lt;p&gt;By default, pytest searches the entire directory for tests, adding unnecessary
-overhead. In &lt;code&gt;pyproject.toml&lt;/code&gt; you can tell pytest where test files are located:&lt;/p&gt;
+overhead. In &lt;code&gt;pyproject.toml&lt;/code&gt; you can tell pytest where test files are located,
+and only to consider &lt;code&gt;test_*.py&lt;/code&gt; files:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[tool.pytest.ini_options]&lt;/span&gt;
 &lt;span class="n"&gt;testpaths&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;psutil/tests/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;python_files&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;test_*.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;With this I saved another 0.03 seconds. Before:&lt;/p&gt;

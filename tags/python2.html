@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!--<title>Giampaolo Rodola - python</title>-->
     <title>Giampaolo Rodola</title>
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
@@ -26,6 +28,194 @@
 
 <!-- blog posts -->
         <ol id="posts-list" class="hfeed" start="4">
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2022/sublime-text-remember-cursor-position-plugin" rel="bookmark"
+                   title="Permalink to Sublime Text: remember cursor position plugin">Sublime Text: remember cursor position plugin</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2022-03-18T00:00:00+01:00">
+        Created: 18 mar 2022,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/sublime">sublime</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>My editor of choice for Python development is Sublime Text.
+It has been for a very long time (10 years).
+It's fast, minimalist and straight to the point, which is why I always resisted
+the temptation to use more advanced and modern IDEs such as PyCharm or VS code,
+which admittedly have superior auto-completion and refactoring tools.</p>
+<p>There is a very simple feature I've always missed in ST: the
+possibility to &quot;remember&quot; / save the cursor position when a file is closed.
+The only plugin promising to do such a thing is called
+<a class="reference external" href="https://github.com/titoBouzout/BufferScroll">BufferScroll</a>, but for some
+reason it ceased working for me at some point.
+I spent a considerable amount of time Googling for an alternative but, to my
+surprise, I couldn't find any plugin which implements such a simple feature.
+Therefore today I decided to bite the bullet and try to implement this myself,
+by writing my first ST plugin, which I paste below.</p>
+<p>What it does is this:</p>
+<ul class="simple">
+<li>every time a file is closed, save the cursor position (x and y axis) to a JSON file</li>
+<li>if that same file is re-opened, restore the cursor at that position</li>
+</ul>
+<p>What's neat about ST plugins is that they are just Python files which you can
+install by copying them in ST's config directory. On Linux you can copy the
+script below in:</p>
+<p><tt class="docutils literal"><span class="pre">~/.config/sublime-text-3/Packages/User/cursor_positions.py</span></tt></p>
+<p>...and will work out of the box.
+This is exactly the kind of minimalism which I love about ST, and which I've
+always missed in other IDEs.</p>
+<div class="highlight"><pre><span></span><span class="c1"># cursor_positions.py</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A plugin for SublimeText which saves (remembers) cursor position when</span>
+<span class="sd">a file is closed.</span>
+<span class="sd">Install it by copying this file in ~/.config/sublime-text-3/Packages/User/</span>
+<span class="sd">directory (Linux).</span>
+
+<span class="sd">Author: Giampaolo Rodola&#39;</span>
+<span class="sd">License: MIT</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+
+<span class="kn">import</span> <span class="nn">sublime</span>
+<span class="kn">import</span> <span class="nn">sublime_plugin</span>
+
+
+<span class="n">SUBLIME_ROOT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sublime</span><span class="o">.</span><span class="n">packages_path</span><span class="p">(),</span> <span class="s1">&#39;..&#39;</span><span class="p">))</span>
+<span class="n">SESSION_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="n">SUBLIME_ROOT</span><span class="p">,</span> <span class="s2">&quot;Local&quot;</span><span class="p">,</span> <span class="s2">&quot;cursor_positions.session.json&quot;</span><span class="p">)</span>
+<span class="c1"># when reading the session file on startup, we&#39;ll remove entries</span>
+<span class="c1"># older than X days</span>
+<span class="n">RM_FILE_OLDER_THAN_DAYS</span> <span class="o">=</span> <span class="mi">180</span>
+
+
+<span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    </span><span class="si">%s</span><span class="s2">: &quot;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Session</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">SESSION_FILE</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prune_old_entries</span><span class="p">()</span>
+
+    <span class="c1"># --- file</span>
+
+    <span class="k">def</span> <span class="nf">read_session_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">SESSION_FILE</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">write_session_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="c1"># Use the same FS so that the move operation is atomic:</span>
+        <span class="c1"># https://stackoverflow.com/a/18706666</span>
+        <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span>
+                <span class="s2">&quot;wt&quot;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">SESSION_FILE</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">SESSION_FILE</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">prune_old_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_session_file</span><span class="p">()</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">old</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">file</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">old</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">tstamp</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;last_update&quot;</span><span class="p">]</span>
+            <span class="n">last_update</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+                <span class="n">tstamp</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">delta_days</span> <span class="o">=</span> <span class="p">(</span><span class="n">now</span> <span class="o">-</span> <span class="n">last_update</span><span class="p">)</span><span class="o">.</span><span class="n">days</span>
+            <span class="k">if</span> <span class="n">delta_days</span> <span class="o">&gt;</span> <span class="n">RM_FILE_OLDER_THAN_DAYS</span><span class="p">:</span>
+                <span class="n">log</span><span class="p">(</span><span class="s2">&quot;removing old saved file </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">file</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">new</span><span class="p">[</span><span class="n">file</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">new</span> <span class="o">!=</span> <span class="n">old</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_session_file</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+
+    <span class="c1"># --- operations</span>
+
+    <span class="k">def</span> <span class="nf">add_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_session_file</span><span class="p">()</span>
+        <span class="n">d</span><span class="p">[</span><span class="n">file</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">last_update</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_session_file</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">load_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_session_file</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">d</span><span class="p">[</span><span class="n">file</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">Events</span><span class="p">(</span><span class="n">sublime_plugin</span><span class="o">.</span><span class="n">EventListener</span><span class="p">):</span>
+
+    <span class="c1"># --- utils</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">rowcol</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">sel</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">begin</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">pt</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">text_point</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">sel</span><span class="p">()</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">sel</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sublime</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">pt</span><span class="p">))</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">save_cursor_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">file_name</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">file_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="c1"># non-existent file</span>
+        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;saving cursor position for </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">file_name</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">add_entry</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">load_cursor_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="n">entry</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">load_entry</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">file_name</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">entry</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span>
+
+    <span class="c1"># --- callbacks</span>
+
+    <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="c1"># called when a file is closed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_cursor_position</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="c1"># called when a file is opened</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_cursor_position</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
     <li><article class="hentry">
         <header>
             <h1><a href="https://gmpy.dev/blog/2020/new-pelican-website" rel="bookmark"
@@ -246,132 +436,15 @@ The core of Pelican is <a class="reference external" href="https://github.com/gi
 </div>
 
         </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2017/psutil-530-and-full-unicode-support" rel="bookmark"
-                   title="Permalink to psutil 5.3.0 and full unicode support">psutil 5.3.0 and full unicode support</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2017-09-03T00:00:00+02:00">
-        Created: 03 set 2017,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/travel">travel</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.3.0 is finally out. This release is a major one, as it includes tons of improvements and bugfixes, probably like no other previous release. It is interesting to notice how huge the <a class="reference external" href="https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket">diff</a> between 5.2.2 and 5.3.0 is. This is due to the fact that I've been travelling quite a lot this year, so I kept postponing it. It may sound weird but I consider publishing a new release and write a blog post about more stressful than working on the release itself. =). Anyway, here goes.</p>
-<div class="section" id="full-unicode-support">
-<h2>Full Unicode support<a class="headerlink" href="#full-unicode-support" title="Permalink to this headline">¶</a></h2>
-<p>This is the biggest change. In order to achieve this I had to refactor all functions and internals either returning or accepting a string. Incidentally this helped me having a better understanding of how Unicode works and how it should be handled at the C level in terms of differences between Python 2 and 3. Issue <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1040">#1040</a> includes all the reasonings I've been through and potentially serves as a documentation for people who are facing a similar task (handling Unicode in C for both Python 2 and 3). Up until version 5.2.x psutil functions returning a string had different problems as they could:</p>
-<ul class="simple">
-<li>raise decoding error on Python 3 in case of non-ASCII string</li>
-<li>return unicode instead of str (Python 2)</li>
-<li>return incorrect / invalid encoded data in case of non-ASCII string</li>
-</ul>
-<p>5.3.0 fixes these three issues and consolidates the correct handling of Unicode strings. On Windows this was achieved by using Unicode-specific Windows APIs. The notes below describe how Unicode and strings in general are handled internally by psutil and they apply to any API returning a string such as <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.exe">Process.exe</a> or <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.cwd">Process.cwd</a>, including non-filesystem related methods such as <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.username">Process.username</a> or <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.WindowsService.description">WindowsService.description</a>:</p>
-<ul class="simple">
-<li>all strings are encoded by using the OS filesystem encoding (<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.getfilesystemencoding">sys.getfilesystemencoding()</a>) which varies depending on the platform (e.g. &quot;UTF-8&quot; on OSX, &quot;mbcs&quot; on Win)</li>
-<li>no API call is supposed to crash with <cite>UnicodeDecodeError</cite></li>
-<li>instead, in case of badly encoded data returned by the OS, the following error handlers are used to replace the corrupted characters in the string:<ul>
-<li>Python 3: <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.getfilesystemencodeerrors">sys.getfilesystemencodeerrors()</a> (PY 3.6+) or <tt class="docutils literal">&quot;surrogatescape&quot;</tt> on POSIX and &quot;replace&quot; on Windows</li>
-<li>Python 2: &quot;replace&quot;</li>
-</ul>
-</li>
-<li>on Python 2 all APIs return bytes (str type), never unicode</li>
-<li>on Python 2 you can go back to unicode by doing:</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">unicode</span><span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">exe</span><span class="p">(),</span> <span class="n">sys</span><span class="o">.</span><span class="n">getdefaultencoding</span><span class="p">(),</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="section" id="improved-process-iter-function">
-<h2>Improved process_iter() function<a class="headerlink" href="#improved-process-iter-function" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.process_iter">process_iter()</a> accepts two new parameters in order to invoke <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.as_dict">Process.as_dict()</a> internally: <cite>&quot;attrs&quot;</cite> and <cite>&quot;ad_value&quot;</cite>. With this you can iterate over all processes in one shot without having to catch <cite>NoSuchProcess</cite> explicitly. Before:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
-<span class="o">...</span>     <span class="k">try</span><span class="p">:</span>
-<span class="o">...</span>         <span class="n">pinfo</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">])</span>
-<span class="o">...</span>     <span class="k">except</span> <span class="n">psutil</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">:</span>
-<span class="o">...</span>         <span class="k">pass</span>
-<span class="o">...</span>     <span class="k">else</span><span class="p">:</span>
-<span class="o">...</span>         <span class="nb">print</span><span class="p">(</span><span class="n">pinfo</span><span class="p">)</span>
-<span class="o">...</span>
-<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;systemd&#39;</span><span class="p">}</span>
-<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;kthreadd&#39;</span><span class="p">}</span>
-<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ksoftirqd/0&#39;</span><span class="p">}</span>
-<span class="o">...</span>
-</pre></div>
-<p>Now:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">]):</span>
-<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">info</span><span class="p">)</span>
-<span class="o">...</span>
-<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;systemd&#39;</span><span class="p">}</span>
-<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;kthreadd&#39;</span><span class="p">}</span>
-<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ksoftirqd/0&#39;</span><span class="p">}</span>
-</pre></div>
-<p>This improves expressiveness as it makes it possible to use nice list/dict comprehensions. Here's some examples.</p>
-<p>Processes having &quot;python&quot; in their name:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">info</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="s1">&#39;python&#39;</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]])</span>
-<span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;python3&#39;</span><span class="p">,</span> <span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">21947</span><span class="p">},</span>
-<span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">23835</span><span class="p">}]</span>
-</pre></div>
-<p>Processes owned by user:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">getpass</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">([(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getuser</span><span class="p">()])</span>
-<span class="p">(</span><span class="mi">16832</span><span class="p">,</span> <span class="s1">&#39;bash&#39;</span><span class="p">),</span>
-<span class="p">(</span><span class="mi">19772</span><span class="p">,</span> <span class="s1">&#39;ssh&#39;</span><span class="p">),</span>
-<span class="p">(</span><span class="mi">20492</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">)]</span>
-</pre></div>
-<p>Processes actively running:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">([(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">psutil</span><span class="o">.</span><span class="n">STATUS_RUNNING</span><span class="p">])</span>
-<span class="p">[(</span><span class="mi">1150</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Xorg&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;running&#39;</span><span class="p">}),</span>
-<span class="p">(</span><span class="mi">1776</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;unity-panel-service&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;running&#39;</span><span class="p">}),</span>
-<span class="p">(</span><span class="mi">20492</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;running&#39;</span><span class="p">})]</span>
-</pre></div>
-</div>
-<div class="section" id="automatic-overflow-handling-of-numbers">
-<h2>Automatic overflow handling of numbers<a class="headerlink" href="#automatic-overflow-handling-of-numbers" title="Permalink to this headline">¶</a></h2>
-<p>On very busy or long-lived system systems numbers returned by <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.disk_io_counters">disk_io_counters()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_io_counters">net_io_counters()</a> functions may wrap (restart from zero). Up to version 5.2.x you had to take this into account while now this is automatically handled by psutil (see: <a class="reference external" href="https://github.com/giampaolo/psutil/issues/802">#802</a>). If a &quot;counter&quot; restarts from 0 psutil will add the value from the previous call for you so that numbers will never decrease. This is crucial for applications monitoring disk or network I/O in real time. Old behavior can be resumed by passing <cite>nowrap=True</cite> argument.</p>
-</div>
-<div class="section" id="sunos-process-environ">
-<h2>SunOS Process environ()<a class="headerlink" href="#sunos-process-environ" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.environ">Process.environ()</a> is now available also on SunOS (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1091">#1091</a>).</p>
-</div>
-<div class="section" id="other-improvements-and-bug-fixes">
-<h2>Other improvements and bug fixes<a class="headerlink" href="#other-improvements-and-bug-fixes" title="Permalink to this headline">¶</a></h2>
-<p>Amongst others, here's a couple of important bug fixes I'd like to mention:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/pull/1044">#1044</a>: on OSX different <cite>Process</cite> methods could incorrectly raise <cite>AccessDenied</cite> for zombie processes. This was due to poor proc_pidpath OSX API.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/pull/1094">#1094</a>: on Windows, <cite>pid_exists()</cite> may lie due to the poor <cite>OpenProcess</cite> Windows API which can return a handle even when a process PID no longer exists. This had repercussions for many Process methods such as <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.cmdline">cmdline()</a>, <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.environ">environ()</a>, <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.cwd">cwd()</a>, <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.connections">connections()</a> and others which could have unpredictable behaviors such as returning empty data or erroneously raise <cite>NoSuchProcess</cite> exceptions. For the same reason (broken <cite>OpenProcess</cite> API), processes could unexpectedly stick around after using <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.terminate">terminate()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.wait">wait()</a>.</li>
-</ul>
-<p>BSD systems also received some love (NetBSD and OpenBSD in particular). Different memory leaks were fixed and functions returning connected sockets were partially rewritten. The full list of enhancement and bug fixes can be seen <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#530">here</a>.</p>
-</div>
-<div class="section" id="about-me">
-<h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
-<p>I would like to spend a couple more words about my current situation. Last year (2016) I relocated to Prague and remote worked from there the whole year (it's been cool - great city!). This year I have mainly been resting in Turin (Italy) due to some health issues and travelling across Asia once I started to recover. I am currently in Shenzhen, China, and unless the current situation with North Korea gets worse I'm planning to continue my trip until November and visit Taiwan, South Korea and Japan. Once I'm finished the plan is to briefly return to Turin (Italy) and finally return to Prague. By then I will probably be looking for a new (remote) gig again, so if you have anything for me by November feel free to send me a message. ;-)</p>
-</div>
-
-        </div>
     </article></li>
             </ol><!-- /#posts-list -->
   <nav>
     <ul>
         <li><a href="https://gmpy.dev/tags/python.html">&Lang;</a></li>
         <li><a href="https://gmpy.dev/tags/python.html">&lang;</a></li>
-      <li>Page 2 / 5</li>
+      <li>Page 2 / 6</li>
         <li><a href="https://gmpy.dev/tags/python3.html">&rang;</a></li>
-        <li><a href="https://gmpy.dev/tags/python5.html">&Rang;</a></li>
+        <li><a href="https://gmpy.dev/tags/python6.html">&Rang;</a></li>
     </ul>
   </nav>
  <!-- /blog posts -->

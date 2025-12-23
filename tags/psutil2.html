@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!--<title>Giampaolo Rodola - psutil</title>-->
     <title>Giampaolo Rodola</title>
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
@@ -26,6 +28,54 @@
 
 <!-- blog posts -->
         <ol id="posts-list" class="hfeed" start="4">
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2019/system-load-average-on-windows-in-python" rel="bookmark"
+                   title="Permalink to System load average on Windows in Python">System load average on Windows in Python</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2019-05-29T00:00:00+02:00">
+        Created: 29 mag 2019,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/windows">windows</a>,        <a href="https://gmpy.dev/tags/unittest">unittest</a>,        <a href="https://gmpy.dev/tags/travel">travel</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>New <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.6.2 release implements an emulation of <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getloadavg">os.getloadavg()</a> on Windows which was kindly <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1485">contributed by Ammar Askar</a> who originally implemented it for <a class="reference external" href="https://github.com/python/cpython/pull/8357/files">cPython's test suite</a>. This idea has been floating around for quite a while. The first proposal dates back to <a class="reference external" href="https://code.google.com/archive/p/psutil/issues/139">2010</a>, when psutil was still hosted on Google Code, and it popped up <a class="reference external" href="https://github.com/giampaolo/psutil/issues?utf8=%E2%9C%93&amp;q=getloadavg">multiple times</a> throughout the years. There was/is a bunch of info on internet mentioning the bits with which it's theoretically possible to do this (the so called <cite>System Processor Queue Length</cite>), but I couldn't find any real implementation. A <a class="reference external" href="https://www.google.com/search?client=ubuntu&amp;hs=2EI&amp;channel=fs&amp;ei=LafCXO2ZE8PKswX9kY-wAw&amp;q=windows+load+average&amp;oq=windows+load+average&amp;gs_l=psy-ab.3..0j0i22i30l7.12536.13873..14008...0.0..0.482.2591.4-6......0....1..gws-wiz.......0i71j0i131.37ys3SB25pE">Google search</a> tells there is quite some demand for this, but very few tools out there providing this natively (the only one I could find is this <a class="reference external" href="https://blog.sflow.com/2011/02/windows-load-average.html">sFlowTrend</a> tool and <a class="reference external" href="https://www.zabbix.com/forum/zabbix-help/50423-windows-cpu-load">Zabbix</a>), so I'm very happy this finally landed into psutil / Python.</p>
+<div class="section" id="other-improvements-and-bugfixes-in-psutil-5-6-2">
+<h2>Other improvements and bugfixes in psutil 5.6.2<a class="headerlink" href="#other-improvements-and-bugfixes-in-psutil-5-6-2" title="Permalink to this headline">¶</a></h2>
+<p>The full list is <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#562">here</a> but I would like to mention a couple:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">1476</a>: the possibility to set process' high I/O priority on Windows</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">1458</a>: colorized test output. I admit nobody will use this directly but it's very cool and I'm porting it to a bunch of other projects I work on (e.g. pyftpdlib). Also, perhaps this could be a good candidate for a small module to put on PYPI which can also include some functionalities taken from pytest and which I'm gradually re-implementing in unittest module amongst which:<ul>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1478">1478</a>: re-running failed tests</li>
+<li>display test timings/durations: this is something I'm contributing to cPython, see <a class="reference external" href="https://bugs.python.org/issue4080">BPO-4080</a> and and <a class="reference external" href="https://github.com/python/cpython/pull/12271/files">PR-12271</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="about-me">
+<h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
+<p>I'm currently in China (Shenzhen) for a mix of vacation and work, and I will likely take a break from Open Source for a while (likely 2.5 months, during which I will also go to Philippines and Japan - I love Asia ;-)).</p>
+</div>
+<div class="section" id="external">
+<h2>External<a class="headerlink" href="#external" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/bhji0m/new_psutil_562_with_load_average_emulation_on/">Reddit</a></li>
+</ul>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
     <li><article class="hentry">
         <header>
             <h1><a href="https://gmpy.dev/blog/2019/psutil-560-and-process-parents" rel="bookmark"
@@ -329,125 +379,6 @@
 <div class="section" id="other-bug-fixes">
 <h2>Other bug fixes<a class="headerlink" href="#other-bug-fixes" title="Permalink to this headline">¶</a></h2>
 <p>See <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#510">full list</a>.</p>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2016/psutil-550-is-twice-as-fast" rel="bookmark"
-                   title="Permalink to psutil 5.5.0 is twice as fast">psutil 5.5.0 is twice as fast</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2016-11-06T00:00:00+01:00">
-        Created: 06 nov 2016,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>,        <a href="https://gmpy.dev/tags/macos">macos</a>,        <a href="https://gmpy.dev/tags/bsd">bsd</a>,        <a href="https://gmpy.dev/tags/sunos">sunos</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>OK, this is a big one. Starting from psutil 5.0.0 you can query multiple <cite>Process</cite> information around twice as fast than with previous versions (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/799">original ticket</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot">updated doc</a>). It took me 7 months, 108 commits and a massive refactoring of psutil internals (here is the <a class="reference external" href="https://github.com/giampaolo/psutil/pull/937/files">big commit</a>), and I can safely say this is one of the best improvements and long standing issues which have been addressed in a major psutil release. Here goes.</p>
-<div class="section" id="the-problem">
-<h2>The problem<a class="headerlink" href="#the-problem" title="Permalink to this headline">¶</a></h2>
-<p>Except for some cases, the way different process information are retrieved varies depending on the OS. Sometimes it requires reading a file in /proc filesystem (Linux), some other times it requires using C (Windows, BSD, OSX, SunOS), but every time it's done differently. Psutil abstracts this complexity by providing a nice high-level interface so that you, say, call <tt class="docutils literal">Process.name()</tt> without worrying about what happens behind the curtains or on what OS you're on.</p>
-<p>Internally, it is not rare that multiple process info (e.g. <cite>name()</cite>, <cite>ppid()</cite>, <cite>uids()</cite>, <cite>create_time()</cite>) may be fetched by using the same routine. For example, on Linux we read <cite>/proc/stat</cite> to get the process name, terminal, CPU times, creation time, status and parent PID, but only one value is returned and the others are discarded. On Linux the code below reads <cite>/proc/stat</cite> 6 times:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">cpu_times</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">create_time</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">ppid</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">terminal</span><span class="p">()</span>
-</pre></div>
-<p>Another example is BSD. In order to get process name, memory, CPU times and other metrics, a single <cite>sysctl()</cite> call is necessary, but again, because of how psutil used to work so far that same sysctl() call is executed every time (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/2fe3f456321ca1605aaa2b71a7193de59d93075c/psutil/_psutil_bsd.c#L242-L258">here</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/blob/2fe3f456321ca1605aaa2b71a7193de59d93075c/psutil/_psutil_bsd.c#L261-L277">here</a>, and so on), one information is returned (say <cite>name()</cite>) and the rest is discarded. Not anymore.</p>
-</div>
-<div class="section" id="do-it-in-one-shot">
-<h2>Do it in one shot<a class="headerlink" href="#do-it-in-one-shot" title="Permalink to this headline">¶</a></h2>
-<p>It appears clear how the approach described above is not efficient, also considering that applications similar to top, htop, ps or glances usually collect more than one info per-process.
-psutil 5.0.0 introduces a new <cite>oneshot()</cite> context manager. When used, the internal routine is executed once (in the example below on name()) and the other values are cached. The subsequent calls sharing the same internal routine (read <cite>/proc/stat</cite>, call <cite>sysctl()</cite> or whatever) will return the cached value.
-With psutil 5.0.0 the code above can be rewritten like this, and on Linux it will run 2.4 times faster:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">p</span><span class="o">.</span><span class="n">oneshot</span><span class="p">():</span>
-<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
-<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">cpu_times</span><span class="p">()</span>
-<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">create_time</span><span class="p">()</span>
-<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">ppid</span><span class="p">()</span>
-<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
-<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">terminal</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="section" id="implementation">
-<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
-<p>One great thing about psutil design is its abstraction. It is dived in 3 &quot;layers&quot;. The first layer is represented by the main <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/__init__.py#L340">Process class</a> (python), which is what dictates the end-user high-level API. The second layer is the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_pslinux.py#L1097">OS-specific Python module</a> which is thin wrapper on top of the OS-specific <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_linux.c">C extension module</a> (third layer). Because this was organized this way (modularly) the refactoring was reasonably smooth. In order to do this I first refactored those C functions collecting multiple info and grouped them in a single function (e.g. see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_bsd.c#L198-L338">BSD implementation</a>). Then I wrote a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_common.py#L264-L314">decorator</a> which enables the cache only when requested (when entering the context manager) and decorated the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psbsd.py#L491">&quot;grouped functions&quot;</a> with with it. The whole thing is enabled on request by the highest-level <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/__init__.py#L458-L518">oneshot()</a> context manager, which is the only thing which is exposed to the end user. Here's the decorator:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">memoize_when_activated</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A memoize decorator which is disabled by default. It can be</span>
-<span class="sd">    activated and deactivated on request.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">fun</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">fun</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">fun</span><span class="p">]</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">ret</span>
-
-    <span class="k">def</span> <span class="nf">cache_activate</span><span class="p">():</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Activate cache.&quot;&quot;&quot;</span>
-        <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="k">def</span> <span class="nf">cache_deactivate</span><span class="p">():</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deactivate and clear cache.&quot;&quot;&quot;</span>
-        <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-
-    <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activate</span> <span class="o">=</span> <span class="n">cache_activate</span>
-    <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_deactivate</span> <span class="o">=</span> <span class="n">cache_deactivate</span>
-    <span class="k">return</span> <span class="n">wrapper</span>
-</pre></div>
-<p>In order to measure the various speedups I finally wrote a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/scripts/internal/bench_oneshot.py">benchmark script</a> (well, <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/scripts/internal/bench_oneshot_2.py">two</a> actually) and kept tuning until I was sure the various changes made psutil actually faster. The benchmark scripts calculate the speedup you can get if you call all the &quot;grouped&quot; methods together (best case scenario).</p>
-</div>
-<div class="section" id="linux-2-56x-speedup">
-<h2>Linux: +2.56x speedup<a class="headerlink" href="#linux-2-56x-speedup" title="Permalink to this headline">¶</a></h2>
-<p>Linux process is the only pure-python implementation as (almost) all process info are gathered by reading files in the <cite>/proc</cite> filesystem. <cite>/proc</cite> files typically contain different information about the process and <cite>/proc/PID/stat</cite> and <cite>/proc/PID/status</cite> are the perfect examples. That's why on Linux we aggregate them in 3 groups. The relevant part of the Linux implementation can be seen <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_pslinux.py#L1108-L1153">here</a>.</p>
-</div>
-<div class="section" id="windows-from-1-9x-to-6-5x-speedup">
-<h2>Windows: from +1.9x to +6.5x speedup<a class="headerlink" href="#windows-from-1-9x-to-6-5x-speedup" title="Permalink to this headline">¶</a></h2>
-<p>Windows is an interesting one. In normal circumstances, if we're querying a process owned by our user, we group together only process' <cite>num_threads()</cite>, <cite>num_ctx_switches()</cite> and <cite>num_handles()</cite>, getting a +1.9x speedup if we access those methods in one shot. Windows is particular though, because certain methods use a <a class="reference external" href="https://github.com/giampaolo/psutil/issues/304">dual implementation</a>: a &quot;fast method&quot; is attempted first, but if the process is owned by another user it fails with AccessDenied. In that case psutil falls back on using a second &quot;slower&quot; method (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_pswindows.py#L681">here</a> for example).
-The second method is slower because it <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/arch/windows/process_info.c#L790">iterates over all PIDs</a> but differently than &quot;plain&quot; Windows APIs it can be used to <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_windows.c#L2789">get multiple info in one shot</a>: num threads, context switches, handles, CPU times, create time and IO counters. That is why querying processes owned by other users results in an impressive +6.5 speedup.</p>
-</div>
-<div class="section" id="osx-1-92x-speedup">
-<h2>OSX: +1.92x speedup<a class="headerlink" href="#osx-1-92x-speedup" title="Permalink to this headline">¶</a></h2>
-<p>On OSX we can get 2 groups of information. With <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_osx.c#L129">sysctl()</a> syscall we get process parent PID, uids, gids, terminal, create time, name. With <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_osx.c#L183">proc_info()</a> syscall we get CPU times (for PIDs owned by another user) memory metrics and ctx switches. Not bad.</p>
-</div>
-<div class="section" id="bsd-2-18x-speedup">
-<h2>BSD: +2.18x speedup<a class="headerlink" href="#bsd-2-18x-speedup" title="Permalink to this headline">¶</a></h2>
-<p>BSD was an interesting one as we gather a tons of process info just by calling <cite>sysctl()</cite> (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_bsd.c#L199">implementation</a>). In a single shot we get process name, ppid, status, uids, gids, IO counters, CPU and create times, terminal and ctx switches.</p>
-</div>
-<div class="section" id="sunos-1-37-speedup">
-<h2>SunOS: +1.37 speedup<a class="headerlink" href="#sunos-1-37-speedup" title="Permalink to this headline">¶</a></h2>
-<p>SunOS implementation is similar to Linux implementation in that it reads files in <cite>/proc</cite> filesystem but differently from Linux this is done in C. Also in this case, we can group different metrics together (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_psutil_sunos.c#L83-L142">here</a> and <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_psutil_sunos.c#L171-L189">here</a>).</p>
-</div>
-<div class="section" id="external-links">
-<h2>External links<a class="headerlink" href="#external-links" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/5bhn4q/psutil_500_is_around_twice_as_fast/">Reddit</a></li>
-</ul>
 </div>
 
         </div>

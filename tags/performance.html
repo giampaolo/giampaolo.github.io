@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!--<title>Giampaolo Rodola - performance</title>-->
     <title>Giampaolo Rodola</title>
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
@@ -249,9 +251,11 @@ tests in parallel, we'll manually enable <code>xdist</code>:</p>
 <p>...but that didn't make much of a difference.</p>
 <h1>Optimizing test collection time</h1>
 <p>By default, pytest searches the entire directory for tests, adding unnecessary
-overhead. In <code>pyproject.toml</code> you can tell pytest where test files are located:</p>
+overhead. In <code>pyproject.toml</code> you can tell pytest where test files are located,
+and only to consider <code>test_*.py</code> files:</p>
 <div class="highlight"><pre><span></span><code><span class="k">[tool.pytest.ini_options]</span>
 <span class="n">testpaths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;psutil/tests/&quot;</span><span class="p">]</span>
+<span class="n">python_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;test_*.py&quot;</span><span class="p">]</span>
 </code></pre></div>
 
 <p>With this I saved another 0.03 seconds. Before:</p>
