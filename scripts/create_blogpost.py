@@ -6,6 +6,7 @@ import datetime
 MD_TEMPLATE = """\
 Title: My title
 Date: {}
+Slug: my-title
 Tags: psutil, python
 Authors: Giampaolo Rodola
 

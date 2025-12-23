@@ -242,11 +242,13 @@ pytest -p no:junitxml -p no:doctest -p no:nose -p no:pastebin
 # Optimizing test collection time
 
 By default, pytest searches the entire directory for tests, adding unnecessary
-overhead. In `pyproject.toml` you can tell pytest where test files are located:
+overhead. In `pyproject.toml` you can tell pytest where test files are located,
+and only to consider `test_*.py` files:
 
 ```toml
 [tool.pytest.ini_options]
 testpaths = ["psutil/tests/"]
+python_files = ["test_*.py"]
 ```
 
 With this I saved another 0.03 seconds. Before:
