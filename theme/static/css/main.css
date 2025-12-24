@@ -674,4 +674,21 @@ code {
     #banner nav a:link, #banner nav a:visited {
     	padding: 5px 0.5em;
     }
+
+    .newsletter-home {
+        display: none;
+    }
+
+    .archives-right {
+        display: none;
+    }
+
+    .archives-left {
+        width: 100%;
+    }
+
+    .archives {
+    	padding: 0;
+    }
+
 }
