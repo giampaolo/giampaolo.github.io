@@ -1,7 +1,7 @@
 Title: Detect memory leaks of C extensions with psutil and psleak
 Slug: psutil-heap-introspection-apis
 Date: 2025-12-23
-Tags: psutil, python, c, memory-leak, psleak
+Tags: psutil, psleak, python, c
 Authors: Giampaolo Rodola
 
 Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
