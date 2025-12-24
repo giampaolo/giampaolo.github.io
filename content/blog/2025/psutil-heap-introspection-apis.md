@@ -184,6 +184,10 @@ method to **test C extensions for leaks**. This turns psutil into not just a
 monitoring library, but a practical debugging tool for Python projects that
 rely on native C extension modules.
 
+To make leak detection practical, I created
+[psleak](https://github.com/giampaolo/psleak), a test-regression framework
+designed to integrate into Python unit tests.
+
 ## References
 
 - **[psleak](https://github.com/giampaolo/psleak)**, the new memory leak
