@@ -22,15 +22,15 @@ memory, arenas, pools, or anything managed by
 the allocator that C extensions actually use. If your RSS is flat but your C
 heap usage climbs, you now have a way to see it.&lt;/p&gt;
 &lt;h2&gt;Why native heap introspection matters&lt;/h2&gt;
-&lt;p&gt;Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL,
-cryptography, lxml, psycopg, PyTorch, custom in-house modules, etc. And even
-cPython itself, which implements many of its standard library modules in C. If
-any of these components mishandle memory at the C level, you get a leak that:&lt;/p&gt;
+&lt;p&gt;Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL, lxml,
+psycopg, PyTorch, custom in-house modules, etc. And even cPython itself, which
+implements many of its standard library modules in C. If any of these
+components mishandle memory at the C level, you get a leak that:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Doesn't show up in Python reference counts (&lt;a href="https://docs.python.org/dev/library/sys.html#sys.getrefcount"&gt;sys.getrefcount&lt;/a&gt;).&lt;/li&gt;
 &lt;li&gt;Doesn't show up in &lt;a href="https://docs.python.org/3/library/tracemalloc.html"&gt;tracemalloc module&lt;/a&gt;.&lt;/li&gt;
 &lt;li&gt;Doesn't show up in Python's &lt;a href="https://docs.python.org/dev/library/gc.html"&gt;gc&lt;/a&gt; stats.&lt;/li&gt;
-&lt;li&gt;Often don't show up RSS, VMS or
+&lt;li&gt;Often don't show up in RSS, VMS or
   &lt;a href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python"&gt;USS&lt;/a&gt;
   due to allocator caching, especially for small objects. This can happen, for
   example, when you forget to &lt;code&gt;Py_DECREF&lt;/code&gt; a Python object.&lt;/li&gt;
@@ -140,7 +140,7 @@ runs is flagged as a leak.&lt;/p&gt;
           &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;some_c_function&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;If the C function leaks memory, the test will fail with a descriptive exception:&lt;/p&gt;
+&lt;p&gt;If the function leaks memory, the test will fail with a descriptive exception:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;psleak.MemoryLeakError: memory kept increasing after 10 runs
 Run # 1: heap=+388160  | uss=+356352  | rss=+327680  | (calls= 200, avg/call=+1940)
 Run # 2: heap=+584848  | uss=+614400  | rss=+491520  | (calls= 300, avg/call=+1949)

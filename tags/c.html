@@ -68,15 +68,15 @@ memory, arenas, pools, or anything managed by
 the allocator that C extensions actually use. If your RSS is flat but your C
 heap usage climbs, you now have a way to see it.</p>
 <h2>Why native heap introspection matters</h2>
-<p>Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL,
-cryptography, lxml, psycopg, PyTorch, custom in-house modules, etc. And even
-cPython itself, which implements many of its standard library modules in C. If
-any of these components mishandle memory at the C level, you get a leak that:</p>
+<p>Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL, lxml,
+psycopg, PyTorch, custom in-house modules, etc. And even cPython itself, which
+implements many of its standard library modules in C. If any of these
+components mishandle memory at the C level, you get a leak that:</p>
 <ul>
 <li>Doesn't show up in Python reference counts (<a href="https://docs.python.org/dev/library/sys.html#sys.getrefcount">sys.getrefcount</a>).</li>
 <li>Doesn't show up in <a href="https://docs.python.org/3/library/tracemalloc.html">tracemalloc module</a>.</li>
 <li>Doesn't show up in Python's <a href="https://docs.python.org/dev/library/gc.html">gc</a> stats.</li>
-<li>Often don't show up RSS, VMS or
+<li>Often don't show up in RSS, VMS or
   <a href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python">USS</a>
   due to allocator caching, especially for small objects. This can happen, for
   example, when you forget to <code>Py_DECREF</code> a Python object.</li>
@@ -186,7 +186,7 @@ runs is flagged as a leak.</p>
           <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">some_c_function</span><span class="p">)</span>
 </code></pre></div>
 
-<p>If the C function leaks memory, the test will fail with a descriptive exception:</p>
+<p>If the function leaks memory, the test will fail with a descriptive exception:</p>
 <div class="highlight"><pre><span></span><code>psleak.MemoryLeakError: memory kept increasing after 10 runs
 Run # 1: heap=+388160  | uss=+356352  | rss=+327680  | (calls= 200, avg/call=+1940)
 Run # 2: heap=+584848  | uss=+614400  | rss=+491520  | (calls= 300, avg/call=+1949)
