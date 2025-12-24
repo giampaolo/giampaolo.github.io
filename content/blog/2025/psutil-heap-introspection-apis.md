@@ -27,15 +27,15 @@ heap usage climbs, you now have a way to see it.
 
 ## Why native heap introspection matters
 
-Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL,
-cryptography, lxml, psycopg, PyTorch, custom in-house modules, etc. And even
-cPython itself, which implements many of its standard library modules in C. If
-any of these components mishandle memory at the C level, you get a leak that:
+Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL, lxml,
+psycopg, PyTorch, custom in-house modules, etc. And even cPython itself, which
+implements many of its standard library modules in C. If any of these
+components mishandle memory at the C level, you get a leak that:
 
 - Doesn't show up in Python reference counts ([sys.getrefcount](https://docs.python.org/dev/library/sys.html#sys.getrefcount)).
 - Doesn't show up in [tracemalloc module](https://docs.python.org/3/library/tracemalloc.html).
 - Doesn't show up in Python's [gc](https://docs.python.org/dev/library/gc.html) stats.
-- Often don't show up RSS, VMS or
+- Often don't show up in RSS, VMS or
   [USS](https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python)
   due to allocator caching, especially for small objects. This can happen, for
   example, when you forget to `Py_DECREF` a Python object.
@@ -134,7 +134,7 @@ A minimal test suite looks like this:
           self.execute(some_c_function)
 ```
 
-If the C function leaks memory, the test will fail with a descriptive exception:
+If the function leaks memory, the test will fail with a descriptive exception:
 
 ```
 psleak.MemoryLeakError: memory kept increasing after 10 runs
