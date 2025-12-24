@@ -1,4 +1,4 @@
-Title: C heap introspection in psutil
+Title: Detect memory leaks of C extensions with psutil and psleak
 Slug: psutil-heap-introspection-apis
 Date: 2025-12-23
 Tags: psutil, python, c, memory-leak
@@ -192,3 +192,8 @@ rely on native C extension modules.
   implementation.
 - **[psutil issue #1275](https://github.com/giampaolo/psutil/issues/1275)**,
   the original proposal from 8 years earlier.
+
+## Discussion
+
+- [Reddit](https://www.reddit.com/r/Python/comments/1puqgfg/detect_memory_leaks_of_c_extensions_with_psutil/)
+- [Hacker News](https://news.ycombinator.com/item?id=46376608)
