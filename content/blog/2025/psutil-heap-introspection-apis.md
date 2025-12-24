@@ -1,7 +1,7 @@
-Title: C heap introspection in psutil
+Title: Detect memory leaks of C extensions with psutil and psleak
 Slug: psutil-heap-introspection-apis
 Date: 2025-12-23
-Tags: psutil, python, c, memory-leak
+Tags: psutil, python, c, memory-leak, psleak
 Authors: Giampaolo Rodola
 
 Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
@@ -27,15 +27,15 @@ heap usage climbs, you now have a way to see it.
 
 ## Why native heap introspection matters
 
-Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL,
-cryptography, lxml, psycopg, PyTorch, custom in-house modules, etc. And even
-cPython itself, which implements many of its standard library modules in C. If
-any of these components mishandle memory at the C level, you get a leak that:
+Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL, lxml,
+psycopg, PyTorch, custom in-house modules, etc. And even cPython itself, which
+implements many of its standard library modules in C. If any of these
+components mishandle memory at the C level, you get a leak that:
 
 - Doesn't show up in Python reference counts ([sys.getrefcount](https://docs.python.org/dev/library/sys.html#sys.getrefcount)).
 - Doesn't show up in [tracemalloc module](https://docs.python.org/3/library/tracemalloc.html).
 - Doesn't show up in Python's [gc](https://docs.python.org/dev/library/gc.html) stats.
-- Often don't show up RSS, VMS or
+- Often don't show up in RSS, VMS or
   [USS](https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python)
   due to allocator caching, especially for small objects. This can happen, for
   example, when you forget to `Py_DECREF` a Python object.
@@ -134,7 +134,7 @@ A minimal test suite looks like this:
           self.execute(some_c_function)
 ```
 
-If the C function leaks memory, the test will fail with a descriptive exception:
+If the function leaks memory, the test will fail with a descriptive exception:
 
 ```
 psleak.MemoryLeakError: memory kept increasing after 10 runs
@@ -184,6 +184,10 @@ method to **test C extensions for leaks**. This turns psutil into not just a
 monitoring library, but a practical debugging tool for Python projects that
 rely on native C extension modules.
 
+To make leak detection practical, I created
+[psleak](https://github.com/giampaolo/psleak), a test-regression framework
+designed to integrate into Python unit tests.
+
 ## References
 
 - **[psleak](https://github.com/giampaolo/psleak)**, the new memory leak
@@ -192,3 +196,8 @@ rely on native C extension modules.
   implementation.
 - **[psutil issue #1275](https://github.com/giampaolo/psutil/issues/1275)**,
   the original proposal from 8 years earlier.
+
+## Discussion
+
+- [Reddit](https://www.reddit.com/r/Python/comments/1puqgfg/detect_memory_leaks_of_c_extensions_with_psutil/)
+- [Hacker News](https://news.ycombinator.com/item?id=46376608)
