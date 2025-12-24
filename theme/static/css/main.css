@@ -636,6 +636,11 @@ code {
 *****************/
 
 @media only screen and (max-width: 768px) {
+	body {
+		background: red;
+
+	}
+
     .body,
     #banner nav,
     #banner nav ul,
@@ -664,6 +669,7 @@ code {
 
     #content {
     	padding: 10px;
+    	font-size: 20px; /* Base font size: 14px */
     }
 
     #banner nav {
