@@ -636,11 +636,6 @@ code {
 *****************/
 
 @media only screen and (max-width: 768px) {
-	body {
-		background: red;
-
-	}
-
     .body,
     #banner nav,
     #banner nav ul,
@@ -656,9 +651,9 @@ code {
 
     /* Fix header text overlap */
      #banner h1 {
-         line-height: 1.0;
-         margin-top: 10px;
-         margin-bottom: -0.5em;
+		line-height: 1.0;
+		margin-top: 10px;
+		margin-bottom: -0.5em;
      }
 
      #banner h1 strong {
@@ -669,10 +664,14 @@ code {
 
     #content {
     	padding: 10px;
-    	font-size: 20px; /* Base font size: 14px */
+    	font-size: 18px;
     }
 
     #banner nav {
     	margin-bottom: 6px;
+    }
+
+    #banner nav a:link, #banner nav a:visited {
+    	padding: 5px 0.5em;
     }
 }
