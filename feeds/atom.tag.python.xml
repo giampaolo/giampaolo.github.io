@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - python</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.python.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2025-12-23T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>C heap introspection in psutil</title><link href="https://gmpy.dev/blog/2025/psutil-heap-introspection-apis" rel="alternate"></link><published>2025-12-23T00:00:00+01:00</published><updated>2025-12-23T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-12-23:/blog/2025/psutil-heap-introspection-apis</id><summary type="html">&lt;p&gt;Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - python</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.python.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2025-12-23T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Detect memory leaks of C extensions with psutil and psleak</title><link href="https://gmpy.dev/blog/2025/psutil-heap-introspection-apis" rel="alternate"></link><published>2025-12-23T00:00:00+01:00</published><updated>2025-12-23T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-12-23:/blog/2025/psutil-heap-introspection-apis</id><summary type="html">&lt;p&gt;Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
 track Python object counts, follow reference graphs. But leaks inside &lt;strong&gt;C
 extension modules&lt;/strong&gt; are another story. Traditional memory metrics such as RSS
 and VMS frequently fail to reveal them because Python's memory allocator sits
@@ -191,6 +191,11 @@ rely on native C extension modules.&lt;/p&gt;
   implementation.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;&lt;a href="https://github.com/giampaolo/psutil/issues/1275"&gt;psutil issue #1275&lt;/a&gt;&lt;/strong&gt;,
   the original proposal from 8 years earlier.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Discussion&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.reddit.com/r/Python/comments/1puqgfg/detect_memory_leaks_of_c_extensions_with_psutil/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://news.ycombinator.com/item?id=46376608"&gt;Hacker News&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="c"></category><category term="memory-leak"></category></entry><entry><title>Wheels for free-threaded Python now available in psutil</title><link href="https://gmpy.dev/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil" rel="alternate"></link><published>2025-10-25T00:00:00+02:00</published><updated>2025-10-25T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-10-25:/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil</id><summary type="html">&lt;p&gt;With the release of &lt;strong&gt;psutil 7.1.2&lt;/strong&gt;, wheels for free-threaded Python are now
 available. This milestone was achieved largely through a &lt;strong&gt;community effort&lt;/strong&gt;,
 as several internal refactorings to the C code were required to make it

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Giampaolo Rodola - c</title><link>https://gmpy.dev/</link><description>Python enthusiast, core developer, psutil author</description><lastBuildDate>Tue, 23 Dec 2025 00:00:00 +0100</lastBuildDate><item><title>C heap introspection in psutil</title><link>https://gmpy.dev/blog/2025/psutil-heap-introspection-apis</link><description>&lt;p&gt;Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
+<rss version="2.0"><channel><title>Giampaolo Rodola - c</title><link>https://gmpy.dev/</link><description>Python enthusiast, core developer, psutil author</description><lastBuildDate>Tue, 23 Dec 2025 00:00:00 +0100</lastBuildDate><item><title>Detect memory leaks of C extensions with psutil and psleak</title><link>https://gmpy.dev/blog/2025/psutil-heap-introspection-apis</link><description>&lt;p&gt;Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
 track Python object counts, follow reference graphs. But leaks inside &lt;strong&gt;C
 extension modules&lt;/strong&gt; are another story. Traditional memory metrics such as RSS
 and VMS frequently fail to reveal them because Python's memory allocator sits
