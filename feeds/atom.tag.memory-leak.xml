@@ -183,6 +183,9 @@ in C extensions are now visible directly from Python. You now have a simple
 method to &lt;strong&gt;test C extensions for leaks&lt;/strong&gt;. This turns psutil into not just a
 monitoring library, but a practical debugging tool for Python projects that
 rely on native C extension modules.&lt;/p&gt;
+&lt;p&gt;To make leak detection practical, I created
+&lt;a href="https://github.com/giampaolo/psleak"&gt;psleak&lt;/a&gt;, a test-regression framework
+designed to integrate into Python unit tests.&lt;/p&gt;
 &lt;h2&gt;References&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;&lt;a href="https://github.com/giampaolo/psleak"&gt;psleak&lt;/a&gt;&lt;/strong&gt;, the new memory leak
