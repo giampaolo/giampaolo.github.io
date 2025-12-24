@@ -4,11 +4,6 @@
 
 <section id="content" class="body">
 {% if page_name == 'index' %}
-    <div align="center" class="newsletter-home">
-        <h1 style="margin-top:0px">Newsletter</h1>
-        <p>Enter your email address to receive blog updates:</p>
-        {% include 'newsletter.html' %}
-    </div>
 {% else %}
     <h1 class="entry-title">Blog posts for {{ page_name }}</h1>
 {% endif %}
