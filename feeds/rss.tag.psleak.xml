@@ -3,4 +3,4 @@
 track Python object counts, follow reference graphs. But leaks inside &lt;strong&gt;C
 extension modules&lt;/strong&gt; are another story. Traditional memory metrics such as RSS
 and VMS frequently fail to reveal them because Python's memory allocator sits
-above the platform's …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giampaolo Rodola</dc:creator><pubDate>Tue, 23 Dec 2025 00:00:00 +0100</pubDate><guid isPermaLink="false">tag:gmpy.dev,2025-12-23:/blog/2025/psutil-heap-introspection-apis</guid><category>2025</category><category>psutil</category><category>python</category><category>c</category><category>memory-leak</category><category>psleak</category></item></channel></rss>
+above the platform's …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giampaolo Rodola</dc:creator><pubDate>Tue, 23 Dec 2025 00:00:00 +0100</pubDate><guid isPermaLink="false">tag:gmpy.dev,2025-12-23:/blog/2025/psutil-heap-introspection-apis</guid><category>2025</category><category>psutil</category><category>psleak</category><category>python</category><category>c</category></item></channel></rss>
