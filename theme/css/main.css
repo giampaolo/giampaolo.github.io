@@ -344,11 +344,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 		width: 200px;
 	}
 
-	#extras .newsletter p {
-		margin-top:8px;
-		margin-bottom:8px;
-	}
-
 	/* Blogroll */
 	#extras .blogroll {
 	}
@@ -589,21 +584,12 @@ input[type=text] {
 	width:140px
 }
 
-.archives-right .newsletter-text {
-	margin-bottom:10px;
-}
-
 #nav li {
 	padding:0px;
 }
 
 .blogposts-separator {
 	border-top: 3px solid #ccc;
-}
-
-.newsletter-home {
-	border-bottom: 2px solid #CCC;
-	padding-bottom:20px;
 }
 
 a.headerlink {
@@ -674,4 +660,17 @@ code {
     #banner nav a:link, #banner nav a:visited {
     	padding: 5px 0.5em;
     }
+
+    .archives-right {
+        display: none;
+    }
+
+    .archives-left {
+        width: 100%;
+    }
+
+    .archives {
+    	padding: 0;
+    }
+
 }
