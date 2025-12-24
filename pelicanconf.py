@@ -12,7 +12,6 @@ PATH = "content"
 TIMEZONE = "Europe/Rome"
 DEFAULT_LANG = "en"
 GOOGLE_ANALYTICS = "UA-164357405-2"
-DISQUS_SITENAME = "gmpy-dev"
 
 # --- atom / rss feeds (http://127.0.0.1:8000/feeds)
 # Planet python uses:

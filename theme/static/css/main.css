@@ -521,20 +521,6 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 	#add-comment input[type='submit'] {float: right; margin: 0 .5em; height: 34px;}
 	#add-comment * {margin-bottom: .5em;}
 
-/* hide disqus footer */
-#disqus_thread {
-    position: relative;
-}
-#disqus_thread:after {
-    content: "";
-    display: block;
-    height: 55px;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    background: white;
-}
-
 .entry-content {
 	padding-bottom:20px;
 }
