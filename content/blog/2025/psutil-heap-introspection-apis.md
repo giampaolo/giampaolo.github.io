@@ -17,7 +17,7 @@ leak, and you don't know.
 psutil 7.2.0 introduces two new APIs for **C heap introspection**, designed
 specifically to catch these kinds of native leaks. They give you a window
 directly into the underlying platform allocator (e.g. glibc's malloc), letting
-you track how much memory the C layer is actually consuming.
+you track how much memory the C layer actually allocates.
 
 These C functions bypass Python entirely. They don't reflect Python object
 memory, arenas, pools, or anything managed by
@@ -30,12 +30,13 @@ heap usage climbs, you now have a way to see it.
 Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL, lxml,
 psycopg, PyTorch, custom in-house modules, etc. And even cPython itself, which
 implements many of its standard library modules in C. If any of these
-components mishandle memory at the C level, you get a leak that:
+components mishandle memory at the C level, you get a leak that doesn't show up in:
 
-- Doesn't show up in Python reference counts ([sys.getrefcount](https://docs.python.org/dev/library/sys.html#sys.getrefcount)).
-- Doesn't show up in [tracemalloc module](https://docs.python.org/3/library/tracemalloc.html).
-- Doesn't show up in Python's [gc](https://docs.python.org/dev/library/gc.html) stats.
-- Often don't show up in RSS, VMS or
+- Python reference counts
+  ([sys.getrefcount](https://docs.python.org/dev/library/sys.html#sys.getrefcount))
+- [tracemalloc module](https://docs.python.org/3/library/tracemalloc.html)
+- Python's [gc](https://docs.python.org/dev/library/gc.html) stats
+- RSS, VMS or
   [USS](https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python)
   due to allocator caching, especially for small objects. This can happen, for
   example, when you forget to `Py_DECREF` a Python object.
