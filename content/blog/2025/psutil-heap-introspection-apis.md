@@ -4,44 +4,39 @@ Date: 2025-12-23
 Tags: psutil, psleak, python, c
 Authors: Giampaolo Rodola
 
-Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
-track Python object counts, follow reference graphs. But leaks inside **C
-extension modules** are another story. Traditional memory metrics such as RSS
-and VMS frequently fail to reveal them because Python's memory allocator sits
-above the platform's native heap (see
-[pymalloc](https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator)).
-If something in an extension calls ``malloc()`` without a corresponding
-``free()``, that memory often won't show up where you expect it. You have a
-leak, and **you don't know**.
+Memory leaks in Python are usually straightforward to diagnose. Just look at
+RSS, track Python object counts, follow reference graphs, etc. But leaks inside
+**C extension modules** are another story. Traditional memory metrics such as
+RSS and VMS fail to reveal them because Python's memory allocator
+([pymalloc](https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator))
+sits above the platform's native heap. If something in an extension calls
+``malloc()`` without a corresponding ``free()``, that memory often won't show
+up in RSS / VMS. You have a leak, and you don't know.
 
 psutil 7.2.0 introduces two new APIs for **C heap introspection**, designed
 specifically to catch these kinds of native leaks. They give you a window
 directly into the underlying platform allocator (e.g. glibc's malloc), letting
-you track how much memory the C layer is actually consuming.
-
-These C functions bypass Python entirely. They don't reflect Python object
-memory, arenas, pools, or anything managed by
-[pymalloc](https://docs.python.org/3/c-api/memory.html). Instead, they examine
-the allocator that C extensions actually use. If your RSS is flat but your C
-heap usage climbs, you now have a way to see it.
+you track how much memory the C layer actually allocates. If your RSS is flat
+but your C heap usage climbs, you now have a way to see it.
 
 ## Why native heap introspection matters
 
 Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL, lxml,
 psycopg, PyTorch, custom in-house modules, etc. And even cPython itself, which
 implements many of its standard library modules in C. If any of these
-components mishandle memory at the C level, you get a leak that:
+components mishandle memory at the C level, you get a leak that doesn't show up in:
 
-- Doesn't show up in Python reference counts ([sys.getrefcount](https://docs.python.org/dev/library/sys.html#sys.getrefcount)).
-- Doesn't show up in [tracemalloc module](https://docs.python.org/3/library/tracemalloc.html).
-- Doesn't show up in Python's [gc](https://docs.python.org/dev/library/gc.html) stats.
-- Often don't show up in RSS, VMS or
+- Python reference counts
+  ([sys.getrefcount](https://docs.python.org/dev/library/sys.html#sys.getrefcount))
+- [tracemalloc module](https://docs.python.org/3/library/tracemalloc.html)
+- Python's [gc](https://docs.python.org/dev/library/gc.html) stats
+- RSS, VMS or
   [USS](https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python)
   due to allocator caching, especially for small objects. This can happen, for
   example, when you forget to `Py_DECREF` a Python object.
 
-psutil's new functions solve this by inspecting platform-native allocator
-state, in a manner similar to Valgrind.
+psutil's new functions let you query the allocator (e.g. glibc) directly,
+returning low-level metrics from the platform's native heap.
 
 ## heap_info(): direct allocator statistics
 
@@ -80,11 +75,10 @@ allocator free any unused memory it's holding in the heap (typically small
 
 In practice, modern allocators rarely comply, so this is not a general-purpose
 memory-reduction tool and won't meaningfully shrink RSS in real programs. Its
-primary value is in **leak detection tools**.
-
-Calling ``heap_trim()`` before taking measurements helps reduce allocator
-noise, giving you a cleaner baseline so that changes in `heap_used` come from
-the code you're testing, not from internal allocator caching or fragmentation.
+primary value is in leak detection tools. Calling ``heap_trim()`` before taking
+measurements helps reduce allocator noise, giving you a cleaner baseline so
+that changes in `heap_used` come from the code you're testing, not from
+internal allocator caching or fragmentation.
 
 ## Real-world use: finding a C extension leak
 
@@ -150,16 +144,15 @@ Run # 9: heap=+1945056 | uss=+2031616 | rss=+2129920 | (calls=1000, avg/call=+19
 Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+1946)
 ```
 
-Psleak is now part of the psutil test suite, to make sure that the C code does
-not leak memory. All psutil APIs are tested (see
+Psleak is now part of the psutil test suite. All psutil APIs are tested (see
 [test_memleaks.py](https://github.com/giampaolo/psutil/blob/1a946cfe738045cecf031222cd5078da21946af4/tests/test_memleaks.py)),
 making it a de facto **regression-testing tool**.
 
-It's worth noting that without inspecting heap metrics, missing calls such as
-`Py_CLEAR` and `Py_DECREF` often go unnoticed, because they don't affect RSS,
-VMS, and USS. Something I confirmed from experimenting by commenting them
-out. Monitoring the heap is therefore essential to reliably detect memory
-leaks in Python C extensions.
+It's worth noting that without inspecting heap metrics, missing calls in the C
+code such as `Py_CLEAR` and `Py_DECREF` often go unnoticed, because they don't
+affect RSS, VMS, and USS. Something I confirmed from experimenting by
+commenting them out. Monitoring the heap is therefore essential to reliably
+detect memory leaks in Python C extensions.
 
 ## Under the hood
 
@@ -201,3 +194,4 @@ designed to integrate into Python unit tests.
 
 - [Reddit](https://www.reddit.com/r/Python/comments/1puqgfg/detect_memory_leaks_of_c_extensions_with_psutil/)
 - [Hacker News](https://news.ycombinator.com/item?id=46376608)
+- [Medium](https://medium.com/@g.rodola/detect-memory-leaks-of-c-extensions-with-psutil-and-psleak-a0521ba6315f)
