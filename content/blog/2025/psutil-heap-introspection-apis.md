@@ -7,12 +7,11 @@ Authors: Giampaolo Rodola
 Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
 track Python object counts, follow reference graphs, etc. But leaks inside **C
 extension modules** are another story. Traditional memory metrics such as RSS
-and VMS frequently fail to reveal them because Python's memory allocator sits
-above the platform's native heap (see
-[pymalloc](https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator)).
-If something in an extension calls ``malloc()`` without a corresponding
-``free()``, that memory often won't show up where you expect it. You have a
-leak, and you don't know.
+and VMS fail to reveal them because Python's memory allocator
+([pymalloc](https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator))
+sits above the platform's native heap. If something in an extension calls
+``malloc()`` without a corresponding ``free()``, that memory often won't show
+up where you expect it. You have a leak, and you don't know.
 
 psutil 7.2.0 introduces two new APIs for **C heap introspection**, designed
 specifically to catch these kinds of native leaks. They give you a window
