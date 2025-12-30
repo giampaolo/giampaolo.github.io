@@ -12,7 +12,7 @@ above the platform's native heap (see
 [pymalloc](https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator)).
 If something in an extension calls ``malloc()`` without a corresponding
 ``free()``, that memory often won't show up where you expect it. You have a
-leak, and **you don't know**.
+leak, and you don't know.
 
 psutil 7.2.0 introduces two new APIs for **C heap introspection**, designed
 specifically to catch these kinds of native leaks. They give you a window
@@ -150,8 +150,7 @@ Run # 9: heap=+1945056 | uss=+2031616 | rss=+2129920 | (calls=1000, avg/call=+19
 Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+1946)
 ```
 
-Psleak is now part of the psutil test suite, to make sure that the C code does
-not leak memory. All psutil APIs are tested (see
+Psleak is now part of the psutil test suite. All psutil APIs are tested (see
 [test_memleaks.py](https://github.com/giampaolo/psutil/blob/1a946cfe738045cecf031222cd5078da21946af4/tests/test_memleaks.py)),
 making it a de facto **regression-testing tool**.
 
