@@ -1,42 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - c</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.c.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2025-12-23T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Detect memory leaks of C extensions with psutil and psleak</title><link href="https://gmpy.dev/blog/2025/psutil-heap-introspection-apis" rel="alternate"></link><published>2025-12-23T00:00:00+01:00</published><updated>2025-12-23T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-12-23:/blog/2025/psutil-heap-introspection-apis</id><summary type="html">&lt;p&gt;Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
-track Python object counts, follow reference graphs. But leaks inside &lt;strong&gt;C
+track Python object counts, follow reference graphs, etc. But leaks inside &lt;strong&gt;C
 extension modules&lt;/strong&gt; are another story. Traditional memory metrics such as RSS
-and VMS frequently fail to reveal them because Python's memory allocator sits
-above the platform's …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
-track Python object counts, follow reference graphs. But leaks inside &lt;strong&gt;C
+and VMS fail to reveal them because Python's memory allocator
+(&lt;a href="https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator"&gt;pymalloc&lt;/a&gt;)
+sits above the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
+track Python object counts, follow reference graphs, etc. But leaks inside &lt;strong&gt;C
 extension modules&lt;/strong&gt; are another story. Traditional memory metrics such as RSS
-and VMS frequently fail to reveal them because Python's memory allocator sits
-above the platform's native heap (see
-&lt;a href="https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator"&gt;pymalloc&lt;/a&gt;).
-If something in an extension calls &lt;code&gt;malloc()&lt;/code&gt; without a corresponding
-&lt;code&gt;free()&lt;/code&gt;, that memory often won't show up where you expect it. You have a
-leak, and &lt;strong&gt;you don't know&lt;/strong&gt;.&lt;/p&gt;
+and VMS fail to reveal them because Python's memory allocator
+(&lt;a href="https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator"&gt;pymalloc&lt;/a&gt;)
+sits above the platform's native heap. If something in an extension calls
+&lt;code&gt;malloc()&lt;/code&gt; without a corresponding &lt;code&gt;free()&lt;/code&gt;, that memory often won't show
+up in RSS / VMS. You have a leak, and you don't know.&lt;/p&gt;
 &lt;p&gt;psutil 7.2.0 introduces two new APIs for &lt;strong&gt;C heap introspection&lt;/strong&gt;, designed
 specifically to catch these kinds of native leaks. They give you a window
 directly into the underlying platform allocator (e.g. glibc's malloc), letting
-you track how much memory the C layer is actually consuming.&lt;/p&gt;
-&lt;p&gt;These C functions bypass Python entirely. They don't reflect Python object
-memory, arenas, pools, or anything managed by
-&lt;a href="https://docs.python.org/3/c-api/memory.html"&gt;pymalloc&lt;/a&gt;. Instead, they examine
-the allocator that C extensions actually use. If your RSS is flat but your C
-heap usage climbs, you now have a way to see it.&lt;/p&gt;
+you track how much memory the C layer actually allocates. If your RSS is flat
+but your C heap usage climbs, you now have a way to see it.&lt;/p&gt;
 &lt;h2&gt;Why native heap introspection matters&lt;/h2&gt;
 &lt;p&gt;Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL, lxml,
 psycopg, PyTorch, custom in-house modules, etc. And even cPython itself, which
 implements many of its standard library modules in C. If any of these
-components mishandle memory at the C level, you get a leak that:&lt;/p&gt;
+components mishandle memory at the C level, you get a leak that doesn't show up in:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Doesn't show up in Python reference counts (&lt;a href="https://docs.python.org/dev/library/sys.html#sys.getrefcount"&gt;sys.getrefcount&lt;/a&gt;).&lt;/li&gt;
-&lt;li&gt;Doesn't show up in &lt;a href="https://docs.python.org/3/library/tracemalloc.html"&gt;tracemalloc module&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;Doesn't show up in Python's &lt;a href="https://docs.python.org/dev/library/gc.html"&gt;gc&lt;/a&gt; stats.&lt;/li&gt;
-&lt;li&gt;Often don't show up in RSS, VMS or
+&lt;li&gt;Python reference counts
+  (&lt;a href="https://docs.python.org/dev/library/sys.html#sys.getrefcount"&gt;sys.getrefcount&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://docs.python.org/3/library/tracemalloc.html"&gt;tracemalloc module&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Python's &lt;a href="https://docs.python.org/dev/library/gc.html"&gt;gc&lt;/a&gt; stats&lt;/li&gt;
+&lt;li&gt;RSS, VMS or
   &lt;a href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python"&gt;USS&lt;/a&gt;
   due to allocator caching, especially for small objects. This can happen, for
   example, when you forget to &lt;code&gt;Py_DECREF&lt;/code&gt; a Python object.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;psutil's new functions solve this by inspecting platform-native allocator
-state, in a manner similar to Valgrind.&lt;/p&gt;
+&lt;p&gt;psutil's new functions let you query the allocator (e.g. glibc) directly,
+returning low-level metrics from the platform's native heap.&lt;/p&gt;
 &lt;h2&gt;heap_info(): direct allocator statistics&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;heap_info()&lt;/code&gt; exposes the following metrics:&lt;/p&gt;
 &lt;ul&gt;
@@ -48,7 +45,7 @@ state, in a manner similar to Valgrind.&lt;/p&gt;
   &lt;code&gt;HeapCreate()&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Example:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_info&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="n"&gt;pheap&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;heap_used&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;5177792&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mmap_used&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;819200&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -96,10 +93,10 @@ allocator free any unused memory it's holding in the heap (typically small
 &lt;code&gt;malloc()&lt;/code&gt; allocations).&lt;/p&gt;
 &lt;p&gt;In practice, modern allocators rarely comply, so this is not a general-purpose
 memory-reduction tool and won't meaningfully shrink RSS in real programs. Its
-primary value is in &lt;strong&gt;leak detection tools&lt;/strong&gt;.&lt;/p&gt;
-&lt;p&gt;Calling &lt;code&gt;heap_trim()&lt;/code&gt; before taking measurements helps reduce allocator
-noise, giving you a cleaner baseline so that changes in &lt;code&gt;heap_used&lt;/code&gt; come from
-the code you're testing, not from internal allocator caching or fragmentation.&lt;/p&gt;
+primary value is in leak detection tools. Calling &lt;code&gt;heap_trim()&lt;/code&gt; before taking
+measurements helps reduce allocator noise, giving you a cleaner baseline so
+that changes in &lt;code&gt;heap_used&lt;/code&gt; come from the code you're testing, not from
+internal allocator caching or fragmentation.&lt;/p&gt;
 &lt;h2&gt;Real-world use: finding a C extension leak&lt;/h2&gt;
 &lt;p&gt;The workflow is simple:&lt;/p&gt;
 &lt;ol&gt;
@@ -108,7 +105,7 @@ the code you're testing, not from internal allocator caching or fragmentation.&l
 &lt;li&gt;Take another snapshot.&lt;/li&gt;
 &lt;li&gt;Compare.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
 
 &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_trim&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;  &lt;span class="c1"&gt;# reduce noise&lt;/span&gt;
 
@@ -133,10 +130,10 @@ runs the target function repeatedly, trims the allocator before each run, and
 tracks differences across retries. Memory that grows consistently after several
 runs is flagged as a leak.&lt;/p&gt;
 &lt;p&gt;A minimal test suite looks like this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;psleak&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;MemoryLeakTestCase&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  &lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psleak&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;MemoryLeakTestCase&lt;/span&gt;
 
-  &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TestLeaks&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MemoryLeakTestCase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-      &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_fun&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+  &lt;span class="k"&gt;class&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;TestLeaks&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MemoryLeakTestCase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+      &lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;test_fun&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
           &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;some_c_function&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -154,15 +151,14 @@ Run # 9: heap=+1945056 | uss=+2031616 | rss=+2129920 | (calls=1000, avg/call=+19
 Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+1946)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Psleak is now part of the psutil test suite, to make sure that the C code does
-not leak memory. All psutil APIs are tested (see
+&lt;p&gt;Psleak is now part of the psutil test suite. All psutil APIs are tested (see
 &lt;a href="https://github.com/giampaolo/psutil/blob/1a946cfe738045cecf031222cd5078da21946af4/tests/test_memleaks.py"&gt;test_memleaks.py&lt;/a&gt;),
 making it a de facto &lt;strong&gt;regression-testing tool&lt;/strong&gt;.&lt;/p&gt;
-&lt;p&gt;It's worth noting that without inspecting heap metrics, missing calls such as
-&lt;code&gt;Py_CLEAR&lt;/code&gt; and &lt;code&gt;Py_DECREF&lt;/code&gt; often go unnoticed, because they don't affect RSS,
-VMS, and USS. Something I confirmed from experimenting by commenting them
-out. Monitoring the heap is therefore essential to reliably detect memory
-leaks in Python C extensions.&lt;/p&gt;
+&lt;p&gt;It's worth noting that without inspecting heap metrics, missing calls in the C
+code such as &lt;code&gt;Py_CLEAR&lt;/code&gt; and &lt;code&gt;Py_DECREF&lt;/code&gt; often go unnoticed, because they don't
+affect RSS, VMS, and USS. Something I confirmed from experimenting by
+commenting them out. Monitoring the heap is therefore essential to reliably
+detect memory leaks in Python C extensions.&lt;/p&gt;
 &lt;h2&gt;Under the hood&lt;/h2&gt;
 &lt;p&gt;For those interested in seeing how I did this in terms of code:&lt;/p&gt;
 &lt;ul&gt;

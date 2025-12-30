@@ -53,21 +53,21 @@
 <li><strong>UPDATE (2016-02-13)</strong>: this recipe no longer handles <tt class="docutils literal">SIGINT</tt>, <tt class="docutils literal">SIGQUIT</tt> and <tt class="docutils literal">SIGABRT</tt> as aliases for &quot;application exit&quot; because it was a <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038471.html">bad idea</a>. It only handles <tt class="docutils literal">SIGTERM</tt>. Also it no longer support Windows because <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> implementation is <a class="reference external" href="http://bugs.python.org/issue26350">too different</a> than POSIX.*</li>
 </ul>
 <p>Many people erroneously think that any function registered via <a class="reference external" href="https://docs.python.org/3/library/atexit.html">atexit module</a> is guaranteed to always be executed when the program terminates. You may have noticed this is not the case when, for example, you daemonize your app in production then try to stop it or restart it: the cleanup functions will not be executed. This is because functions registered wth atexit module are <strong>not called</strong> when the program is killed by a signal:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">atexit</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">signal</span>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">atexit</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">signal</span>
 
 <span class="nd">@atexit</span><span class="o">.</span><span class="n">register</span>
-<span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;on exit&quot;</span><span class="p">)</span>  <span class="c1"># XXX this never gets printed</span>
 
 <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
 </pre></div>
 <p>It must be noted that the same thing would happen if instead of <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> we would use a &quot;finally&quot; clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. That has a drawback though: in case a third-party module has already registered a function for that signal (<tt class="docutils literal">SIGTERM</tt> or whatever), your new function will <strong>overwrite</strong> the old one:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">signal</span>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">signal</span>
 
-<span class="k">def</span> <span class="nf">old</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">old</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;old&quot;</span><span class="p">)</span>  <span class="c1"># XXX this never gets printed</span>
 
-<span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">new</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">)</span>
 
 <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">old</span><span class="p">)</span>
@@ -90,19 +90,19 @@
 <span class="sd">License: MIT</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-<span class="kn">import</span> <span class="nn">atexit</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">import</span> <span class="nn">signal</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">atexit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">signal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
 
 <span class="n">_registered_exit_funs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 <span class="n">_executed_exit_funs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">register_exit_fun</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">signals</span><span class="o">=</span><span class="p">[</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">],</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">register_exit_fun</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">signals</span><span class="o">=</span><span class="p">[</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">],</span>
                       <span class="n">logfun</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Register a function which will be executed on &quot;normal&quot;</span>
 <span class="sd">    interpreter exit or in case one of the `signals` is received</span>
@@ -140,7 +140,7 @@
 <span class="sd">      received. Default: print to standard error. May be set to</span>
 <span class="sd">      None if no logging is desired.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">stringify_sig</span><span class="p">(</span><span class="n">signum</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stringify_sig</span><span class="p">(</span><span class="n">signum</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
             <span class="n">smap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
                          <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SIG&#39;</span><span class="p">)])</span>
@@ -148,14 +148,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">signum</span>
 
-    <span class="k">def</span> <span class="nf">fun_wrapper</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fun_wrapper</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">fun</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_executed_exit_funs</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">fun</span><span class="p">()</span>
             <span class="k">finally</span><span class="p">:</span>
                 <span class="n">_executed_exit_funs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">signal_wrapper</span><span class="p">(</span><span class="n">signum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">signal_wrapper</span><span class="p">(</span><span class="n">signum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">signum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">logfun</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">logfun</span><span class="p">(</span><span class="s2">&quot;signal </span><span class="si">{}</span><span class="s2"> received by process with PID </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -170,7 +170,7 @@
             <span class="c1"># XXX - should we do the same for SIGTERM / SystemExit?</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">signum</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{!r}</span><span class="s2"> is not callable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fun</span><span class="p">))</span>
         <span class="nb">set</span><span class="p">([</span><span class="n">fun</span><span class="p">])</span>  <span class="c1"># raise exc if obj is not hash-able</span>
@@ -212,7 +212,7 @@
     <span class="c1"># - a decorator with parentheses</span>
     <span class="k">if</span> <span class="n">fun</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span>
-        <span class="k">def</span> <span class="nf">outer</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">outer</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">outer</span>
     <span class="k">else</span><span class="p">:</span>
@@ -223,14 +223,14 @@
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>As a function:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+<div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cleanup&quot;</span><span class="p">)</span>
 
 <span class="n">register_exit_fun</span><span class="p">(</span><span class="n">cleanup</span><span class="p">)</span>
 </pre></div>
 <p>As a decorator:</p>
 <div class="highlight"><pre><span></span><span class="nd">@register_exit_fun</span>
-<span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cleanup&quot;</span><span class="p">)</span>
 </pre></div>
 </div>

@@ -51,7 +51,7 @@
 <div class="section" id="process-parents">
 <h2>Process parents()<a class="headerlink" href="#process-parents" title="Permalink to this headline">¶</a></h2>
 <p>From the doc: return the parents of this process as a list of Process instances. If no parents are known return an empty list.</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="mi">5312</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">()</span>
 <span class="p">[</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">4699</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;bash&#39;</span><span class="p">,</span> <span class="n">started</span><span class="o">=</span><span class="s1">&#39;09:06:44&#39;</span><span class="p">),</span>

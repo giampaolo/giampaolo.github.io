@@ -104,7 +104,7 @@ of these cases I came up with this solution which I think is worth sharing, as
 it's generic enough to be reused in similar situations. If needed, this can be
 easily extended to include specific exceptions of third party libraries, like
 <cite>requests.exceptions.ConnectionError</cite>.</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">errno</span><span class="o">,</span> <span class="nn">socket</span><span class="o">,</span> <span class="nn">ssl</span>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">errno</span><span class="o">,</span><span class="w"> </span><span class="nn">socket</span><span class="o">,</span><span class="w"> </span><span class="nn">ssl</span>
 
 <span class="c1"># Network errors, usually related to DHCP or wpa_supplicant (Wi-Fi).</span>
 <span class="n">NETWORK_ERRNOS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span>
@@ -114,7 +114,7 @@ easily extended to include specific exceptions of third party libraries, like
     <span class="n">errno</span><span class="o">.</span><span class="n">ENONET</span><span class="p">,</span>  <span class="c1"># &quot;Machine is not on the network&quot;</span>
 <span class="p">))</span>
 
-<span class="k">def</span> <span class="nf">is_connection_err</span><span class="p">(</span><span class="n">exc</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_connection_err</span><span class="p">(</span><span class="n">exc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if an exception is connection-related.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="ne">ConnectionError</span><span class="p">):</span>
         <span class="c1"># https://docs.python.org/3/library/exceptions.html#ConnectionError</span>
@@ -213,18 +213,18 @@ easily extended to include specific exceptions of third party libraries, like
 <span class="sd">&gt;&gt;&gt;</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">errno</span>
-<span class="kn">import</span> <span class="nn">io</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">select</span>
-<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">select</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="nb">memoryview</span>  <span class="c1"># py 2.7 only</span>
 <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
     <span class="nb">memoryview</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
 
 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;posix&#39;</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">sendfile</span> <span class="k">as</span> <span class="nn">pysendfile</span>  <span class="c1"># requires &quot;pip install pysendfile&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">sendfile</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pysendfile</span>  <span class="c1"># requires &quot;pip install pysendfile&quot;</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">pysendfile</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -233,13 +233,13 @@ easily extended to include specific exceptions of third party libraries, like
                     <span class="n">errno</span><span class="o">.</span><span class="n">EINPROGRESS</span><span class="p">))</span>
 
 
-<span class="k">class</span> <span class="nc">_GiveupOnSendfile</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_GiveupOnSendfile</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 
 
 <span class="k">if</span> <span class="n">pysendfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="nf">_sendfile_use_sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sendfile_use_sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">_check_sendfile_params</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
         <span class="n">sockno</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
@@ -266,7 +266,7 @@ easily extended to include specific exceptions of third party libraries, like
             <span class="n">pollster</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
             <span class="n">pollster</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">sockno</span><span class="p">,</span> <span class="n">select</span><span class="o">.</span><span class="n">POLLOUT</span><span class="p">)</span>
 
-            <span class="k">def</span> <span class="nf">wait_for_fd</span><span class="p">():</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_fd</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">pollster</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span> <span class="o">==</span> <span class="p">[]:</span>
                     <span class="k">raise</span> <span class="n">socket</span><span class="o">.</span><span class="n">_socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">(</span><span class="s1">&#39;timed out&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -277,7 +277,7 @@ easily extended to include specific exceptions of third party libraries, like
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">_GiveupOnSendfile</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
-            <span class="k">def</span> <span class="nf">wait_for_fd</span><span class="p">():</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_fd</span><span class="p">():</span>
                 <span class="n">fds</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([],</span> <span class="p">[</span><span class="n">sockno</span><span class="p">],</span> <span class="p">[],</span> <span class="n">timeout</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">fds</span> <span class="o">==</span> <span class="p">([],</span> <span class="p">[],</span> <span class="p">[]):</span>
                     <span class="k">raise</span> <span class="n">socket</span><span class="o">.</span><span class="n">_socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">(</span><span class="s1">&#39;timed out&#39;</span><span class="p">)</span>
@@ -318,12 +318,12 @@ easily extended to include specific exceptions of third party libraries, like
             <span class="k">if</span> <span class="n">total_sent</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;seek&#39;</span><span class="p">):</span>
                 <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">_sendfile_use_sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sendfile_use_sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">_GiveupOnSendfile</span><span class="p">(</span>
             <span class="s2">&quot;sendfile() not available on this platform&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_sendfile_use_send</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_sendfile_use_send</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">_check_sendfile_params</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">sock</span><span class="o">.</span><span class="n">gettimeout</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;non-blocking sockets are not supported&quot;</span><span class="p">)</span>
@@ -362,7 +362,7 @@ easily extended to include specific exceptions of third party libraries, like
             <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span> <span class="o">+</span> <span class="n">total_sent</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_check_sendfile_params</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_sendfile_params</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
     <span class="k">if</span> <span class="s1">&#39;b&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file should be opened in binary mode&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">sock</span><span class="o">.</span><span class="n">type</span> <span class="o">&amp;</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">:</span>
@@ -376,7 +376,7 @@ easily extended to include specific exceptions of third party libraries, like
                 <span class="s2">&quot;count must be a positive integer (got </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sendfile</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;sendfile(sock, file[, offset[, count]]) -&gt; sent</span>
 
 <span class="sd">    Send a *file* over a connected socket *sock* until EOF is</span>

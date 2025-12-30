@@ -87,14 +87,14 @@ always missed in other IDEs.</p>
 <span class="sd">License: MIT</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
 
-<span class="kn">import</span> <span class="nn">sublime</span>
-<span class="kn">import</span> <span class="nn">sublime_plugin</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sublime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sublime_plugin</span>
 
 
 <span class="n">SUBLIME_ROOT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sublime</span><span class="o">.</span><span class="n">packages_path</span><span class="p">(),</span> <span class="s1">&#39;..&#39;</span><span class="p">))</span>
@@ -105,21 +105,21 @@ always missed in other IDEs.</p>
 <span class="n">RM_FILE_OLDER_THAN_DAYS</span> <span class="o">=</span> <span class="mi">180</span>
 
 
-<span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    </span><span class="si">%s</span><span class="s2">: &quot;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">Session</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Session</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">SESSION_FILE</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prune_old_entries</span><span class="p">()</span>
 
     <span class="c1"># --- file</span>
 
-    <span class="k">def</span> <span class="nf">read_session_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_session_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">SESSION_FILE</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -127,7 +127,7 @@ always missed in other IDEs.</p>
         <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">write_session_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_session_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="c1"># Use the same FS so that the move operation is atomic:</span>
         <span class="c1"># https://stackoverflow.com/a/18706666</span>
         <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span>
@@ -136,7 +136,7 @@ always missed in other IDEs.</p>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">SESSION_FILE</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">prune_old_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prune_old_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_session_file</span><span class="p">()</span>
         <span class="n">new</span> <span class="o">=</span> <span class="n">old</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
@@ -153,7 +153,7 @@ always missed in other IDEs.</p>
 
     <span class="c1"># --- operations</span>
 
-    <span class="k">def</span> <span class="nf">add_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_session_file</span><span class="p">()</span>
         <span class="n">d</span><span class="p">[</span><span class="n">file</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
@@ -162,7 +162,7 @@ always missed in other IDEs.</p>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_session_file</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">load_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_session_file</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">d</span><span class="p">[</span><span class="n">file</span><span class="p">]</span>
@@ -173,23 +173,23 @@ always missed in other IDEs.</p>
 <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
 
 
-<span class="k">class</span> <span class="nc">Events</span><span class="p">(</span><span class="n">sublime_plugin</span><span class="o">.</span><span class="n">EventListener</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Events</span><span class="p">(</span><span class="n">sublime_plugin</span><span class="o">.</span><span class="n">EventListener</span><span class="p">):</span>
 
     <span class="c1"># --- utils</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">):</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">rowcol</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">sel</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">begin</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">set_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="n">pt</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">text_point</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
         <span class="n">view</span><span class="o">.</span><span class="n">sel</span><span class="p">()</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="n">view</span><span class="o">.</span><span class="n">sel</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sublime</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">pt</span><span class="p">))</span>
         <span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">save_cursor_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_cursor_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="n">file_name</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">file_name</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">file_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>  <span class="c1"># non-existent file</span>
@@ -197,18 +197,18 @@ always missed in other IDEs.</p>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
         <span class="n">session</span><span class="o">.</span><span class="n">add_entry</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">load_cursor_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_cursor_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="n">entry</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">load_entry</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">file_name</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">entry</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_cursor_pos</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span>
 
     <span class="c1"># --- callbacks</span>
 
-    <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="c1"># called when a file is closed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_cursor_position</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="c1"># called when a file is opened</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load_cursor_position</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
 </pre></div>

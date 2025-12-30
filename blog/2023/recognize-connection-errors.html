@@ -101,7 +101,7 @@ of these cases I came up with this solution which I think is worth sharing, as
 it's generic enough to be reused in similar situations. If needed, this can be
 easily extended to include specific exceptions of third party libraries, like
 <cite>requests.exceptions.ConnectionError</cite>.</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">errno</span><span class="o">,</span> <span class="nn">socket</span><span class="o">,</span> <span class="nn">ssl</span>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">errno</span><span class="o">,</span><span class="w"> </span><span class="nn">socket</span><span class="o">,</span><span class="w"> </span><span class="nn">ssl</span>
 
 <span class="c1"># Network errors, usually related to DHCP or wpa_supplicant (Wi-Fi).</span>
 <span class="n">NETWORK_ERRNOS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span>
@@ -111,7 +111,7 @@ easily extended to include specific exceptions of third party libraries, like
     <span class="n">errno</span><span class="o">.</span><span class="n">ENONET</span><span class="p">,</span>  <span class="c1"># &quot;Machine is not on the network&quot;</span>
 <span class="p">))</span>
 
-<span class="k">def</span> <span class="nf">is_connection_err</span><span class="p">(</span><span class="n">exc</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_connection_err</span><span class="p">(</span><span class="n">exc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if an exception is connection-related.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="ne">ConnectionError</span><span class="p">):</span>
         <span class="c1"># https://docs.python.org/3/library/exceptions.html#ConnectionError</span>

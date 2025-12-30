@@ -213,17 +213,17 @@ the price when NOT running tests in parallel.</p>
 decorated with <code>@pytest.mark.xdist_group(name="serial")</code>. However, since
 <code>pytest-xdist</code> is now disabled, the decorator no longer exists. To address
 this, I implemented the following solution in <code>psutil/tests/__init__.py</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pytest</span><span class="o">,</span> <span class="nn">functools</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span><span class="o">,</span><span class="w"> </span><span class="nn">functools</span>
 
 <span class="n">PYTEST_PARALLEL</span> <span class="o">=</span> <span class="s2">&quot;PYTEST_XDIST_WORKER&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span>  <span class="c1"># True if running parallel tests</span>
 
 <span class="k">if</span> <span class="ow">not</span> <span class="n">PYTEST_PARALLEL</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">fake_xdist_group</span><span class="p">(</span><span class="o">*</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="n">_kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fake_xdist_group</span><span class="p">(</span><span class="o">*</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="n">_kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Mimics `@pytest.mark.xdist_group` decorator. No-op: it just</span>
 <span class="sd">        calls the test method or return the decorated class.&quot;&quot;&quot;</span>
-        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
             <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-            <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">inner</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">obj</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="k">else</span> <span class="n">inner</span>

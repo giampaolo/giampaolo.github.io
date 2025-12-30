@@ -100,7 +100,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 <div class="section" id="process-environ">
 <h2>Process environ<a class="headerlink" href="#process-environ" title="Permalink to this headline">¶</a></h2>
 <p>Second biggest improvement in psutil 4.0.0 is the ability to determine the process environment variables. This opens interesting possibilities about process recognition and monitoring techniques. For instance, one might start a process by passing a certain custom environment variable, then iterate over all processes to find the one of interest (and figure out whether it's running or whatever):</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">psutil</span>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">env</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">environ</span><span class="p">()</span>
@@ -111,8 +111,8 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
             <span class="o">...</span>
 </pre></div>
 <p>Process environ was a <a class="reference external" href="https://code.google.com/archive/p/psutil/issues/52">long standing issue</a> (year 2009) who I gave up to implement because the Windows implementation worked for the current process only. Frank Benkstein <a class="reference external" href="https://github.com/giampaolo/psutil/pull/747">solved that</a> and the process environ can now be determined on Linux, Windows and OSX for all processes (of course you may still bump into <cite>AccessDenied</cite> for processes owned by another user):</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">environ</span><span class="p">())</span>
 <span class="p">{</span><span class="o">...</span>
  <span class="s1">&#39;CLUTTER_IM_MODULE&#39;</span><span class="p">:</span> <span class="s1">&#39;xim&#39;</span><span class="p">,</span>

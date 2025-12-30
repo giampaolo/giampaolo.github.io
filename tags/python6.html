@@ -50,7 +50,7 @@
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
 </footer><!-- /.post-info -->            <p>One of the initial features which were included in <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> since day one (5 years ago) were system's boot time, number of CPUs and total physical memory. These metrics have one thing in common: they are (apparently) not supposed to change over time. That is why we (me and <a class="reference external" href="http://www.jayloden.com/">Jay</a>) decided that exposing them as module constants calculated at import time was the way to go.</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">psutil</span>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">NUM_CPUS</span>
 <span class="mi">2</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">BOOT_TIME</span>  <span class="c1"># as seconds since the epoch</span>
@@ -82,27 +82,27 @@ It should first be deprecated, possibly turned into an alias pointing to a newer
 <h2>Module properties<a class="headerlink" href="#module-properties" title="Permalink to this headline">¶</a></h2>
 <p>One of the greatest things about Python is that it's so dynamic that it lets you do all sort of nasty things with objects, including injecting names into modules (which are also objects) and make them behave like actual class properties!
 For this I have to thank <a class="reference external" href="http://www.dr-josiah.com/2013/12/properties-on-python-modules.html">Josiah Carlson</a> who came up with this very simple yet effective solution:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ModuleWrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ModuleWrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="p">)</span>
     <span class="fm">__str__</span> <span class="o">=</span> <span class="fm">__repr__</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">NUM_CPUS</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">NUM_CPUS</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;NUM_CPUS constant is deprecated; use cpu_count() instead&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cpu_count</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">BOOT_TIME</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">BOOT_TIME</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;BOOT_TIME constant is deprecated; &quot;</span> \
               <span class="s2">&quot;use get_boot_time() instead&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">get_boot_time</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">TOTAL_PHYMEM</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">TOTAL_PHYMEM</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;TOTAL_PHYMEM constant is deprecated; &quot;</span> \
               <span class="s2">&quot;use virtual_memory().total instead&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
