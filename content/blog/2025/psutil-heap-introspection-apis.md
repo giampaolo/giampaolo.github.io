@@ -35,8 +35,8 @@ components mishandle memory at the C level, you get a leak that doesn't show up 
   due to allocator caching, especially for small objects. This can happen, for
   example, when you forget to `Py_DECREF` a Python object.
 
-psutil's new functions solve this by inspecting platform-native allocator
-state, in a manner similar to Valgrind.
+psutil's new functions let you query the allocator (e.g. glibc) directly,
+returning low-level metrics from the platform's native heap.
 
 ## heap_info(): direct allocator statistics
 
@@ -75,11 +75,10 @@ allocator free any unused memory it's holding in the heap (typically small
 
 In practice, modern allocators rarely comply, so this is not a general-purpose
 memory-reduction tool and won't meaningfully shrink RSS in real programs. Its
-primary value is in **leak detection tools**.
-
-Calling ``heap_trim()`` before taking measurements helps reduce allocator
-noise, giving you a cleaner baseline so that changes in `heap_used` come from
-the code you're testing, not from internal allocator caching or fragmentation.
+primary value is in leak detection tools. Calling ``heap_trim()`` before taking
+measurements helps reduce allocator noise, giving you a cleaner baseline so
+that changes in `heap_used` come from the code you're testing, not from
+internal allocator caching or fragmentation.
 
 ## Real-world use: finding a C extension leak
 
@@ -149,11 +148,11 @@ Psleak is now part of the psutil test suite. All psutil APIs are tested (see
 [test_memleaks.py](https://github.com/giampaolo/psutil/blob/1a946cfe738045cecf031222cd5078da21946af4/tests/test_memleaks.py)),
 making it a de facto **regression-testing tool**.
 
-It's worth noting that without inspecting heap metrics, missing calls such as
-`Py_CLEAR` and `Py_DECREF` often go unnoticed, because they don't affect RSS,
-VMS, and USS. Something I confirmed from experimenting by commenting them
-out. Monitoring the heap is therefore essential to reliably detect memory
-leaks in Python C extensions.
+It's worth noting that without inspecting heap metrics, missing calls in the C
+code such as `Py_CLEAR` and `Py_DECREF` often go unnoticed, because they don't
+affect RSS, VMS, and USS. Something I confirmed from experimenting by
+commenting them out. Monitoring the heap is therefore essential to reliably
+detect memory leaks in Python C extensions.
 
 ## Under the hood
 
