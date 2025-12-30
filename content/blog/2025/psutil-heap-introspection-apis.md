@@ -11,18 +11,13 @@ and VMS fail to reveal them because Python's memory allocator
 ([pymalloc](https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator))
 sits above the platform's native heap. If something in an extension calls
 ``malloc()`` without a corresponding ``free()``, that memory often won't show
-up where you expect it. You have a leak, and you don't know.
+up in RSS / VMS. You have a leak, and you don't know.
 
 psutil 7.2.0 introduces two new APIs for **C heap introspection**, designed
 specifically to catch these kinds of native leaks. They give you a window
 directly into the underlying platform allocator (e.g. glibc's malloc), letting
-you track how much memory the C layer actually allocates.
-
-These C functions bypass Python entirely. They don't reflect Python object
-memory, arenas, pools, or anything managed by
-[pymalloc](https://docs.python.org/3/c-api/memory.html). Instead, they examine
-the allocator that C extensions actually use. If your RSS is flat but your C
-heap usage climbs, you now have a way to see it.
+you track how much memory the C layer actually allocates. If your RSS is flat
+but your C heap usage climbs, you now have a way to see it.
 
 ## Why native heap introspection matters
 
