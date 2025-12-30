@@ -5,7 +5,7 @@ Tags: psutil, psleak, python, c
 Authors: Giampaolo Rodola
 
 Memory leaks in Python are often straightforward to diagnose. Just look at RSS,
-track Python object counts, follow reference graphs. But leaks inside **C
+track Python object counts, follow reference graphs, etc. But leaks inside **C
 extension modules** are another story. Traditional memory metrics such as RSS
 and VMS frequently fail to reveal them because Python's memory allocator sits
 above the platform's native heap (see
