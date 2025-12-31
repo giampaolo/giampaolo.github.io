@@ -194,3 +194,4 @@ designed to integrate into Python unit tests.
 
 - [Reddit](https://www.reddit.com/r/Python/comments/1puqgfg/detect_memory_leaks_of_c_extensions_with_psutil/)
 - [Hacker News](https://news.ycombinator.com/item?id=46376608)
+- [Medium](https://medium.com/@g.rodola/detect-memory-leaks-of-c-extensions-with-psutil-and-psleak-a0521ba6315f)
