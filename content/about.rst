@@ -121,6 +121,7 @@ Contacts
 * `GitHub <http://github.com/giampaolo>`__
 * `Twitter <https://twitter.com/grodola>`__
 * `Linkedin <https://www.linkedin.com/in/grodola/>`__
+* `Medium <https://medium.com/@g.rodola>`__
 * Email: `g.rodola@gmail.com <g.rodola@gmail.com>`__ (`PGP public key
   </static/pgp.txt>`__, `keybase.io <https://keybase.io/grodola>`__)
 
