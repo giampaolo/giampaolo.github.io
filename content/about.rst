@@ -46,17 +46,9 @@ Projects
     :target: https://pepy.tech/project/pyftpdlib
     :alt: Downloads
 
-* `pysendfile`_: a binding to `sendfile(2)` syscall which lets you send a file twice as fast as with a common socket.  *(2011 - now)*
-
-  .. image:: https://img.shields.io/github/stars/giampaolo/pysendfile.svg
-    :target: https://github.com/giampaolo/psutil/stargazers
-    :alt: Github stars
-
-  .. image:: https://img.shields.io/pypi/dm/pysendfile?color=%232980B9&style=flat
-    :target: https://pepy.tech/project/pysendfile
-    :alt: Downloads
-
 * `psleak`_: test framework to detect memory and resource leaks in Python C extensions.  *(2025 - now)*
+
+* `pysendfile`_: a binding to `sendfile(2)` syscall which lets you send a file twice as fast as with a common socket.  *(2011 - now)*
 
 python-dev contributions
 ------------------------
