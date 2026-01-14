@@ -48,7 +48,7 @@ Projects
 
 * `psleak`_: test framework to detect memory and resource leaks in Python C extensions.  *(2025 - now)*
 
-* `pysendfile`_: a binding to `sendfile(2)` syscall which lets you send a file twice as fast as with a common socket. *(2011, later `added to cPython <https://gmpy.dev/blog/2014/python-and-sendfile>`__ as os.sendfile)*
+* `pysendfile`_: a binding to `sendfile(2)` syscall which lets you send a file twice as fast as with a common socket. *(2011)*
 
 python-dev contributions
 ------------------------
