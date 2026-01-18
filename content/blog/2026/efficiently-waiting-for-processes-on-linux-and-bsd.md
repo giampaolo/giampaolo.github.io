@@ -93,11 +93,10 @@ else:
 
 Both `pidfd_open()` and `kqueue()` can fail for different reasons. For example,
 `pidfd_open()` may fail with `EMFILE` if the process runs out of file
-descriptors. Since the default limit is often 1024, this effectively caps the
-number of PIDs that can be waited on simultaneously. Likewise, according to the
-man page `kqueue()` may fail with `EACCES` when registering a `KQ_FILTER_PROC`
-event. In both cases, psutil silently falls back to the traditional polling
-approach rather than raising an exception (see
+descriptors. Likewise, according to the man page, `kqueue()` may fail with
+`EACCES` when registering the `KQ_FILTER_PROC` event. In both cases, psutil
+silently falls back to the traditional polling approach rather than raising an
+exception (see
 [source](https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160)).
 
 ## For the future
@@ -110,10 +109,10 @@ It allows you to wait on multiple processes, and currently relies on a busy
 loop. I'll try to put together a PR for this later, though this function is
 trickier to integrate in the `poll()` / `kqueue()` loops.
 
-Also, the `pidfd_open()` limitation of 1024 file descriptors
-is something to keep in mind when waiting for multiple PIDs. It consumes FDs
-also for other syscalls like `open()`, and once you hit the FD limit you can't
-open files, or do anything that requires a descriptor.
+Also, the `pidfd_open()` limitation of in terms of number of file descriptors
+is something to keep in mind when waiting for multiple PIDs. Since the default
+limit is often 1024, this effectively caps the number of PIDs that can be
+waited on simultaneously.
 
 I also think it makes sense to apply this change both to subprocess and asyncio
 modules in cPython. That's another potential PR I might work on in the future.
