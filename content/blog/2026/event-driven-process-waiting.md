@@ -74,7 +74,7 @@ I chose `poll()` over `select()` because `select()` has a historical file
 descriptor limit (`FD_SETSIZE`), which typically caps it at 1024 FDs (reminded
 me of [BPO-1685000](https://bugs.python.org/issue1685000)).
 
-I chose `poll()` instead of `epoll()` because it does not require creating an
+I chose `poll()` over `epoll()` because it does not require creating an
 additional file descriptor. It also needs only a single syscall, which should
 make it slightly more efficient when monitoring a single FD rather than many.
 
@@ -104,6 +104,11 @@ else:
     raise TimeoutError
 ```
 
+## Windows
+
+Windows does not busy-loop, both in psutil and subprocess module, thanks to
+`WaitForSingleObject`. So nothing to do on that front.
+
 ## Graceful fallbacks
 
 Both `pidfd_open()` and `kqueue()` can fail for different reasons. For example,
@@ -114,10 +119,10 @@ back to the traditional busy-loop polling approach rather than raising an
 exception.
 
 This fast-path-with-fallback approach is similar in spirit to
-[BPO-33671](https://bugs.python.org/issue33671), where
-I sped up `shutil.copyfile()` by using zero-copy system calls back in 2018. In
-there, more efficient `os.sendfile()` is attempted first, and if it fails (e.g.
-on network filesystems) we fall back to the traditional `read()` / `write()`
+[BPO-33671](https://bugs.python.org/issue33671), where I sped up
+`shutil.copyfile()` by using zero-copy system calls back in 2018. In there,
+more efficient `os.sendfile()` is attempted first, and if it fails (e.g. on
+network filesystems) we fall back to the traditional `read()` / `write()`
 approach.
 
 ## Measurement
@@ -160,7 +165,7 @@ resulting in just a few CPU context switches.
 It's also interesting to note that waiting via `poll()` (or `kqueue()`) puts
 the process into the exact same sleeping state as a plain `time.sleep()` call.
 From the kernel's perspective, both are interruptible sleeps: the process is
-descheduled, consumes zero CPU, and sits quietly in kernel space.
+de-scheduled, consumes zero CPU, and sits quietly in kernel space.
 
 `"S+"` state shown below by `ps` means "sleep in foreground".
 
@@ -175,7 +180,7 @@ $ (python3 -c 'import time; time.sleep(10)' & pid=$!; sleep 0.3; ps -o pid,stat,
 - `poll()`:
 
 ```
-$ (python3 -c 'import os,select; fd=os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)' & pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) && fg &>/dev/null
+$ (python3 -c 'import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)' & pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) && fg &>/dev/null
     PID STAT COMMAND
  491748 S+   python3
 ```
