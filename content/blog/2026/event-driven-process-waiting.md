@@ -70,9 +70,13 @@ else:
 This approach has zero busy-looping. The kernel wakes us up exactly when the
 process terminates or when the timeout expires if the PID is still alive.
 
-Note: I opted for `poll()` instead of `epoll()` because it does not require an
-extra file descriptor. Plus it only requires 1 syscall, so I expect it to be
-slightly faster when watching a single FD instead of many.
+I chose `poll()` over `select()` because `select()` has a historical file
+descriptor limit (`FD_SETSIZE`), which typically caps it at 1024 FDs (reminded
+me of [BPO-1685000](https://bugs.python.org/issue1685000)).
+
+I chose `poll()` instead of `epoll()` because it does not require creating an
+additional file descriptor. It also needs only a single syscall, which should
+make it slightly more efficient when monitoring a single FD rather than many.
 
 ## macOS and BSD
 
@@ -110,7 +114,7 @@ back to the traditional busy-loop polling approach rather than raising an
 exception.
 
 This fast-path-with-fallback approach is similar in spirit to
-[https://bugs.python.org/issue33671](https://bugs.python.org/issue33671), where
+[BPO-33671](https://bugs.python.org/issue33671), where
 I sped up `shutil.copyfile()` by using zero-copy system calls back in 2018. In
 there, more efficient `os.sendfile()` is attempted first, and if it fails (e.g.
 on network filesystems) we fall back to the traditional `read()` / `write()`
