@@ -8,8 +8,7 @@ One of the less glamorous aspects of process management is waiting for a
 process to terminate. The standard library's **subprocess** module has relied
 on a busy-loop polling approach since the *timeout* parameter was added to
 [Popen.wait()](https://docs.python.org/3/library/subprocess.html#subprocess.Popen.wait)
-in Python 3.3, around 15 years ago (see
-[commit](https://github.com/python/cpython/commit/31aa7dd14196)). And psutil's
+in Python 3.3, around 15 years ago. And psutil's
 [Process.wait()](https://psutil.readthedocs.io/en/latest/#psutil.Process.wait)
 method used exactly the same technique (see
 [source](https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160)).
@@ -38,11 +37,11 @@ All POSIX systems provide at least one mechanism to be notified when a file
 descriptor becomes ready. These are
 [select()](https://man7.org/linux/man-pages/man2/select.2.html),
 [poll()](https://man7.org/linux/man-pages/man2/poll.2.html),
-[epoll()](https://man7.org/linux/man-pages/man7/epoll.7.html) and
-[kqueue()](https://man.freebsd.org/cgi/man.cgi?query=kqueue) system calls.
-Until recently, I believed they could only be used with file descriptors
-referencing sockets, pipes, etc., but it turns out they can also be used to
-wait for events on process PIDs!
+[epoll()](https://man7.org/linux/man-pages/man7/epoll.7.html) (Linux) and
+[kqueue()](https://man.freebsd.org/cgi/man.cgi?query=kqueue) (BSD / macOS)
+system calls. Until recently, I believed they could only be used with file
+descriptors referencing sockets, pipes, etc., but it turns out they can also be
+used to wait for events on process PIDs!
 
 ## Linux
 
@@ -105,15 +104,16 @@ else:
 
 Both `pidfd_open()` and `kqueue()` can fail for different reasons. For example,
 with `EMFILE` if the process runs out of file descriptors (usually 1024), or
-with `EACCES` / `EPERM` if the syscall is explicitly blocked at the system
-level (e.g. via SECCOMP). In all cases, psutil silently falls back to the
-traditional busy-loop polling approach rather than raising an exception.
+with `EACCES` / `EPERM` if the syscall was explicitly blocked at the system
+level by the sysadmin (e.g. via SECCOMP). In all cases, psutil silently falls
+back to the traditional busy-loop polling approach rather than raising an
+exception.
 
 This fast-path-with-fallback approach is similar in spirit to
 [https://bugs.python.org/issue33671](https://bugs.python.org/issue33671), where
 I sped up `shutil.copyfile()` by using zero-copy system calls back in 2018. In
-there, Linux `os.sendfile()` is attempted first, and if it fails (e.g. on
-network filesystems) we fall back to the traditional `read()` / `write()`
+there, more efficient `os.sendfile()` is attempted first, and if it fails (e.g.
+on network filesystems) we fall back to the traditional `read()` / `write()`
 approach.
 
 ## Measurement
@@ -139,7 +139,7 @@ $ /usr/bin/time -v python3 test.py 2>&1 | grep context
     Involuntary context switches: 4
 ```
 
-After the patch (event-driven approach):
+After the patch (the event-driven approach):
 
 ```
 $ /usr/bin/time -v python3 test.py 2>&1 | grep context
@@ -151,16 +151,42 @@ This shows that instead of spinning in userspace, the process blocks in
 `poll()` / `kqueue()`, and is woken up only when the kernel notifies it,
 resulting in just a few CPU context switches.
 
+## Sleeping state
+
+It's also interesting to note that waiting via `poll()` (or `kqueue()`) puts
+the process into the exact same sleeping state as a plain `time.sleep()` call.
+From the kernel's perspective, both are interruptible sleeps: the process is
+descheduled, consumes zero CPU, and sits quietly in kernel space.
+
+`"S+"` state shown below by `ps` means "sleep in foreground".
+
+- `time.sleep()`:
+
+```
+$ (python3 -c 'import time; time.sleep(10)' & pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) && fg &>/dev/null
+    PID STAT COMMAND
+ 491573 S+   python3
+```
+
+- `poll()`:
+
+```
+$ (python3 -c 'import os,select; fd=os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)' & pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) && fg &>/dev/null
+    PID STAT COMMAND
+ 491748 S+   python3
+```
+
 ## CPython contribution
 
-After landing the psutil implementation, I took the extra step and submitted a
-matching pull request directly to CPython:
+After landing the psutil implementation
+([psutil/PR-2706](https://github.com/giampaolo/psutil/pull/2706)), I took the
+extra step and submitted a matching pull request directly to CPython:
 [cpython/PR-144047](https://github.com/python/cpython/pull/144047).
 
 I'm especially proud of this one: this is the **second time** in psutil's 17+
 year history that a feature developed in psutil made its way upstream into the
-Python standard library. The first was back in 2011 (see [python-ideas ML
-proposal](https://mail.python.org/pipemail/python-ideas/2011-June/010480.html)),
+Python standard library. The first was back in 2011 (see
+[python-ideas ML proposal](https://mail.python.org/pipemail/python-ideas/2011-June/010480.html)),
 when `psutil.disk_usage()` inspired
 [shutil.disk_usage()](https://docs.python.org/3/library/shutil.html#shutil.disk_usage).
 
@@ -168,11 +194,7 @@ when `psutil.disk_usage()` inspired
 `subprocess.Popen.wait()` (see
 [commit](https://github.com/python/cpython/commit/31aa7dd1419)). That's
 probably where I took inspiration when I first added the *timeout* parameter to
-psutil's `Process.wait()` around the same time. Now, 15 years later, I'm
-contributing back a similar improvement for that very same parameter.
-
-## Implementation
-
-This change is available in psutil 7.2.2. See
-[psutil/PR-2706](https://github.com/giampaolo/psutil/pull/2706) for the full
-implementation.
+psutil's `Process.wait()` around the same time (see
+[commit](https://github.com/giampaolo/psutil/commit/886710daf)). Now, 15 years
+later, I'm contributing back a similar improvement for that very same *timeout*
+parameter.
