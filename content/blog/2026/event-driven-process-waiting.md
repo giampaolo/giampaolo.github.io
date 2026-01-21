@@ -50,7 +50,7 @@ In 2019, Linux 5.3 introduced a new syscall,
 which was added to the `os` module in Python 3.9. It returns a file descriptor
 referencing a process PID. The interesting thing is that `pidfd_open()` can be
 used in conjunction with `select()`, `poll()` or `epoll()` to effectively wait
-until process exits. E.g. by using `poll()`:
+until the process exits. E.g. by using `poll()`:
 
 ```python
 import os, select
@@ -71,8 +71,9 @@ This approach has zero busy-looping. The kernel wakes us up exactly when the
 process terminates or when the timeout expires if the PID is still alive.
 
 I chose `poll()` over `select()` because `select()` has a historical file
-descriptor limit (`FD_SETSIZE`), which typically caps it at 1024 FDs (reminded
-me of [BPO-1685000](https://bugs.python.org/issue1685000)).
+descriptor limit (`FD_SETSIZE`), which typically caps it at 1024 file
+descriptors per-process (reminded me of
+[BPO-1685000](https://bugs.python.org/issue1685000)).
 
 I chose `poll()` over `epoll()` because it does not require creating an
 additional file descriptor. It also needs only a single syscall, which should
@@ -107,7 +108,8 @@ else:
 ## Windows
 
 Windows does not busy-loop, both in psutil and subprocess module, thanks to
-`WaitForSingleObject`. So nothing to do on that front.
+`WaitForSingleObject`. This means Windows has effectively had event-driven
+process waiting from the start. So nothing to do on that front.
 
 ## Graceful fallbacks
 
