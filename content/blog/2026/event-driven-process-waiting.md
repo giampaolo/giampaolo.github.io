@@ -38,11 +38,11 @@ descriptor becomes ready. These are
 [select()](https://man7.org/linux/man-pages/man2/select.2.html),
 [poll()](https://man7.org/linux/man-pages/man2/poll.2.html),
 [epoll()](https://man7.org/linux/man-pages/man7/epoll.7.html) and
-[kqueue()](https://man.freebsd.org/cgi/man.cgi?kqueue) system calls. Until
-recently, I believed they could only be used with file descriptors (sockets to
-be precise), but it turns out they can also be used to wait on process PIDs. As
-for Windows, we don't use busy-loops there, as we rely on `WaitForSingleObject`
-already (see
+[kqueue()](https://man.freebsd.org/cgi/man.cgi?query=kqueue) system calls.
+Until recently, I believed they could only be used with file descriptors
+referencing socket, pipes, etc., but it turns out they can also be used to wait
+for events on process PIDs. As for Windows, no busy-loops there, as it always
+relied on `WaitForSingleObject` already (see
 [source](https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/arch/windows/proc.c#L90-L156)).
 And so does the subprocess module.
 
@@ -95,7 +95,7 @@ kev = select.kevent(
   fflags=select.KQ_NOTE_EXIT,
 )
 # block for 10 secs, until process exits or timeout occurs
-events = kq.control([kev], 10, timeout)
+events = kq.control([kev], 1, 10)
 if events:
     print(f"{pid=} terminated")
 else:
@@ -164,7 +164,7 @@ proposal](https://mail.python.org/pipermail/python-ideas/2011-June/010480.html))
 when `psutil.disk_usage()` inspired
 [shutil.disk_usage()](https://docs.python.org/3/library/shutil.html#shutil.disk_usage).
 
-*Funny thing*: 13 years ago, Python 3.3 added the *timeout* parameter to
+*Funny thing:* 13 years ago, Python 3.3 added the *timeout* parameter to
 `subprocess.Popen.wait()` (see
 [commit](https://github.com/python/cpython/commit/31aa7dd1419)). That's
 probably where I took inspiration when I first added the *timeout* parameter
