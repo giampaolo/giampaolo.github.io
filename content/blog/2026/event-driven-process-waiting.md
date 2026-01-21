@@ -5,12 +5,10 @@ Tags: psutil, python, python-core, async
 Authors: Giampaolo Rodola
 
 One of the less glamorous aspects of process management is waiting for a
-process to terminate.
-The standard library's
+process to terminate. The standard library's
 [`subprocess`](https://docs.python.org/3/library/subprocess.html#subprocess.Popen.wait)
-has relied on a busy-loop polling approach since the *timeout* parameter was
-added to `Popen.wait()` in Python 3.3, around 13 years ago.
-And psutil's
+module has relied on a busy-loop polling approach since the *timeout* parameter
+was added to `Popen.wait()` in Python 3.3, around 13 years ago. And psutil's
 [Process.wait()](https://psutil.readthedocs.io/en/latest/#psutil.Process.wait)
 method used exactly the same technique (see
 [source](https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160)).
@@ -19,9 +17,9 @@ The logic is straightforward: check whether the process has exited using
 non-blocking `waitpid(WNOHANG)`, sleep briefly, check again, sleep a bit
 longer, and so on.
 
-In this blog post I'll tell you how I addressed this problem both in psutil
-and, perhaps most excitingly, directly in CPython's standard library
-subprocess module.
+In this blog post I'll show how I finally addressed this long-standing
+inefficiency, first in psutil, and most excitingly, directly in CPython's
+standard library **subprocess** module.
 
 ## The problem with busy-polling
 
@@ -164,8 +162,7 @@ year history that a feature developed in psutil made its way upstream into the
 Python standard library. The first was back in 2011 (see [python-ideas ML
 proposal](https://mail.python.org/pipermail/python-ideas/2011-June/010480.html)),
 when `psutil.disk_usage()` inspired
-[shutil.disk_usage()](https://docs.python.org/3/library/shutil.html#shutil.disk_usage)
-[](https://bugs.python.org/issue12442).
+[shutil.disk_usage()](https://docs.python.org/3/library/shutil.html#shutil.disk_usage).
 
 *Funny thing*: 13 years ago, Python 3.3 added the *timeout* parameter to
 `subprocess.Popen.wait()` (see
