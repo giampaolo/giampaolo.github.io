@@ -1,14 +1,15 @@
-Title: Event-driven process waiting on Linux / macOS / BSD
+Title: From Python 3.3 to today: ending 15 years of subprocess polling
 Slug: event-driven-process-waiting
 Date: 2026-01-17
 Tags: psutil, python, python-core, async
 Authors: Giampaolo Rodola
 
 One of the less glamorous aspects of process management is waiting for a
-process to terminate. The standard library's
-[`subprocess`](https://docs.python.org/3/library/subprocess.html#subprocess.Popen.wait)
-module has relied on a busy-loop polling approach since the *timeout* parameter
-was added to `Popen.wait()` in Python 3.3, around 13 years ago. And psutil's
+process to terminate. The standard library's **subprocess** module has relied
+on a busy-loop polling approach since the *timeout* parameter was added to
+[Popen.wait()](https://docs.python.org/3/library/subprocess.html#subprocess.Popen.wait)
+in Python 3.3, around 15 years ago (see
+[commit](https://github.com/python/cpython/commit/31aa7dd14196)). And psutil's
 [Process.wait()](https://psutil.readthedocs.io/en/latest/#psutil.Process.wait)
 method used exactly the same technique (see
 [source](https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160)).
@@ -19,7 +20,7 @@ longer, and so on.
 
 In this blog post I'll show how I finally addressed this long-standing
 inefficiency, first in psutil, and most excitingly, directly in CPython's
-standard library **subprocess** module.
+standard library subprocess module.
 
 ## The problem with busy-polling
 
@@ -40,11 +41,8 @@ descriptor becomes ready. These are
 [epoll()](https://man7.org/linux/man-pages/man7/epoll.7.html) and
 [kqueue()](https://man.freebsd.org/cgi/man.cgi?query=kqueue) system calls.
 Until recently, I believed they could only be used with file descriptors
-referencing socket, pipes, etc., but it turns out they can also be used to wait
-for events on process PIDs. As for Windows, no busy-loops there, as it always
-relied on `WaitForSingleObject` already (see
-[source](https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/arch/windows/proc.c#L90-L156)).
-And so does the subprocess module.
+referencing sockets, pipes, etc., but it turns out they can also be used to
+wait for events on process PIDs!
 
 ## Linux
 
@@ -164,12 +162,12 @@ proposal](https://mail.python.org/pipermail/python-ideas/2011-June/010480.html))
 when `psutil.disk_usage()` inspired
 [shutil.disk_usage()](https://docs.python.org/3/library/shutil.html#shutil.disk_usage).
 
-*Funny thing:* 13 years ago, Python 3.3 added the *timeout* parameter to
+*Funny thing:* 15 years ago, Python 3.3 added the *timeout* parameter to
 `subprocess.Popen.wait()` (see
 [commit](https://github.com/python/cpython/commit/31aa7dd1419)). That's
-probably where I took inspiration when I first added the *timeout* parameter
-to psutil's `Process.wait()`. Now, 13 years later, I'm contributing back a
-similar improvement for that very same parameter.
+probably where I took inspiration when I first added the *timeout* parameter to
+psutil's `Process.wait()` around the same time. Now, 15 years later, I'm
+contributing back a similar improvement for that very same parameter.
 
 ## Implementation
 
