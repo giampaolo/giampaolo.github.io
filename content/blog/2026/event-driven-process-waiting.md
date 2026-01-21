@@ -46,7 +46,7 @@ wait for events on process PIDs!
 
 ## Linux
 
-Linux 5.3 introduced a new syscall,
+In 2019, Linux 5.3 introduced a new syscall,
 **[pidfd_open()](https://man7.org/linux/man-pages/man2/pidfd_open.2.html)**,
 which was added to the `os` module in Python 3.9. It returns a file descriptor
 referencing a process PID. The interesting thing is that `pidfd_open()` can be
@@ -56,7 +56,8 @@ until process exits. E.g. by using `poll()`:
 ```python
 import os, select
 
-pidfd = os.pidfd_open(pid, 0)
+some_pid = os.getpid()
+pidfd = os.pidfd_open(some_pid, 0)
 poller = select.poll()
 poller.register(pidfd, select.POLLIN)
 # block for 10 secs, until process exits or timeout occurs
@@ -78,16 +79,16 @@ slightly faster when watching a single FD instead of many.
 
 BSD-derived systems (including macOS) provide the `kqueue()` syscall. It's
 conceptually similar to `select()`, `poll()` and `epoll()`, but more powerful
-(e.g. it also handles regular files other than sockets). `kqueue()` can be
-passed a PID directly, and it will return once the PID disappears or the
-timeout expires:
+(e.g. it can also handle regular files). `kqueue()` can be passed a PID
+directly, and it will return once the PID disappears or the timeout expires:
 
 ```python
 import select
 
+some_pid = os.getpid()
 kq = select.kqueue()
 kev = select.kevent(
-  pid,
+  some_pid,
   filter=select.KQ_FILTER_PROC,
   flags=select.KQ_EV_ADD | select.KQ_EV_ONESHOT,
   fflags=select.KQ_NOTE_EXIT,
@@ -111,8 +112,9 @@ traditional busy-loop polling approach rather than raising an exception.
 This fast-path-with-fallback approach is similar in spirit to
 [https://bugs.python.org/issue33671](https://bugs.python.org/issue33671), where
 I sped up `shutil.copyfile()` by using zero-copy system calls back in 2018. In
-there `os.sendfile()` is attempted first, and if it fails (e.g. on network
-filesystems) we fall back to the traditional `read()` / `write()` approach.
+there, Linux `os.sendfile()` is attempted first, and if it fails (e.g. on
+network filesystems) we fall back to the traditional `read()` / `write()`
+approach.
 
 ## Measurement
 
@@ -137,7 +139,7 @@ $ /usr/bin/time -v python3 test.py 2>&1 | grep context
     Involuntary context switches: 4
 ```
 
-After the patch (event-driven):
+After the patch (event-driven approach):
 
 ```
 $ /usr/bin/time -v python3 test.py 2>&1 | grep context
@@ -158,7 +160,7 @@ matching pull request directly to CPython:
 I'm especially proud of this one: this is the **second time** in psutil's 17+
 year history that a feature developed in psutil made its way upstream into the
 Python standard library. The first was back in 2011 (see [python-ideas ML
-proposal](https://mail.python.org/pipermail/python-ideas/2011-June/010480.html)),
+proposal](https://mail.python.org/pipemail/python-ideas/2011-June/010480.html)),
 when `psutil.disk_usage()` inspired
 [shutil.disk_usage()](https://docs.python.org/3/library/shutil.html#shutil.disk_usage).
 
