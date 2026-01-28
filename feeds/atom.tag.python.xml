@@ -207,7 +207,9 @@ parameter. &lt;strong&gt;The circle is complete&lt;/strong&gt;.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;h2&gt;Discussion&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="https://medium.com/@g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86"&gt;Medium.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.reddit.com/r/Python/comments/1qpp42k/from_python_33_to_today_ending_15_years_of/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://gmpy.dev/blog/2026/event-driven-process-waiting"&gt;Hacker News&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://medium.com/@g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86"&gt;Medium&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</content><category term="2026"></category><category term="psutil"></category><category term="python"></category><category term="python-core"></category><category term="async"></category></entry><entry><title>Detect memory leaks of C extensions with psutil and psleak</title><link href="https://gmpy.dev/blog/2025/psutil-heap-introspection-apis" rel="alternate"></link><published>2025-12-23T00:00:00+01:00</published><updated>2025-12-23T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-12-23:/blog/2025/psutil-heap-introspection-apis</id><summary type="html">&lt;p&gt;Memory leaks in Python are usually straightforward to diagnose. Just look at
 RSS, track Python object counts, follow reference graphs, etc. But leaks inside
 &lt;strong&gt;C extension modules&lt;/strong&gt; are another story. Traditional memory metrics such as
