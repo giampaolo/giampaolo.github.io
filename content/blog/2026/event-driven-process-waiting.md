@@ -240,6 +240,6 @@ Topics related to this:
   module to enable `asyncio` optimization on BSD /
   macOS via `kqueue()`.
 
-## External links
+## Discussion
 
 - [Medium.com](https://medium.com/@g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86)
