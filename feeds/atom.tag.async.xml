@@ -205,7 +205,7 @@ parameter. &lt;strong&gt;The circle is complete&lt;/strong&gt;.&lt;/p&gt;
   module to enable &lt;code&gt;asyncio&lt;/code&gt; optimization on BSD /
   macOS via &lt;code&gt;kqueue()&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;External links&lt;/h2&gt;
+&lt;h2&gt;Discussion&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://medium.com/@g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86"&gt;Medium.com&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</content><category term="2026"></category><category term="psutil"></category><category term="python"></category><category term="python-core"></category><category term="async"></category></entry></feed>
