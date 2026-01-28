@@ -44,7 +44,6 @@ DISPLAY_PAGES_ON_MENU = False
 MENUITEMS = (
     ("Blog", "/"),
     ("Archives", "/archives"),
-    ("Donate", "/donate"),
     ("About", "/about"),
 )
 
