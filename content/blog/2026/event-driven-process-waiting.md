@@ -242,4 +242,6 @@ Topics related to this:
 
 ## Discussion
 
-- [Medium.com](https://medium.com/@g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86)
+- [Reddit](https://www.reddit.com/r/Python/comments/1qpp42k/from_python_33_to_today_ending_15_years_of/)
+- [Hacker News](https://gmpy.dev/blog/2026/event-driven-process-waiting)
+- [Medium](https://medium.com/@g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86)
