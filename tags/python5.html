@@ -30,6 +30,328 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2015/psutil-30-aka-how-i-reimplemented-ifconfig-in-python" rel="bookmark"
+                   title="Permalink to psutil 3.0, aka how I reimplemented ifconfig in Python">psutil 3.0, aka how I reimplemented ifconfig in Python</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2015-06-13T00:00:00+02:00">
+        Created: 13 giu 2015,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/travel">travel</a>,        <a href="https://gmpy.dev/tags/personal">personal</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>Here we are. It's been a long time since my last blog post and my last <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally had the chance to meet my friend <a class="reference external" href="http://jayloden.com/software.htm">Jay Loden</a> in person. <a class="reference external" href="https://fbcdn-sphotos-h-a.akamaihd.net/hphotos-ak-xta1/t31.0-8/11263024_10153285412879890_759604551146752808_o.jpg">Jay and I</a> originally started working on psutil together <a class="reference external" href="https://groups.google.com/forum/#!topic/psutil-dev/fj8DQ3lGFH4">7 years ago</a>.</p>
+<div>
+    <a href="/images/me-with-jay.jpg">
+    <img src="/images/me-with-jay.jpg" style="width:750px; height:500px" />
+    </a>
+</div><p>Back then I didn't know any C (and I still am a terrible C developer) so he's been crucial to develop the initial psutil skeleton including OSX and Windows support. I'm back home now (but not for long ;-)), so I finally have some time to write this blog post and tell you about the new psutil release. Let's see what happened.</p>
+<div class="section" id="net-if-addrs">
+<h2>net_if_addrs()<a class="headerlink" href="#net-if-addrs" title="Permalink to this headline">¶</a></h2>
+<p>In a few words, we're now able to list network interface addresses similarly to &quot;ifconfig&quot; command on UNIX:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pprint</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_if_addrs</span><span class="p">())</span>
+<span class="p">{</span><span class="s1">&#39;ethernet0&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">snic</span><span class="p">(</span><span class="n">family</span><span class="o">=&lt;</span><span class="n">AddressFamily</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">:</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">,</span>
+                    <span class="n">address</span><span class="o">=</span><span class="s1">&#39;10.0.0.4&#39;</span><span class="p">,</span>
+                    <span class="n">netmask</span><span class="o">=</span><span class="s1">&#39;255.0.0.0&#39;</span><span class="p">,</span>
+                    <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;10.255.255.255&#39;</span><span class="p">),</span>
+               <span class="n">snic</span><span class="p">(</span><span class="n">family</span><span class="o">=&lt;</span><span class="n">AddressFamily</span><span class="o">.</span><span class="n">AF_PACKET</span><span class="p">:</span> <span class="mi">17</span><span class="o">&gt;</span><span class="p">,</span>
+                    <span class="n">address</span><span class="o">=</span><span class="s1">&#39;9c:eb:e8:0b:05:1f&#39;</span><span class="p">,</span>
+                    <span class="n">netmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;ff:ff:ff:ff:ff:ff&#39;</span><span class="p">)],</span>
+ <span class="s1">&#39;localhost&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">snic</span><span class="p">(</span><span class="n">family</span><span class="o">=&lt;</span><span class="n">AddressFamily</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">:</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">,</span>
+                    <span class="n">address</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+                    <span class="n">netmask</span><span class="o">=</span><span class="s1">&#39;255.0.0.0&#39;</span><span class="p">,</span>
+                    <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">),</span>
+               <span class="n">snic</span><span class="p">(</span><span class="n">family</span><span class="o">=&lt;</span><span class="n">AddressFamily</span><span class="o">.</span><span class="n">AF_PACKET</span><span class="p">:</span> <span class="mi">17</span><span class="o">&gt;</span><span class="p">,</span>
+                    <span class="n">address</span><span class="o">=</span><span class="s1">&#39;00:00:00:00:00:00&#39;</span><span class="p">,</span>
+                    <span class="n">netmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;00:00:00:00:00:00&#39;</span><span class="p">)]}</span>
+</pre></div>
+<p>This is limited to <cite>AF_INET</cite> (IPv4), <cite>AF_INET6</cite> (IPv6) and <cite>AF_LINK</cite> (Ethernet) address families. If you want something more poweful (e.g. <cite>AF_BLUETOOTH</cite>) you can take a look at <a class="reference external" href="https://pypi.python.org/pypi/netifaces/">netifaces</a> extension. And here's the code which does these tricks on POSIX and Windows:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L151">POSIX</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L2907">Windows</a></li>
+</ul>
+<p>Also, here's some <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_if_addrs">doc</a>.</p>
+</div>
+<div class="section" id="net-if-stats">
+<h2>net_if_stats()<a class="headerlink" href="#net-if-stats" title="Permalink to this headline">¶</a></h2>
+<p>This will return a bunch of information about network interface cards:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pprint</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_if_stats</span><span class="p">())</span>
+<span class="p">{</span><span class="s1">&#39;ethernet&#39;</span><span class="mi">0</span><span class="p">:</span> <span class="n">snicstats</span><span class="p">(</span><span class="n">isup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">duplex</span><span class="o">=&lt;</span><span class="n">NicDuplex</span><span class="o">.</span><span class="n">NIC_DUPLEX_FULL</span><span class="p">:</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">,</span>
+                        <span class="n">speed</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                        <span class="n">mtu</span><span class="o">=</span><span class="mi">1500</span><span class="p">),</span>
+ <span class="s1">&#39;localhost&#39;</span><span class="p">:</span> <span class="n">snicstats</span><span class="p">(</span><span class="n">isup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">duplex</span><span class="o">=&lt;</span><span class="n">NicDuplex</span><span class="o">.</span><span class="n">NIC_DUPLEX_UNKNOWN</span><span class="p">:</span> <span class="mi">0</span><span class="o">&gt;</span><span class="p">,</span>
+                        <span class="n">speed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">mtu</span><span class="o">=</span><span class="mi">65536</span><span class="p">)}</span>
+</pre></div>
+<p>Again, here's the code for each platform:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L3057">Windows</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_linux.c#L474">Linux</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L229">OSX &amp; FreeBSD</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_sunos.c#L1153">SunOS</a></li>
+</ul>
+<p>...and the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_if_stats">doc</a>.</p>
+</div>
+<div class="section" id="enums">
+<h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://docs.python.org/3/library/enum.html">Enums</a> are a nice new feature introduced in Python 3.4. Very briefly (or at least, this is what I appreciate the most about them), they help you write an API with human-readable constants. If you use Python 2 you'll see something like this:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">IOPRIO_CLASS_IDLE</span>
+<span class="mi">3</span>
+</pre></div>
+<p>On Python 3.4 you'll see a more informative:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">IOPRIO_CLASS_IDLE</span>
+<span class="o">&lt;</span><span class="n">IOPriority</span><span class="o">.</span><span class="n">IOPRIO_CLASS_IDLE</span><span class="p">:</span> <span class="mi">3</span><span class="o">&gt;</span>
+</pre></div>
+<p>They are backward compatible, meaning if you're sending serialized data produced with psutil through the network you can safely use comparison operators and so on. The psutil APIs returning enums (on Python &gt;=3.4) are:</p>
+<ul class="simple">
+<li><cite>psutil.net_connections()</cite> (the address families):</li>
+<li><cite>psutil.Process.connections()</cite> (same as above)</li>
+<li><cite>psutil.net_if_stats()</cite>  (all <tt class="docutils literal">NIC_DUPLEX_*</tt> constants)</li>
+<li><cite>psutil.Process.nice()</cite> on Windows (for all the <tt class="docutils literal">*_PRIORITY_CLASS</tt> constants)</li>
+<li><cite>psutil.Process.ionice()</cite> on Linux (for all the <tt class="docutils literal">IOPRIO_CLASS_*</tt> constants)</li>
+</ul>
+<p>All the other existing constants remained plain strings (<tt class="docutils literal">STATUS_*</tt>) or integers (<tt class="docutils literal">CONN_*</tt>).</p>
+</div>
+<div class="section" id="zombie-processes">
+<h2>Zombie processes<a class="headerlink" href="#zombie-processes" title="Permalink to this headline">¶</a></h2>
+<p>This is a big one. The full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/428">here</a> but basically the support for <a class="reference external" href="http://askubuntu.com/a/48625">zombie processes</a> on UNIX was <a class="reference external" href="https://github.com/giampaolo/psutil/issues/428">broken</a> (except on Linux, and Windows doesn't have zombie processes). Up until psutil 2.X we could instantiate a zombie process:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">pid</span> <span class="o">=</span> <span class="n">create_zombie</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
+</pre></div>
+<p>...but every time we queried it we got a <cite>NoSuchProcess</cite> exception:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+  <span class="n">File</span> <span class="s2">&quot;psutil/__init__.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">374</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_init</span>
+    <span class="k">raise</span> <span class="n">NoSuchProcess</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+<span class="n">psutil</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">:</span> <span class="n">no</span> <span class="n">process</span> <span class="n">found</span> <span class="k">with</span> <span class="n">pid</span> <span class="mi">123</span>
+</pre></div>
+<p>That was misleading though because the PID technically still existed:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">pid_exists</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+<p>Furthermore, depending on what platform you were on, certain process stats could still be queried (instead of raising <cite>NoSuchProcess</cite>):</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cmdline</span><span class="p">()</span>
+<span class="p">[</span><span class="s1">&#39;python&#39;</span><span class="p">]</span>
+</pre></div>
+<p>Also <cite>process_iter()</cite> did not return zombie processes at all. This was probably the worst aspect because being able to identify them is an important use case, as they signal an issue with process: if a parent process spawns a child, terminates it (via <cite>kill()</cite>), but doesn't <cite>wait()</cite> for it it will create a zombie. Long story short, the way this changed in psutil 3.0 is that:</p>
+<ul class="simple">
+<li>we now have a new <cite>ZombieProcess</cite> exception, raised every time we're not able to query a process because it's a zombie</li>
+<li>it is raised instead of <cite>NoSuchProcess</cite> (which was incorrect and misleading)</li>
+<li>it is still backward compatible (meaning you won't have to change your old code) because it inherits from <cite>NoSuchProcess</cite></li>
+<li><cite>process_iter()</cite> finally works, meaning you can safely identify zombie processes like this:</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="n">zombies</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span><span class="p">()</span> <span class="o">==</span> <span class="n">psutil</span><span class="o">.</span><span class="n">STATUS_ZOMBIE</span><span class="p">:</span>
+            <span class="n">zombies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NoSuchProcess</span><span class="p">:</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+<div class="section" id="removal-of-deprecated-apis">
+<h2>Removal of deprecated APIs<a class="headerlink" href="#removal-of-deprecated-apis" title="Permalink to this headline">¶</a></h2>
+<p>This is another big one, probably the biggest. In a previous blog post I already talked about deprecated APIs. What I did back then (January 2014) was to rename and officially deprecate different APIs and provide aliases for them so that people wouldn't yell at me because I broke their existent code. The most interesting deprecation was certainly the one affecting module constants and the hack which was used in order to provide &quot;module properties&quot;. With this new release I decided to get rid of all those aliases. I'm sure this will cause problems but hey! This is a new major release, right? =). Plus the amount of crap which was removed is impressive (see the <a class="reference external" href="https://github.com/giampaolo/psutil/commit/ab211934af0acf99091e4cd534fc5bbe7fd3b233">commit</a>). Here's the old aliases which are now gone for good (or bad, depending on how much headache they will cause you):</p>
+</div>
+<div class="section" id="removed-module-functions-and-constants">
+<h2>Removed module functions and constants<a class="headerlink" href="#removed-module-functions-and-constants" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="48%" />
+<col width="52%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Already deprecated name</th>
+<th class="head">New name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>psutil.BOOT_TIME()</td>
+<td>psutil.boot_time()</td>
+</tr>
+<tr><td>psutil.NUM_CPUS()</td>
+<td>psutil.cpu_count()</td>
+</tr>
+<tr><td>psutil.TOTAL_PHYMEM()</td>
+<td>psutil.virtual_memory().total</td>
+</tr>
+<tr><td>psutil.avail_phymem()</td>
+<td>psutil.virtual_memory().free</td>
+</tr>
+<tr><td>psutil.avail_virtmem()</td>
+<td>psutil.swap_memory().free</td>
+</tr>
+<tr><td>psutil.cached_phymem()</td>
+<td>psutil.virtual_memory().cached</td>
+</tr>
+<tr><td>psutil.get_pid_list()</td>
+<td>psutil.pids().cached</td>
+</tr>
+<tr><td>psutil.get_process_list()</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>psutil.get_users()</td>
+<td>psutil.users()</td>
+</tr>
+<tr><td>psutil.network_io_counters()</td>
+<td>psutil.net_io_counters()</td>
+</tr>
+<tr><td>psutil.phymem_buffers()</td>
+<td>psutil.virtual_memory().buffers</td>
+</tr>
+<tr><td>psutil.phymem_usage()</td>
+<td>psutil.virtual_memory()</td>
+</tr>
+<tr><td>psutil.total_virtmem()</td>
+<td>psutil.swap_memory().total</td>
+</tr>
+<tr><td>psutil.used_virtmem()</td>
+<td>psutil.swap_memory().used</td>
+</tr>
+<tr><td>psutil.used_phymem()</td>
+<td>psutil.virtual_memory().used</td>
+</tr>
+<tr><td>psutil.virtmem_usage()</td>
+<td>psutil.swap_memory()</td>
+</tr>
+</tbody>
+</table>
+<p>Process methods (assuming <cite>p = psutil.Process()</cite>):</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="48%" />
+<col width="52%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Already deprecated name</th>
+<th class="head">New name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>p.get_children()</td>
+<td>p.children()</td>
+</tr>
+<tr><td>p.get_connections()</td>
+<td>p.connections()</td>
+</tr>
+<tr><td>p.get_cpu_affinity()</td>
+<td>p.cpu_affinity()</td>
+</tr>
+<tr><td>p.get_cpu_percent()</td>
+<td>p.cpu_percent()</td>
+</tr>
+<tr><td>p.get_cpu_times()</td>
+<td>p.cpu_times()</td>
+</tr>
+<tr><td>p.get_io_counters()</td>
+<td>p.io_counters()</td>
+</tr>
+<tr><td>p.get_ionice()</td>
+<td>p.ionice()</td>
+</tr>
+<tr><td>p.get_memory_info()</td>
+<td>p.memory_info()</td>
+</tr>
+<tr><td>p.get_ext_memory_info()</td>
+<td>p.memory_info_ex()</td>
+</tr>
+<tr><td>p.get_memory_maps()</td>
+<td>p.memory_maps()</td>
+</tr>
+<tr><td>p.get_memory_percent()</td>
+<td>p.memory_percent()</td>
+</tr>
+<tr><td>p.get_nice()</td>
+<td>p.nice()</td>
+</tr>
+<tr><td>p.get_num_ctx_switches()</td>
+<td>p.num_ctx_switches()</td>
+</tr>
+<tr><td>p.get_num_fds()</td>
+<td>p.num_fds()</td>
+</tr>
+<tr><td>p.get_num_threads()</td>
+<td>p.num_threads()</td>
+</tr>
+<tr><td>p.get_open_files()</td>
+<td>p.open_files()</td>
+</tr>
+<tr><td>p.get_rlimit()</td>
+<td>p.rlimit()</td>
+</tr>
+<tr><td>p.get_threads()</td>
+<td>p.threads()</td>
+</tr>
+<tr><td>p.getcwd()</td>
+<td>p.cwd()</td>
+</tr>
+<tr><td>p.set_cpu_affinity()</td>
+<td>p.cpu_affinity()</td>
+</tr>
+<tr><td>p.set_ionice()</td>
+<td>p.ionice()</td>
+</tr>
+<tr><td>p.set_nice()</td>
+<td>p.nice()</td>
+</tr>
+<tr><td>p.set_rlimit()</td>
+<td>p.rlimit()</td>
+</tr>
+</tbody>
+</table>
+<p>If your code suddenly breaks with AttributeError after you upgraded psutil it means you were using one of those deprecated aliases. In that case just take a look at the table above and rename stuff in accordance.</p>
+</div>
+<div class="section" id="bug-fixes">
+<h2>Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h2>
+<p>I fixed a lot of stuff (full list <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">here</a>), but here's the list of things which I think are worth mentioning:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/512">#512</a>: [FreeBSD] fix segfault in net_connections().</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/593">#593</a>: [FreeBSD] Process.memory_maps() segfaults.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/606">#606</a>: Process.parent() may swallow NoSuchProcess exceptions.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/614">#614</a>: [Linux]: cpu_count(logical=False) return the number of physical CPUs instead of physical cores.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/628">#628</a>: [Linux] Process.name() truncates process name in case it contains spaces or parentheses.</li>
+</ul>
+</div>
+<div class="section" id="ease-of-development">
+<h2>Ease of development<a class="headerlink" href="#ease-of-development" title="Permalink to this headline">¶</a></h2>
+<p>These are not enhancements you will directly benefit from but I put some effort into making my life easier every time I work on psutil.</p>
+<ul class="simple">
+<li>I care about psutil code being fully <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8</a> compliant so I added a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/.git-pre-commit">pre-commit</a> GIT hook which runs <a class="reference external" href="https://pypi.python.org/pypi/flake8">flake8</a> on every commit and rejects it if the coding style is not compliant. The way I install this is via <a class="reference external" href="https://github.com/giampaolo/psutil/blob/82da82a6bb94ed5c6faf9d762ef4ad0fec18f01b/Makefile#L108)">make install-git-hooks</a>.</li>
+<li>I added a <tt class="docutils literal">make <span class="pre">install-dev-deps</span></tt> command which installs all deps and stuff which is useful for testing (<cite>ipdb</cite>, <cite>coverage</cite>, etc).</li>
+<li>A new <tt class="docutils literal">make coverage</tt> command which runs <a class="reference external" href="http://nedbatchelder.com/code/coverage/">coverage</a>. With this I discovered some of parts in the code which weren't covered by tests and I fixed that.</li>
+<li>I started using <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/tox.ini">tox</a> to easily test psutil against all supported Python versions (from 2.6 to 3.4) in one shot.</li>
+<li>I <a class="reference external" href="https://github.com/giampaolo/psutil/issues/629">reorganized tests</a> so that now they can be easily executed with py.test and nose (before, only unittest runner was fully supported)</li>
+</ul>
+</div>
+<div class="section" id="final-words">
+<h2>Final words<a class="headerlink" href="#final-words" title="Permalink to this headline">¶</a></h2>
+<p>I must say I'm pretty satisfied with how psutil is going and the satisfaction I still get every time I work on it. Right now it gets almost <a class="reference external" href="https://pypi.python.org/pypi/psutil#downloads">800.000 download a month</a>, which is pretty great for a Python library. As of right now I consider psutil almost &quot;completed&quot; in terms of features, meaning I'm basically running out of ideas on what I should add next (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/TODO">TODO</a>). From now on the future development will probably focus on adding support for more exotic platforms (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/562">OpenBSD</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">NetBSD</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/355">Android</a>). There also have been some discussions on python-ideas mailing list about <a class="reference external" href="https://mail.python.org/pipermail//python-ideas/2014-October/029835.html">including psutil into Python stdlib</a> but, assuming that will ever happen, it's still far away in the future as it would require a lot of time which I currently don't have. That should be all. I hope you will all enjoy this new release.</p>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2014/psutil-212-and-python-wheels" rel="bookmark"
                    title="Permalink to psutil 2.1.2 and Python wheels">psutil 2.1.2 and Python wheels</a></h1>
         </header>
@@ -449,336 +771,6 @@ There were some difficult decisions because many of the changes I introduced are
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/_psutil_osx.c#L1072">OSX</a></li>
 </ul>
 <p>Hopefully this will help whoever needs to do this into another language. The only platform where this is sort of clunky is OSX, which does not expose anything to list all system-wide sockets in a single shot, so you're forced to query each process. That means you'll need root privileges otherwise you'll get an access denied error. For what it's worth, I took a look at <cite>lsof</cite> and it has the same limitation and netstat runs with SUID. Well, I guess this is it. I'll leave you with <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_connections">some docs</a>. For the next one I'm planning on working on a couple of other network-related functionalities: <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=376">&quot;ifconfig&quot;</a> and <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=250">NIC speeds</a>. But that's for another time...</p>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2014/psutil-20-api-redesign" rel="bookmark"
-                   title="Permalink to psutil 2.0 API redesign">psutil 2.0 API redesign</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2014-01-11T00:00:00+01:00">
-        Created: 11 gen 2014,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>This my second blog post is going to be about <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is to serve as an official reference which describes how you should port your existent code base. In doing so I will also explain why I decided to make these changes. Despite many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten but I think this is for the better and it needed to be done, hopefully for the first and last time. OK, here we go now.</p>
-<div class="section" id="module-constants-turned-into-functions">
-<h2>Module constants turned into functions<a class="headerlink" href="#module-constants-turned-into-functions" title="Permalink to this headline">¶</a></h2>
-<p><strong>What changed</strong></p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="42%" />
-<col width="58%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Old name</th>
-<th class="head">Replacement</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>psutil.BOOT_TIME</td>
-<td>psutil.boot_time()</td>
-</tr>
-<tr><td>psutil.NUM_CPUS</td>
-<td>psutil.cpu_count()</td>
-</tr>
-<tr><td>psutil.TOTAL_PHYMEM</td>
-<td>psutil.virtual_memory().total</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Why I did it</strong></p>
-<p>I already talked about this more extensively in this <a class="reference external" href="../2013/making-constants-part-of-your-api-is-evil">blog post</a>. In short: other than introducing unnecessary slowdowns, calculating a module level constant at import time is dangerous because in case of error the whole app will crash. Also, the represented values may be subject to change (think about the system clock) but the constant cannot be updated.
-Thanks to this hack accessing the old constants still works and produces a DeprecationWarning.</p>
-</div>
-<div class="section" id="module-functions-renamings">
-<h2>Module functions renamings<a class="headerlink" href="#module-functions-renamings" title="Permalink to this headline">¶</a></h2>
-<p><strong>What changed</strong></p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="44%" />
-<col width="56%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Old name</th>
-<th class="head">Replacement</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>psutil.get_boot_time()</td>
-<td>psutil.boot_time()</td>
-</tr>
-<tr><td>psutil.get_pid_list()</td>
-<td>psutil.pids()</td>
-</tr>
-<tr><td>psutil.get_users()</td>
-<td>psutil.users()</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Why I did it</strong></p>
-<p>They were the only module level functions having a <tt class="docutils literal">get_</tt> prefix. All others do not.</p>
-</div>
-<div class="section" id="process-class-methods-renamings">
-<h2>Process class' methods renamings<a class="headerlink" href="#process-class-methods-renamings" title="Permalink to this headline">¶</a></h2>
-<p>All methods lost their <tt class="docutils literal">get_</tt> and <tt class="docutils literal">set_</tt> prefixes. A single method can now be used for both getting and setting (if a value is passed). Assuming p = psutil.Process():</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="46%" />
-<col width="54%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Old name</th>
-<th class="head">Replacement</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>p.get_children()</td>
-<td>p.children()</td>
-</tr>
-<tr><td>p.get_connections()</td>
-<td>p.connections()</td>
-</tr>
-<tr><td>p.get_cpu_affinity()</td>
-<td>p.cpu_affinity()</td>
-</tr>
-<tr><td>p.get_cpu_percent()</td>
-<td>p.cpu_percent()</td>
-</tr>
-<tr><td>p.get_cpu_times()</td>
-<td>p.cpu_times()</td>
-</tr>
-<tr><td>p.get_io_counters()</td>
-<td>p.io_counters()</td>
-</tr>
-<tr><td>p.get_ionice()</td>
-<td>p.ionice()</td>
-</tr>
-<tr><td>p.get_memory_info()</td>
-<td>p.memory_info()</td>
-</tr>
-<tr><td>p.get_ext_memory_info()</td>
-<td>p.memory_info_ex()</td>
-</tr>
-<tr><td>p.get_memory_maps()</td>
-<td>p.memory_maps()</td>
-</tr>
-<tr><td>p.get_memory_percent()</td>
-<td>p.memory_percent()</td>
-</tr>
-<tr><td>p.get_nice()</td>
-<td>p.nice()</td>
-</tr>
-<tr><td>p.get_num_ctx_switches()</td>
-<td>p.num_ctx_switches()</td>
-</tr>
-<tr><td>p.get_num_fds()</td>
-<td>p.num_fds()</td>
-</tr>
-<tr><td>p.get_num_threads()</td>
-<td>p.num_threads()</td>
-</tr>
-<tr><td>p.get_open_files()</td>
-<td>p.open_files()</td>
-</tr>
-<tr><td>p.get_rlimit()</td>
-<td>p.rlimit()</td>
-</tr>
-<tr><td>p.get_threads()</td>
-<td>p.threads()</td>
-</tr>
-<tr><td>p.getcwd()</td>
-<td>p.cwd()</td>
-</tr>
-</tbody>
-</table>
-<p>...as for <cite>set_*</cite> methods:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="44%" />
-<col width="56%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Old name</th>
-<th class="head">Replacement</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>p.set_cpu_affinity()</td>
-<td>p.cpu_affinity(cpus)</td>
-</tr>
-<tr><td>p.set_ionice()</td>
-<td>p.ionice(ioclass, value=None)</td>
-</tr>
-<tr><td>p.set_nice()</td>
-<td>p.nice(value)</td>
-</tr>
-<tr><td>p.set_rlimit()</td>
-<td>p.rlimit(resource, limits=None)</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Why I did it</strong></p>
-<p>I wanted to be consistent with system-wide module level functions which have no <tt class="docutils literal">get_</tt> prefix. After I got rid of <tt class="docutils literal">get_</tt> prefixes removing also <tt class="docutils literal">set_</tt> seemed natural and helped diminish the number of methods.</p>
-</div>
-<div class="section" id="process-properties-are-now-methods">
-<h2>Process properties are now methods<a class="headerlink" href="#process-properties-are-now-methods" title="Permalink to this headline">¶</a></h2>
-<p><strong>What changed</strong></p>
-<p>Assuming p = psutil.Process():</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="44%" />
-<col width="56%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Old name</th>
-<th class="head">Replacement</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>p.cmdline</td>
-<td>p.cmdline()</td>
-</tr>
-<tr><td>p.create_time</td>
-<td>p.create_time()</td>
-</tr>
-<tr><td>p.exe</td>
-<td>p.exe()</td>
-</tr>
-<tr><td>p.gids</td>
-<td>p.gids()</td>
-</tr>
-<tr><td>p.name</td>
-<td>p.name()</td>
-</tr>
-<tr><td>p.parent</td>
-<td>p.parent()</td>
-</tr>
-<tr><td>p.ppid</td>
-<td>p.ppid()</td>
-</tr>
-<tr><td>p.status</td>
-<td>p.status()</td>
-</tr>
-<tr><td>p.uids</td>
-<td>p.uids()</td>
-</tr>
-<tr><td>p.username</td>
-<td>p.username()</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Why I did it</strong></p>
-<p>Different reasons:</p>
-<ul class="simple">
-<li>Having a mixed API which uses both properties and methods for no particular reason is confusing and messy as you don't know whether to use &quot;()&quot; or not (see <a class="reference external" href="https://code.google.com/p/psutil/source/browse/test/test_psutil.py?name=release-0.7.0#1716">here</a>).</li>
-<li>It is usually expected from a property to not perform many computations internally whereas psutil actually invokes a function every time it is accessed. This has two drawbacks:
-* you may get an exception just by accessing the property (e.g. &quot;p.name&quot; may raise NoSuchProcess or AccessDenied)
-* you may erroneously think properties are cached but this is true only for name, exe, and create_time.</li>
-</ul>
-</div>
-<div class="section" id="cpu-percent-intervals">
-<h2>CPU percent intervals<a class="headerlink" href="#cpu-percent-intervals" title="Permalink to this headline">¶</a></h2>
-<p><strong>What changed</strong></p>
-<p>The timeout parameter of <tt class="docutils literal">cpu_percent*</tt> functions now defaults to 0.0 instead of 0.1. The functions affected are:</p>
-<ul class="simple">
-<li>psutil.Process.cpu_percent()</li>
-<li>psutil.cpu_percent()</li>
-<li>psutil.cpu_times_percent()</li>
-</ul>
-<p><strong>Why I did it</strong></p>
-<p>I originally set 0.1 as the default timeout because in order to get a meaningful percent value you need to wait some time.
-Having an API which &quot;sleeps&quot; by default is risky though, because it's easy to forget it does so. That is particularly problematic when calling <cite>cpu_percent()</cite> for all processes: it's very easy to forget about specifying <cite>timeout=0</cite> resulting in dramatic slowdowns which are hard to spot. For example, this code snippet might take different seconds to complete depending on the number of active processes:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="c1"># this will be slow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
-<span class="o">...</span>    <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">())</span>
-</pre></div>
-</div>
-<div class="section" id="migration-strategy">
-<h2>Migration strategy<a class="headerlink" href="#migration-strategy" title="Permalink to this headline">¶</a></h2>
-<p>Except for Process properties (<cite>name</cite>, <cite>exe</cite>, <cite>cmdline</cite>, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long you start the interpreter with the &quot;-Wd&quot; option. This will enable deprecation warnings which were <a class="reference external" href="http://bugs.python.org/issue7319">silenced in Python 2.7</a> (IMHO, from a developer standpoint this was a bad decision).</p>
-<pre class="literal-block">
-giampaolo&#64;ubuntu:/tmp$ python -Wd
-Python 2.7.3 (default, Sep 26 2013, 20:03:06)
-[GCC 4.6.3] on linux2
-Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
-&gt;&gt;&gt; import psutil
-&gt;&gt;&gt; psutil.get_pid_list()
-__main__:1: DeprecationWarning: psutil.get_pid_list is deprecated; use psutil.pids() instead
-[1, 2, 3, 6, 7, 13, ...]
-&gt;&gt;&gt;
-&gt;&gt;&gt;
-&gt;&gt;&gt; p = psutil.Process()
-&gt;&gt;&gt; p.get_cpu_times()
-__main__:1: DeprecationWarning: get_cpu_times() is deprecated; use cpu_times() instead
-pcputimes(user=0.08, system=0.03)
-&gt;&gt;&gt;
-</pre>
-<p>If you have a solid test suite you can run tests and fix the warnings one by one.
-As for the the Process properties which were turned into methods it's more difficult because whereas psutil 1.2.1 returns the actual value, psutil 2.0.0 will return the bound method:</p>
-<div class="highlight"><pre><span></span># psutil 1.2.1
-&gt;&gt;&gt; psutil.Process().name
-&#39;python&#39;
-&gt;&gt;&gt;
-
-# psutil 2.0.0
-&gt;&gt;&gt; psutil.Process().name
-&lt;bound method Process.name of psutil.Process(pid=19816, name=&#39;python&#39;) at 139845631328144&gt;
-&gt;&gt;&gt;
-</pre></div>
-<p>What I would recommend if you want to drop support with 1.2.1 is to grep for <cite>&quot;.name&quot;</cite>, <cite>&quot;.exe&quot;</cite> etc. and just replace them with <cite>&quot;.exe()&quot;</cite> and <cite>&quot;.name()&quot;</cite> one by one.
-If on the other hand you want to write a code which works with both versions I see two possibilities:</p>
-<ul class="simple">
-<li>#1 check version info, like this:</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">PSUTIL2</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">name</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">()</span> <span class="k">if</span> <span class="n">PSUTIL2</span> <span class="k">else</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">exe</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">exe</span><span class="p">()</span> <span class="k">if</span> <span class="n">PSUTIL2</span> <span class="k">else</span> <span class="n">p</span><span class="o">.</span><span class="n">exe</span>
-</pre></div>
-<ul class="simple">
-<li>#2 get rid of all <cite>&quot;.name&quot;</cite>, <cite>&quot;.exe&quot;</cite> occurrences you have in your code and use <cite>as_dict()</cite> instead:</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pinfo</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;exe&quot;</span><span class="p">])</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pinfo</span>
-<span class="p">{</span><span class="s1">&#39;exe&#39;</span><span class="p">:</span> <span class="s1">&#39;/usr/bin/python2.7&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">name</span> <span class="o">=</span> <span class="n">pinfo</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">exe</span> <span class="o">=</span> <span class="n">pinfo</span><span class="p">[</span><span class="s1">&#39;exe&#39;</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="section" id="new-features-introduced-in-2-0-0">
-<h2>New features introduced in 2.0.0<a class="headerlink" href="#new-features-introduced-in-2-0-0" title="Permalink to this headline">¶</a></h2>
-<p>Ok, enough with the bad news. =) psutil 2.0.0 is not only about code breakage. I also had the chance to integrate a bunch of interesting features.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427">#427</a>: you're now able to distinguish between the number of logical and physical CPUs:</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
-<span class="mi">4</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># physical cores only</span>
-<span class="mi">2</span>
-</pre></div>
-<ul class="simple">
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=452">#452</a>: process classes are now hashable and can be checked for equality. That means you can use <cite>Process</cite> objects with sets (finally!).</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447">#447</a>: <cite>psutil.wait_procs()</cite> &quot;timeout&quot; parameter is now optional</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=461">#461</a>: functions returning namedtuples are now pickle-able</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=459">#459</a>: a Makefile is now available to automatize repetitive tasks such as build, install, running tests etc. There's also a make.bat for Windows.</li>
-<li>introduced <cite>unittest2</cite> module as a requirement for running tests</li>
-</ul>
 </div>
 
         </div>

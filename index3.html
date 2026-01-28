@@ -29,6 +29,70 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2019/psutil-560-and-process-parents" rel="bookmark"
+                   title="Permalink to psutil 5.6.0 and process parents">psutil 5.6.0 and process parents</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2019-03-05T00:00:00+01:00">
+        Created: 05 mar 2019,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>Hello world =)</p>
+<p>It was a long time since my last blog post (over 1 year and a half). During this time I moved between Italy, Prague and Shenzhen (China), and also contributed a couple of nice patches for Python I want to blog about when Python 3.8 will be out: zero-copy for <a class="reference external" href="https://bugs.python.org/issue33671">shutil.copy()</a> functions and <a class="reference external" href="https://github.com/python/cpython/pull/11784">socket.create_server()</a> utility function. But let's move on and talk about what this blog post is about: the next major psutil version.</p>
+<div class="section" id="process-parents">
+<h2>Process parents()<a class="headerlink" href="#process-parents" title="Permalink to this headline">¶</a></h2>
+<p>From the doc: return the parents of this process as a list of Process instances. If no parents are known return an empty list.</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="mi">5312</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">()</span>
+<span class="p">[</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">4699</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;bash&#39;</span><span class="p">,</span> <span class="n">started</span><span class="o">=</span><span class="s1">&#39;09:06:44&#39;</span><span class="p">),</span>
+ <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">4689</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;gnome-terminal-server&#39;</span><span class="p">,</span> <span class="n">started</span><span class="o">=</span><span class="s1">&#39;0:06:44&#39;</span><span class="p">),</span>
+ <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;systemd&#39;</span><span class="p">,</span> <span class="n">started</span><span class="o">=</span><span class="s1">&#39;05:56:55&#39;</span><span class="p">)]</span>
+</pre></div>
+<p>Nothing really new here, as it's a convenience method based on the existing <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.parent">parent()</a> method, but still it's something nice to have implemented as a builtin and which can be used to work with process trees in conjunction with <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.children">children()</a> method. The idea was proposed by Ghislain Le Meur.</p>
+</div>
+<div class="section" id="windows">
+<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
+<p>A bunch of interesting improvements occurred on Windows.</p>
+<p>The first one is that certain Windows APIs requiring to be dynamically loaded from DLL libraries are now loaded only once on startup (instead of on per function call), significantly speeding up different functions and methods. This is described and implemented in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1422">#1422</a> which also provides benchmarks.</p>
+<p>Another one is Process' <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.suspend">suspend()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.resume">resume()</a> methods. Before they were using <cite>CreateToolhelp32Snapshot()</cite> to iterate over all process' threads which was somewhat unorthodox and didn't work if process was suspended via Process Hacker. Now it relies on undocumented <cite>NtSuspendProcess</cite> and <cite>NtResumeProcess</cite> APIs, which is the same approach used by ProcessHacker and other famous Sysinternals tools. The change was proposed and discussed in issue <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1379">#1379</a> and implemented in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1435">#1435</a>. I think I will later propose the addition of suspend() and resume() method in subprocess module in Python.</p>
+<p>Last nice improvement about Windows it's about <cite>SE DEBUG</cite> mode. <cite>SE DEBUG</cite> mode can be seen as a &quot;bit&quot; which you can set on the Python process on startup so that we have more chances of querying processes owned by other users, including many owned by Administrator and Local System. Practically speaking this means we will get less <cite>AccessDenied</cite> exceptions for low PID processes.  It turns out the code doing this has been broken presumably for years, and never set <cite>SE DEBUG</cite>. This is fixed now and the change was made in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1429">#1429</a>.</p>
+</div>
+<div class="section" id="removal-of-process-memory-maps-on-osx">
+<h2>Removal of Process.memory_maps() on OSX<a class="headerlink" href="#removal-of-process-memory-maps-on-osx" title="Permalink to this headline">¶</a></h2>
+<p>This was somewhat <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1291">controversial</a>. The history about <cite>memory_maps()</cite> on OSX is a painful one. It was based on an undocumented and probably broken Apple API called <cite>proc_regionfilename()</cite> which made <cite>memory_maps()</cite> either randomly raise <cite>EINVAL</cite> or result in segfault! Also, <cite>memory_maps()</cite> could only be used for the current process, limiting its usefulness to <cite>os.getpid()</cite> only. For any other process it raised <cite>AccessDenied</cite>. This has been a known problem for a long time but sometime over the last few years I got tired of seeing random test failures on Travis that I couldn't reproduce locally, so I commented the unit-test and forget about it until last week, when I realized the real impact this has on production code. I tried looking for a solution once again, spending quite some time looking for public source codes which managed to do this right with no luck. The only tool I'm aware of which does this right is vmmap from Apple, but it's closed source. After careful thinking, since no solution was found, I decided to just remove <cite>memory_maps()</cite> from OSX. This is not something I took lightly, but considering the alternative is getting a segfault I decided to sacrifice backward compatibility (hence the major version bump).</p>
+</div>
+<div class="section" id="improved-exceptions">
+<h2>Improved exceptions<a class="headerlink" href="#improved-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>One problem which afflicted psutil maintenance over the years was receiving bug reports including tracebacks which didn't provide any information on what syscall failed exactly. This was especially painful on Windows where a single routine can invoke different Windows APIs. Now the <cite>OSError</cite> (or <cite>WindowsError</cite>) exception will include the syscall from which the error originated, see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1428">PR-#1428</a>.</p>
+</div>
+<div class="section" id="other-important-bugfixes">
+<h2>Other important bugfixes<a class="headerlink" href="#other-important-bugfixes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1353">#1353</a>: <cite>process_iter()</cite> is now thread safe</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1411">#1411</a>: [BSD] segfault could occur on Process instantiation</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1427">#1427</a>: [OSX] Process <cite>cmdline()</cite> and <cite>environ()</cite> may erroneously raise <cite>OSError</cite> on failed <cite>malloc()</cite>.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1447">#1447</a>: original exception wasn't turned into <cite>NoSuchProcess</cite> / <cite>AccessDenied</cite> exceptions when using <cite>Process.oneshot()</cite> ctx manager.</li>
+</ul>
+<p>A full list of enhancements and bug fixes is available <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#560">here</a>.</p>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2017/psutil-540-and-aix-support" rel="bookmark"
                    title="Permalink to psutil 5.4.0 and AIX support">psutil 5.4.0 and AIX support</a></h1>
         </header>
@@ -385,136 +449,6 @@ The second method is slower because it <a class="reference external" href="https
 <ul class="simple">
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/5bhn4q/psutil_500_is_around_twice_as_fast/">Reddit</a></li>
 </ul>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2016/psutil-440-improved-linux-memory-metrics" rel="bookmark"
-                   title="Permalink to psutil 4.4.0: improved Linux memory metrics">psutil 4.4.0: improved Linux memory metrics</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2016-10-23T00:00:00+02:00">
-        Created: 23 ott 2016,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. Main highlights of this release are more accurate memory metrics on Linux and different OSX fixes. Here goes.</p>
-<div class="section" id="linux-virtual-memory">
-<h2>Linux virtual memory<a class="headerlink" href="#linux-virtual-memory" title="Permalink to this headline">¶</a></h2>
-<p>This new release sets a milestone regarding <tt class="docutils literal">virtual_memory()</tt> metrics on Linux which are now calculated way <a class="reference external" href="https://github.com/giampaolo/psutil/issues/887">more precisely</a> (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/890/files">commit</a>). Across the years different people complained that the numbers reported by <cite>virtual_memory()</cite> were not accurate or did not match the ones reported by <cite>free</cite> command line utility exactly (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/862">#862</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/685">#685</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/538">#538</a>). As such I investigated how &quot;available memory&quot; is calculated on Linux and indeed psutil were doing it wrong. It turns out &quot;free&quot; cmdline itself, and many other similar tools, also did it wrong up until <a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773">2 years ago</a> when somebody finally decided to accurately calculate the available system memory straight into the Linux kernel and expose this info to user-level applications. Starting from Linux kernel 3.14, a new <cite>&quot;MemAvailable&quot;</cite> column was added to <cite>/proc/meminfo</cite> and this is how psutil now determines available memory. Because of this both &quot;available&quot; and &quot;used&quot; memory fields returned by virtual_memory() precisely match <cite>free</cite> command line utility. As for older kernels (&lt; 3.14), psutil tries to determine this value by using the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L291">same algorithm</a> which was used in the original <a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773">Linux kernel commit</a>. Free cmdline utility source code also inspired an additional fix which prevents available memory overflowing total memory on <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L435">LCX containers</a>.</p>
-</div>
-<div class="section" id="osx-fixes">
-<h2>OSX fixes<a class="headerlink" href="#osx-fixes" title="Permalink to this headline">¶</a></h2>
-<p>For many years the OSX development of psutil occurred on a very old OSX 10.5 version, which I emulated via VirtualBox. The OS itself was a hacked version of OSX, called iDeneb. After many years I finally managed to get access to a more recent version of OSX (El Captain) thanks to VirtualBox + Vagrant. With this I finally had the chance to address many long standing OSX bugs. Here's the list:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/514">514</a>: fix <tt class="docutils literal">Process.memory_maps()</tt> segfault (critical!).</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/783">783</a>: <tt class="docutils literal">Process.status()</tt> may erroneously return &quot;running&quot; for zombie processes.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/908">908</a>: different process methods could erroneously mask the real error for high-privileged PIDs and raise NoSuchProcess and <tt class="docutils literal">AccessDenied</tt> instead of <tt class="docutils literal">OSError</tt> and <tt class="docutils literal">RuntimeError</tt>.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/909">909</a>: <tt class="docutils literal">Process.open_files()</tt> and <tt class="docutils literal">Process.connections()</tt> methods may raise <tt class="docutils literal">OSError</tt> with no exception set if process is gone.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/916">916</a>: fix many compilation warnings.</li>
-</ul>
-</div>
-<div class="section" id="improved-procinfo-py-script">
-<h2>Improved procinfo.py script<a class="headerlink" href="#improved-procinfo-py-script" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/procinfo.py">procinfo.py</a> is a script which shows psutil capabilities regarding obtaining different info about processes. I improved it so that now it reports a lot more info. Here's a sample output:</p>
-<pre class="literal-block">
-$ python scripts/procinfo.py
-pid           4600
-name          chrome
-parent        4554 (bash)
-exe           /opt/google/chrome/chrome
-cwd           /home/giampaolo
-cmdline       /opt/google/chrome/chrome
-started       2016-09-19 11:12
-cpu-tspent    27:27.68
-cpu-times     user=8914.32, system=3530.59,
-              children_user=1.46, children_system=1.31
-cpu-affinity  [0, 1, 2, 3, 4, 5, 6, 7]
-memory        rss=520.5M, vms=1.9G, shared=132.6M, text=95.0M, lib=0B,
-              data=816.5M, dirty=0B
-memory %      3.26
-user          giampaolo
-uids          real=1000, effective=1000, saved=1000
-uids          real=1000, effective=1000, saved=1000
-terminal      /dev/pts/2
-status        sleeping
-nice          0
-ionice        class=IOPriority.IOPRIO_CLASS_NONE, value=0
-num-threads   47
-num-fds       379
-I/O           read_count=96.6M, write_count=80.7M,
-              read_bytes=293.2M, write_bytes=24.5G
-ctx-switches  voluntary=30426463, involuntary=460108
-children      PID    NAME
-              4605   cat
-              4606   cat
-              4609   chrome
-              4669   chrome
-open-files    PATH
-              /opt/google/chrome/icudtl.dat
-              /opt/google/chrome/snapshot_blob.bin
-              /opt/google/chrome/natives_blob.bin
-              /opt/google/chrome/chrome_100_percent.pak
-              [...]
-connections   PROTO LOCAL ADDR            REMOTE ADDR               STATUS
-              UDP   10.0.0.3:3693         *:*                       NONE
-              TCP   10.0.0.3:55102        172.217.22.14:443         ESTABLISHED
-              UDP   10.0.0.3:35172        *:*                       NONE
-              TCP   10.0.0.3:32922        172.217.16.163:443        ESTABLISHED
-              UDP   :::5353               *:*                       NONE
-              UDP   10.0.0.3:59925        *:*                       NONE
-threads       TID              USER          SYSTEM
-              11795             0.7            1.35
-              11796            0.68            1.37
-              15887            0.74            0.03
-              19055            0.77            0.01
-              [...]
-              total=47
-res-limits    RLIMIT                     SOFT       HARD
-              virtualmem             infinity   infinity
-              coredumpsize                  0   infinity
-              cputime                infinity   infinity
-              datasize               infinity   infinity
-              filesize               infinity   infinity
-              locks                  infinity   infinity
-              memlock                   65536      65536
-              msgqueue                 819200     819200
-              nice                          0          0
-              openfiles                  8192      65536
-              maxprocesses              63304      63304
-              rss                    infinity   infinity
-              realtimeprio                  0          0
-              rtimesched             infinity   infinity
-              sigspending               63304      63304
-              stack                   8388608   infinity
-mem-maps      RSS      PATH
-              381.4M   [anon]
-              62.8M    /opt/google/chrome/chrome
-              15.8M    /home/giampaolo/.config/google-chrome/Default/History
-              6.6M     /home/giampaolo/.config/google-chrome/Default/Favicons
-              [...]
-</pre>
-</div>
-<div class="section" id="nic-netmask-on-windows">
-<h2>NIC netmask on Windows<a class="headerlink" href="#nic-netmask-on-windows" title="Permalink to this headline">¶</a></h2>
-<p><tt class="docutils literal">net_if_addrs()</tt> on Windows is now able to return the netmask.</p>
-</div>
-<div class="section" id="other-improvements-and-bug-fixes">
-<h2>Other improvements and bug fixes<a class="headerlink" href="#other-improvements-and-bug-fixes" title="Permalink to this headline">¶</a></h2>
-<p>Just take a look at the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#440---2016-10-23">HISTORY</a> file.</p>
 </div>
 
         </div>

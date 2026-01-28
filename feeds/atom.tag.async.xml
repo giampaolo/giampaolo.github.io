@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - async</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.async.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2026-01-28T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>From Python 3.3 to today: ending 15 years of subprocess polling</title><link href="https://gmpy.dev/blog/2026/event-driven-process-waiting" rel="alternate"></link><published>2026-01-28T00:00:00+01:00</published><updated>2026-01-28T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2026-01-28:/blog/2026/event-driven-process-waiting</id><summary type="html">&lt;p&gt;One of the less fun aspects of process management on POSIX systems is waiting
+for a process to terminate. The standard library's &lt;code&gt;subprocess&lt;/code&gt; module has
+relied on a busy-loop polling approach since the &lt;em&gt;timeout&lt;/em&gt; parameter was added
+to
+&lt;a href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen.wait"&gt;Popen.wait()&lt;/a&gt;
+in Python 3.3, around 15 years ago (see
+&lt;a href="[https://url.com](https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077)"&gt;source …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the less fun aspects of process management on POSIX systems is waiting
+for a process to terminate. The standard library's &lt;code&gt;subprocess&lt;/code&gt; module has
+relied on a busy-loop polling approach since the &lt;em&gt;timeout&lt;/em&gt; parameter was added
+to
+&lt;a href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen.wait"&gt;Popen.wait()&lt;/a&gt;
+in Python 3.3, around 15 years ago (see
+&lt;a href="[https://url.com](https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077)"&gt;source&lt;/a&gt;).
+And psutil's
+&lt;a href="https://psutil.readthedocs.io/en/latest/#psutil.Process.wait"&gt;Process.wait()&lt;/a&gt;
+method uses exactly the same technique (see
+&lt;a href="https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160"&gt;source&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;The logic is straightforward: check whether the process has exited using
+non-blocking &lt;code&gt;waitpid(WNOHANG)&lt;/code&gt;, sleep briefly, check again, sleep a bit
+longer, and so on.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;time&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;wait_busy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;end&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;monotonic&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;
+    &lt;span class="n"&gt;interval&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.0001&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;monotonic&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;end&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;pid_done&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;waitpid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;WNOHANG&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;pid_done&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt;
+        &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;interval&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;interval&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;min&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;interval&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.04&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="n"&gt;TimeoutExpired&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In this blog post I'll show how I finally addressed this long-standing
+inefficiency, first in psutil, and most excitingly, directly in CPython's
+standard library subprocess module.&lt;/p&gt;
+&lt;h2&gt;The problem with busy-polling&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;CPU wake-ups: even with exponential backoff (starting at 0.1ms, capping at
+  40ms), the system constantly wakes up to check process status, wasting CPU
+  cycles and draining batteries.&lt;/li&gt;
+&lt;li&gt;Latency: there's always a gap between when a process actually terminates and
+  when you detect it.&lt;/li&gt;
+&lt;li&gt;Scalability: monitoring many processes simultaneously magnifies all of the
+  above.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Event-driven waiting&lt;/h2&gt;
+&lt;p&gt;All POSIX systems provide at least one mechanism to be notified when a file
+descriptor becomes ready. These are
+&lt;a href="https://man7.org/linux/man-pages/man2/select.2.html"&gt;select()&lt;/a&gt;,
+&lt;a href="https://man7.org/linux/man-pages/man2/poll.2.html"&gt;poll()&lt;/a&gt;,
+&lt;a href="https://man7.org/linux/man-pages/man7/epoll.7.html"&gt;epoll()&lt;/a&gt; (Linux) and
+&lt;a href="https://man.freebsd.org/cgi/man.cgi?query=kqueue"&gt;kqueue()&lt;/a&gt; (BSD / macOS)
+system calls. Until recently, I believed they could only be used with file
+descriptors referencing sockets, pipes, etc., but it turns out they can also be
+used to wait for events on process PIDs!&lt;/p&gt;
+&lt;h2&gt;Linux&lt;/h2&gt;
+&lt;p&gt;In 2019, Linux 5.3 introduced a new syscall,
+&lt;strong&gt;&lt;a href="https://man7.org/linux/man-pages/man2/pidfd_open.2.html"&gt;pidfd_open()&lt;/a&gt;&lt;/strong&gt;,
+which was added to the &lt;code&gt;os&lt;/code&gt; module in Python 3.9. It returns a file descriptor
+referencing a process PID. The interesting thing is that &lt;code&gt;pidfd_open()&lt;/code&gt; can be
+used in conjunction with &lt;code&gt;select()&lt;/code&gt;, &lt;code&gt;poll()&lt;/code&gt; or &lt;code&gt;epoll()&lt;/code&gt; to effectively wait
+until the process exits. E.g. by using &lt;code&gt;poll()&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;select&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;wait_pidfd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;pidfd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pidfd_open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;poller&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;poll&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;poller&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pidfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;POLLIN&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;# block until process exits or timeout occurs&lt;/span&gt;
+    &lt;span class="n"&gt;events&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;poller&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;poll&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;timeout&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;events&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TimeoutError&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This approach has zero busy-looping. The kernel wakes us up exactly when the
+process terminates or when the timeout expires if the PID is still alive.&lt;/p&gt;
+&lt;p&gt;I chose &lt;code&gt;poll()&lt;/code&gt; over &lt;code&gt;select()&lt;/code&gt; because &lt;code&gt;select()&lt;/code&gt; has a historical file
+descriptor limit (&lt;code&gt;FD_SETSIZE&lt;/code&gt;), which typically caps it at 1024 file
+descriptors per-process (reminded me of
+&lt;a href="https://bugs.python.org/issue1685000"&gt;BPO-1685000&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;I chose &lt;code&gt;poll()&lt;/code&gt; over &lt;code&gt;epoll()&lt;/code&gt; because it does not require creating an
+additional file descriptor. It also needs only a single syscall, which should
+make it a bit more efficient when monitoring a single FD rather than many.&lt;/p&gt;
+&lt;h2&gt;macOS and BSD&lt;/h2&gt;
+&lt;p&gt;BSD-derived systems (including macOS) provide the &lt;code&gt;kqueue()&lt;/code&gt; syscall. It's
+conceptually similar to &lt;code&gt;select()&lt;/code&gt;, &lt;code&gt;poll()&lt;/code&gt; and &lt;code&gt;epoll()&lt;/code&gt;, but more powerful
+(e.g. it can also handle regular files). &lt;code&gt;kqueue()&lt;/code&gt; can be passed a PID
+directly, and it will return once the PID disappears or the timeout expires:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;select&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;wait_kqueue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;kq&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;kqueue&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;kev&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;kevent&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nb"&gt;filter&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;KQ_FILTER_PROC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;flags&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;KQ_EV_ADD&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;KQ_EV_ONESHOT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;fflags&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;KQ_NOTE_EXIT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;# block until process exits or timeout occurs&lt;/span&gt;
+    &lt;span class="n"&gt;events&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;kq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;control&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;kev&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;events&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TimeoutError&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;Windows&lt;/h2&gt;
+&lt;p&gt;Windows does not busy-loop, both in psutil and subprocess module, thanks to
+&lt;code&gt;WaitForSingleObject&lt;/code&gt;. This means Windows has effectively had event-driven
+process waiting from the start. So nothing to do on that front.&lt;/p&gt;
+&lt;h2&gt;Graceful fallbacks&lt;/h2&gt;
+&lt;p&gt;Both &lt;code&gt;pidfd_open()&lt;/code&gt; and &lt;code&gt;kqueue()&lt;/code&gt; can fail for different reasons. For example,
+with &lt;code&gt;EMFILE&lt;/code&gt; if the process runs out of file descriptors (usually 1024), or
+with &lt;code&gt;EACCES&lt;/code&gt; / &lt;code&gt;EPERM&lt;/code&gt; if the syscall was explicitly blocked at the system
+level by the sysadmin (e.g. via SECCOMP). In all cases, psutil silently falls
+back to the traditional busy-loop polling approach rather than raising an
+exception.&lt;/p&gt;
+&lt;p&gt;This fast-path-with-fallback approach is similar in spirit to
+&lt;a href="https://bugs.python.org/issue33671"&gt;BPO-33671&lt;/a&gt;, where I sped up
+&lt;code&gt;shutil.copyfile()&lt;/code&gt; by using zero-copy system calls back in 2018. In there,
+more efficient &lt;code&gt;os.sendfile()&lt;/code&gt; is attempted first, and if it fails (e.g. on
+network filesystems) we fall back to the traditional &lt;code&gt;read()&lt;/code&gt; / &lt;code&gt;write()&lt;/code&gt;
+approach to copy regular files.&lt;/p&gt;
+&lt;h2&gt;Measurement&lt;/h2&gt;
+&lt;p&gt;As a simple experiment, here's a simple program which waits on itself for 10
+seconds without terminating:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# test.py&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getpid&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TimeoutExpired&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;We can measure the CPU context switching using &lt;code&gt;/usr/bin/time -v&lt;/code&gt;. Before the
+patch (the busy-loop):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;/usr/bin/time&lt;span class="w"&gt; &lt;/span&gt;-v&lt;span class="w"&gt; &lt;/span&gt;python3&lt;span class="w"&gt; &lt;/span&gt;test.py&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;grep&lt;span class="w"&gt; &lt;/span&gt;context
+&lt;span class="w"&gt;    &lt;/span&gt;Voluntary&lt;span class="w"&gt; &lt;/span&gt;context&lt;span class="w"&gt; &lt;/span&gt;switches:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;258&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;Involuntary&lt;span class="w"&gt; &lt;/span&gt;context&lt;span class="w"&gt; &lt;/span&gt;switches:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;After the patch (the event-driven approach):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;/usr/bin/time&lt;span class="w"&gt; &lt;/span&gt;-v&lt;span class="w"&gt; &lt;/span&gt;python3&lt;span class="w"&gt; &lt;/span&gt;test.py&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;grep&lt;span class="w"&gt; &lt;/span&gt;context
+&lt;span class="w"&gt;    &lt;/span&gt;Voluntary&lt;span class="w"&gt; &lt;/span&gt;context&lt;span class="w"&gt; &lt;/span&gt;switches:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;Involuntary&lt;span class="w"&gt; &lt;/span&gt;context&lt;span class="w"&gt; &lt;/span&gt;switches:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This shows that instead of spinning in userspace, the process blocks in
+&lt;code&gt;poll()&lt;/code&gt; / &lt;code&gt;kqueue()&lt;/code&gt;, and is woken up only when the kernel notifies it,
+resulting in just a few CPU context switches.&lt;/p&gt;
+&lt;h2&gt;Sleeping state&lt;/h2&gt;
+&lt;p&gt;It's also interesting to note that waiting via &lt;code&gt;poll()&lt;/code&gt; (or &lt;code&gt;kqueue()&lt;/code&gt;) puts
+the process into the exact same sleeping state as a plain &lt;code&gt;time.sleep()&lt;/code&gt; call.
+From the kernel's perspective, both are interruptible sleeps: the process is
+de-scheduled, consumes zero CPU, and sits quietly in kernel space.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;"S+"&lt;/code&gt; state shown below by &lt;code&gt;ps&lt;/code&gt; means that the process "sleeps in
+foreground".&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;time.sleep()&lt;/code&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;python3&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;import time; time.sleep(10)&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;$!&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;sleep&lt;/span&gt; &lt;span class="mf"&gt;0.3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;ps&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;stat&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;comm&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;fg&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;gt;/&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;null&lt;/span&gt;
+    &lt;span class="n"&gt;PID&lt;/span&gt; &lt;span class="n"&gt;STAT&lt;/span&gt; &lt;span class="n"&gt;COMMAND&lt;/span&gt;
+ &lt;span class="mi"&gt;491573&lt;/span&gt; &lt;span class="n"&gt;S&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;   &lt;span class="n"&gt;python3&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;poll()&lt;/code&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;python3&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;$!&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;sleep&lt;/span&gt; &lt;span class="mf"&gt;0.3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;ps&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;stat&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;comm&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;fg&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;gt;/&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;null&lt;/span&gt;
+    &lt;span class="n"&gt;PID&lt;/span&gt; &lt;span class="n"&gt;STAT&lt;/span&gt; &lt;span class="n"&gt;COMMAND&lt;/span&gt;
+ &lt;span class="mi"&gt;491748&lt;/span&gt; &lt;span class="n"&gt;S&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;   &lt;span class="n"&gt;python3&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;CPython contribution&lt;/h2&gt;
+&lt;p&gt;After landing the psutil implementation
+(&lt;a href="https://github.com/giampaolo/psutil/pull/2706"&gt;psutil/PR-2706&lt;/a&gt;), I took the
+extra step and submitted a matching pull request for CPython &lt;code&gt;subprocess&lt;/code&gt;
+module: &lt;a href="https://github.com/python/cpython/pull/144047"&gt;cpython/PR-144047&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I'm especially proud of this one: this is the &lt;strong&gt;second time&lt;/strong&gt; in psutil's 17+
+year history that a feature developed in psutil made its way upstream into the
+Python standard library. The first was back in 2011, when &lt;code&gt;psutil.disk_usage()&lt;/code&gt;
+inspired
+&lt;a href="https://docs.python.org/3/library/shutil.html#shutil.disk_usage"&gt;shutil.disk_usage()&lt;/a&gt; (see
+&lt;a href="https://mail.python.org/archives/list/python-ideas@python.org/thread/67A7ML2TJ7MBS3WOL6IZKLD2C3B3VCQG"&gt;python-ideas ML proposal&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Funny thing:&lt;/em&gt; 15 years ago, Python 3.3 added the &lt;em&gt;timeout&lt;/em&gt; parameter to
+&lt;code&gt;subprocess.Popen.wait()&lt;/code&gt; (see
+&lt;a href="https://github.com/python/cpython/commit/31aa7dd1419"&gt;commit&lt;/a&gt;). That's
+probably where I took inspiration when I first added the &lt;em&gt;timeout&lt;/em&gt; parameter to
+psutil's &lt;code&gt;Process.wait()&lt;/code&gt; around the same time (see
+&lt;a href="https://github.com/giampaolo/psutil/commit/886710daf"&gt;commit&lt;/a&gt;). Now, 15 years
+later, I'm contributing back a similar improvement for that very same &lt;em&gt;timeout&lt;/em&gt;
+parameter. &lt;strong&gt;The circle is complete&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2&gt;Links&lt;/h2&gt;
+&lt;p&gt;Topics related to this:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/giampaolo/psutil/issues/2712"&gt;psutil/#2712&lt;/a&gt;: proposal to
+  extend this to multiple PIDs (&lt;code&gt;psutil.wait_procs()&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/giampaolo/psutil/issues/2703"&gt;psutil/#2703&lt;/a&gt;: proposal for
+  asynchronous &lt;code&gt;psutil.Process.wait()&lt;/code&gt; integration with &lt;code&gt;asyncio&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/python/cpython/issues/144211"&gt;cpython/#144211&lt;/a&gt;: proposal
+  to extend the &lt;a href="https://docs.python.org/3/library/selectors.html"&gt;selectors&lt;/a&gt;
+  module to enable &lt;code&gt;asyncio&lt;/code&gt; optimization on BSD /
+  macOS via &lt;code&gt;kqueue()&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;</content><category term="2026"></category><category term="psutil"></category><category term="python"></category><category term="python-core"></category><category term="async"></category></entry></feed>

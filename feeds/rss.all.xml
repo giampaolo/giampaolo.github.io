@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Giampaolo Rodola</title><link>https://gmpy.dev/</link><description>Python enthusiast, core developer, psutil author</description><lastBuildDate>Tue, 23 Dec 2025 00:00:00 +0100</lastBuildDate><item><title>Detect memory leaks of C extensions with psutil and psleak</title><link>https://gmpy.dev/blog/2025/psutil-heap-introspection-apis</link><description>&lt;p&gt;Memory leaks in Python are usually straightforward to diagnose. Just look at
+<rss version="2.0"><channel><title>Giampaolo Rodola</title><link>https://gmpy.dev/</link><description>Python enthusiast, core developer, psutil author</description><lastBuildDate>Wed, 28 Jan 2026 00:00:00 +0100</lastBuildDate><item><title>From Python 3.3 to today: ending 15 years of subprocess polling</title><link>https://gmpy.dev/blog/2026/event-driven-process-waiting</link><description>&lt;p&gt;One of the less fun aspects of process management on POSIX systems is waiting
+for a process to terminate. The standard library's &lt;code&gt;subprocess&lt;/code&gt; module has
+relied on a busy-loop polling approach since the &lt;em&gt;timeout&lt;/em&gt; parameter was added
+to
+&lt;a href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen.wait"&gt;Popen.wait()&lt;/a&gt;
+in Python 3.3, around 15 years ago (see
+&lt;a href="[https://url.com](https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077)"&gt;source …&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giampaolo Rodola</dc:creator><pubDate>Wed, 28 Jan 2026 00:00:00 +0100</pubDate><guid isPermaLink="false">tag:gmpy.dev,2026-01-28:/blog/2026/event-driven-process-waiting</guid><category>2026</category><category>psutil</category><category>python</category><category>python-core</category><category>async</category></item><item><title>Detect memory leaks of C extensions with psutil and psleak</title><link>https://gmpy.dev/blog/2025/psutil-heap-introspection-apis</link><description>&lt;p&gt;Memory leaks in Python are usually straightforward to diagnose. Just look at
 RSS, track Python object counts, follow reference graphs, etc. But leaks inside
 &lt;strong&gt;C extension modules&lt;/strong&gt; are another story. Traditional memory metrics such as
 RSS and VMS fail to reveal them because Python's memory allocator
