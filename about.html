@@ -18,7 +18,6 @@
         <nav><ul>
             <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
-            <li><a href="/donate">Donate</a></li>
             <li><a href="/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
@@ -73,9 +72,9 @@
 <p>Starting from year <a class="reference external" href="https://mail.python.org/pipermail/python-committers/2010-April/000891.html">2010</a> I've been given commit access against Python code repository. My <a class="reference external" href="https://bugs.python.org/issue?%40search_text=&amp;ignore=file%3Acontent&amp;title=&amp;%40columns=title&amp;id=&amp;%40columns=id&amp;stage=&amp;creation=&amp;creator=giampaolo.rodola&amp;activity=&amp;%40columns=activity&amp;%40sort=activity&amp;actor=&amp;nosy=&amp;type=&amp;components=&amp;versions=&amp;dependencies=&amp;assignee=&amp;keywords=&amp;priority=&amp;status=&amp;%40columns=status&amp;resolution=&amp;nosy_count=&amp;message_count=&amp;%40group=&amp;%40pagesize=50&amp;%40startwith=0&amp;%40sortdir=on&amp;%40queryname=&amp;%40old-queryname=&amp;%40action=search">contributions</a> are mainly focused against the Python standard library. Some I particularly care about:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="11%" />
-<col width="27%" />
-<col width="61%" />
+<col width="10%" />
+<col width="25%" />
+<col width="65%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">BPO</th>
@@ -86,13 +85,11 @@
 <tbody valign="top">
 <tr><td><a class="reference external" href="https://github.com/python/cpython/pull/144047">144047</a></td>
 <td><a class="reference external" href="https://docs.python.org/3/library/subprocess.html">subprocess</a></td>
-<td>use efficient event-driven process <cite>wait()</cite> on
-Linux / BSD</td>
+<td>use efficient event-driven process <cite>wait()</cite> on POSIX (<a class="reference external" href="blog/2026/event-driven-process-waiting">blog post</a>)</td>
 </tr>
 <tr><td><a class="reference external" href="https://bugs.python.org/issue33671">33671</a></td>
 <td><a class="reference external" href="https://docs.python.org/3/library/shutil.html#shutil-platform-dependent-efficient-copy-operations">shutil</a></td>
-<td>faster file copy with zero-copy syscalls
-(<a class="reference external" href="static/efficient-io-with-zerocopy-syscalls.pdf">pycon china talk</a>)</td>
+<td>faster file copy with zero-copy syscalls (<a class="reference external" href="static/efficient-io-with-zerocopy-syscalls.pdf">pycon china talk</a>)</td>
 </tr>
 <tr><td><a class="reference external" href="https://bugs.python.org/issue33695">33695</a></td>
 <td><a class="reference external" href="https://docs.python.org/3/library/shutil.html#shutil-platform-dependent-efficient-copy-operations">shutil</a></td>
