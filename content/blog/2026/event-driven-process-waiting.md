@@ -242,4 +242,7 @@ Topics related to this:
 
 ## Discussion
 
-- [Medium.com](https://medium.com/@g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86)
+- [Reddit](https://www.reddit.com/r/Python/comments/1qpp42k/from_python_33_to_today_ending_15_years_of/)
+- [Hacker News](https://news.ycombinator.com/item?id=46802061)
+- [Medium](https://medium.com/@g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86)
+- [Linkedin](https://www.linkedin.com/feed/update/urn:li:share:7422396026449391616/)
