@@ -55,35 +55,49 @@ python-dev contributions
 
 Starting from year `2010 <https://mail.python.org/pipermail/python-committers/2010-April/000891.html>`_ I've been given commit access against Python code repository. My `contributions <https://bugs.python.org/issue?%40search_text=&ignore=file%3Acontent&title=&%40columns=title&id=&%40columns=id&stage=&creation=&creator=giampaolo.rodola&activity=&%40columns=activity&%40sort=activity&actor=&nosy=&type=&components=&versions=&dependencies=&assignee=&keywords=&priority=&status=&%40columns=status&resolution=&nosy_count=&message_count=&%40group=&%40pagesize=50&%40startwith=0&%40sortdir=on&%40queryname=&%40old-queryname=&%40action=search>`__ are mainly focused against the Python standard library. Some I particularly care about:
 
-+-----------+--------------------------+-----------------------------------------------------------+
-| BPO       | Module / API             | Description                                               |
-+===========+==========================+===========================================================+
-| `144047`_ | `subprocess`_            | use efficient event-driven process `wait()` on            |
-|           |                          | Linux / BSD                                               |
-+-----------+--------------------------+-----------------------------------------------------------+
-| `33671`_  | `shutil`_                | faster file copy with zero-copy syscalls                  |
-|           |                          | (`pycon china talk`_)                                     |
-+-----------+--------------------------+-----------------------------------------------------------+
-| `33695`_  | `shutil`_                | faster file copy by using os.scandir + caching            |
-+-----------+--------------------------+-----------------------------------------------------------+
-| `4080`_   | `unittest`_              | unittest timings                                          |
-+-----------+--------------------------+-----------------------------------------------------------+
-| `10882`_  | `os.sendfile`_           | expose `sendfile()` syscall                               |
-+-----------+--------------------------+-----------------------------------------------------------+
-| `17552`_  | `socket.sendfile`_       | `sendfile()` high-level wrapper                           |
-+-----------+--------------------------+-----------------------------------------------------------+
-| `17561`_  | `socket.create_server`_  | utility function for dual-stack IPv4/6 TCP servers        |
-+-----------+--------------------------+-----------------------------------------------------------+
-| `2054`_   | `ftplib.TLS_FTP`_        | FTP over SSL support                                      |
-+-----------+--------------------------+-----------------------------------------------------------+
-| `12442`_  | `shutil.disk_usage`_     | disk usage metrics                                        |
-+-----------+--------------------------+-----------------------------------------------------------+
-| `10784`_  | `os.setpriority`_        | get/set process priority                                  |
-+-----------+--------------------------+-----------------------------------------------------------+
-| `21076`_  | `signal`_                | signal module constant enums                              |
-+-----------+--------------------------+-----------------------------------------------------------+
-| `18931`_  | `selectors`_             | Solaris `/dev/poll` support                               |
-+-----------+--------------------------+-----------------------------------------------------------+
+.. list-table::
+   :header-rows: 1
+   :widths: 10 25 65
+
+   * - BPO
+     - Module / API
+     - Description
+   * - `144047`_
+     - `subprocess`_
+     - use efficient event-driven process `wait()` on POSIX (`blog post <blog/2026/event-driven-process-waiting>`_)
+   * - `33671`_
+     - `shutil`_
+     - faster file copy with zero-copy syscalls (`pycon china talk`_)
+   * - `33695`_
+     - `shutil`_
+     - faster file copy by using os.scandir + caching
+   * - `4080`_
+     - `unittest`_
+     - unittest timings
+   * - `10882`_
+     - `os.sendfile`_
+     - expose `sendfile()` syscall
+   * - `17552`_
+     - `socket.sendfile`_
+     - `sendfile()` high-level wrapper
+   * - `17561`_
+     - `socket.create_server`_
+     - utility function for dual-stack IPv4/6 TCP servers
+   * - `2054`_
+     - `ftplib.TLS_FTP`_
+     - FTP over SSL support
+   * - `12442`_
+     - `shutil.disk_usage`_
+     - disk usage metrics
+   * - `10784`_
+     - `os.setpriority`_
+     - get/set process priority
+   * - `21076`_
+     - `signal`_
+     - signal module constant enums
+   * - `18931`_
+     - `selectors`_
+     - Solaris `/dev/poll` support
 
 
 Python recipes

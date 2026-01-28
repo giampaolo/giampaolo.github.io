@@ -239,3 +239,7 @@ Topics related to this:
   to extend the [selectors](https://docs.python.org/3/library/selectors.html)
   module to enable `asyncio` optimization on BSD /
   macOS via `kqueue()`.
+
+## External links
+
+- [Medium.com](https://medium.com/@g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86)
