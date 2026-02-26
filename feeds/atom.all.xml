@@ -915,15 +915,18 @@ into errors like these:&lt;/p&gt;
 File &amp;quot;/usr/lib/python3.7/ssl.py&amp;quot;, line 934, in send
     return self._sslobj.write(data)
 OSError: [Errno 101] Network is unreachable
-
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
 File &amp;quot;/usr/lib/python3.7/socket.py&amp;quot;, line 222, in getaddrinfo
     for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
 socket.gaierror: [Errno -3] Temporary failure in name resolution
-
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
 File &amp;quot;/usr/lib/python3.7/ssl.py&amp;quot;, line 934, in send
     return self._sslobj.write(data)
 BrokenPipeError: [Errno 32] Broken pipe
-
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
 File &amp;quot;/usr/lib/python3.7/ssl.py&amp;quot;, line 934, in send
     return self._sslobj.write(data)
 socket.timeout: The write operation timed out
@@ -937,7 +940,8 @@ to send data, so we want to retry it. Example of logs I found:&lt;/p&gt;
 File &amp;quot;/usr/lib/python3.7/ssl.py&amp;quot;, line 934, in send
     return self._sslobj.write(data)
 ssl.SSLZeroReturnError: TLS/SSL connection has been closed (EOF)
-
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
 File &amp;quot;/usr/lib/python3.7/ssl.py&amp;quot;, line 934, in send
     return self._sslobj.write(data)
 ssl.SSLError: [SSL: BAD_LENGTH] bad length
