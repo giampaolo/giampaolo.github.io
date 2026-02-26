@@ -29,13 +29,19 @@ into errors like these:
         return self._sslobj.write(data)
     OSError: [Errno 101] Network is unreachable
 
+::
+
     File "/usr/lib/python3.7/socket.py", line 222, in getaddrinfo
         for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
     socket.gaierror: [Errno -3] Temporary failure in name resolution
 
+::
+
     File "/usr/lib/python3.7/ssl.py", line 934, in send
         return self._sslobj.write(data)
     BrokenPipeError: [Errno 32] Broken pipe
+
+::
 
     File "/usr/lib/python3.7/ssl.py", line 934, in send
         return self._sslobj.write(data)
@@ -53,6 +59,8 @@ to send data, so we want to retry it. Example of logs I found:
         return self._sslobj.write(data)
     ssl.SSLZeroReturnError: TLS/SSL connection has been closed (EOF)
 
+::
+
     File "/usr/lib/python3.7/ssl.py", line 934, in send
         return self._sslobj.write(data)
     ssl.SSLError: [SSL: BAD_LENGTH] bad length
@@ -63,11 +71,20 @@ unexpected error conditions which hardly show up during testing. To handle all
 of these cases I came up with this solution which I think is worth sharing, as
 it's generic enough to be reused in similar situations. If needed, this can be
 easily extended to include specific exceptions of third party libraries, like
-`requests.exceptions.ConnectionError`.
+`requests.exceptions.ConnectionError` (*EDIT: 2026-02: done for requests + botocore*).
 
 .. code-block:: python
 
+    """
+    Recognize a connection error from an exception object.
+    Author: Giampaolo Rodola
+    License: MIT
+    """
+
     import errno, socket, ssl
+
+    import botocore.exceptions
+    import requests.exceptions
 
     # Network errors, usually related to DHCP or wpa_supplicant (Wi-Fi).
     NETWORK_ERRNOS = frozenset((
@@ -75,7 +92,31 @@ easily extended to include specific exceptions of third party libraries, like
         errno.ENETDOWN,  # "Network is down"
         errno.ENETRESET,  # "Network dropped connection on reset"
         errno.ENONET,  # "Machine is not on the network"
+        errno.ENOTCONN,  # "Transport endpoint is not connected"
+        errno.EBADF,  # "Bad file descriptor"
     ))
+
+    # requests lib connection errors
+    REQUESTS_EXCEPTIONS = (
+        requests.exceptions.ConnectionError,
+        requests.exceptions.ProxyError,
+        requests.exceptions.SSLError,
+        requests.exceptions.Timeout,
+        requests.exceptions.ConnectTimeout,
+        requests.exceptions.ReadTimeout,
+        requests.exceptions.ChunkedEncodingError,
+    )
+
+    # botocore lib connection errors
+    BOTOCORE_EXCEPTIONS = (
+        botocore.exceptions.ConnectionClosedError,
+        botocore.exceptions.ConnectionError,
+        botocore.exceptions.ConnectTimeoutError,
+        botocore.exceptions.EndpointConnectionError,
+        botocore.exceptions.ReadTimeoutError,
+        botocore.exceptions.SSLError,
+    )
+
 
     def is_connection_err(exc):
         """Return True if an exception is connection-related."""
@@ -91,17 +132,68 @@ easily extended to include specific exceptions of third party libraries, like
             # failed DNS resolution on connect()
             return True
         if isinstance(exc, (socket.timeout, TimeoutError)):
-            # timeout on connect(), recv(), send()
+            # Timeout on connect(), recv(), send().
             return True
         if isinstance(exc, OSError):
-            # ENOTCONN == "Transport endpoint is not connected"
-            return (exc.errno in NETWORK_ERRNOS) or (exc.errno == errno.ENOTCONN)
+            if exc.errno in NETWORK_ERRNOS:
+                return True
         if isinstance(exc, ssl.SSLError):
             # Let's consider any SSL error a connection error. Usually this is:
             # * ssl.SSLZeroReturnError: "TLS/SSL connection has been closed"
             # * ssl.SSLError: [SSL: BAD_LENGTH]
             return True
+        if isinstance(exc, REQUESTS_EXCEPTIONS):
+            # Any indication that requests lib failed due to a connection
+            # error.
+            return True
+        if isinstance(exc, BOTOCORE_EXCEPTIONS):
+            # Any indication that boto3 lib failed due to a connection
+            # error.
+            return True
         return False
+
+
+    # =====================================================================
+    # --- unit tests
+    # =====================================================================
+
+    import unittest
+
+
+    class TestIsConnectionErr(unittest.TestCase):
+        def test_connection_error(self):
+            for exc in (
+                BrokenPipeError(),
+                ConnectionAbortedError(),
+                ConnectionRefusedError(),
+                ConnectionResetError(),
+            ):
+                assert is_connection_err(exc)
+
+        def test_not_connection_error(self):
+            assert not is_connection_err(ValueError())
+            assert not is_connection_err(OSError())
+            assert not is_connection_err(Exception())
+
+        def test_requests_exceptions(self):
+            for exc in (
+                requests.exceptions.ConnectionError(),
+                requests.exceptions.Timeout(),
+                requests.exceptions.SSLError(),
+            ):
+                assert is_connection_err(exc)
+
+        def test_botocore_exceptions(self):
+            for exc in (
+                botocore.exceptions.ConnectionClosedError(endpoint_url="x"),
+                botocore.exceptions.ConnectTimeoutError(endpoint_url="x"),
+                botocore.exceptions.ReadTimeoutError(endpoint_url="x"),
+            ):
+                assert is_connection_err(exc)
+
+
+    if __name__ == "__main__":
+        unittest.main()
 
 To use it:
 
