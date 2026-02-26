@@ -29,13 +29,19 @@ into errors like these:
         return self._sslobj.write(data)
     OSError: [Errno 101] Network is unreachable
 
+::
+
     File "/usr/lib/python3.7/socket.py", line 222, in getaddrinfo
         for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
     socket.gaierror: [Errno -3] Temporary failure in name resolution
 
+::
+
     File "/usr/lib/python3.7/ssl.py", line 934, in send
         return self._sslobj.write(data)
     BrokenPipeError: [Errno 32] Broken pipe
+
+::
 
     File "/usr/lib/python3.7/ssl.py", line 934, in send
         return self._sslobj.write(data)
@@ -52,6 +58,8 @@ to send data, so we want to retry it. Example of logs I found:
     File "/usr/lib/python3.7/ssl.py", line 934, in send
         return self._sslobj.write(data)
     ssl.SSLZeroReturnError: TLS/SSL connection has been closed (EOF)
+
+::
 
     File "/usr/lib/python3.7/ssl.py", line 934, in send
         return self._sslobj.write(data)
