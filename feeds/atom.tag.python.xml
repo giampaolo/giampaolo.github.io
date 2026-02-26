@@ -891,7 +891,7 @@ unexpected error conditions which hardly show up during testing. To handle all
 of these cases I came up with this solution which I think is worth sharing, as
 it's generic enough to be reused in similar situations. If needed, this can be
 easily extended to include specific exceptions of third party libraries, like
-&lt;cite&gt;requests.exceptions.ConnectionError&lt;/cite&gt;.&lt;/p&gt;
+&lt;cite&gt;requests.exceptions.ConnectionError&lt;/cite&gt; (&lt;em&gt;EDIT: 2026-02: done for requests + botocore&lt;/em&gt;).&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
 &lt;span class="sd"&gt;Recognize a connection error from an exception object.&lt;/span&gt;
 &lt;span class="sd"&gt;Author: Giampaolo Rodola&lt;/span&gt;
@@ -1020,6 +1020,7 @@ easily extended to include specific exceptions of third party libraries, like
         &lt;span class="n"&gt;schedule_on_reconnect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;sock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sendall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;hello there&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
     &lt;span class="k"&gt;raise&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Gist URL: &lt;a class="reference external" href="https://gist.github.com/giampaolo/905b38a5ea9d5179eb0138e2f37a01a8"&gt;https://gist.github.com/giampaolo/905b38a5ea9d5179eb0138e2f37a01a8&lt;/a&gt;.&lt;/p&gt;
 &lt;div class="section" id="external-links"&gt;
 &lt;h2&gt;External Links&lt;a class="headerlink" href="#external-links" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;ul class="simple"&gt;
