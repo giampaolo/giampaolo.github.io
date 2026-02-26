@@ -63,7 +63,7 @@ unexpected error conditions which hardly show up during testing. To handle all
 of these cases I came up with this solution which I think is worth sharing, as
 it's generic enough to be reused in similar situations. If needed, this can be
 easily extended to include specific exceptions of third party libraries, like
-`requests.exceptions.ConnectionError`.
+`requests.exceptions.ConnectionError` (*EDIT: 2026-02: done for requests + botocore*).
 
 .. code-block:: python
 
@@ -197,6 +197,8 @@ To use it:
         if is_connection_err(err):
             schedule_on_reconnect(lambda: sock.sendall(b"hello there"))
         raise
+
+Gist URL: https://gist.github.com/giampaolo/905b38a5ea9d5179eb0138e2f37a01a8.
 
 External Links
 --------------
