@@ -189,7 +189,6 @@ easily extended to include specific exceptions of third party libraries, like
         &lt;span class="n"&gt;schedule_on_reconnect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;sock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sendall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;hello there&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
     &lt;span class="k"&gt;raise&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Gist URL: &lt;a class="reference external" href="https://gist.github.com/giampaolo/905b38a5ea9d5179eb0138e2f37a01a8"&gt;https://gist.github.com/giampaolo/905b38a5ea9d5179eb0138e2f37a01a8&lt;/a&gt;.&lt;/p&gt;
 &lt;div class="section" id="external-links"&gt;
 &lt;h2&gt;External Links&lt;a class="headerlink" href="#external-links" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;ul class="simple"&gt;
