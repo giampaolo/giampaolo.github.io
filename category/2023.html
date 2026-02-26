@@ -103,7 +103,16 @@ of these cases I came up with this solution which I think is worth sharing, as
 it's generic enough to be reused in similar situations. If needed, this can be
 easily extended to include specific exceptions of third party libraries, like
 <cite>requests.exceptions.ConnectionError</cite>.</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">errno</span><span class="o">,</span><span class="w"> </span><span class="nn">socket</span><span class="o">,</span><span class="w"> </span><span class="nn">ssl</span>
+<div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Recognize a connection error from an exception object.</span>
+<span class="sd">Author: Giampaolo Rodola</span>
+<span class="sd">License: MIT</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">errno</span><span class="o">,</span><span class="w"> </span><span class="nn">socket</span><span class="o">,</span><span class="w"> </span><span class="nn">ssl</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">botocore.exceptions</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests.exceptions</span>
 
 <span class="c1"># Network errors, usually related to DHCP or wpa_supplicant (Wi-Fi).</span>
 <span class="n">NETWORK_ERRNOS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span>
@@ -111,7 +120,31 @@ easily extended to include specific exceptions of third party libraries, like
     <span class="n">errno</span><span class="o">.</span><span class="n">ENETDOWN</span><span class="p">,</span>  <span class="c1"># &quot;Network is down&quot;</span>
     <span class="n">errno</span><span class="o">.</span><span class="n">ENETRESET</span><span class="p">,</span>  <span class="c1"># &quot;Network dropped connection on reset&quot;</span>
     <span class="n">errno</span><span class="o">.</span><span class="n">ENONET</span><span class="p">,</span>  <span class="c1"># &quot;Machine is not on the network&quot;</span>
+    <span class="n">errno</span><span class="o">.</span><span class="n">ENOTCONN</span><span class="p">,</span>  <span class="c1"># &quot;Transport endpoint is not connected&quot;</span>
+    <span class="n">errno</span><span class="o">.</span><span class="n">EBADF</span><span class="p">,</span>  <span class="c1"># &quot;Bad file descriptor&quot;</span>
 <span class="p">))</span>
+
+<span class="c1"># requests lib connection errors</span>
+<span class="n">REQUESTS_EXCEPTIONS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">,</span>
+    <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ProxyError</span><span class="p">,</span>
+    <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">SSLError</span><span class="p">,</span>
+    <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span><span class="p">,</span>
+    <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectTimeout</span><span class="p">,</span>
+    <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ReadTimeout</span><span class="p">,</span>
+    <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ChunkedEncodingError</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># botocore lib connection errors</span>
+<span class="n">BOTOCORE_EXCEPTIONS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">botocore</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionClosedError</span><span class="p">,</span>
+    <span class="n">botocore</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">,</span>
+    <span class="n">botocore</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectTimeoutError</span><span class="p">,</span>
+    <span class="n">botocore</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">EndpointConnectionError</span><span class="p">,</span>
+    <span class="n">botocore</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ReadTimeoutError</span><span class="p">,</span>
+    <span class="n">botocore</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">SSLError</span><span class="p">,</span>
+<span class="p">)</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">is_connection_err</span><span class="p">(</span><span class="n">exc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if an exception is connection-related.&quot;&quot;&quot;</span>
@@ -127,17 +160,68 @@ easily extended to include specific exceptions of third party libraries, like
         <span class="c1"># failed DNS resolution on connect()</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">,</span> <span class="ne">TimeoutError</span><span class="p">)):</span>
-        <span class="c1"># timeout on connect(), recv(), send()</span>
+        <span class="c1"># Timeout on connect(), recv(), send().</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
-        <span class="c1"># ENOTCONN == &quot;Transport endpoint is not connected&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">exc</span><span class="o">.</span><span class="n">errno</span> <span class="ow">in</span> <span class="n">NETWORK_ERRNOS</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">exc</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOTCONN</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">exc</span><span class="o">.</span><span class="n">errno</span> <span class="ow">in</span> <span class="n">NETWORK_ERRNOS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">ssl</span><span class="o">.</span><span class="n">SSLError</span><span class="p">):</span>
         <span class="c1"># Let&#39;s consider any SSL error a connection error. Usually this is:</span>
         <span class="c1"># * ssl.SSLZeroReturnError: &quot;TLS/SSL connection has been closed&quot;</span>
         <span class="c1"># * ssl.SSLError: [SSL: BAD_LENGTH]</span>
         <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">REQUESTS_EXCEPTIONS</span><span class="p">):</span>
+        <span class="c1"># Any indication that requests lib failed due to a connection</span>
+        <span class="c1"># error.</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">BOTOCORE_EXCEPTIONS</span><span class="p">):</span>
+        <span class="c1"># Any indication that boto3 lib failed due to a connection</span>
+        <span class="c1"># error.</span>
+        <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="c1"># =====================================================================</span>
+<span class="c1"># --- unit tests</span>
+<span class="c1"># =====================================================================</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TestIsConnectionErr</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_connection_error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">exc</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="ne">BrokenPipeError</span><span class="p">(),</span>
+            <span class="ne">ConnectionAbortedError</span><span class="p">(),</span>
+            <span class="ne">ConnectionRefusedError</span><span class="p">(),</span>
+            <span class="ne">ConnectionResetError</span><span class="p">(),</span>
+        <span class="p">):</span>
+            <span class="k">assert</span> <span class="n">is_connection_err</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_not_connection_error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="n">is_connection_err</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="n">is_connection_err</span><span class="p">(</span><span class="ne">OSError</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="n">is_connection_err</span><span class="p">(</span><span class="ne">Exception</span><span class="p">())</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_requests_exceptions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">exc</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">(),</span>
+            <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span><span class="p">(),</span>
+            <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">SSLError</span><span class="p">(),</span>
+        <span class="p">):</span>
+            <span class="k">assert</span> <span class="n">is_connection_err</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_botocore_exceptions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">exc</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="n">botocore</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionClosedError</span><span class="p">(</span><span class="n">endpoint_url</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">),</span>
+            <span class="n">botocore</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectTimeoutError</span><span class="p">(</span><span class="n">endpoint_url</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">),</span>
+            <span class="n">botocore</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ReadTimeoutError</span><span class="p">(</span><span class="n">endpoint_url</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="k">assert</span> <span class="n">is_connection_err</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
 </pre></div>
 <p>To use it:</p>
 <div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
