@@ -206,8 +206,6 @@ To use it:
             schedule_on_reconnect(lambda: sock.sendall(b"hello there"))
         raise
 
-Gist URL: https://gist.github.com/giampaolo/905b38a5ea9d5179eb0138e2f37a01a8.
-
 External Links
 --------------
 
