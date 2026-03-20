@@ -179,12 +179,26 @@ foreground".&lt;/p&gt;
 (&lt;a href="https://github.com/giampaolo/psutil/pull/2706"&gt;psutil/PR-2706&lt;/a&gt;), I took the
 extra step and submitted a matching pull request for CPython &lt;code&gt;subprocess&lt;/code&gt;
 module: &lt;a href="https://github.com/python/cpython/pull/144047"&gt;cpython/PR-144047&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;I'm especially proud of this one: this is the &lt;strong&gt;second time&lt;/strong&gt; in psutil's 17+
+&lt;p&gt;I'm especially proud of this one: this is the &lt;strong&gt;third time&lt;/strong&gt; in psutil's 17+
 year history that a feature developed in psutil made its way upstream into the
-Python standard library. The first was back in 2011, when &lt;code&gt;psutil.disk_usage()&lt;/code&gt;
+Python standard library.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;The first was back in 2010, when &lt;code&gt;psutil.Process.nice()&lt;/code&gt;
 inspired
-&lt;a href="https://docs.python.org/3/library/shutil.html#shutil.disk_usage"&gt;shutil.disk_usage()&lt;/a&gt; (see
-&lt;a href="https://mail.python.org/archives/list/python-ideas@python.org/thread/67A7ML2TJ7MBS3WOL6IZKLD2C3B3VCQG"&gt;python-ideas ML proposal&lt;/a&gt;).&lt;/p&gt;
+&lt;a href="https://docs.python.org/3/library/os.html#os.getpriority"&gt;os.getpriority()&lt;/a&gt; and
+&lt;a href="https://docs.python.org/3/library/os.html#os.setpriority"&gt;os.setpriority()&lt;/a&gt;, see
+&lt;a href="https://bugs.python.org/issue10784"&gt;BPO-10784&lt;/a&gt;.
+Landed in Python 3.3.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The second was back in 2011, when &lt;code&gt;psutil.disk_usage()&lt;/code&gt;
+inspired
+&lt;a href="https://docs.python.org/3/library/shutil.html#shutil.disk_usage"&gt;shutil.disk_usage()&lt;/a&gt;, see
+&lt;a href="https://mail.python.org/archives/list/python-ideas@python.org/thread/67A7ML2TJ7MBS3WOL6IZKLD2C3B3VCQG"&gt;python-ideas ML proposal&lt;/a&gt;.
+Landed in Python 3.3.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;&lt;em&gt;Funny thing:&lt;/em&gt; 15 years ago, Python 3.3 added the &lt;em&gt;timeout&lt;/em&gt; parameter to
 &lt;code&gt;subprocess.Popen.wait()&lt;/code&gt; (see
 &lt;a href="https://github.com/python/cpython/commit/31aa7dd1419"&gt;commit&lt;/a&gt;). That's
