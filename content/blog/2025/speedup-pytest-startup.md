@@ -40,10 +40,10 @@ where execution time won't significantly affect the results:
 
 ```text
 $ time python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
-============================= test session starts =============================
+================== test session starts ==================
 collected 1 item
 psutil/tests/test_misc.py::TestMisc::test_version PASSED
-============================== 1 passed in 0.05s ==============================
+=================== 1 passed in 0.05s ===================
 
 real    0m0,427s
 user    0m0,375s
@@ -140,10 +140,10 @@ Now let's run the test again by using `PYTEST_DISABLE_PLUGIN_AUTOLOAD`:
 
 ```text
 $ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
-============================= test session starts =============================
+================== test session starts ==================
 collected 1 item
 psutil/tests/test_misc.py::TestMisc::test_version PASSED
-============================== 1 passed in 0.05s ==============================
+=================== 1 passed in 0.05s ===================
 
 real    0m0,285s
 user    0m0,267s
@@ -157,10 +157,10 @@ think about `pytest-xdist` later):
 
 ```text
 $ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests --no-header psutil/tests/test_misc.py::TestMisc::test_version
-========================================================= test session starts =========================================================
+================= test session starts =================
 collected 1 item
 psutil/tests/test_misc.py::TestMisc::test_version PASSED
-========================================================== 1 passed in 0.05s ==========================================================
+================== 1 passed in 0.05s ==================
 real    0m0,320s
 user    0m0,283s
 sys     0m0,037s
@@ -171,10 +171,10 @@ better than the initial 0,427s. Now, let's add `pytest-xdist` to the mix:
 
 ```text
 $ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests -p xdist --no-header psutil/tests/test_misc.py::TestMisc::test_version
-========================================================= test session starts =========================================================
+=================== test session starts ===================
 collected 1 item
 psutil/tests/test_misc.py::TestMisc::test_version PASSED
-========================================================== 1 passed in 0.05s ==========================================================
+==================== 1 passed in 0.05s ====================
 
 real    0m0,369s
 user    0m0,286s
@@ -256,7 +256,7 @@ With this I saved another 0.03 seconds. Before:
 ```text
 $ python3 -m pytest --collect-only
 ...
-======================== 685 tests collected in 0.20s =========================
+============ 685 tests collected in 0.20s =============
 ```
 
 After:
@@ -264,7 +264,7 @@ After:
 ```text
 $ python3 -m pytest --collect-only
 ...
-======================== 685 tests collected in 0.17s =========================
+============ 685 tests collected in 0.17s =============
 ```
 
 # Putting it all together

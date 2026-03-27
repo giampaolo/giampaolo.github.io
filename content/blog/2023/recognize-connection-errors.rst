@@ -23,25 +23,19 @@ which constantly moves around the house, connection can become unstable when
 the robot gets far from the Wi-Fi Access Point, so it's pretty common to bump
 into errors like these:
 
-::
+.. code-block:: none
 
     File "/usr/lib/python3.7/ssl.py", line 934, in send
         return self._sslobj.write(data)
     OSError: [Errno 101] Network is unreachable
 
-::
-
     File "/usr/lib/python3.7/socket.py", line 222, in getaddrinfo
         for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
     socket.gaierror: [Errno -3] Temporary failure in name resolution
 
-::
-
     File "/usr/lib/python3.7/ssl.py", line 934, in send
         return self._sslobj.write(data)
     BrokenPipeError: [Errno 32] Broken pipe
-
-::
 
     File "/usr/lib/python3.7/ssl.py", line 934, in send
         return self._sslobj.write(data)
@@ -53,13 +47,11 @@ them, so theoretically they should represent a bug. Still, they are
 unequivocally related to the connection stream, and represent a failed attempt
 to send data, so we want to retry it. Example of logs I found:
 
-::
+.. code-block:: none
 
     File "/usr/lib/python3.7/ssl.py", line 934, in send
         return self._sslobj.write(data)
     ssl.SSLZeroReturnError: TLS/SSL connection has been closed (EOF)
-
-::
 
     File "/usr/lib/python3.7/ssl.py", line 934, in send
         return self._sslobj.write(data)
