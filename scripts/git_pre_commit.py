@@ -10,7 +10,6 @@ against the files which were modified in the commit. Install this with
 "make install-git-hook".
 """
 
-
 import os
 import shlex
 import subprocess
