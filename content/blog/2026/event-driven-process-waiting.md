@@ -211,12 +211,21 @@ After landing the psutil implementation
 extra step and submitted a matching pull request for CPython `subprocess`
 module: [cpython/PR-144047](https://github.com/python/cpython/pull/144047).
 
-I'm especially proud of this one: this is the **second time** in psutil's 17+
+I'm especially proud of this one: this is the **third time** in psutil's 17+
 year history that a feature developed in psutil made its way upstream into the
-Python standard library. The first was back in 2011, when `psutil.disk_usage()`
-inspired
-[shutil.disk_usage()](https://docs.python.org/3/library/shutil.html#shutil.disk_usage) (see
-[python-ideas ML proposal](https://mail.python.org/archives/list/python-ideas@python.org/thread/67A7ML2TJ7MBS3WOL6IZKLD2C3B3VCQG)).
+Python standard library.
+
+- The first was back in 2010, when `psutil.Process.nice()`
+  inspired
+  [os.getpriority()](https://docs.python.org/3/library/os.html#os.getpriority) and
+  [os.setpriority()](https://docs.python.org/3/library/os.html#os.setpriority), see
+  [BPO-10784](https://bugs.python.org/issue10784).
+  Landed in Python 3.3.
+
+- The second was back in 2011, when `psutil.disk_usage()` inspired
+  [shutil.disk_usage()](https://docs.python.org/3/library/shutil.html#shutil.disk_usage), see
+  [python-ideas ML proposal](https://mail.python.org/archives/list/python-ideas@python.org/thread/67A7ML2TJ7MBS3WOL6IZKLD2C3B3VCQG).
+  Landed in Python 3.3.
 
 *Funny thing:* 15 years ago, Python 3.3 added the *timeout* parameter to
 `subprocess.Popen.wait()` (see

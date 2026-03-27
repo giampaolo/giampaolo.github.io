@@ -123,3 +123,5 @@ JINJA_FILTERS = {
 }
 
 DEFAULT_DATE_FORMAT = "%d %b %Y"
+
+PYGMENTS_STYLE = "monokai"
