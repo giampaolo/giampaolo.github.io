@@ -536,10 +536,10 @@ most frustrating aspects: slow startup times.&lt;/p&gt;
 &lt;a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236"&gt;simple test&lt;/a&gt;
 where execution time won't significantly affect the results:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
-============================= test session starts =============================
+================== test session starts ==================
 collected 1 item
 psutil/tests/test_misc.py::TestMisc::test_version PASSED
-============================== 1 passed in 0.05s ==============================
+=================== 1 passed in 0.05s ===================
 
 real    0m0,427s
 user    0m0,375s
@@ -621,10 +621,10 @@ xdist.looponfail
 
 &lt;p&gt;Now let's run the test again by using &lt;code&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
-============================= test session starts =============================
+================== test session starts ==================
 collected 1 item
 psutil/tests/test_misc.py::TestMisc::test_version PASSED
-============================== 1 passed in 0.05s ==============================
+=================== 1 passed in 0.05s ===================
 
 real    0m0,285s
 user    0m0,267s
@@ -636,10 +636,10 @@ to selectively enable only the plugins we actually use, via &lt;code&gt;-p&lt;/c
 Plugins used by psutil are &lt;code&gt;pytest-instafail&lt;/code&gt; and &lt;code&gt;pytest-subtests&lt;/code&gt; (we'll
 think about &lt;code&gt;pytest-xdist&lt;/code&gt; later):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests --no-header psutil/tests/test_misc.py::TestMisc::test_version
-========================================================= test session starts =========================================================
+================= test session starts =================
 collected 1 item
 psutil/tests/test_misc.py::TestMisc::test_version PASSED
-========================================================== 1 passed in 0.05s ==========================================================
+================== 1 passed in 0.05s ==================
 real    0m0,320s
 user    0m0,283s
 sys     0m0,037s
@@ -648,10 +648,10 @@ sys     0m0,037s
 &lt;p&gt;Time went up again, from 0,285 secs to 0,320s. Quite a slowdown, but still
 better than the initial 0,427s. Now, let's add &lt;code&gt;pytest-xdist&lt;/code&gt; to the mix:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests -p xdist --no-header psutil/tests/test_misc.py::TestMisc::test_version
-========================================================= test session starts =========================================================
+=================== test session starts ===================
 collected 1 item
 psutil/tests/test_misc.py::TestMisc::test_version PASSED
-========================================================== 1 passed in 0.05s ==========================================================
+==================== 1 passed in 0.05s ====================
 
 real    0m0,369s
 user    0m0,286s
@@ -716,13 +716,13 @@ and only to consider &lt;code&gt;test_*.py&lt;/code&gt; files:&lt;/p&gt;
 &lt;p&gt;With this I saved another 0.03 seconds. Before:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python3 -m pytest --collect-only
 ...
-======================== 685 tests collected in 0.20s =========================
+============ 685 tests collected in 0.20s =============
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;After:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python3 -m pytest --collect-only
 ...
-======================== 685 tests collected in 0.17s =========================
+============ 685 tests collected in 0.17s =============
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;Putting it all together&lt;/h1&gt;

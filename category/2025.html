@@ -394,10 +394,10 @@ most frustrating aspects: slow startup times.</p>
 <a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236">simple test</a>
 where execution time won't significantly affect the results:</p>
 <div class="highlight"><pre><span></span><code>$ time python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
-============================= test session starts =============================
+================== test session starts ==================
 collected 1 item
 psutil/tests/test_misc.py::TestMisc::test_version PASSED
-============================== 1 passed in 0.05s ==============================
+=================== 1 passed in 0.05s ===================
 
 real    0m0,427s
 user    0m0,375s
@@ -479,10 +479,10 @@ xdist.looponfail
 
 <p>Now let's run the test again by using <code>PYTEST_DISABLE_PLUGIN_AUTOLOAD</code>:</p>
 <div class="highlight"><pre><span></span><code>$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
-============================= test session starts =============================
+================== test session starts ==================
 collected 1 item
 psutil/tests/test_misc.py::TestMisc::test_version PASSED
-============================== 1 passed in 0.05s ==============================
+=================== 1 passed in 0.05s ===================
 
 real    0m0,285s
 user    0m0,267s
@@ -494,10 +494,10 @@ to selectively enable only the plugins we actually use, via <code>-p</code> CLI 
 Plugins used by psutil are <code>pytest-instafail</code> and <code>pytest-subtests</code> (we'll
 think about <code>pytest-xdist</code> later):</p>
 <div class="highlight"><pre><span></span><code>$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests --no-header psutil/tests/test_misc.py::TestMisc::test_version
-========================================================= test session starts =========================================================
+================= test session starts =================
 collected 1 item
 psutil/tests/test_misc.py::TestMisc::test_version PASSED
-========================================================== 1 passed in 0.05s ==========================================================
+================== 1 passed in 0.05s ==================
 real    0m0,320s
 user    0m0,283s
 sys     0m0,037s
@@ -506,10 +506,10 @@ sys     0m0,037s
 <p>Time went up again, from 0,285 secs to 0,320s. Quite a slowdown, but still
 better than the initial 0,427s. Now, let's add <code>pytest-xdist</code> to the mix:</p>
 <div class="highlight"><pre><span></span><code>$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests -p xdist --no-header psutil/tests/test_misc.py::TestMisc::test_version
-========================================================= test session starts =========================================================
+=================== test session starts ===================
 collected 1 item
 psutil/tests/test_misc.py::TestMisc::test_version PASSED
-========================================================== 1 passed in 0.05s ==========================================================
+==================== 1 passed in 0.05s ====================
 
 real    0m0,369s
 user    0m0,286s
@@ -574,13 +574,13 @@ and only to consider <code>test_*.py</code> files:</p>
 <p>With this I saved another 0.03 seconds. Before:</p>
 <div class="highlight"><pre><span></span><code>$ python3 -m pytest --collect-only
 ...
-======================== 685 tests collected in 0.20s =========================
+============ 685 tests collected in 0.20s =============
 </code></pre></div>
 
 <p>After:</p>
 <div class="highlight"><pre><span></span><code>$ python3 -m pytest --collect-only
 ...
-======================== 685 tests collected in 0.17s =========================
+============ 685 tests collected in 0.17s =============
 </code></pre></div>
 
 <h1>Putting it all together</h1>
