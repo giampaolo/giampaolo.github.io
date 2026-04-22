@@ -1,5 +1,5 @@
-psutil 5.3.0 and full unicode support
-#####################################
+Announcing psutil 5.3.0
+#######################
 
 :date: 2017-09-03
 :tags: psutil, travel, python
@@ -9,28 +9,7 @@ psutil 5.3.0 and full unicode support
 Full Unicode support
 --------------------
 
-This is the biggest change. In order to achieve this I had to refactor all functions and internals either returning or accepting a string. Incidentally this helped me have a better understanding of how Unicode works and how it should be handled at the C level in terms of differences between Python 2 and 3. Issue `#1040 <https://github.com/giampaolo/psutil/issues/1040>`__ includes all the reasoning I've been through and potentially serves as a documentation for people who are facing a similar task (handling Unicode in C for both Python 2 and 3). Up until version 5.2.x psutil functions returning a string had different problems as they could:
-
-* raise a decoding error on Python 3 in case of non-ASCII string
-* return unicode instead of str (Python 2)
-* return incorrect / invalid encoded data in case of non-ASCII string
-
-5.3.0 fixes these three issues and consolidates the correct handling of Unicode strings. On Windows this was achieved by using Unicode-specific Windows APIs. The notes below describe how Unicode and strings in general are handled internally by psutil and they apply to any API returning a string such as `Process.exe <https://psutil.readthedocs.io/en/latest/#psutil.Process.exe>`__ or `Process.cwd <https://psutil.readthedocs.io/en/latest/#psutil.Process.cwd>`__, including non-filesystem related methods such as `Process.username <https://psutil.readthedocs.io/en/latest/#psutil.Process.username>`__ or `WindowsService.description <https://psutil.readthedocs.io/en/latest/#psutil.WindowsService.description>`__:
-
-* all strings are encoded by using the OS filesystem encoding (`sys.getfilesystemencoding() <https://docs.python.org/3/library/sys.html#sys.getfilesystemencoding>`__) which varies depending on the platform (e.g. "UTF-8" on OSX, "mbcs" on Win)
-* no API call is supposed to crash with `UnicodeDecodeError`
-* instead, in case of badly encoded data returned by the OS, the following error handlers are used to replace the corrupted characters in the string:
-
-  - Python 3: `sys.getfilesystemencodeerrors() <https://docs.python.org/3/library/sys.html#sys.getfilesystemencodeerrors>`__ (PY 3.6+) or ``"surrogatescape"`` on POSIX and "replace" on Windows
-
-  - Python 2: "replace"
-
-* on Python 2 all APIs return bytes (str type), never unicode
-* on Python 2 you can go back to unicode by doing:
-
-.. code-block:: python
-
-    >>> unicode(proc.exe(), sys.getdefaultencoding(), errors="replace")
+String-returning APIs (``Process.exe()``, ``Process.cwd()``, ``Process.username()``, etc.) are now Unicode-correct on both Python 2 and 3 (`#1040 <https://github.com/giampaolo/psutil/issues/1040>`__), see `detailed separate blog post </blog/2017/psutil-530-fixing-unicode.html>`__.
 
 Improved process_iter() function
 --------------------------------
