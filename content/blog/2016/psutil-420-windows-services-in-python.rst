@@ -41,7 +41,7 @@ Initially I thought to expose and provide a complete set of APIs to handle all a
 Considerations about Windows services
 -------------------------------------
 
-For those of you who are not familiar with Windows, a service is something, generally an executable (.exe), which runs at system startup and keeps running in background. We can say they are the equivalent of a UNIX init script. All service are controlled by a "manager" which keeps track of their status and metadata (e.g. description, startup type) and with that you can start and stop them. It is interesting to note that since (most) services are bound to an executable (and hence a process) you can reference the process via its PID:
+For those of you who are not familiar with Windows, a service is something, generally an executable (.exe), which runs at system startup and keeps running in the background. We can say they are the equivalent of a UNIX init script. All services are controlled by a "manager" which keeps track of their status and metadata (e.g. description, startup type) and with that you can start and stop them. It is interesting to note that since (most) services are bound to an executable (and hence a process) you can reference the process via its PID:
 
 .. code-block:: python
 
@@ -62,7 +62,7 @@ Other improvements
 psutil 4.2.0 comes with 2 other enhancements for Linux:
 
 * ``psutil.virtual_memory()`` returns a new "shared" memory field. This is the same value reported by ``free`` cmdline utility.
-* I changed the way how ``/proc`` was parsed. Instead of reading ``/proc/{pid}/status`` line by line I used a regular expression. Here's the speedups:
+* I changed the way ``/proc`` was parsed. Instead of reading ``/proc/{pid}/status`` line by line I used a regular expression. Here are the speedups:
 
   * ``Process.ppid()`` is 20% faster
 

@@ -12,7 +12,7 @@ Temperatures
 It is now possible to retrieve hardware temperatures. The relevant commit is `here <https://github.com/giampaolo/psutil/pull/962/files>`__. Unfortunately this is Linux only. I couldn't manage to implement this on other platforms mainly for two reasons:
 
 * On Windows it is hard to do this in a hardware agnostic fashion. I bumped into 3 different approaches, all using WMI, and none of them worked with my hardware so I gave up.
-* On OSX it appears it is possible to retrieve temperatures relatively easy, but I have a virtualized OSX box which does not support sensors, so basically I gave up on this due to lack of hardware. If somebody wants to give it a try `be my guest <https://github.com/giampaolo/psutil/issues/371#issuecomment-274961948>`__.
+* On OSX it appears it is possible to retrieve temperatures relatively easily, but I have a virtualized OSX box which does not support sensors, so basically I gave up on this due to lack of hardware. If somebody wants to give it a try `be my guest <https://github.com/giampaolo/psutil/issues/371#issuecomment-274961948>`__.
 
 .. code-block:: python
 
@@ -49,7 +49,7 @@ This works on Linux, Windows and FreeBSD and provides battery status information
 CPU frequency
 -------------
 
-Available under Linux, Windows and OSX. Relevant commit is `here <https://github.com/giampaolo/psutil/pull/952/files>`__. Linux is the only platform which reports the real-time value (always changing), on all other platforms current frequency is represented as the nominal “fixed” value.
+Available under Linux, Windows and OSX. Relevant commit is `here <https://github.com/giampaolo/psutil/pull/952/files>`__. Linux is the only platform which reports the real-time value (always changing); on all other platforms current frequency is represented as the nominal “fixed” value.
 
 .. code-block:: python
 
@@ -65,7 +65,7 @@ Available under Linux, Windows and OSX. Relevant commit is `here <https://github
 What CPU a process is on
 ------------------------
 
-This will let you know what CPU number a process is currently running on, which is somewhat related to the existent `cpu_affinity() <https://pythonhosted.org/psutil/#psutil.Process.cpu_affinity>`__ functionality. The relevant commit is `here <https://github.com/giampaolo/psutil/pull/954/files>`__. It is interesting to use this method to visualize how the OS scheduler continuously evenly reassigns processes to different CPUs  (see `cpu_distribution.py <https://github.com/giampaolo/psutil/blob/master/scripts/cpu_distribution.py>`__ script).
+This will let you know what CPU number a process is currently running on, which is somewhat related to the existing `cpu_affinity() <https://pythonhosted.org/psutil/#psutil.Process.cpu_affinity>`__ functionality. The relevant commit is `here <https://github.com/giampaolo/psutil/pull/954/files>`__. It is interesting to use this method to visualize how the OS scheduler continuously evenly reassigns processes to different CPUs (see `cpu_distribution.py <https://github.com/giampaolo/psutil/blob/release-5.1.0/scripts/cpu_distribution.py>`__ script).
 
 
 CPU affinity
@@ -86,4 +86,4 @@ This was implemented because it turns out `on Linux <https://github.com/giampaol
 Other bug fixes
 ---------------
 
-See `full list <https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#510>`__.
+See `full list <https://psutil.readthedocs.io/latest/changelog.html>`__.

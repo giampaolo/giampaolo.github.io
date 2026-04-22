@@ -4,7 +4,7 @@ psutil 2.0 API redesign
 :date: 2014-01-11
 :tags: psutil, api-design, python
 
-This my second blog post is going to be about `psutil <https://github.com/giampaolo/psutil/>`__ 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is to serve as an official reference which describes how you should port your existent code base. In doing so I will also explain why I decided to make these changes. Despite many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten but I think this is for the better and it needed to be done, hopefully for the first and last time. OK, here we go now.
+This, my second blog post, is going to be about `psutil <https://github.com/giampaolo/psutil/>`__ 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is to serve as an official reference which describes how you should port your existing code base. In doing so I will also explain why I decided to make these changes. Although many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten but I think this is for the better and it needed to be done, hopefully for the first and last time. OK, here we go now.
 
 Module constants turned into functions
 --------------------------------------
@@ -145,7 +145,7 @@ Assuming p = psutil.Process():
 
 Different reasons:
 
-* Having a mixed API which uses both properties and methods for no particular reason is confusing and messy as you don't know whether to use "()" or not (see `here <https://code.google.com/p/psutil/source/browse/test/test_psutil.py?name=release-0.7.0#1716>`__).
+* Having a mixed API which uses both properties and methods for no particular reason is confusing and messy as you don't know whether to use "()" or not (see code.google.com/p/psutil/source/browse/test/test_psutil.py?name=release-0.7.0#1716).
 * It is usually expected from a property to not perform many computations internally whereas psutil actually invokes a function every time it is accessed. This has two drawbacks:
   * you may get an exception just by accessing the property (e.g. "p.name" may raise NoSuchProcess or AccessDenied)
   * you may erroneously think properties are cached but this is true only for name, exe, and create_time.
@@ -175,7 +175,7 @@ Having an API which "sleeps" by default is risky though, because it's easy to fo
 Migration strategy
 ------------------
 
-Except for Process properties (`name`, `exe`, `cmdline`, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long you start the interpreter with the "-Wd" option. This will enable deprecation warnings which were `silenced in Python 2.7 <http://bugs.python.org/issue7319>`__ (IMHO, from a developer standpoint this was a bad decision).
+Except for Process properties (`name`, `exe`, `cmdline`, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long as you start the interpreter with the "-Wd" option. This will enable deprecation warnings which were `silenced in Python 2.7 <http://bugs.python.org/issue7319>`__ (IMHO, from a developer standpoint this was a bad decision).
 
 ::
 
@@ -196,7 +196,7 @@ Except for Process properties (`name`, `exe`, `cmdline`, etc.) all the old APIs 
     >>>
 
 If you have a solid test suite you can run tests and fix the warnings one by one.
-As for the the Process properties which were turned into methods it's more difficult because whereas psutil 1.2.1 returns the actual value, psutil 2.0.0 will return the bound method:
+As for the Process properties which were turned into methods it's more difficult because whereas psutil 1.2.1 returns the actual value, psutil 2.0.0 will return the bound method:
 
 .. code-block:: python.
 
@@ -210,8 +210,8 @@ As for the the Process properties which were turned into methods it's more diffi
     <bound method Process.name of psutil.Process(pid=19816, name='python') at 139845631328144>
     >>>
 
-What I would recommend if you want to drop support with 1.2.1 is to grep for `".name"`, `".exe"` etc. and just replace them with `".exe()"` and `".name()"` one by one.
-If on the other hand you want to write a code which works with both versions I see two possibilities:
+What I would recommend if you want to drop support for 1.2.1 is to grep for `".name"`, `".exe"` etc. and just replace them with `".exe()"` and `".name()"` one by one.
+If on the other hand you want to write code which works with both versions I see two possibilities:
 
 * #1 check version info, like this:
 
@@ -238,7 +238,7 @@ New features introduced in 2.0.0
 
 Ok, enough with the bad news. =) psutil 2.0.0 is not only about code breakage. I also had the chance to integrate a bunch of interesting features.
 
-* `#427 <https://code.google.com/p/psutil/issues/detail?id=427>`__: you're now able to distinguish between the number of logical and physical CPUs:
+* #427 (code.google.com/p/psutil/issues/detail?id=427): you're now able to distinguish between the number of logical and physical CPUs:
 
 .. code-block:: python
 
@@ -247,8 +247,8 @@ Ok, enough with the bad news. =) psutil 2.0.0 is not only about code breakage. I
     >>> psutil.cpu_count(logical=False)  # physical cores only
     2
 
-* `#452 <https://code.google.com/p/psutil/issues/detail?id=452>`__: process classes are now hashable and can be checked for equality. That means you can use `Process` objects with sets (finally!).
-* `#447 <https://code.google.com/p/psutil/issues/detail?id=447>`__: `psutil.wait_procs()` "timeout" parameter is now optional
-* `#461 <https://code.google.com/p/psutil/issues/detail?id=461>`__: functions returning namedtuples are now pickle-able
-* `#459 <https://code.google.com/p/psutil/issues/detail?id=459>`__: a Makefile is now available to automatize repetitive tasks such as build, install, running tests etc. There's also a make.bat for Windows.
+* #452 (code.google.com/p/psutil/issues/detail?id=452): process classes are now hashable and can be checked for equality. That means you can use `Process` objects with sets (finally!).
+* #447 (code.google.com/p/psutil/issues/detail?id=447): `psutil.wait_procs()` "timeout" parameter is now optional
+* #461 (code.google.com/p/psutil/issues/detail?id=461): functions returning namedtuples are now pickle-able
+* #459 (code.google.com/p/psutil/issues/detail?id=459): a Makefile is now available to automate repetitive tasks such as build, install, running tests etc. There's also a make.bat for Windows.
 * introduced `unittest2` module as a requirement for running tests

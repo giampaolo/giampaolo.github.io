@@ -24,7 +24,7 @@ The USS (Unique Set Size) is the memory which is unique to a process and which w
 PSS and swap
 ------------
 
-On Linux there are two additional metrics which can also be determined via `/proc/pid/smaps`: PSS and swap. PSS, aka "Proportional Set Size", represents the amount of memory shared with other processes, accounted in a way that the amount is divided evenly between the processes that share it. I.e. if a process has 10 MBs all to itself (USS) and 10 MBs shared with another process, its PSS will be 15 MBs. "swap" is simply the amount of memory that has been swapped out to disk. With memory_full_info() it is possible to implement a tool `like this <https://github.com/giampaolo/psutil/blob/master/scripts/procsmem.py>`__, similar to `smem <https://www.selenic.com/smem/>`__ on Linux, which provides a list of processes sorted by "USS". It is interesting to notice how RSS differs from USS:
+On Linux there are two additional metrics which can also be determined via `/proc/pid/smaps`: PSS and swap. PSS, aka "Proportional Set Size", represents the amount of memory shared with other processes, accounted in a way that the amount is divided evenly between the processes that share it. I.e. if a process has 10 MBs all to itself (USS) and 10 MBs shared with another process, its PSS will be 15 MBs. "swap" is simply the amount of memory that has been swapped out to disk. With memory_full_info() it is possible to implement a tool `like this <https://github.com/giampaolo/psutil/blob/release-4.0.0/scripts/procsmem.py>`__, similar to `smem <https://www.selenic.com/smem/>`__ on Linux, which provides a list of processes sorted by "USS". It is interesting to notice how RSS differs from USS:
 
 ::
 
@@ -49,7 +49,7 @@ On Linux there are two additional metrics which can also be determined via `/pro
 Implementation
 --------------
 
-In order to get these values (USS, PSS and swap) we need to pass through the whole process address space. This usually requires higher user privileges and is considerably slower than getting the "usual" memory metrics via Process.memory_info(), which is probably the reason why tools like ps and top show RSS/VMS instead of USS. A big thanks goes to the Mozilla team which figured out all this stuff on Windows and OSX, and to Eric Rahm who put the PRs for psutil together (see `#744 <https://github.com/giampaolo/psutil/pull/744>`__, `#745 <https://github.com/giampaolo/psutil/pull/745>`__ and `#746 <https://github.com/giampaolo/psutil/pull/746>`__). For those of you who don't use Python and would like to port the code on other languages here's the interesting parts:
+In order to get these values (USS, PSS and swap) we need to pass through the whole process address space. This usually requires higher user privileges and is considerably slower than getting the "usual" memory metrics via Process.memory_info(), which is probably the reason why tools like ps and top show RSS/VMS instead of USS. A big thanks goes to the Mozilla team which figured out all this stuff on Windows and OSX, and to Eric Rahm who put the PRs for psutil together (see `#744 <https://github.com/giampaolo/psutil/pull/744>`__, `#745 <https://github.com/giampaolo/psutil/pull/745>`__ and `#746 <https://github.com/giampaolo/psutil/pull/746>`__). For those of you who don't use Python and would like to port the code to other languages here are the interesting parts:
 
 * `Linux <https://github.com/giampaolo/psutil/blob/42b34049cf96e845b6423db91f991849a2f87578/psutil/_pslinux.py#L1026>`__
 * `OSX <https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_psutil_osx.c#L568>`__
@@ -83,7 +83,7 @@ Second biggest improvement in psutil 4.0.0 is the ability to determine the proce
                 ...
 
 
-Process environ was a `long standing issue <https://code.google.com/archive/p/psutil/issues/52>`_ (year 2009) who I gave up to implement because the Windows implementation worked for the current process only. Frank Benkstein `solved that <https://github.com/giampaolo/psutil/pull/747>`__ and the process environ can now be determined on Linux, Windows and OSX for all processes (of course you may still bump into `AccessDenied` for processes owned by another user):
+Process environ was a long standing issue (code.google.com/archive/p/psutil/issues/52, year 2009) which I gave up on implementing because the Windows implementation worked for the current process only. Frank Benkstein `solved that <https://github.com/giampaolo/psutil/pull/747>`__ and the process environ can now be determined on Linux, Windows and OSX for all processes (of course you may still bump into `AccessDenied` for processes owned by another user):
 
 .. code-block:: python
 
@@ -99,7 +99,7 @@ Process environ was a `long standing issue <https://code.google.com/archive/p/ps
       }
     >>>
 
-It must be noted that the resulting dict usually does not reflect changes made after the process started (e.g. ``os.environ['MYAPP'] = '1'``). Again, for whoever is interested in doing this in other languages, here's the interesting parts:
+It must be noted that the resulting dict usually does not reflect changes made after the process started (e.g. ``os.environ['MYAPP'] = '1'``). Again, for whoever is interested in doing this in other languages, here are the interesting parts:
 
 * `Linux <https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_pslinux.py#L928>`_
 * `OSX <https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/arch/osx/process_info.c#L241>`_
@@ -120,28 +120,28 @@ OS constants
 
 Given the increasing number of platform-specific metrics I added a new set of constants to quickly differentiate what platform you're on: ``psutil.LINUX``, ``psutil.WINDOWS``, etc. Main bug fixes:
 
-* `#734 <https://github.com/giampaolo/psutil/issues/734>`_: on Python 3 invalid UTF-8 data was not correctly handled for proces ``name()``, ``cwd()``, ``exe()``, ``cmdline()`` and ``open_files()`` methods, resulting in UnicodeDecodeError. This was affecting all platforms. Now ``surrogateescape`` error handler is used as a workaround for replacing the corrupted data.
+* `#734 <https://github.com/giampaolo/psutil/issues/734>`_: on Python 3 invalid UTF-8 data was not correctly handled for process ``name()``, ``cwd()``, ``exe()``, ``cmdline()`` and ``open_files()`` methods, resulting in UnicodeDecodeError. This was affecting all platforms. Now ``surrogateescape`` error handler is used as a workaround for replacing the corrupted data.
 * `#761 <https://github.com/giampaolo/psutil/issues/761>`_: [Windows] ``psutil.boot_time()`` no longer wraps to 0 after 49 days.
-* `#767 <https://github.com/giampaolo/psutil/issues/767>`_: [Linux] ``disk_io_counters()`` may raise ValueError on 2.6 kernels and it's  broken on 2.4 kernels.
+* `#767 <https://github.com/giampaolo/psutil/issues/767>`_: [Linux] ``disk_io_counters()`` may raise ValueError on 2.6 kernels and it's broken on 2.4 kernels.
 * `#764 <https://github.com/giampaolo/psutil/issues/764>`_: psutil can now be compiled on NetBSD-6.X.
 * `#704 <https://github.com/giampaolo/psutil/issues/704>`_: psutil can now be compiled on Solaris sparc.
 
-Complete list of bug fixes is available `here <https://github.com/giampaolo/psutil/blob/master/HISTORY.rst>`_.
+Complete list of bug fixes is available `here <https://psutil.readthedocs.io/latest/changelog.html>`_.
 
 Porting code
 ------------
 
 Being 4.0.0 a major version, I took the chance to (lightly) change / break some APIs.
 
-* ``Process.memory_info()`` no longer returns just an (rss, vms) namedtuple. Instead it returns a namedtuple of variable length, changing depending on the platform (rss and vms are always present though, also on Windows). Basically it returns the same result of old ``memory_info_ex()``. This shouldn't break your existent code, unless you were doing ``rss, vms = p.memory_info()``.
+* ``Process.memory_info()`` no longer returns just an (rss, vms) namedtuple. Instead it returns a namedtuple of variable length, changing depending on the platform (rss and vms are always present though, also on Windows). Basically it returns the same result as the old ``memory_info_ex()``. This shouldn't break your existing code, unless you were doing ``rss, vms = p.memory_info()``.
 * At the same time process_memory_info_ex() is now deprecated. The method is still there as an alias for ``memory_info()``, issuing a deprecation warning.
 * ``psutil.disk_io_counters()`` returns 2 additional fields on Linux and 1 additional field on FreeBSD.
-* ``psutil.disk_io_counters()`` on NetBSD and OpenBSD no longer return write_count and read_count metrics because the kernel do not provide them (we were returning the busy time instead). I also don't expect this to be a big issue because NetBSD and OpenBSD support is very recent.
+* ``psutil.disk_io_counters()`` on NetBSD and OpenBSD no longer returns write_count and read_count metrics because the kernel does not provide them (we were returning the busy time instead). I also don't expect this to be a big issue because NetBSD and OpenBSD support is very recent.
 
 Final notes and looking for a job
 ---------------------------------
 
-OK, this is it. I would like to spend a couple more words to announce the world that I'm currently unemployed and looking for a remote gig again! =) I want remote because my plan for this year is to remain in Prague (Czech Republic) and possibly spend 2-3 months in Asia. If you know about any company who's looking for a Python backend dev who can work from afar feel free to share my `Linkedin profile <https://www.linkedin.com/in/grodola/>`_ or mail me at g.rodola [at] gmail [dot] com.
+OK, this is it. I would like to spend a couple more words to announce to the world that I'm currently unemployed and looking for a remote gig again! =) I want remote because my plan for this year is to remain in Prague (Czech Republic) and possibly spend 2-3 months in Asia. If you know of any company who's looking for a Python backend dev who can work from afar feel free to share my `Linkedin profile <https://www.linkedin.com/in/grodola/>`_ or mail me at g.rodola [at] gmail [dot] com.
 
 External links
 --------------
