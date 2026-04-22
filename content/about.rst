@@ -118,7 +118,7 @@ Here's the ones I like the most:
 Abandoned projects
 ------------------
 
-These are from when I started moving my first steps with Python in 2005. Listed here mainly for historical / nostalgic reasons. =)
+These are from when I started moving my first steps with Python in 2005. Listed here mainly for historical / nostalgic reasons.
 
 * `soicmp`_: a remote shell using ICMP protocol instead of TCP. *(2005 - 2006)*
 * `pypk`_: a port knocker based on `libpcap`. *(2005 - 2006)*
