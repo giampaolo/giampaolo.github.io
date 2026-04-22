@@ -4,7 +4,7 @@ psutil 3.0, aka how I reimplemented ifconfig in Python
 :date: 2015-06-13
 :tags: psutil, travel, personal, python
 
-Here we are. It's been a long time since my last blog post and my last `psutil <https://github.com/giampaolo/psutil>`__ release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally had the chance to meet my friend `Jay Loden <http://jayloden.com/software.htm>`__ in person. `Jay and I <https://fbcdn-sphotos-h-a.akamaihd.net/hphotos-ak-xta1/t31.0-8/11263024_10153285412879890_759604551146752808_o.jpg>`__ originally started working on psutil together `7 years ago <https://groups.google.com/forum/#!topic/psutil-dev/fj8DQ3lGFH4>`__.
+Here we are. It's been a long time since my last blog post and my last `psutil <https://github.com/giampaolo/psutil>`__ release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally had the chance to meet my friend `Jay Loden <http://jayloden.com/software.htm>`__ in person. `Jay and I </images/me-with-jay.jpg>`__ originally started working on psutil together `7 years ago <https://groups.google.com/forum/#!topic/psutil-dev/fj8DQ3lGFH4>`__.
 
 .. raw:: html
 
@@ -15,12 +15,12 @@ Here we are. It's been a long time since my last blog post and my last `psutil <
     </div>
 
 
-Back then I didn't know any C (and I still am a terrible C developer) so he's been crucial to develop the initial psutil skeleton including OSX and Windows support. I'm back home now (but not for long ;-)), so I finally have some time to write this blog post and tell you about the new psutil release. Let's see what happened.
+Back then I didn't know any C (and I still am a terrible C developer), so he's been crucial to developing the initial psutil skeleton, including OSX and Windows support. I'm back home now (but not for long ;-)), so I finally have some time to write this blog post and tell you about the new psutil release. Let's see what happened.
 
 net_if_addrs()
 --------------
 
-In a few words, we're now able to list network interface addresses similarly to "ifconfig" command on UNIX:
+In a few words, we're now able to list network interface addresses similarly to the "ifconfig" command on UNIX:
 
 .. code-block:: python
 
@@ -44,7 +44,7 @@ In a few words, we're now able to list network interface addresses similarly to 
                         netmask=None,
                         broadcast='00:00:00:00:00:00')]}
 
-This is limited to `AF_INET` (IPv4), `AF_INET6` (IPv6) and `AF_LINK` (Ethernet) address families. If you want something more poweful (e.g. `AF_BLUETOOTH`) you can take a look at `netifaces <https://pypi.python.org/pypi/netifaces/>`__ extension. And here's the code which does these tricks on POSIX and Windows:
+This is limited to `AF_INET` (IPv4), `AF_INET6` (IPv6) and `AF_LINK` (Ethernet) address families. If you want something more powerful (e.g. `AF_BLUETOOTH`) you can take a look at the `netifaces <https://pypi.python.org/pypi/netifaces/>`__ extension. And here's the code which does these tricks on POSIX and Windows:
 
 * `POSIX <https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L151>`__
 * `Windows <https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L2907>`__
@@ -61,7 +61,7 @@ This will return a bunch of information about network interface cards:
     >>> import psutil
     >>> from pprint import pprint
     >>> pprint(psutil.net_if_stats())
-    {'ethernet'0: snicstats(isup=True,
+    {'ethernet0': snicstats(isup=True,
                             duplex=<NicDuplex.NIC_DUPLEX_FULL: 2>,
                             speed=100,
                             mtu=1500),
@@ -90,7 +90,7 @@ Enums
     >>> psutil.IOPRIO_CLASS_IDLE
     3
 
-On Python 3.4 you'll see a more informative:
+On Python 3.4 you'll see a more informative result:
 
 .. code-block:: python
 
@@ -100,9 +100,9 @@ On Python 3.4 you'll see a more informative:
 
 They are backward compatible, meaning if you're sending serialized data produced with psutil through the network you can safely use comparison operators and so on. The psutil APIs returning enums (on Python >=3.4) are:
 
-* `psutil.net_connections()` (the address families):
+* `psutil.net_connections()` (the address families)
 * `psutil.Process.connections()` (same as above)
-* `psutil.net_if_stats()`  (all ``NIC_DUPLEX_*`` constants)
+* `psutil.net_if_stats()` (all ``NIC_DUPLEX_*`` constants)
 * `psutil.Process.nice()` on Windows (for all the ``*_PRIORITY_CLASS`` constants)
 * `psutil.Process.ionice()` on Linux (for all the ``IOPRIO_CLASS_*`` constants)
 
@@ -141,7 +141,7 @@ Furthermore, depending on what platform you were on, certain process stats could
     >>> psutil.cmdline()
     ['python']
 
-Also `process_iter()` did not return zombie processes at all. This was probably the worst aspect because being able to identify them is an important use case, as they signal an issue with process: if a parent process spawns a child, terminates it (via `kill()`), but doesn't `wait()` for it it will create a zombie. Long story short, the way this changed in psutil 3.0 is that:
+Also `process_iter()` did not return zombie processes at all. This was probably the worst aspect because being able to identify them is an important use case, as they signal an issue with a process: if a parent process spawns a child, terminates it (via `kill()`), but doesn't `wait()` for it, it will create a zombie. Long story short, the way this changed in psutil 3.0 is that:
 
 * we now have a new `ZombieProcess` exception, raised every time we're not able to query a process because it's a zombie
 * it is raised instead of `NoSuchProcess` (which was incorrect and misleading)
@@ -162,105 +162,107 @@ Also `process_iter()` did not return zombie processes at all. This was probably 
 Removal of deprecated APIs
 --------------------------
 
-This is another big one, probably the biggest. In a previous blog post I already talked about deprecated APIs. What I did back then (January 2014) was to rename and officially deprecate different APIs and provide aliases for them so that people wouldn't yell at me because I broke their existent code. The most interesting deprecation was certainly the one affecting module constants and the hack which was used in order to provide "module properties". With this new release I decided to get rid of all those aliases. I'm sure this will cause problems but hey! This is a new major release, right? =). Plus the amount of crap which was removed is impressive (see the `commit <https://github.com/giampaolo/psutil/commit/ab211934af0acf99091e4cd534fc5bbe7fd3b233>`__). Here's the old aliases which are now gone for good (or bad, depending on how much headache they will cause you):
+This is another big one, probably the biggest. In a previous blog post I already talked about deprecated APIs. What I did back then (January 2014) was to rename and officially deprecate different APIs and provide aliases for them so that people wouldn't yell at me because I broke their existing code. The most interesting deprecation was certainly the one affecting module constants and the hack which was used in order to provide "module properties". With this new release I decided to get rid of all those aliases. I'm sure this will cause problems but hey! This is a new major release, right? =). Plus the amount of crap which was removed is impressive (see the `commit <https://github.com/giampaolo/psutil/commit/ab211934af0acf99091e4cd534fc5bbe7fd3b233>`__). Here's the old aliases which are now gone for good (or bad, depending on how much headache they will cause you):
 
 Removed module functions and constants
 --------------------------------------
 
-+------------------------------+---------------------------------+
-| Already deprecated name      | New name                        |
-+==============================+=================================+
-| psutil.BOOT_TIME()           | psutil.boot_time()              |
-+------------------------------+---------------------------------+
-| psutil.NUM_CPUS()            | psutil.cpu_count()              |
-+------------------------------+---------------------------------+
-| psutil.TOTAL_PHYMEM()        | psutil.virtual_memory().total   |
-+------------------------------+---------------------------------+
-| psutil.avail_phymem()        | psutil.virtual_memory().free    |
-+------------------------------+---------------------------------+
-| psutil.avail_virtmem()       | psutil.swap_memory().free       |
-+------------------------------+---------------------------------+
-| psutil.cached_phymem()       | psutil.virtual_memory().cached  |
-+------------------------------+---------------------------------+
-| psutil.get_pid_list()        | psutil.pids().cached            |
-+------------------------------+---------------------------------+
-| psutil.get_process_list()    |                                 |
-+------------------------------+---------------------------------+
-| psutil.get_users()           | psutil.users()                  |
-+------------------------------+---------------------------------+
-| psutil.network_io_counters() | psutil.net_io_counters()        |
-+------------------------------+---------------------------------+
-| psutil.phymem_buffers()      | psutil.virtual_memory().buffers |
-+------------------------------+---------------------------------+
-| psutil.phymem_usage()        | psutil.virtual_memory()         |
-+------------------------------+---------------------------------+
-| psutil.total_virtmem()       | psutil.swap_memory().total      |
-+------------------------------+---------------------------------+
-| psutil.used_virtmem()        | psutil.swap_memory().used       |
-+------------------------------+---------------------------------+
-| psutil.used_phymem()         | psutil.virtual_memory().used    |
-+------------------------------+---------------------------------+
-| psutil.virtmem_usage()       | psutil.swap_memory()            |
-+------------------------------+---------------------------------+
+
++----------------------------------+-------------------------------------+
+| Already deprecated name          | New name                            |
++==================================+=====================================+
+| ``psutil.BOOT_TIME()``           | ``psutil.boot_time()``              |
++----------------------------------+-------------------------------------+
+| ``psutil.NUM_CPUS()``            | ``psutil.cpu_count()``              |
++----------------------------------+-------------------------------------+
+| ``psutil.TOTAL_PHYMEM()``        | ``psutil.virtual_memory().total``   |
++----------------------------------+-------------------------------------+
+| ``psutil.avail_phymem()``        | ``psutil.virtual_memory().free``    |
++----------------------------------+-------------------------------------+
+| ``psutil.avail_virtmem()``       | ``psutil.swap_memory().free``       |
++----------------------------------+-------------------------------------+
+| ``psutil.cached_phymem()``       | ``psutil.virtual_memory().cached``  |
++----------------------------------+-------------------------------------+
+| ``psutil.get_pid_list()``        | ``psutil.pids()``                   |
++----------------------------------+-------------------------------------+
+| ``psutil.get_process_list()``    |                                     |
++----------------------------------+-------------------------------------+
+| ``psutil.get_users()``           | ``psutil.users()``                  |
++----------------------------------+-------------------------------------+
+| ``psutil.network_io_counters()`` | ``psutil.net_io_counters()``        |
++----------------------------------+-------------------------------------+
+| ``psutil.phymem_buffers()``      | ``psutil.virtual_memory().buffers`` |
++----------------------------------+-------------------------------------+
+| ``psutil.phymem_usage()``        | ``psutil.virtual_memory()``         |
++----------------------------------+-------------------------------------+
+| ``psutil.total_virtmem()``       | ``psutil.swap_memory().total``      |
++----------------------------------+-------------------------------------+
+| ``psutil.used_virtmem()``        | ``psutil.swap_memory().used``       |
++----------------------------------+-------------------------------------+
+| ``psutil.used_phymem()``         | ``psutil.virtual_memory().used``    |
++----------------------------------+-------------------------------------+
+| ``psutil.virtmem_usage()``       | ``psutil.swap_memory()``            |
++----------------------------------+-------------------------------------+
 
 Process methods (assuming `p = psutil.Process()`):
 
-+------------------------------+---------------------------------+
-| Already deprecated name      | New name                        |
-+==============================+=================================+
-| p.get_children()             | p.children()                    |
-+------------------------------+---------------------------------+
-| p.get_connections()          | p.connections()                 |
-+------------------------------+---------------------------------+
-| p.get_cpu_affinity()         | p.cpu_affinity()                |
-+------------------------------+---------------------------------+
-| p.get_cpu_percent()          | p.cpu_percent()                 |
-+------------------------------+---------------------------------+
-| p.get_cpu_times()            | p.cpu_times()                   |
-+------------------------------+---------------------------------+
-| p.get_io_counters()          | p.io_counters()                 |
-+------------------------------+---------------------------------+
-| p.get_ionice()               | p.ionice()                      |
-+------------------------------+---------------------------------+
-| p.get_memory_info()          | p.memory_info()                 |
-+------------------------------+---------------------------------+
-| p.get_ext_memory_info()      | p.memory_info_ex()              |
-+------------------------------+---------------------------------+
-| p.get_memory_maps()          | p.memory_maps()                 |
-+------------------------------+---------------------------------+
-| p.get_memory_percent()       |  p.memory_percent()             |
-+------------------------------+---------------------------------+
-| p.get_nice()                 | p.nice()                        |
-+------------------------------+---------------------------------+
-| p.get_num_ctx_switches()     | p.num_ctx_switches()            |
-+------------------------------+---------------------------------+
-| p.get_num_fds()              | p.num_fds()                     |
-+------------------------------+---------------------------------+
-| p.get_num_threads()          | p.num_threads()                 |
-+------------------------------+---------------------------------+
-| p.get_open_files()           |  p.open_files()                 |
-+------------------------------+---------------------------------+
-| p.get_rlimit()               | p.rlimit()                      |
-+------------------------------+---------------------------------+
-| p.get_threads()              | p.threads()                     |
-+------------------------------+---------------------------------+
-| p.getcwd()                   | p.cwd()                         |
-+------------------------------+---------------------------------+
-| p.set_cpu_affinity()         | p.cpu_affinity()                |
-+------------------------------+---------------------------------+
-| p.set_ionice()               | p.ionice()                      |
-+------------------------------+---------------------------------+
-| p.set_nice()                 | p.nice()                        |
-+------------------------------+---------------------------------+
-| p.set_rlimit()               | p.rlimit()                      |
-+------------------------------+---------------------------------+
++------------------------------+--------------------------+
+| Already deprecated name      | New name                 |
++==============================+==========================+
+| ``p.get_children()``         | ``p.children()``         |
++------------------------------+--------------------------+
+| ``p.get_connections()``      | ``p.connections()``      |
++------------------------------+--------------------------+
+| ``p.get_cpu_affinity()``     | ``p.cpu_affinity()``     |
++------------------------------+--------------------------+
+| ``p.get_cpu_percent()``      | ``p.cpu_percent()``      |
++------------------------------+--------------------------+
+| ``p.get_cpu_times()``        | ``p.cpu_times()``        |
++------------------------------+--------------------------+
+| ``p.get_io_counters()``      | ``p.io_counters()``      |
++------------------------------+--------------------------+
+| ``p.get_ionice()``           | ``p.ionice()``           |
++------------------------------+--------------------------+
+| ``p.get_memory_info()``      | ``p.memory_info()``      |
++------------------------------+--------------------------+
+| ``p.get_ext_memory_info()``  | ``p.memory_info_ex()``   |
++------------------------------+--------------------------+
+| ``p.get_memory_maps()``      | ``p.memory_maps()``      |
++------------------------------+--------------------------+
+| ``p.get_memory_percent()``   | ``p.memory_percent()``   |
++------------------------------+--------------------------+
+| ``p.get_nice()``             | ``p.nice()``             |
++------------------------------+--------------------------+
+| ``p.get_num_ctx_switches()`` | ``p.num_ctx_switches()`` |
++------------------------------+--------------------------+
+| ``p.get_num_fds()``          | ``p.num_fds()``          |
++------------------------------+--------------------------+
+| ``p.get_num_threads()``      | ``p.num_threads()``      |
++------------------------------+--------------------------+
+| ``p.get_open_files()``       | ``p.open_files()``       |
++------------------------------+--------------------------+
+| ``p.get_rlimit()``           | ``p.rlimit()``           |
++------------------------------+--------------------------+
+| ``p.get_threads()``          | ``p.threads()``          |
++------------------------------+--------------------------+
+| ``p.getcwd()``               | ``p.cwd()``              |
++------------------------------+--------------------------+
+| ``p.set_cpu_affinity()``     | ``p.cpu_affinity()``     |
++------------------------------+--------------------------+
+| ``p.set_ionice()``           | ``p.ionice()``           |
++------------------------------+--------------------------+
+| ``p.set_nice()``             | ``p.nice()``             |
++------------------------------+--------------------------+
+| ``p.set_rlimit()``           | ``p.rlimit()``           |
++------------------------------+--------------------------+
 
-If your code suddenly breaks with AttributeError after you upgraded psutil it means you were using one of those deprecated aliases. In that case just take a look at the table above and rename stuff in accordance.
+
+If your code suddenly breaks with AttributeError after you upgraded psutil, it means you were using one of those deprecated aliases. In that case, just take a look at the table above and rename stuff accordingly.
 
 Bug fixes
 ---------
 
-I fixed a lot of stuff (full list `here <https://github.com/giampaolo/psutil/blob/master/HISTORY.rst>`__), but here's the list of things which I think are worth mentioning:
+I fixed a lot of stuff (full list `here <https://psutil.readthedocs.io/latest/changelog.html>`__), but here's the list of things which I think are worth mentioning:
 
 * `#512 <https://github.com/giampaolo/psutil/issues/512>`__: [FreeBSD] fix segfault in net_connections().
 * `#593 <https://github.com/giampaolo/psutil/issues/593>`__: [FreeBSD] Process.memory_maps() segfaults.
@@ -271,15 +273,15 @@ I fixed a lot of stuff (full list `here <https://github.com/giampaolo/psutil/blo
 Ease of development
 -------------------
 
-These are not enhancements you will directly benefit from but I put some effort into making my life easier every time I work on psutil.
+These are not enhancements you will directly benefit from, but I put some effort into making my life easier every time I work on psutil.
 
-* I care about psutil code being fully `PEP8 <https://www.python.org/dev/peps/pep-0008/>`__ compliant so I added a `pre-commit <https://github.com/giampaolo/psutil/blob/master/.git-pre-commit>`__ GIT hook which runs `flake8 <https://pypi.python.org/pypi/flake8>`__ on every commit and rejects it if the coding style is not compliant. The way I install this is via `make install-git-hooks <https://github.com/giampaolo/psutil/blob/82da82a6bb94ed5c6faf9d762ef4ad0fec18f01b/Makefile#L108)>`__.
+* I care about psutil code being fully `PEP8 <https://www.python.org/dev/peps/pep-0008/>`__ compliant, so I added a `pre-commit <https://github.com/giampaolo/psutil/blob/v3.0.0/.git-pre-commit>`__ Git hook which runs `flake8 <https://pypi.python.org/pypi/flake8>`__ on every commit and rejects it if the coding style is not compliant. The way I install this is via `make install-git-hooks <https://github.com/giampaolo/psutil/blob/82da82a6bb94ed5c6faf9d762ef4ad0fec18f01b/Makefile#L108>`__.
 * I added a ``make install-dev-deps`` command which installs all deps and stuff which is useful for testing (`ipdb`, `coverage`, etc).
-* A new ``make coverage`` command which runs `coverage <http://nedbatchelder.com/code/coverage/>`__. With this I discovered some of parts in the code which weren't covered by tests and I fixed that.
-* I started using `tox <https://github.com/giampaolo/psutil/blob/master/tox.ini>`__ to easily test psutil against all supported Python versions (from 2.6 to 3.4) in one shot.
-* I `reorganized tests <https://github.com/giampaolo/psutil/issues/629>`__ so that now they can be easily executed with py.test and nose (before, only unittest runner was fully supported)
+* A new ``make coverage`` command which runs `coverage <http://nedbatchelder.com/code/coverage/>`__. With this I discovered some parts of the code which weren't covered by tests and I fixed that.
+* I started using `tox <https://github.com/giampaolo/psutil/blob/v3.0.0/tox.ini>`__ to easily test psutil against all supported Python versions (from 2.6 to 3.4) in one shot.
+* I `reorganized tests <https://github.com/giampaolo/psutil/issues/629>`__ so that now they can be easily executed with py.test and nose (before, only unittest runner was fully supported).
 
 Final words
 -----------
 
-I must say I'm pretty satisfied with how psutil is going and the satisfaction I still get every time I work on it. Right now it gets almost `800.000 download a month <https://pypi.python.org/pypi/psutil#downloads>`__, which is pretty great for a Python library. As of right now I consider psutil almost "completed" in terms of features, meaning I'm basically running out of ideas on what I should add next (see `TODO <https://github.com/giampaolo/psutil/blob/master/TODO>`__). From now on the future development will probably focus on adding support for more exotic platforms (`OpenBSD <https://github.com/giampaolo/psutil/issues/562>`__, `NetBSD <https://github.com/giampaolo/psutil/pull/557>`__, `Android <https://github.com/giampaolo/psutil/issues/355>`__). There also have been some discussions on python-ideas mailing list about `including psutil into Python stdlib <https://mail.python.org/pipermail//python-ideas/2014-October/029835.html>`__ but, assuming that will ever happen, it's still far away in the future as it would require a lot of time which I currently don't have. That should be all. I hope you will all enjoy this new release.
+I must say I'm pretty satisfied with how psutil is going and the satisfaction I still get every time I work on it. Right now it gets almost `800,000 downloads a month <https://pypi.python.org/pypi/psutil#downloads>`__, which is pretty great for a Python library. As of right now I consider psutil almost "completed" in terms of features, meaning I'm basically running out of ideas on what I should add next (see `TODO <https://github.com/giampaolo/psutil/blob/v3.0.0/TODO>`__). From now on, future development will probably focus on adding support for more exotic platforms (`OpenBSD <https://github.com/giampaolo/psutil/issues/562>`__, `NetBSD <https://github.com/giampaolo/psutil/pull/557>`__, `Android <https://github.com/giampaolo/psutil/issues/355>`__). There have also been some discussions on the python-ideas mailing list about `including psutil into Python stdlib <https://mail.python.org/pipermail//python-ideas/2014-October/029835.html>`__ but, assuming it ever happens, it's still far away in the future as it would require a lot of time which I currently don't have. That should be all. I hope you will all enjoy this new release.
