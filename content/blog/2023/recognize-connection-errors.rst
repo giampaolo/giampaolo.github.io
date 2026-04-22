@@ -14,8 +14,8 @@ Python provides a builtin ConnectionError_ exception precisely for this
 purpose, but it turns out it's not enough. After observing logs in production,
 I found some errors that were not related to the socket connection per se, but
 rather to the **system connectivity**, like `ENETUNREACH`
-("network unreachable") or `ENETDOWN` ("network down").  It's interesting to
-note how this distinction is reflected in the UNIX errno_  code prefixes:
+("network unreachable") or `ENETDOWN` ("network down"). It's interesting to
+note how this distinction is reflected in the UNIX errno_ code prefixes:
 `ECONN*` (connection errors) vs. `ENET*` (network errors). I've noticed
 `ENET*` errors usually occur on a DHCP renewal, or more in general when the
 Wi-Fi signal is weak or absent. Because this code runs on a cleaning robot
@@ -45,7 +45,7 @@ Production logs also revealed a considerable amount of SSL-related errors. I
 was uncertain what to do about those. The app is supposed to gracefully handle
 them, so theoretically they should represent a bug. Still, they are
 unequivocally related to the connection stream, and represent a failed attempt
-to send data, so we want to retry it. Example of logs I found:
+to send data, so we want to retry it. Examples of logs I found:
 
 .. code-block:: none
 
@@ -61,8 +61,8 @@ Looking at production logs revealed what sort of brutal, rough and tumble place
 the Internet is, and how a network app must be ready to handle all sorts of
 unexpected error conditions which hardly show up during testing. To handle all
 of these cases I came up with this solution which I think is worth sharing, as
-it's generic enough to be reused in similar situations. If needed, this can be
-easily extended to include specific exceptions of third party libraries, like
+it's generic enough to be reused in similar situations. If needed, this can
+easily be extended to include specific exceptions of third party libraries, like
 `requests.exceptions.ConnectionError` (*EDIT: 2026-02: done for requests + botocore*).
 
 .. code-block:: python
