@@ -11,68 +11,10 @@ Full Unicode support
 
 String-returning APIs (``Process.exe()``, ``Process.cwd()``, ``Process.username()``, etc.) are now Unicode-correct on both Python 2 and 3 (`#1040 <https://github.com/giampaolo/psutil/issues/1040>`__), see `detailed separate blog post </blog/2017/psutil-530-fixing-unicode.html>`__.
 
-Improved process_iter() function
---------------------------------
+Improved process_iter()
+-----------------------
 
-`process_iter() <https://psutil.readthedocs.io/en/latest/#psutil.process_iter>`__ accepts two new parameters in order to invoke `Process.as_dict() <https://psutil.readthedocs.io/en/latest/#psutil.Process.as_dict>`__ internally: `"attrs"` and `"ad_value"`. With this you can iterate over all processes in one shot without having to catch `NoSuchProcess` explicitly. Before:
-
-.. code-block:: python
-
-    >>> import psutil
-    >>> for proc in psutil.process_iter():
-    ...     try:
-    ...         pinfo = proc.as_dict(attrs=['pid', 'name'])
-    ...     except psutil.NoSuchProcess:
-    ...         pass
-    ...     else:
-    ...         print(pinfo)
-    ...
-    {'pid': 1, 'name': 'systemd'}
-    {'pid': 2, 'name': 'kthreadd'}
-    {'pid': 3, 'name': 'ksoftirqd/0'}
-    ...
-
-Now:
-
-.. code-block:: python
-
-    >>> import psutil
-    >>> for proc in psutil.process_iter(attrs=['pid', 'name']):
-    ...     print(proc.info)
-    ...
-    {'pid': 1, 'name': 'systemd'}
-    {'pid': 2, 'name': 'kthreadd'}
-    {'pid': 3, 'name': 'ksoftirqd/0'}
-
-This improves expressiveness as it makes it possible to use nice list/dict comprehensions. Here are some examples.
-
-Processes having "python" in their name:
-
-.. code-block:: python
-
-    >>> from pprint import pprint as pp
-    >>> pp([p.info for p in psutil.process_iter(attrs=['pid', 'name']) if 'python' in p.info['name']])
-    [{'name': 'python3', 'pid': 21947},
-    {'name': 'python', 'pid': 23835}]
-
-Processes owned by user:
-
-.. code-block:: python
-
-    >>> import getpass
-    >>> pp([(p.pid, p.info['name']) for p in psutil.process_iter(attrs=['name', 'username']) if p.info['username'] == getpass.getuser()])
-    (16832, 'bash'),
-    (19772, 'ssh'),
-    (20492, 'python')]
-
-Processes actively running:
-
-.. code-block:: python
-
-    >>> pp([(p.pid, p.info) for p in psutil.process_iter(attrs=['name', 'status']) if p.info['status'] == psutil.STATUS_RUNNING])
-    [(1150, {'name': 'Xorg', 'status': 'running'}),
-    (1776, {'name': 'unity-panel-service', 'status': 'running'}),
-    (20492, {'name': 'python', 'status': 'running'})]
+`process_iter() <https://psutil.readthedocs.io/en/latest/#psutil.process_iter>`__ now accepts ``attrs`` and ``ad_value`` parameters, letting you pre-fetch process attributes in one shot and skip the ``try/except NoSuchProcess`` boilerplate, see `detailed separate blog post </blog/2017/psutil-530-improved-process-iter.html>`__.
 
 Automatic overflow handling of numbers
 --------------------------------------
