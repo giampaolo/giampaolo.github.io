@@ -573,7 +573,34 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 }
 
 .paginator {
-	padding-left:20px;
+	display: flex;
+	gap: .5em;
+	align-items: center;
+	flex-wrap: wrap;
+	margin: 2em 0 0 0;
+	font-size: 15px;
+}
+
+.paginator a,
+.paginator a:link,
+.paginator a:visited {
+	display: inline-block;
+	padding: .25em .7em;
+	border: 1px solid #d0d7de;
+	border-radius: 6px;
+	text-decoration: none;
+	color: #24292f;
+	line-height: 1.2;
+}
+
+.paginator a:hover {
+	background: #f6f8fa;
+	text-decoration: none;
+}
+
+.paginator .paginator-info {
+	color: #57606a;
+	padding: 0 .25em;
 }
 
 input[type=button], input[type=submit], input[type=reset] {
