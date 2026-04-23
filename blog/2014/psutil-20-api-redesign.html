@@ -45,7 +45,7 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->      <p>This my second blog post is going to be about <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is to serve as an official reference which describes how you should port your existent code base. In doing so I will also explain why I decided to make these changes. Despite many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten but I think this is for the better and it needed to be done, hopefully for the first and last time. OK, here we go now.</p>
+</footer><!-- /.post-info -->      <p>This, my second blog post, is going to be about <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is to serve as an official reference which describes how you should port your existing code base. In doing so I will also explain why I decided to make these changes. Although many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten but I think this is for the better and it needed to be done, hopefully for the first and last time. OK, here we go now.</p>
 <div class="section" id="module-constants-turned-into-functions">
 <h2>Module constants turned into functions<a class="headerlink" href="#module-constants-turned-into-functions" title="Permalink to this headline">¶</a></h2>
 <p><strong>What changed</strong></p>
@@ -255,7 +255,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 <p><strong>Why I did it</strong></p>
 <p>Different reasons:</p>
 <ul class="simple">
-<li>Having a mixed API which uses both properties and methods for no particular reason is confusing and messy as you don't know whether to use &quot;()&quot; or not (see <a class="reference external" href="https://code.google.com/p/psutil/source/browse/test/test_psutil.py?name=release-0.7.0#1716">here</a>).</li>
+<li>Having a mixed API which uses both properties and methods for no particular reason is confusing and messy as you don't know whether to use &quot;()&quot; or not (see code.google.com/p/psutil/source/browse/test/test_psutil.py?name=release-0.7.0#1716).</li>
 <li>It is usually expected from a property to not perform many computations internally whereas psutil actually invokes a function every time it is accessed. This has two drawbacks:
 * you may get an exception just by accessing the property (e.g. &quot;p.name&quot; may raise NoSuchProcess or AccessDenied)
 * you may erroneously think properties are cached but this is true only for name, exe, and create_time.</li>
@@ -280,7 +280,7 @@ Having an API which &quot;sleeps&quot; by default is risky though, because it's 
 </div>
 <div class="section" id="migration-strategy">
 <h2>Migration strategy<a class="headerlink" href="#migration-strategy" title="Permalink to this headline">¶</a></h2>
-<p>Except for Process properties (<cite>name</cite>, <cite>exe</cite>, <cite>cmdline</cite>, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long you start the interpreter with the &quot;-Wd&quot; option. This will enable deprecation warnings which were <a class="reference external" href="http://bugs.python.org/issue7319">silenced in Python 2.7</a> (IMHO, from a developer standpoint this was a bad decision).</p>
+<p>Except for Process properties (<cite>name</cite>, <cite>exe</cite>, <cite>cmdline</cite>, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long as you start the interpreter with the &quot;-Wd&quot; option. This will enable deprecation warnings which were <a class="reference external" href="http://bugs.python.org/issue7319">silenced in Python 2.7</a> (IMHO, from a developer standpoint this was a bad decision).</p>
 <pre class="literal-block">
 giampaolo&#64;ubuntu:/tmp$ python -Wd
 Python 2.7.3 (default, Sep 26 2013, 20:03:06)
@@ -299,7 +299,7 @@ pcputimes(user=0.08, system=0.03)
 &gt;&gt;&gt;
 </pre>
 <p>If you have a solid test suite you can run tests and fix the warnings one by one.
-As for the the Process properties which were turned into methods it's more difficult because whereas psutil 1.2.1 returns the actual value, psutil 2.0.0 will return the bound method:</p>
+As for the Process properties which were turned into methods it's more difficult because whereas psutil 1.2.1 returns the actual value, psutil 2.0.0 will return the bound method:</p>
 <div class="highlight"><pre><span></span># psutil 1.2.1
 &gt;&gt;&gt; psutil.Process().name
 &#39;python&#39;
@@ -310,8 +310,8 @@ As for the the Process properties which were turned into methods it's more diffi
 &lt;bound method Process.name of psutil.Process(pid=19816, name=&#39;python&#39;) at 139845631328144&gt;
 &gt;&gt;&gt;
 </pre></div>
-<p>What I would recommend if you want to drop support with 1.2.1 is to grep for <cite>&quot;.name&quot;</cite>, <cite>&quot;.exe&quot;</cite> etc. and just replace them with <cite>&quot;.exe()&quot;</cite> and <cite>&quot;.name()&quot;</cite> one by one.
-If on the other hand you want to write a code which works with both versions I see two possibilities:</p>
+<p>What I would recommend if you want to drop support for 1.2.1 is to grep for <cite>&quot;.name&quot;</cite>, <cite>&quot;.exe&quot;</cite> etc. and just replace them with <cite>&quot;.exe()&quot;</cite> and <cite>&quot;.name()&quot;</cite> one by one.
+If on the other hand you want to write code which works with both versions I see two possibilities:</p>
 <ul class="simple">
 <li>#1 check version info, like this:</li>
 </ul>
@@ -335,7 +335,7 @@ If on the other hand you want to write a code which works with both versions I s
 <h2>New features introduced in 2.0.0<a class="headerlink" href="#new-features-introduced-in-2-0-0" title="Permalink to this headline">¶</a></h2>
 <p>Ok, enough with the bad news. =) psutil 2.0.0 is not only about code breakage. I also had the chance to integrate a bunch of interesting features.</p>
 <ul class="simple">
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427">#427</a>: you're now able to distinguish between the number of logical and physical CPUs:</li>
+<li>#427 (code.google.com/p/psutil/issues/detail?id=427): you're now able to distinguish between the number of logical and physical CPUs:</li>
 </ul>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
 <span class="mi">4</span>
@@ -343,10 +343,10 @@ If on the other hand you want to write a code which works with both versions I s
 <span class="mi">2</span>
 </pre></div>
 <ul class="simple">
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=452">#452</a>: process classes are now hashable and can be checked for equality. That means you can use <cite>Process</cite> objects with sets (finally!).</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447">#447</a>: <cite>psutil.wait_procs()</cite> &quot;timeout&quot; parameter is now optional</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=461">#461</a>: functions returning namedtuples are now pickle-able</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=459">#459</a>: a Makefile is now available to automatize repetitive tasks such as build, install, running tests etc. There's also a make.bat for Windows.</li>
+<li>#452 (code.google.com/p/psutil/issues/detail?id=452): process classes are now hashable and can be checked for equality. That means you can use <cite>Process</cite> objects with sets (finally!).</li>
+<li>#447 (code.google.com/p/psutil/issues/detail?id=447): <cite>psutil.wait_procs()</cite> &quot;timeout&quot; parameter is now optional</li>
+<li>#461 (code.google.com/p/psutil/issues/detail?id=461): functions returning namedtuples are now pickle-able</li>
+<li>#459 (code.google.com/p/psutil/issues/detail?id=459): a Makefile is now available to automate repetitive tasks such as build, install, running tests etc. There's also a make.bat for Windows.</li>
 <li>introduced <cite>unittest2</cite> module as a requirement for running tests</li>
 </ul>
 </div>

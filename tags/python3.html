@@ -48,9 +48,9 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>After a long time <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> finally adds support for a brand new exotic platform: AIX! Honestly I am not sure how many AIX Python users are out there (I suppose not many) but still, here it is. For this we have to thank <a class="reference external" href="https://github.com/wiggin15">Arnon Yaari</a> who started working on the porting a <a class="reference external" href="https://github.com/giampaolo/psutil/issues/605">couple of years ago</a>. To be honest I was skeptical at first because AIX is the only platform which I cannot virtualize and test on my laptop so that made me a bit nervous but Arnon did a very good job. The final <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1123">PR</a> is huge, it required a considerable amount of work on his part and a review process of over 140 messages which were exchanged between me and him over the course of over 1 month during which I was travelling through China. The final result is very good, basically (almost) all original unit tests pass and the quality of the submitted code is awesome which (I must say) is kind of unusual for an external contribution like this one. Kudos to you Arnon! ;-)</p>
-<p>Other than AIX support, release 5.4.0 also includes a couple of important bug fixes for <cite>sensors_temperatures()</cite> and <cite>sensors_fans()</cite> functions on Linux and the fix of a bug on OSX which could cause a segmentation fault when using <cite>Process.open_files()</cite>. Complete list of bugfixes is <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#540">here</a>.</p>
-<p>In terms of future contributions for exotic and still unsupported platforms it is worth mentioning a (still incomplete) PR for <a class="reference external" href="https://github.com/giampaolo/psutil/pull/998">Cygwin</a> which looks promising and <a class="reference external" href="https://github.com/giampaolo/psutil/pull/845">Mingw32</a> compiler support on Windows. It looks like psutil is gradually getting to a point where the addition of new functionalities is becoming more rare, so it is good that support for new platforms happens now when the API is mature and stable. Future development in this direction can also include Android and (hopefully) IOS support. Now <em>that</em> would be really awesome to have! =)</p>
+</footer><!-- /.post-info -->            <p>After a long time <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> finally adds support for a brand new exotic platform: AIX! Honestly I am not sure how many AIX Python users are out there (I suppose not many) but still, here it is. For this we have to thank <a class="reference external" href="https://github.com/wiggin15">Arnon Yaari</a> who started working on the port a <a class="reference external" href="https://github.com/giampaolo/psutil/issues/605">couple of years ago</a>. To be honest I was skeptical at first because AIX is the only platform which I cannot virtualize and test on my laptop so that made me a bit nervous but Arnon did a very good job. The final <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1123">PR</a> is huge, it required a considerable amount of work on his part and a review process of over 140 messages which were exchanged between me and him over the course of over 1 month during which I was travelling through China. The final result is very good, basically (almost) all original unit tests pass and the quality of the submitted code is awesome which (I must say) is kind of unusual for an external contribution like this one. Kudos to you Arnon! ;-)</p>
+<p>Other than AIX support, release 5.4.0 also includes a couple of important bug fixes for <cite>sensors_temperatures()</cite> and <cite>sensors_fans()</cite> functions on Linux and the fix of a bug on OSX which could cause a segmentation fault when using <cite>Process.open_files()</cite>. Complete list of bugfixes is <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">here</a>.</p>
+<p>In terms of future contributions for exotic and still unsupported platforms it is worth mentioning a (still incomplete) PR for <a class="reference external" href="https://github.com/giampaolo/psutil/pull/998">Cygwin</a> which looks promising and <a class="reference external" href="https://github.com/giampaolo/psutil/pull/845">Mingw32</a> compiler support on Windows. It looks like psutil is gradually getting to a point where the addition of new functionalities is becoming rarer, so it is good that support for new platforms happens now when the API is mature and stable. Future development in this direction can also include Android and (hopefully) IOS support. Now <em>that</em> would be really awesome to have! =)</p>
 <p>Stay tuned.</p>
 <div class="section" id="external-links">
 <h2>External links<a class="headerlink" href="#external-links" title="Permalink to this headline">¶</a></h2>
@@ -65,8 +65,8 @@
     </article></li>
     <li><article class="hentry">
         <header>
-            <h1><a href="https://gmpy.dev/blog/2017/psutil-530-and-full-unicode-support" rel="bookmark"
-                   title="Permalink to psutil 5.3.0 and full unicode support">psutil 5.3.0 and full unicode support</a></h1>
+            <h1><a href="https://gmpy.dev/blog/2017/announcing-psutil-530" rel="bookmark"
+                   title="Permalink to Announcing psutil 5.3.0">Announcing psutil 5.3.0</a></h1>
         </header>
         <div class="entry-content">
 <footer class="post-info">
@@ -84,38 +84,147 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.3.0 is finally out. This release is a major one, as it includes tons of improvements and bugfixes, probably like no other previous release. It is interesting to notice how huge the <a class="reference external" href="https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket">diff</a> between 5.2.2 and 5.3.0 is. This is due to the fact that I've been travelling quite a lot this year, so I kept postponing it. It may sound weird but I consider publishing a new release and write a blog post about more stressful than working on the release itself. =). Anyway, here goes.</p>
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.3.0 is finally out. This release is a major one, as it includes tons of improvements and bugfixes, probably like no other previous release. It is interesting to notice how huge the <a class="reference external" href="https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket">diff</a> between 5.2.2 and 5.3.0 is. This is due to the fact that I've been travelling quite a lot this year, so I kept postponing it. It may sound weird but I consider publishing a new release and writing a blog post about it more stressful than working on the release itself. =). Anyway, here goes.</p>
 <div class="section" id="full-unicode-support">
 <h2>Full Unicode support<a class="headerlink" href="#full-unicode-support" title="Permalink to this headline">¶</a></h2>
-<p>This is the biggest change. In order to achieve this I had to refactor all functions and internals either returning or accepting a string. Incidentally this helped me having a better understanding of how Unicode works and how it should be handled at the C level in terms of differences between Python 2 and 3. Issue <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1040">#1040</a> includes all the reasonings I've been through and potentially serves as a documentation for people who are facing a similar task (handling Unicode in C for both Python 2 and 3). Up until version 5.2.x psutil functions returning a string had different problems as they could:</p>
+<p>String-returning APIs (<tt class="docutils literal">Process.exe()</tt>, <tt class="docutils literal">Process.cwd()</tt>, <tt class="docutils literal">Process.username()</tt>, etc.) are now Unicode-correct on both Python 2 and 3 (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/1040">#1040</a>), see <a class="reference external" href="/blog/2017/psutil-530-fixing-unicode.html">detailed separate blog post</a>.</p>
+</div>
+<div class="section" id="improved-process-iter">
+<h2>Improved process_iter()<a class="headerlink" href="#improved-process-iter" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.process_iter">process_iter()</a> now accepts <tt class="docutils literal">attrs</tt> and <tt class="docutils literal">ad_value</tt> parameters, letting you pre-fetch process attributes in one shot and skip the <tt class="docutils literal">try/except NoSuchProcess</tt> boilerplate, see <a class="reference external" href="/blog/2017/psutil-530-improved-process-iter.html">detailed separate blog post</a>.</p>
+</div>
+<div class="section" id="automatic-overflow-handling-of-numbers">
+<h2>Automatic overflow handling of numbers<a class="headerlink" href="#automatic-overflow-handling-of-numbers" title="Permalink to this headline">¶</a></h2>
+<p>On very busy or long-lived systems, numbers returned by <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.disk_io_counters">disk_io_counters()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_io_counters">net_io_counters()</a> functions may wrap (restart from zero). Up to version 5.2.x you had to take this into account, while now this is automatically handled by psutil (see: <a class="reference external" href="https://github.com/giampaolo/psutil/issues/802">#802</a>). If a &quot;counter&quot; restarts from 0 psutil will add the value from the previous call for you so that numbers will never decrease. This is crucial for applications monitoring disk or network I/O in real time. Old behavior can be resumed by passing <cite>nowrap=True</cite> argument.</p>
+</div>
+<div class="section" id="sunos-process-environ">
+<h2>SunOS Process environ()<a class="headerlink" href="#sunos-process-environ" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.environ">Process.environ()</a> is now available also on SunOS (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1091">#1091</a>).</p>
+</div>
+<div class="section" id="other-improvements-and-bug-fixes">
+<h2>Other improvements and bug fixes<a class="headerlink" href="#other-improvements-and-bug-fixes" title="Permalink to this headline">¶</a></h2>
+<p>Amongst others, here are a couple of important bug fixes I'd like to mention:</p>
 <ul class="simple">
-<li>raise decoding error on Python 3 in case of non-ASCII string</li>
-<li>return unicode instead of str (Python 2)</li>
-<li>return incorrect / invalid encoded data in case of non-ASCII string</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/pull/1044">#1044</a>: on OSX different <cite>Process</cite> methods could incorrectly raise <cite>AccessDenied</cite> for zombie processes. This was due to the poor proc_pidpath OSX API.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/pull/1094">#1094</a>: on Windows, <cite>pid_exists()</cite> may lie due to the poor <cite>OpenProcess</cite> Windows API which can return a handle even when a process PID no longer exists. This had repercussions for many Process methods such as <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.cmdline">cmdline()</a>, <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.environ">environ()</a>, <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.cwd">cwd()</a>, <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.connections">connections()</a> and others which could have unpredictable behaviors such as returning empty data or erroneously raising <cite>NoSuchProcess</cite> exceptions. For the same reason (broken <cite>OpenProcess</cite> API), processes could unexpectedly stick around after using <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.terminate">terminate()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.wait">wait()</a>.</li>
 </ul>
-<p>5.3.0 fixes these three issues and consolidates the correct handling of Unicode strings. On Windows this was achieved by using Unicode-specific Windows APIs. The notes below describe how Unicode and strings in general are handled internally by psutil and they apply to any API returning a string such as <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.exe">Process.exe</a> or <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.cwd">Process.cwd</a>, including non-filesystem related methods such as <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.username">Process.username</a> or <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.WindowsService.description">WindowsService.description</a>:</p>
+<p>BSD systems also received some love (NetBSD and OpenBSD in particular). Different memory leaks were fixed and functions returning connected sockets were partially rewritten. The full list of enhancements and bug fixes can be seen <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">here</a>.</p>
+</div>
+<div class="section" id="about-me">
+<h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
+<p>I would like to spend a couple more words about my current situation. Last year (2016) I relocated to Prague and remote worked from there the whole year (it's been cool - great city!). This year I have mainly been resting in Turin (Italy) due to some health issues and travelling across Asia once I started to recover. I am currently in Shenzhen, China, and unless the current situation with North Korea gets worse I'm planning to continue my trip until November and visit Taiwan, South Korea and Japan. Once I'm finished, the plan is to briefly return to Turin (Italy) and finally return to Prague. By then I will probably be looking for a new (remote) gig again, so if you have anything for me by November feel free to send me a message. ;-)</p>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2017/fixing-unicode-in-psutil-across-python-2-and-3" rel="bookmark"
+                   title="Permalink to Fixing Unicode in psutil across Python 2 and 3">Fixing Unicode in psutil across Python 2 and 3</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2017-09-03T00:00:00+02:00">
+        Created: 03 set 2017,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/unicode">unicode</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>This one took a while. Adding proper Unicode support to <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> was four months of auditing, design decisions, and rewriting nearly every API that returned a string. The full journey is documented in <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1040">#1040</a>, and what follows is a summary.</p>
+<p>This can serve as a case study for any Python library with a C extension that needs to support both Python 2 <em>and</em> Python 3, as it will encounter the exact same set of problems.</p>
+<div class="section" id="what-was-broken">
+<h2>What was broken<a class="headerlink" href="#what-was-broken" title="Permalink to this headline">¶</a></h2>
+<p>psutil had different APIs returning a string, many of which misbehaved when it came to unicode. There were three distinctive problems (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/1040">#1040</a>). Each API could:</p>
 <ul class="simple">
-<li>all strings are encoded by using the OS filesystem encoding (<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.getfilesystemencoding">sys.getfilesystemencoding()</a>) which varies depending on the platform (e.g. &quot;UTF-8&quot; on OSX, &quot;mbcs&quot; on Win)</li>
-<li>no API call is supposed to crash with <cite>UnicodeDecodeError</cite></li>
-<li>instead, in case of badly encoded data returned by the OS, the following error handlers are used to replace the corrupted characters in the string:<ul>
-<li>Python 3: <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.getfilesystemencodeerrors">sys.getfilesystemencodeerrors()</a> (PY 3.6+) or <tt class="docutils literal">&quot;surrogatescape&quot;</tt> on POSIX and &quot;replace&quot; on Windows</li>
-<li>Python 2: &quot;replace&quot;</li>
+<li><strong>A</strong>: raise a decoding error for non-ASCII strings (Python 3).</li>
+<li><strong>B</strong>: return <tt class="docutils literal">unicode</tt> instead of <tt class="docutils literal">str</tt> (Python 2).</li>
+<li><strong>C</strong>: return incorrect / invalid encoded data for non-ASCII strings (both).</li>
+</ul>
+<p><a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.memory_maps">Process.memory_maps()</a> hit all three on various OSes. <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.disk_partitions">disk_partitions()</a> raised decoding errors on every UNIX except Linux. Windows service methods leaked <tt class="docutils literal">unicode</tt> into Python 2 return values. The C extension had accumulated years of ad-hoc encode/decode decisions, with no single rule covering all of them.</p>
+<p>It was a mess.</p>
+</div>
+<div class="section" id="filesystem-or-locale-encoding">
+<h2>Filesystem or locale encoding?<a class="headerlink" href="#filesystem-or-locale-encoding" title="Permalink to this headline">¶</a></h2>
+<p>First problem was that the C extension was using 2 approaches when it came to decoding and returning a string: <a class="reference external" href="https://docs.python.org/3/c-api/unicode.html#c.PyUnicode_DecodeFSDefault">PyUnicode_DecodeFSDefault</a> (filesystem encoding) for path-like APIs, and <a class="reference external" href="https://docs.python.org/3/c-api/unicode.html#c.PyUnicode_DecodeLocale">PyUnicode_DecodeLocale</a> (user locale) for non-path strings like <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.username">Process.username()</a>.</p>
+<p>It appeared clear that I had to use <tt class="docutils literal">PyUnicode_DecodeFSDefault</tt> for all filesystem-related APIs like <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.exe">Process.exe()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.open_files">Process.open_files()</a>.</p>
+<p>It was less clear, though, when to use <tt class="docutils literal">PyUnicode_DecodeLocale</tt>.</p>
+<p>After some back and forth, I decided to use a single encoding for all APIs: the <strong>filesystem encoding</strong> (<tt class="docutils literal">PyUnicode_DecodeFSDefault</tt>). This makes the encoding choice an implementation detail of psutil, not something the user has to care about.</p>
+</div>
+<div class="section" id="error-handling">
+<h2>Error handling<a class="headerlink" href="#error-handling" title="Permalink to this headline">¶</a></h2>
+<p>Second question was what to do in case the string cannot be correctly decoded (because invalid, corrupted or whatever).</p>
+<p>On Python 3 POSIX the answer was easy: <tt class="docutils literal">'surrogateescape'</tt>, which is also what <tt class="docutils literal">PyUnicode_DecodeFSDefault</tt> uses by default.</p>
+<p>Windows was trickier. CPython's own default error handler on Windows had changed across versions: <tt class="docutils literal">'replace'</tt> before Python 3.6, <tt class="docutils literal">'surrogatepass'</tt> from 3.6 on (<a class="reference external" href="https://www.python.org/dev/peps/pep-0529/">PEP 529</a>). Matching CPython would mean psutil behaving differently depending on which Python ran it. I picked <tt class="docutils literal">'replace'</tt> unconditionally and kept psutil consistent across versions.</p>
+<p>And here come the troubles: Python 2 is different. To correctly handle all kinds of strings on Python 2 we should return <tt class="docutils literal">unicode</tt> instead of <tt class="docutils literal">str</tt>, but I didn't want to do that, nor have APIs which return two different types depending on the circumstance.</p>
+<p>Since unicode support is already broken in Python 2 and its stdlib (see <a class="reference external" href="https://bugs.python.org/issue18695">bpo-18695</a>), I was happy to always return <tt class="docutils literal">str</tt>, use <tt class="docutils literal">&quot;replace&quot;</tt> as the error handler, and simply consider unicode support in psutil + Python 2 broken.</p>
+</div>
+<div class="section" id="final-behavior">
+<h2>Final behavior<a class="headerlink" href="#final-behavior" title="Permalink to this headline">¶</a></h2>
+<p>Starting from 5.3.0, psutil behaves consistently across all APIs that return a string. The rules are intentionally simple, even if the underlying implementation is not.</p>
+<p>The notes below apply to <em>any</em> method returning a string such as <tt class="docutils literal">Process.exe()</tt> or <tt class="docutils literal">Process.cwd()</tt>, including non-filesystem-related methods such as <tt class="docutils literal">Process.username()</tt>:</p>
+<ul>
+<li><p class="first">all strings are encoded using the OS filesystem encoding (<tt class="docutils literal">PyUnicode_DecodeFSDefault</tt>), which varies depending on the platform you're on (e.g. <tt class="docutils literal"><span class="pre">'UTF-8'</span></tt> on Linux, <tt class="docutils literal">'mbcs'</tt> on Windows).</p>
+</li>
+<li><p class="first">no API call is supposed to crash with <tt class="docutils literal">UnicodeDecodeError</tt>.</p>
+</li>
+<li><p class="first">in case of badly encoded data returned by the OS, the following error handlers are used to replace the bad characters in the string:</p>
+<ul class="simple">
+<li>Python 2: <tt class="docutils literal">&quot;replace&quot;</tt>.</li>
+<li>Python 3: <tt class="docutils literal">&quot;surrogateescape&quot;</tt> on POSIX, <tt class="docutils literal">&quot;replace&quot;</tt> on Windows.</li>
 </ul>
 </li>
-<li>on Python 2 all APIs return bytes (str type), never unicode</li>
-<li>on Python 2 you can go back to unicode by doing:</li>
-</ul>
+<li><p class="first">on Python 2 all APIs return bytes (<tt class="docutils literal">str</tt> type), never <tt class="docutils literal">unicode</tt>.</p>
+</li>
+<li><p class="first">on Python 2 you can go back to unicode by doing:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">unicode</span><span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">exe</span><span class="p">(),</span> <span class="n">sys</span><span class="o">.</span><span class="n">getdefaultencoding</span><span class="p">(),</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span>
 </pre></div>
+</li>
+</ul>
+<p>The full journey was implemented in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1052">#1052</a>, and was part of the <a class="reference external" href="/blog/2017/psutil-530.html">5.3.0 release</a>.</p>
 </div>
-<div class="section" id="improved-process-iter-function">
-<h2>Improved process_iter() function<a class="headerlink" href="#improved-process-iter-function" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.process_iter">process_iter()</a> accepts two new parameters in order to invoke <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.as_dict">Process.as_dict()</a> internally: <cite>&quot;attrs&quot;</cite> and <cite>&quot;ad_value&quot;</cite>. With this you can iterate over all processes in one shot without having to catch <cite>NoSuchProcess</cite> explicitly. Before:</p>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2017/improved-process_iter" rel="bookmark"
+                   title="Permalink to Improved process_iter()">Improved process_iter()</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2017-09-03T00:00:00+02:00">
+        Created: 03 set 2017,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/process_iter">process_iter</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>This is part of the <a class="reference external" href="/blog/2017/psutil-530.html">psutil 5.3.0 release</a> (see the <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">changelog</a> for the full list of changes).</p>
+<div class="section" id="the-old-pattern">
+<h2>The old pattern<a class="headerlink" href="#the-old-pattern" title="Permalink to this headline">¶</a></h2>
+<p>Iterating over processes and collecting attributes requires more boilerplate than it should. A process returned by <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.process_iter">process_iter()</a> may disappear before you access it, or require elevated privileges, so every lookup has to be guarded with a <tt class="docutils literal">try / except</tt>:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
 <span class="o">...</span>     <span class="k">try</span><span class="p">:</span>
 <span class="o">...</span>         <span class="n">pinfo</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">])</span>
-<span class="o">...</span>     <span class="k">except</span> <span class="n">psutil</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">:</span>
+<span class="o">...</span>     <span class="k">except</span> <span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">,</span> <span class="n">psutil</span><span class="o">.</span><span class="n">AccessDenied</span><span class="p">):</span>
 <span class="o">...</span>         <span class="k">pass</span>
 <span class="o">...</span>     <span class="k">else</span><span class="p">:</span>
 <span class="o">...</span>         <span class="nb">print</span><span class="p">(</span><span class="n">pinfo</span><span class="p">)</span>
@@ -123,9 +232,12 @@
 <span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;systemd&#39;</span><span class="p">}</span>
 <span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;kthreadd&#39;</span><span class="p">}</span>
 <span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ksoftirqd/0&#39;</span><span class="p">}</span>
-<span class="o">...</span>
 </pre></div>
-<p>Now:</p>
+<p>This is not decorative. It's necessary to avoid the race condition.</p>
+</div>
+<div class="section" id="the-new-pattern">
+<h2>The new pattern<a class="headerlink" href="#the-new-pattern" title="Permalink to this headline">¶</a></h2>
+<p>5.3.0 adds <tt class="docutils literal">attrs</tt> and <tt class="docutils literal">ad_value</tt> parameters to <tt class="docutils literal">process_iter()</tt>. With these, the loop body becomes:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">]):</span>
 <span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">info</span><span class="p">)</span>
@@ -134,47 +246,25 @@
 <span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;kthreadd&#39;</span><span class="p">}</span>
 <span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ksoftirqd/0&#39;</span><span class="p">}</span>
 </pre></div>
-<p>This improves expressiveness as it makes it possible to use nice list/dict comprehensions. Here's some examples.</p>
-<p>Processes having &quot;python&quot; in their name:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">info</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="s1">&#39;python&#39;</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]])</span>
-<span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;python3&#39;</span><span class="p">,</span> <span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">21947</span><span class="p">},</span>
-<span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">23835</span><span class="p">}]</span>
+<p>Internally, <tt class="docutils literal">process_iter()</tt> attach an <tt class="docutils literal">info</tt> dict to the <tt class="docutils literal">Process</tt> instance. The attributes are pre-fetched in one shot. Processes that disappear during iteration are silently skipped, and attributes that would raise <tt class="docutils literal">AccessDenied</tt> gets assigned <tt class="docutils literal">ad_value</tt>, which defaults to <tt class="docutils literal">None</tt>:</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">([</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">],</span> <span class="n">ad_value</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="n">p</span><span class="o">.</span><span class="n">username</span><span class="p">())</span>
 </pre></div>
-<p>Processes owned by user:</p>
+</div>
+<div class="section" id="performance">
+<h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
+<p>Beyond the syntactic win, the new syntax is also faster than calling individual methods in a loop. <tt class="docutils literal"><span class="pre">process_iter(attrs=[...])</span></tt> is equivalent to using <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot">Process.oneshot()</a> on each process (see <a class="reference external" href="/blog/2016/psutil-550-is-twice-as-fast.html">One shot, twice as fast</a> for how that works): attributes that share a syscall or a <tt class="docutils literal">/proc</tt> file are fetched together instead of re-read on every method call, which is a lot faster.</p>
+</div>
+<div class="section" id="comprehensions">
+<h2>Comprehensions<a class="headerlink" href="#comprehensions" title="Permalink to this headline">¶</a></h2>
+<p>With the exception boilerplate out of the way, comprehensions finally work cleanly. E.g. getting processes owned by the current user can be written as:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">getpass</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">([(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getuser</span><span class="p">()])</span>
-<span class="p">(</span><span class="mi">16832</span><span class="p">,</span> <span class="s1">&#39;bash&#39;</span><span class="p">),</span>
-<span class="p">(</span><span class="mi">19772</span><span class="p">,</span> <span class="s1">&#39;ssh&#39;</span><span class="p">),</span>
-<span class="p">(</span><span class="mi">20492</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">)]</span>
+<span class="p">[(</span><span class="mi">16832</span><span class="p">,</span> <span class="s1">&#39;bash&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="mi">19772</span><span class="p">,</span> <span class="s1">&#39;ssh&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="mi">20492</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">)]</span>
 </pre></div>
-<p>Processes actively running:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">([(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">psutil</span><span class="o">.</span><span class="n">STATUS_RUNNING</span><span class="p">])</span>
-<span class="p">[(</span><span class="mi">1150</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Xorg&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;running&#39;</span><span class="p">}),</span>
-<span class="p">(</span><span class="mi">1776</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;unity-panel-service&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;running&#39;</span><span class="p">}),</span>
-<span class="p">(</span><span class="mi">20492</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;running&#39;</span><span class="p">})]</span>
-</pre></div>
-</div>
-<div class="section" id="automatic-overflow-handling-of-numbers">
-<h2>Automatic overflow handling of numbers<a class="headerlink" href="#automatic-overflow-handling-of-numbers" title="Permalink to this headline">¶</a></h2>
-<p>On very busy or long-lived system systems numbers returned by <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.disk_io_counters">disk_io_counters()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_io_counters">net_io_counters()</a> functions may wrap (restart from zero). Up to version 5.2.x you had to take this into account while now this is automatically handled by psutil (see: <a class="reference external" href="https://github.com/giampaolo/psutil/issues/802">#802</a>). If a &quot;counter&quot; restarts from 0 psutil will add the value from the previous call for you so that numbers will never decrease. This is crucial for applications monitoring disk or network I/O in real time. Old behavior can be resumed by passing <cite>nowrap=True</cite> argument.</p>
-</div>
-<div class="section" id="sunos-process-environ">
-<h2>SunOS Process environ()<a class="headerlink" href="#sunos-process-environ" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.environ">Process.environ()</a> is now available also on SunOS (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1091">#1091</a>).</p>
-</div>
-<div class="section" id="other-improvements-and-bug-fixes">
-<h2>Other improvements and bug fixes<a class="headerlink" href="#other-improvements-and-bug-fixes" title="Permalink to this headline">¶</a></h2>
-<p>Amongst others, here's a couple of important bug fixes I'd like to mention:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/pull/1044">#1044</a>: on OSX different <cite>Process</cite> methods could incorrectly raise <cite>AccessDenied</cite> for zombie processes. This was due to poor proc_pidpath OSX API.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/pull/1094">#1094</a>: on Windows, <cite>pid_exists()</cite> may lie due to the poor <cite>OpenProcess</cite> Windows API which can return a handle even when a process PID no longer exists. This had repercussions for many Process methods such as <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.cmdline">cmdline()</a>, <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.environ">environ()</a>, <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.cwd">cwd()</a>, <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.connections">connections()</a> and others which could have unpredictable behaviors such as returning empty data or erroneously raise <cite>NoSuchProcess</cite> exceptions. For the same reason (broken <cite>OpenProcess</cite> API), processes could unexpectedly stick around after using <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.terminate">terminate()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.wait">wait()</a>.</li>
-</ul>
-<p>BSD systems also received some love (NetBSD and OpenBSD in particular). Different memory leaks were fixed and functions returning connected sockets were partially rewritten. The full list of enhancement and bug fixes can be seen <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#530">here</a>.</p>
-</div>
-<div class="section" id="about-me">
-<h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
-<p>I would like to spend a couple more words about my current situation. Last year (2016) I relocated to Prague and remote worked from there the whole year (it's been cool - great city!). This year I have mainly been resting in Turin (Italy) due to some health issues and travelling across Asia once I started to recover. I am currently in Shenzhen, China, and unless the current situation with North Korea gets worse I'm planning to continue my trip until November and visit Taiwan, South Korea and Japan. Once I'm finished the plan is to briefly return to Turin (Italy) and finally return to Prague. By then I will probably be looking for a new (remote) gig again, so if you have anything for me by November feel free to send me a message. ;-)</p>
 </div>
 
         </div>
@@ -207,7 +297,7 @@
 <p>It is now possible to retrieve hardware temperatures. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/962/files">here</a>. Unfortunately this is Linux only. I couldn't manage to implement this on other platforms mainly for two reasons:</p>
 <ul class="simple">
 <li>On Windows it is hard to do this in a hardware agnostic fashion. I bumped into 3 different approaches, all using WMI, and none of them worked with my hardware so I gave up.</li>
-<li>On OSX it appears it is possible to retrieve temperatures relatively easy, but I have a virtualized OSX box which does not support sensors, so basically I gave up on this due to lack of hardware. If somebody wants to give it a try <a class="reference external" href="https://github.com/giampaolo/psutil/issues/371#issuecomment-274961948">be my guest</a>.</li>
+<li>On OSX it appears it is possible to retrieve temperatures relatively easily, but I have a virtualized OSX box which does not support sensors, so basically I gave up on this due to lack of hardware. If somebody wants to give it a try <a class="reference external" href="https://github.com/giampaolo/psutil/issues/371#issuecomment-274961948">be my guest</a>.</li>
 </ul>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">sensors_temperatures</span><span class="p">()</span>
@@ -239,7 +329,7 @@
 </div>
 <div class="section" id="cpu-frequency">
 <h2>CPU frequency<a class="headerlink" href="#cpu-frequency" title="Permalink to this headline">¶</a></h2>
-<p>Available under Linux, Windows and OSX. Relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/952/files">here</a>. Linux is the only platform which reports the real-time value (always changing), on all other platforms current frequency is represented as the nominal “fixed” value.</p>
+<p>Available under Linux, Windows and OSX. Relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/952/files">here</a>. Linux is the only platform which reports the real-time value (always changing); on all other platforms current frequency is represented as the nominal “fixed” value.</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_freq</span><span class="p">()</span>
 <span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">931.42925</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">)</span>
@@ -252,7 +342,7 @@
 </div>
 <div class="section" id="what-cpu-a-process-is-on">
 <h2>What CPU a process is on<a class="headerlink" href="#what-cpu-a-process-is-on" title="Permalink to this headline">¶</a></h2>
-<p>This will let you know what CPU number a process is currently running on, which is somewhat related to the existent <a class="reference external" href="https://pythonhosted.org/psutil/#psutil.Process.cpu_affinity">cpu_affinity()</a> functionality. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/954/files">here</a>. It is interesting to use this method to visualize how the OS scheduler continuously evenly reassigns processes to different CPUs  (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/cpu_distribution.py">cpu_distribution.py</a> script).</p>
+<p>This will let you know what CPU number a process is currently running on, which is somewhat related to the existing <a class="reference external" href="https://pythonhosted.org/psutil/#psutil.Process.cpu_affinity">cpu_affinity()</a> functionality. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/954/files">here</a>. It is interesting to use this method to visualize how the OS scheduler continuously evenly reassigns processes to different CPUs (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-5.1.0/scripts/cpu_distribution.py">cpu_distribution.py</a> script).</p>
 </div>
 <div class="section" id="cpu-affinity">
 <h2>CPU affinity<a class="headerlink" href="#cpu-affinity" title="Permalink to this headline">¶</a></h2>
@@ -265,256 +355,7 @@
 </div>
 <div class="section" id="other-bug-fixes">
 <h2>Other bug fixes<a class="headerlink" href="#other-bug-fixes" title="Permalink to this headline">¶</a></h2>
-<p>See <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#510">full list</a>.</p>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2016/psutil-550-is-twice-as-fast" rel="bookmark"
-                   title="Permalink to psutil 5.5.0 is twice as fast">psutil 5.5.0 is twice as fast</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2016-11-06T00:00:00+01:00">
-        Created: 06 nov 2016,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>,        <a href="https://gmpy.dev/tags/macos">macos</a>,        <a href="https://gmpy.dev/tags/bsd">bsd</a>,        <a href="https://gmpy.dev/tags/sunos">sunos</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>OK, this is a big one. Starting from psutil 5.0.0 you can query multiple <cite>Process</cite> information around twice as fast than with previous versions (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/799">original ticket</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot">updated doc</a>). It took me 7 months, 108 commits and a massive refactoring of psutil internals (here is the <a class="reference external" href="https://github.com/giampaolo/psutil/pull/937/files">big commit</a>), and I can safely say this is one of the best improvements and long standing issues which have been addressed in a major psutil release. Here goes.</p>
-<div class="section" id="the-problem">
-<h2>The problem<a class="headerlink" href="#the-problem" title="Permalink to this headline">¶</a></h2>
-<p>Except for some cases, the way different process information are retrieved varies depending on the OS. Sometimes it requires reading a file in /proc filesystem (Linux), some other times it requires using C (Windows, BSD, OSX, SunOS), but every time it's done differently. Psutil abstracts this complexity by providing a nice high-level interface so that you, say, call <tt class="docutils literal">Process.name()</tt> without worrying about what happens behind the curtains or on what OS you're on.</p>
-<p>Internally, it is not rare that multiple process info (e.g. <cite>name()</cite>, <cite>ppid()</cite>, <cite>uids()</cite>, <cite>create_time()</cite>) may be fetched by using the same routine. For example, on Linux we read <cite>/proc/stat</cite> to get the process name, terminal, CPU times, creation time, status and parent PID, but only one value is returned and the others are discarded. On Linux the code below reads <cite>/proc/stat</cite> 6 times:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">cpu_times</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">create_time</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">ppid</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">terminal</span><span class="p">()</span>
-</pre></div>
-<p>Another example is BSD. In order to get process name, memory, CPU times and other metrics, a single <cite>sysctl()</cite> call is necessary, but again, because of how psutil used to work so far that same sysctl() call is executed every time (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/2fe3f456321ca1605aaa2b71a7193de59d93075c/psutil/_psutil_bsd.c#L242-L258">here</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/blob/2fe3f456321ca1605aaa2b71a7193de59d93075c/psutil/_psutil_bsd.c#L261-L277">here</a>, and so on), one information is returned (say <cite>name()</cite>) and the rest is discarded. Not anymore.</p>
-</div>
-<div class="section" id="do-it-in-one-shot">
-<h2>Do it in one shot<a class="headerlink" href="#do-it-in-one-shot" title="Permalink to this headline">¶</a></h2>
-<p>It appears clear how the approach described above is not efficient, also considering that applications similar to top, htop, ps or glances usually collect more than one info per-process.
-psutil 5.0.0 introduces a new <cite>oneshot()</cite> context manager. When used, the internal routine is executed once (in the example below on name()) and the other values are cached. The subsequent calls sharing the same internal routine (read <cite>/proc/stat</cite>, call <cite>sysctl()</cite> or whatever) will return the cached value.
-With psutil 5.0.0 the code above can be rewritten like this, and on Linux it will run 2.4 times faster:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">p</span><span class="o">.</span><span class="n">oneshot</span><span class="p">():</span>
-<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
-<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">cpu_times</span><span class="p">()</span>
-<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">create_time</span><span class="p">()</span>
-<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">ppid</span><span class="p">()</span>
-<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
-<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">terminal</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="section" id="implementation">
-<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
-<p>One great thing about psutil design is its abstraction. It is dived in 3 &quot;layers&quot;. The first layer is represented by the main <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/__init__.py#L340">Process class</a> (python), which is what dictates the end-user high-level API. The second layer is the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_pslinux.py#L1097">OS-specific Python module</a> which is thin wrapper on top of the OS-specific <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_linux.c">C extension module</a> (third layer). Because this was organized this way (modularly) the refactoring was reasonably smooth. In order to do this I first refactored those C functions collecting multiple info and grouped them in a single function (e.g. see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_bsd.c#L198-L338">BSD implementation</a>). Then I wrote a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_common.py#L264-L314">decorator</a> which enables the cache only when requested (when entering the context manager) and decorated the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psbsd.py#L491">&quot;grouped functions&quot;</a> with with it. The whole thing is enabled on request by the highest-level <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/__init__.py#L458-L518">oneshot()</a> context manager, which is the only thing which is exposed to the end user. Here's the decorator:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">memoize_when_activated</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A memoize decorator which is disabled by default. It can be</span>
-<span class="sd">    activated and deactivated on request.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">fun</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">fun</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">fun</span><span class="p">]</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">ret</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">cache_activate</span><span class="p">():</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Activate cache.&quot;&quot;&quot;</span>
-        <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">cache_deactivate</span><span class="p">():</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deactivate and clear cache.&quot;&quot;&quot;</span>
-        <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-
-    <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activate</span> <span class="o">=</span> <span class="n">cache_activate</span>
-    <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_deactivate</span> <span class="o">=</span> <span class="n">cache_deactivate</span>
-    <span class="k">return</span> <span class="n">wrapper</span>
-</pre></div>
-<p>In order to measure the various speedups I finally wrote a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/scripts/internal/bench_oneshot.py">benchmark script</a> (well, <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/scripts/internal/bench_oneshot_2.py">two</a> actually) and kept tuning until I was sure the various changes made psutil actually faster. The benchmark scripts calculate the speedup you can get if you call all the &quot;grouped&quot; methods together (best case scenario).</p>
-</div>
-<div class="section" id="linux-2-56x-speedup">
-<h2>Linux: +2.56x speedup<a class="headerlink" href="#linux-2-56x-speedup" title="Permalink to this headline">¶</a></h2>
-<p>Linux process is the only pure-python implementation as (almost) all process info are gathered by reading files in the <cite>/proc</cite> filesystem. <cite>/proc</cite> files typically contain different information about the process and <cite>/proc/PID/stat</cite> and <cite>/proc/PID/status</cite> are the perfect examples. That's why on Linux we aggregate them in 3 groups. The relevant part of the Linux implementation can be seen <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_pslinux.py#L1108-L1153">here</a>.</p>
-</div>
-<div class="section" id="windows-from-1-9x-to-6-5x-speedup">
-<h2>Windows: from +1.9x to +6.5x speedup<a class="headerlink" href="#windows-from-1-9x-to-6-5x-speedup" title="Permalink to this headline">¶</a></h2>
-<p>Windows is an interesting one. In normal circumstances, if we're querying a process owned by our user, we group together only process' <cite>num_threads()</cite>, <cite>num_ctx_switches()</cite> and <cite>num_handles()</cite>, getting a +1.9x speedup if we access those methods in one shot. Windows is particular though, because certain methods use a <a class="reference external" href="https://github.com/giampaolo/psutil/issues/304">dual implementation</a>: a &quot;fast method&quot; is attempted first, but if the process is owned by another user it fails with AccessDenied. In that case psutil falls back on using a second &quot;slower&quot; method (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_pswindows.py#L681">here</a> for example).
-The second method is slower because it <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/arch/windows/process_info.c#L790">iterates over all PIDs</a> but differently than &quot;plain&quot; Windows APIs it can be used to <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_windows.c#L2789">get multiple info in one shot</a>: num threads, context switches, handles, CPU times, create time and IO counters. That is why querying processes owned by other users results in an impressive +6.5 speedup.</p>
-</div>
-<div class="section" id="osx-1-92x-speedup">
-<h2>OSX: +1.92x speedup<a class="headerlink" href="#osx-1-92x-speedup" title="Permalink to this headline">¶</a></h2>
-<p>On OSX we can get 2 groups of information. With <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_osx.c#L129">sysctl()</a> syscall we get process parent PID, uids, gids, terminal, create time, name. With <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_osx.c#L183">proc_info()</a> syscall we get CPU times (for PIDs owned by another user) memory metrics and ctx switches. Not bad.</p>
-</div>
-<div class="section" id="bsd-2-18x-speedup">
-<h2>BSD: +2.18x speedup<a class="headerlink" href="#bsd-2-18x-speedup" title="Permalink to this headline">¶</a></h2>
-<p>BSD was an interesting one as we gather a tons of process info just by calling <cite>sysctl()</cite> (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_bsd.c#L199">implementation</a>). In a single shot we get process name, ppid, status, uids, gids, IO counters, CPU and create times, terminal and ctx switches.</p>
-</div>
-<div class="section" id="sunos-1-37-speedup">
-<h2>SunOS: +1.37 speedup<a class="headerlink" href="#sunos-1-37-speedup" title="Permalink to this headline">¶</a></h2>
-<p>SunOS implementation is similar to Linux implementation in that it reads files in <cite>/proc</cite> filesystem but differently from Linux this is done in C. Also in this case, we can group different metrics together (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_psutil_sunos.c#L83-L142">here</a> and <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_psutil_sunos.c#L171-L189">here</a>).</p>
-</div>
-<div class="section" id="external-links">
-<h2>External links<a class="headerlink" href="#external-links" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/5bhn4q/psutil_500_is_around_twice_as_fast/">Reddit</a></li>
-</ul>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2016/psutil-440-improved-linux-memory-metrics" rel="bookmark"
-                   title="Permalink to psutil 4.4.0: improved Linux memory metrics">psutil 4.4.0: improved Linux memory metrics</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2016-10-23T00:00:00+02:00">
-        Created: 23 ott 2016,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. Main highlights of this release are more accurate memory metrics on Linux and different OSX fixes. Here goes.</p>
-<div class="section" id="linux-virtual-memory">
-<h2>Linux virtual memory<a class="headerlink" href="#linux-virtual-memory" title="Permalink to this headline">¶</a></h2>
-<p>This new release sets a milestone regarding <tt class="docutils literal">virtual_memory()</tt> metrics on Linux which are now calculated way <a class="reference external" href="https://github.com/giampaolo/psutil/issues/887">more precisely</a> (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/890/files">commit</a>). Across the years different people complained that the numbers reported by <cite>virtual_memory()</cite> were not accurate or did not match the ones reported by <cite>free</cite> command line utility exactly (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/862">#862</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/685">#685</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/538">#538</a>). As such I investigated how &quot;available memory&quot; is calculated on Linux and indeed psutil were doing it wrong. It turns out &quot;free&quot; cmdline itself, and many other similar tools, also did it wrong up until <a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773">2 years ago</a> when somebody finally decided to accurately calculate the available system memory straight into the Linux kernel and expose this info to user-level applications. Starting from Linux kernel 3.14, a new <cite>&quot;MemAvailable&quot;</cite> column was added to <cite>/proc/meminfo</cite> and this is how psutil now determines available memory. Because of this both &quot;available&quot; and &quot;used&quot; memory fields returned by virtual_memory() precisely match <cite>free</cite> command line utility. As for older kernels (&lt; 3.14), psutil tries to determine this value by using the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L291">same algorithm</a> which was used in the original <a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773">Linux kernel commit</a>. Free cmdline utility source code also inspired an additional fix which prevents available memory overflowing total memory on <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L435">LCX containers</a>.</p>
-</div>
-<div class="section" id="osx-fixes">
-<h2>OSX fixes<a class="headerlink" href="#osx-fixes" title="Permalink to this headline">¶</a></h2>
-<p>For many years the OSX development of psutil occurred on a very old OSX 10.5 version, which I emulated via VirtualBox. The OS itself was a hacked version of OSX, called iDeneb. After many years I finally managed to get access to a more recent version of OSX (El Captain) thanks to VirtualBox + Vagrant. With this I finally had the chance to address many long standing OSX bugs. Here's the list:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/514">514</a>: fix <tt class="docutils literal">Process.memory_maps()</tt> segfault (critical!).</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/783">783</a>: <tt class="docutils literal">Process.status()</tt> may erroneously return &quot;running&quot; for zombie processes.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/908">908</a>: different process methods could erroneously mask the real error for high-privileged PIDs and raise NoSuchProcess and <tt class="docutils literal">AccessDenied</tt> instead of <tt class="docutils literal">OSError</tt> and <tt class="docutils literal">RuntimeError</tt>.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/909">909</a>: <tt class="docutils literal">Process.open_files()</tt> and <tt class="docutils literal">Process.connections()</tt> methods may raise <tt class="docutils literal">OSError</tt> with no exception set if process is gone.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/916">916</a>: fix many compilation warnings.</li>
-</ul>
-</div>
-<div class="section" id="improved-procinfo-py-script">
-<h2>Improved procinfo.py script<a class="headerlink" href="#improved-procinfo-py-script" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/procinfo.py">procinfo.py</a> is a script which shows psutil capabilities regarding obtaining different info about processes. I improved it so that now it reports a lot more info. Here's a sample output:</p>
-<pre class="literal-block">
-$ python scripts/procinfo.py
-pid           4600
-name          chrome
-parent        4554 (bash)
-exe           /opt/google/chrome/chrome
-cwd           /home/giampaolo
-cmdline       /opt/google/chrome/chrome
-started       2016-09-19 11:12
-cpu-tspent    27:27.68
-cpu-times     user=8914.32, system=3530.59,
-              children_user=1.46, children_system=1.31
-cpu-affinity  [0, 1, 2, 3, 4, 5, 6, 7]
-memory        rss=520.5M, vms=1.9G, shared=132.6M, text=95.0M, lib=0B,
-              data=816.5M, dirty=0B
-memory %      3.26
-user          giampaolo
-uids          real=1000, effective=1000, saved=1000
-uids          real=1000, effective=1000, saved=1000
-terminal      /dev/pts/2
-status        sleeping
-nice          0
-ionice        class=IOPriority.IOPRIO_CLASS_NONE, value=0
-num-threads   47
-num-fds       379
-I/O           read_count=96.6M, write_count=80.7M,
-              read_bytes=293.2M, write_bytes=24.5G
-ctx-switches  voluntary=30426463, involuntary=460108
-children      PID    NAME
-              4605   cat
-              4606   cat
-              4609   chrome
-              4669   chrome
-open-files    PATH
-              /opt/google/chrome/icudtl.dat
-              /opt/google/chrome/snapshot_blob.bin
-              /opt/google/chrome/natives_blob.bin
-              /opt/google/chrome/chrome_100_percent.pak
-              [...]
-connections   PROTO LOCAL ADDR            REMOTE ADDR               STATUS
-              UDP   10.0.0.3:3693         *:*                       NONE
-              TCP   10.0.0.3:55102        172.217.22.14:443         ESTABLISHED
-              UDP   10.0.0.3:35172        *:*                       NONE
-              TCP   10.0.0.3:32922        172.217.16.163:443        ESTABLISHED
-              UDP   :::5353               *:*                       NONE
-              UDP   10.0.0.3:59925        *:*                       NONE
-threads       TID              USER          SYSTEM
-              11795             0.7            1.35
-              11796            0.68            1.37
-              15887            0.74            0.03
-              19055            0.77            0.01
-              [...]
-              total=47
-res-limits    RLIMIT                     SOFT       HARD
-              virtualmem             infinity   infinity
-              coredumpsize                  0   infinity
-              cputime                infinity   infinity
-              datasize               infinity   infinity
-              filesize               infinity   infinity
-              locks                  infinity   infinity
-              memlock                   65536      65536
-              msgqueue                 819200     819200
-              nice                          0          0
-              openfiles                  8192      65536
-              maxprocesses              63304      63304
-              rss                    infinity   infinity
-              realtimeprio                  0          0
-              rtimesched             infinity   infinity
-              sigspending               63304      63304
-              stack                   8388608   infinity
-mem-maps      RSS      PATH
-              381.4M   [anon]
-              62.8M    /opt/google/chrome/chrome
-              15.8M    /home/giampaolo/.config/google-chrome/Default/History
-              6.6M     /home/giampaolo/.config/google-chrome/Default/Favicons
-              [...]
-</pre>
-</div>
-<div class="section" id="nic-netmask-on-windows">
-<h2>NIC netmask on Windows<a class="headerlink" href="#nic-netmask-on-windows" title="Permalink to this headline">¶</a></h2>
-<p><tt class="docutils literal">net_if_addrs()</tt> on Windows is now able to return the netmask.</p>
-</div>
-<div class="section" id="other-improvements-and-bug-fixes">
-<h2>Other improvements and bug fixes<a class="headerlink" href="#other-improvements-and-bug-fixes" title="Permalink to this headline">¶</a></h2>
-<p>Just take a look at the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#440---2016-10-23">HISTORY</a> file.</p>
+<p>See <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">full list</a>.</p>
 </div>
 
         </div>

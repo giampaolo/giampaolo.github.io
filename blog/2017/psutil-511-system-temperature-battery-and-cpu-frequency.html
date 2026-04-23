@@ -51,7 +51,7 @@
 <p>It is now possible to retrieve hardware temperatures. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/962/files">here</a>. Unfortunately this is Linux only. I couldn't manage to implement this on other platforms mainly for two reasons:</p>
 <ul class="simple">
 <li>On Windows it is hard to do this in a hardware agnostic fashion. I bumped into 3 different approaches, all using WMI, and none of them worked with my hardware so I gave up.</li>
-<li>On OSX it appears it is possible to retrieve temperatures relatively easy, but I have a virtualized OSX box which does not support sensors, so basically I gave up on this due to lack of hardware. If somebody wants to give it a try <a class="reference external" href="https://github.com/giampaolo/psutil/issues/371#issuecomment-274961948">be my guest</a>.</li>
+<li>On OSX it appears it is possible to retrieve temperatures relatively easily, but I have a virtualized OSX box which does not support sensors, so basically I gave up on this due to lack of hardware. If somebody wants to give it a try <a class="reference external" href="https://github.com/giampaolo/psutil/issues/371#issuecomment-274961948">be my guest</a>.</li>
 </ul>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">sensors_temperatures</span><span class="p">()</span>
@@ -83,7 +83,7 @@
 </div>
 <div class="section" id="cpu-frequency">
 <h2>CPU frequency<a class="headerlink" href="#cpu-frequency" title="Permalink to this headline">¶</a></h2>
-<p>Available under Linux, Windows and OSX. Relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/952/files">here</a>. Linux is the only platform which reports the real-time value (always changing), on all other platforms current frequency is represented as the nominal “fixed” value.</p>
+<p>Available under Linux, Windows and OSX. Relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/952/files">here</a>. Linux is the only platform which reports the real-time value (always changing); on all other platforms current frequency is represented as the nominal “fixed” value.</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_freq</span><span class="p">()</span>
 <span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">931.42925</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">)</span>
@@ -96,7 +96,7 @@
 </div>
 <div class="section" id="what-cpu-a-process-is-on">
 <h2>What CPU a process is on<a class="headerlink" href="#what-cpu-a-process-is-on" title="Permalink to this headline">¶</a></h2>
-<p>This will let you know what CPU number a process is currently running on, which is somewhat related to the existent <a class="reference external" href="https://pythonhosted.org/psutil/#psutil.Process.cpu_affinity">cpu_affinity()</a> functionality. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/954/files">here</a>. It is interesting to use this method to visualize how the OS scheduler continuously evenly reassigns processes to different CPUs  (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/cpu_distribution.py">cpu_distribution.py</a> script).</p>
+<p>This will let you know what CPU number a process is currently running on, which is somewhat related to the existing <a class="reference external" href="https://pythonhosted.org/psutil/#psutil.Process.cpu_affinity">cpu_affinity()</a> functionality. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/954/files">here</a>. It is interesting to use this method to visualize how the OS scheduler continuously evenly reassigns processes to different CPUs (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-5.1.0/scripts/cpu_distribution.py">cpu_distribution.py</a> script).</p>
 </div>
 <div class="section" id="cpu-affinity">
 <h2>CPU affinity<a class="headerlink" href="#cpu-affinity" title="Permalink to this headline">¶</a></h2>
@@ -109,7 +109,7 @@
 </div>
 <div class="section" id="other-bug-fixes">
 <h2>Other bug fixes<a class="headerlink" href="#other-bug-fixes" title="Permalink to this headline">¶</a></h2>
-<p>See <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#510">full list</a>.</p>
+<p>See <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">full list</a>.</p>
 </div>
 
     </div><!-- /.entry-content -->

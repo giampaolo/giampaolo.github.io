@@ -112,16 +112,23 @@ dt {font-weight: bold;}
 dd {margin-left: 1.5em;}
 
 .highlight,
+.highlight pre,
+.highlight pre code,
+.highlight pre span {
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", Courier, monospace !important;
+    font-size: 15px;
+    line-height: 1.4 !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.highlight,
 .highlight pre {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     border-radius: 6px;
     overflow: hidden;
     white-space: pre-wrap;
     word-break: break-all;
     padding: 8px;
-    line-height: 1.3 !important;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Quotes */
@@ -605,6 +612,8 @@ div.code-block-caption:hover > a.headerlink {
 
 code {
 	background: #f0f1f2;
+	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", Courier, monospace;
+	font-size: 90%;
 }
 
 .highlight code {

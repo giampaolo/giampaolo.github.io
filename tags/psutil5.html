@@ -29,6 +29,117 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2014/psutil-212-and-python-wheels" rel="bookmark"
+                   title="Permalink to psutil 2.1.2 and Python wheels">psutil 2.1.2 and Python wheels</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2014-09-21T00:00:00+02:00">
+        Created: 21 set 2014,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/wheels">wheels</a>,        <a href="https://gmpy.dev/tags/travel">travel</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate to the project. The main new &quot;feature&quot; of this release is that other than the exe files, Windows users can now also benefit from <a class="reference external" href="http://pythonwheels.com/">Python wheels</a> (full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/505">here</a>) which are available on PYPI. Frankly I don't know much about the new wheels packaging system but long story short is that Windows users can now install psutil via pip and therefore also include it as a dependency in requirements.txt. Other than this 2.1.2 can basically be considered a bug-fix release, including some important fixes amongst which:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/506">#506</a>: restored Python 2.4 compatibility</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/340">#340</a>: <cite>Process.get_open_files()</cite> no longer hangs on Windows (this was a very old and high-priority issue)</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/501">#501</a>: <cite>disk_io_counters()</cite> may return negative values on Windows</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/504">#504</a>: (Linux) couldn't build RPM packages via setup.py</li>
+</ul>
+<p>The list of all fixes can be found <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">here</a>. For the next release I plan to drop support for Python 2.4 and 2.5 and hopefully add network interfaces information similarly to <a class="reference external" href="https://github.com/giampaolo/psutil/issues/376">ifconfig</a>.</p>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2014/psutil-20" rel="bookmark"
+                   title="Permalink to psutil 2.0">psutil 2.0</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2014-03-10T00:00:00+01:00">
+        Created: 10 mar 2014,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>The time has finally come: <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0 is out! This is a release which took me a considerable amount of effort and careful thinking during the past 4 months as I went through a major <strong>rewrite and reorganization</strong> of both python and C extension modules. To get a sense of how much has changed you can compare the differences with the old 1.2.1 version by running &quot;hg diff -r release-1.2.1:release-2.0.0&quot; which will produce more than <strong>22,000 lines</strong> of output! In those 22k lines I tried to nail down all the quirks the project had accumulated since its start 4 years ago and the resulting code base is now cleaner than ever, more manageable and fully compliant with PEP-7 and PEP-8 guidelines.
+There were some difficult decisions because many of the changes I introduced are not backward compatible so I was concerned with the pain this may cause existing users. I kind of still am, but I'm sure the transition will be well perceived in the long run as it will result in more manageable user code. OK, enough with the preface and let's see what changed.</p>
+<div class="section" id="api-changes">
+<h2>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h2>
+<p>I already wrote a detailed <a class="reference external" href="psutil-20-api-redesign">blog post</a> about what changed so I recommend you to use that as the official reference on how to port your code.</p>
+</div>
+<div class="section" id="rst-documentation">
+<h2>RST documentation<a class="headerlink" href="#rst-documentation" title="Permalink to this headline">¶</a></h2>
+<p>I've never been happy with the old doc hosted on Google Code. The markup language provided by Google is pretty limited, plus it's not put under revision control. New doc is more detailed, it uses reStructuredText as the markup language, it lives in the same code repository as psutil's and it is hosted on the excellent readthedocs web site: <a class="reference external" href="http://psutil.readthedocs.org/">http://psutil.readthedocs.org/</a></p>
+</div>
+<div class="section" id="physical-cpus-count">
+<h2>Physical CPUs count<a class="headerlink" href="#physical-cpus-count" title="Permalink to this headline">¶</a></h2>
+<p>You're now able to distinguish between logical and physical CPUs:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
+<span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># physical cores only</span>
+<span class="mi">2</span>
+</pre></div>
+<p>Full story is in issue 427 (code.google.com/p/psutil/issues/detail?id=427).</p>
+</div>
+<div class="section" id="process-instances-are-hashable">
+<h2>Process instances are hashable<a class="headerlink" href="#process-instances-are-hashable" title="Permalink to this headline">¶</a></h2>
+<p>Basically this means process instances can now be checked for equality and can be used with set()s:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p1</span> <span class="o">==</span> <span class="n">p2</span>
+<span class="kc">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">set</span><span class="p">((</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">))</span>
+<span class="nb">set</span><span class="p">([</span><span class="o">&lt;</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">8217</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">140007043550608</span><span class="o">&gt;</span><span class="p">])</span>
+</pre></div>
+<p>Full story is in issue 452 (code.google.com/p/psutil/issues/detail?id=452).</p>
+</div>
+<div class="section" id="speedups">
+<h2>Speedups<a class="headerlink" href="#speedups" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>#477 (code.google.com/p/psutil/issues/detail?id=477): process <cite>cpu_percent()</cite> is about 30% faster.</li>
+<li>#478 (code.google.com/p/psutil/issues/detail?id=478): (Linux) almost all APIs are about 30% faster on Python 3.X.</li>
+</ul>
+</div>
+<div class="section" id="other-improvements-and-bugfixes">
+<h2>Other improvements and bugfixes<a class="headerlink" href="#other-improvements-and-bugfixes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>#424 (code.google.com/p/psutil/issues/detail?id=424): Windows installers for Python 3.X 64-bit</li>
+<li>#447 (code.google.com/p/psutil/issues/detail?id=447): <cite>psutil.wait_procs()</cite> timeout parameter is now optional.</li>
+<li>#459 (code.google.com/p/psutil/issues/detail?id=459): a Makefile is now available for running tests and other repetitive tasks (also on Windows)</li>
+<li>#463 (code.google.com/p/psutil/issues/detail?id=463): timeout parameter of <tt class="docutils literal">cpu_percent*</tt> functions defaults to 0.0 because it was a common trap to introduce slowdowns.</li>
+<li>#340 (code.google.com/p/psutil/issues/detail?id=340): (Windows) process <cite>open_files()</cite> no longer hangs.</li>
+<li>#448 (code.google.com/p/psutil/issues/detail?id=448): (Windows) fixed a memory leak affecting <cite>children()</cite> and <cite>ppid()</cite> methods.</li>
+<li>#461 (code.google.com/p/psutil/issues/detail?id=461): namedtuples are now pickle-able.</li>
+<li>#474 (code.google.com/p/psutil/issues/detail?id=474): (Windows) <cite>Process.cpu_percent()</cite> is no longer capped at 100%</li>
+</ul>
+<p>OK, that's all folks. I hope you will enjoy this new version and report your feedback.</p>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2014/psutil-20-api-redesign" rel="bookmark"
                    title="Permalink to psutil 2.0 API redesign">psutil 2.0 API redesign</a></h1>
         </header>
@@ -48,7 +159,7 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>This my second blog post is going to be about <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is to serve as an official reference which describes how you should port your existent code base. In doing so I will also explain why I decided to make these changes. Despite many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten but I think this is for the better and it needed to be done, hopefully for the first and last time. OK, here we go now.</p>
+</footer><!-- /.post-info -->            <p>This, my second blog post, is going to be about <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is to serve as an official reference which describes how you should port your existing code base. In doing so I will also explain why I decided to make these changes. Although many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten but I think this is for the better and it needed to be done, hopefully for the first and last time. OK, here we go now.</p>
 <div class="section" id="module-constants-turned-into-functions">
 <h2>Module constants turned into functions<a class="headerlink" href="#module-constants-turned-into-functions" title="Permalink to this headline">¶</a></h2>
 <p><strong>What changed</strong></p>
@@ -258,7 +369,7 @@ Thanks to this hack accessing the old constants still works and produces a Depre
 <p><strong>Why I did it</strong></p>
 <p>Different reasons:</p>
 <ul class="simple">
-<li>Having a mixed API which uses both properties and methods for no particular reason is confusing and messy as you don't know whether to use &quot;()&quot; or not (see <a class="reference external" href="https://code.google.com/p/psutil/source/browse/test/test_psutil.py?name=release-0.7.0#1716">here</a>).</li>
+<li>Having a mixed API which uses both properties and methods for no particular reason is confusing and messy as you don't know whether to use &quot;()&quot; or not (see code.google.com/p/psutil/source/browse/test/test_psutil.py?name=release-0.7.0#1716).</li>
 <li>It is usually expected from a property to not perform many computations internally whereas psutil actually invokes a function every time it is accessed. This has two drawbacks:
 * you may get an exception just by accessing the property (e.g. &quot;p.name&quot; may raise NoSuchProcess or AccessDenied)
 * you may erroneously think properties are cached but this is true only for name, exe, and create_time.</li>
@@ -283,7 +394,7 @@ Having an API which &quot;sleeps&quot; by default is risky though, because it's 
 </div>
 <div class="section" id="migration-strategy">
 <h2>Migration strategy<a class="headerlink" href="#migration-strategy" title="Permalink to this headline">¶</a></h2>
-<p>Except for Process properties (<cite>name</cite>, <cite>exe</cite>, <cite>cmdline</cite>, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long you start the interpreter with the &quot;-Wd&quot; option. This will enable deprecation warnings which were <a class="reference external" href="http://bugs.python.org/issue7319">silenced in Python 2.7</a> (IMHO, from a developer standpoint this was a bad decision).</p>
+<p>Except for Process properties (<cite>name</cite>, <cite>exe</cite>, <cite>cmdline</cite>, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long as you start the interpreter with the &quot;-Wd&quot; option. This will enable deprecation warnings which were <a class="reference external" href="http://bugs.python.org/issue7319">silenced in Python 2.7</a> (IMHO, from a developer standpoint this was a bad decision).</p>
 <pre class="literal-block">
 giampaolo&#64;ubuntu:/tmp$ python -Wd
 Python 2.7.3 (default, Sep 26 2013, 20:03:06)
@@ -302,7 +413,7 @@ pcputimes(user=0.08, system=0.03)
 &gt;&gt;&gt;
 </pre>
 <p>If you have a solid test suite you can run tests and fix the warnings one by one.
-As for the the Process properties which were turned into methods it's more difficult because whereas psutil 1.2.1 returns the actual value, psutil 2.0.0 will return the bound method:</p>
+As for the Process properties which were turned into methods it's more difficult because whereas psutil 1.2.1 returns the actual value, psutil 2.0.0 will return the bound method:</p>
 <div class="highlight"><pre><span></span># psutil 1.2.1
 &gt;&gt;&gt; psutil.Process().name
 &#39;python&#39;
@@ -313,8 +424,8 @@ As for the the Process properties which were turned into methods it's more diffi
 &lt;bound method Process.name of psutil.Process(pid=19816, name=&#39;python&#39;) at 139845631328144&gt;
 &gt;&gt;&gt;
 </pre></div>
-<p>What I would recommend if you want to drop support with 1.2.1 is to grep for <cite>&quot;.name&quot;</cite>, <cite>&quot;.exe&quot;</cite> etc. and just replace them with <cite>&quot;.exe()&quot;</cite> and <cite>&quot;.name()&quot;</cite> one by one.
-If on the other hand you want to write a code which works with both versions I see two possibilities:</p>
+<p>What I would recommend if you want to drop support for 1.2.1 is to grep for <cite>&quot;.name&quot;</cite>, <cite>&quot;.exe&quot;</cite> etc. and just replace them with <cite>&quot;.exe()&quot;</cite> and <cite>&quot;.name()&quot;</cite> one by one.
+If on the other hand you want to write code which works with both versions I see two possibilities:</p>
 <ul class="simple">
 <li>#1 check version info, like this:</li>
 </ul>
@@ -338,7 +449,7 @@ If on the other hand you want to write a code which works with both versions I s
 <h2>New features introduced in 2.0.0<a class="headerlink" href="#new-features-introduced-in-2-0-0" title="Permalink to this headline">¶</a></h2>
 <p>Ok, enough with the bad news. =) psutil 2.0.0 is not only about code breakage. I also had the chance to integrate a bunch of interesting features.</p>
 <ul class="simple">
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427">#427</a>: you're now able to distinguish between the number of logical and physical CPUs:</li>
+<li>#427 (code.google.com/p/psutil/issues/detail?id=427): you're now able to distinguish between the number of logical and physical CPUs:</li>
 </ul>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
 <span class="mi">4</span>
@@ -346,10 +457,10 @@ If on the other hand you want to write a code which works with both versions I s
 <span class="mi">2</span>
 </pre></div>
 <ul class="simple">
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=452">#452</a>: process classes are now hashable and can be checked for equality. That means you can use <cite>Process</cite> objects with sets (finally!).</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447">#447</a>: <cite>psutil.wait_procs()</cite> &quot;timeout&quot; parameter is now optional</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=461">#461</a>: functions returning namedtuples are now pickle-able</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=459">#459</a>: a Makefile is now available to automatize repetitive tasks such as build, install, running tests etc. There's also a make.bat for Windows.</li>
+<li>#452 (code.google.com/p/psutil/issues/detail?id=452): process classes are now hashable and can be checked for equality. That means you can use <cite>Process</cite> objects with sets (finally!).</li>
+<li>#447 (code.google.com/p/psutil/issues/detail?id=447): <cite>psutil.wait_procs()</cite> &quot;timeout&quot; parameter is now optional</li>
+<li>#461 (code.google.com/p/psutil/issues/detail?id=461): functions returning namedtuples are now pickle-able</li>
+<li>#459 (code.google.com/p/psutil/issues/detail?id=459): a Makefile is now available to automate repetitive tasks such as build, install, running tests etc. There's also a make.bat for Windows.</li>
 <li>introduced <cite>unittest2</cite> module as a requirement for running tests</li>
 </ul>
 </div>

@@ -29,6 +29,293 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2016/how-to-always-execute-exit-functions-in-python" rel="bookmark"
+                   title="Permalink to How to always execute exit functions in Python">How to always execute exit functions in Python</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2016-02-12T00:00:00+01:00">
+        Created: 12 feb 2016,
+        </a>
+                <a class="modified" title="2016-02-13T00:00:00+01:00">
+                Modified: 13 feb 2016,</a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/recipe">recipe</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p><em>...or why atexit.register() and signal.signal() are evil</em></p>
+<ul class="simple">
+<li><strong>UPDATE (2016-02-13)</strong>: this recipe no longer handles <tt class="docutils literal">SIGINT</tt>, <tt class="docutils literal">SIGQUIT</tt> and <tt class="docutils literal">SIGABRT</tt> as aliases for &quot;application exit&quot; because it was a <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038471.html">bad idea</a>. It only handles <tt class="docutils literal">SIGTERM</tt>. Also it no longer supports Windows because <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> implementation is <a class="reference external" href="http://bugs.python.org/issue26350">too different</a> from POSIX.*</li>
+</ul>
+<p>Many people erroneously think that any function registered via the <a class="reference external" href="https://docs.python.org/3/library/atexit.html">atexit module</a> is guaranteed to always be executed when the program terminates. You may have noticed this is not the case when, for example, you daemonize your app in production then try to stop it or restart it: the cleanup functions will not be executed. This is because functions registered with the atexit module are <strong>not called</strong> when the program is killed by a signal:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">atexit</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">signal</span>
+
+<span class="nd">@atexit</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;on exit&quot;</span><span class="p">)</span>  <span class="c1"># XXX this never gets printed</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
+</pre></div>
+<p>It must be noted that the same thing would happen if instead of <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> we used a &quot;finally&quot; clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. That has a drawback though: in case a third-party module has already registered a function for that signal (<tt class="docutils literal">SIGTERM</tt> or whatever), your new function will <strong>overwrite</strong> the old one:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">signal</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">old</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;old&quot;</span><span class="p">)</span>  <span class="c1"># XXX this never gets printed</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">new</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">)</span>
+
+<span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">old</span><span class="p">)</span>
+<span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
+</pre></div>
+<p>Also, we would still have to use <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> so that the function is called also on &quot;clean&quot; interpreter exit <span class="strike">and take into account other signals other than SIGTERM which would cause the process to terminate</span>. This recipe attempts to address all these issues so that:</p>
+<ul class="simple">
+<li>the exit function is always executed <span class="strike">for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT)</span> on <tt class="docutils literal">SIGTERM</tt> and on &quot;clean&quot; interpreter exit.</li>
+<li>any exit function(s) previously registered via <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> or <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> will be executed as well (after the new one).</li>
+<li>It must be noted that the exit function will never be executed in case of <tt class="docutils literal">SIGKILL</tt>, <tt class="docutils literal">SIGSTOP</tt> or <tt class="docutils literal">os._exit()</tt>.</li>
+</ul>
+<div class="section" id="the-code">
+<h2>The code<a class="headerlink" href="#the-code" title="Permalink to this headline">¶</a></h2>
+<div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Function / decorator which tries very hard to register a function to</span>
+<span class="sd">be executed at importerer exit.</span>
+
+<span class="sd">Author: Giampaolo Rodola&#39;</span>
+<span class="sd">License: MIT</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">atexit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">signal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+
+<span class="n">_registered_exit_funs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="n">_executed_exit_funs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">register_exit_fun</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">signals</span><span class="o">=</span><span class="p">[</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">],</span>
+                      <span class="n">logfun</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register a function which will be executed on &quot;normal&quot;</span>
+<span class="sd">    interpreter exit or in case one of the `signals` is received</span>
+<span class="sd">    by this process (differently from `atexit.register() &lt;https://docs.python.org/3/library/atexit.html#atexit.register&gt;`__).</span>
+<span class="sd">    Also, it makes sure to execute any other function which was</span>
+<span class="sd">    previously registered via signal.signal(). If any, it will be</span>
+<span class="sd">    executed after our own `fun`.</span>
+
+<span class="sd">    Functions which were already registered or executed via this</span>
+<span class="sd">    function will be ignored.</span>
+
+<span class="sd">    Note: there&#39;s no way to escape SIGKILL, SIGSTOP or os._exit(0)</span>
+<span class="sd">    so don&#39;t bother trying.</span>
+
+<span class="sd">    You can use this either as a function or as a decorator:</span>
+
+<span class="sd">        @register_exit_fun</span>
+<span class="sd">        def cleanup():</span>
+<span class="sd">            pass</span>
+
+<span class="sd">        # ...or</span>
+
+<span class="sd">        register_exit_fun(cleanup)</span>
+
+<span class="sd">    Note about Windows: I tested this some time ago and didn&#39;t work</span>
+<span class="sd">    exactly the same as on UNIX, then I didn&#39;t care about it</span>
+<span class="sd">    anymore and didn&#39;t test since then so may not work on Windows.</span>
+
+<span class="sd">    Parameters:</span>
+
+<span class="sd">    - fun: a callable</span>
+<span class="sd">    - signals: a list of signals for which this function will be</span>
+<span class="sd">      executed (default SIGTERM)</span>
+<span class="sd">    - logfun: a logging function which is called when a signal is</span>
+<span class="sd">      received. Default: print to standard error. May be set to</span>
+<span class="sd">      None if no logging is desired.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stringify_sig</span><span class="p">(</span><span class="n">signum</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+            <span class="n">smap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+                         <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SIG&#39;</span><span class="p">)])</span>
+            <span class="k">return</span> <span class="n">smap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">signum</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">signum</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">fun_wrapper</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">fun</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_executed_exit_funs</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fun</span><span class="p">()</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">_executed_exit_funs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">signal_wrapper</span><span class="p">(</span><span class="n">signum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">signum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">logfun</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logfun</span><span class="p">(</span><span class="s2">&quot;signal </span><span class="si">{}</span><span class="s2"> received by process with PID </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">stringify_sig</span><span class="p">(</span><span class="n">signum</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()))</span>
+        <span class="n">fun_wrapper</span><span class="p">()</span>
+        <span class="c1"># Only return the original signal this process was hit with</span>
+        <span class="c1"># in case fun returns with no errors, otherwise process will</span>
+        <span class="c1"># return with sig 1.</span>
+        <span class="k">if</span> <span class="n">signum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">signum</span> <span class="o">==</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyboardInterrupt</span>
+            <span class="c1"># XXX - should we do the same for SIGTERM / SystemExit?</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">signum</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{!r}</span><span class="s2"> is not callable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fun</span><span class="p">))</span>
+        <span class="nb">set</span><span class="p">([</span><span class="n">fun</span><span class="p">])</span>  <span class="c1"># raise exc if obj is not hash-able</span>
+
+        <span class="n">signals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">signals</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">sig</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
+            <span class="c1"># Register function for this signal and pop() the previously</span>
+            <span class="c1"># registered one (if any). This can either be a callable,</span>
+            <span class="c1"># SIG_IGN (ignore signal) or SIG_DFL (perform default action</span>
+            <span class="c1"># for signal).</span>
+            <span class="n">old_handler</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">signal_wrapper</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">old_handler</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIG_DFL</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_IGN</span><span class="p">):</span>
+                <span class="c1"># ...just for extra safety.</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">old_handler</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="c1"># This is needed otherwise we&#39;ll get a KeyboardInterrupt</span>
+                <span class="c1"># strace on interpreter exit, even if the process exited</span>
+                <span class="c1"># with sig 0.</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">sig</span> <span class="o">==</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span> <span class="ow">and</span>
+                        <span class="n">old_handler</span> <span class="ow">is</span> <span class="n">signal</span><span class="o">.</span><span class="n">default_int_handler</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="c1"># There was a function which was already registered for this</span>
+                <span class="c1"># signal. Register it again so it will get executed (after our</span>
+                <span class="c1"># new fun).</span>
+                <span class="k">if</span> <span class="n">old_handler</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_registered_exit_funs</span><span class="p">:</span>
+                    <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">old_handler</span><span class="p">)</span>
+                    <span class="n">_registered_exit_funs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">old_handler</span><span class="p">)</span>
+
+        <span class="c1"># This further registration will be executed in case of clean</span>
+        <span class="c1"># interpreter exit (no signals received).</span>
+        <span class="k">if</span> <span class="n">fun</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_registered_exit_funs</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">signals</span><span class="p">:</span>
+            <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">fun_wrapper</span><span class="p">)</span>
+            <span class="n">_registered_exit_funs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
+
+    <span class="c1"># This piece of machinery handles 3 usage cases. register_exit_fun()</span>
+    <span class="c1"># used as:</span>
+    <span class="c1"># - a function</span>
+    <span class="c1"># - a decorator without parentheses</span>
+    <span class="c1"># - a decorator with parentheses</span>
+    <span class="k">if</span> <span class="n">fun</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">outer</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">outer</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fun</span>
+</pre></div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>As a function:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cleanup&quot;</span><span class="p">)</span>
+
+<span class="n">register_exit_fun</span><span class="p">(</span><span class="n">cleanup</span><span class="p">)</span>
+</pre></div>
+<p>As a decorator:</p>
+<div class="highlight"><pre><span></span><span class="nd">@register_exit_fun</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cleanup&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="unit-tests">
+<h2>Unit tests<a class="headerlink" href="#unit-tests" title="Permalink to this headline">¶</a></h2>
+<p>This recipe is hosted on <a class="reference external" href="https://code.activestate.com/recipes/580672-register-exit-function/">ActiveState</a> and has a full set of unittests. It works with Python 2 and 3.</p>
+</div>
+<div class="section" id="notes-about-windows">
+<h2>Notes about Windows<a class="headerlink" href="#notes-about-windows" title="Permalink to this headline">¶</a></h2>
+<p><span class="strike">On Windows signals are only partially supported meaning a function which was previously registered via signal.signal() will be executed only on interpreter exit, but not if the process receives a signal. Apparently this is a limitation either of Windows or the signal module.</span></p>
+<p>Because of how different <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> behaves on Windows, this code is UNIX only, see <a class="reference external" href="https://bugs.python.org/issue26350">BPO-26350</a>.</p>
+</div>
+<div class="section" id="proposal-for-stdlib-inclusion">
+<h2>Proposal for stdlib inclusion<a class="headerlink" href="#proposal-for-stdlib-inclusion" title="Permalink to this headline">¶</a></h2>
+<p>The fact that atexit module <a class="reference external" href="http://stackoverflow.com/a/2546397/376587">does not handle signals</a> and that <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> overwrites previously registered handlers is unfortunate. It is also <a class="reference external" href="http://ambracode.com/index/show/92669">confusing</a> because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the times you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. To me this suggests there could be space for something like <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038431.html">atexit.register_w_signals</a>.</p>
+</div>
+<div class="section" id="external-discussions">
+<h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/45fvd9/how_to_always_execute_exit_functions_in_python/">Reddit</a></li>
+<li><a class="reference external" href="https://news.ycombinator.com/item?id=11088938">Hacker news</a></li>
+</ul>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2015/psutil-openbsd-support" rel="bookmark"
+                   title="Permalink to psutil OpenBSD support">psutil OpenBSD support</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2015-11-25T00:00:00+01:00">
+        Created: 25 nov 2015,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/bsd">bsd</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>OK, this is a big one: starting from version 3.3.0 (released just now) <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> will officially support OpenBSD platforms. This was contributed by <a class="reference external" href="https://github.com/landryb">Landry Breuil</a> (thanks dude!) and myself in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/615">PR-615</a>. The interesting parts of the code changes are this and this.</p>
+<div class="section" id="differences-with-freebsd">
+<h2>Differences with FreeBSD<a class="headerlink" href="#differences-with-freebsd" title="Permalink to this headline">¶</a></h2>
+<p>As expected, OpenBSD implementation is very similar to FreeBSD's (which was already in place), which is why I decided to merge most of it in a single C file (<a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-3.3.0/psutil/_psutil_bsd.c">_psutil_bsd.c</a>) and use 2 separate C files for when the two implementations differed too much: <a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-3.3.0/psutil/arch/bsd/freebsd.c">freebsd.c</a> and <a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-3.3.0/psutil/arch/bsd/openbsd.c">openbsd.c</a>. In terms of functionality here are the differences with FreeBSD. Unless specified, these differences are due to the kernel which does not provide the information natively (meaning we can't do anything about it).</p>
+<ul class="simple">
+<li><tt class="docutils literal">Process.memory_maps()</tt> is not implemented. The kernel provides the necessary pieces but I didn't do this yet (hopefully later).</li>
+<li><tt class="docutils literal">Process.num_ctx_switches()</tt>'s involuntary field is always 0. The <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fc1e59d08c968898c2ede425a621b62ccf44681c/psutil/_psutil_bsd.c#L335">kinfo_proc</a> syscall provides this info, but it is always set to 0.</li>
+<li><tt class="docutils literal">Process.cpu_affinity()</tt> (get and set) is not supported.</li>
+<li><tt class="docutils literal">Process.exe()</tt> is determined by inspecting the command line, so it may not always be available (returns <tt class="docutils literal">None</tt>).</li>
+<li><tt class="docutils literal">psutil.swap_memory()</tt> sin and sout (swap in and swap out) values are not available and hence are always set to 0.</li>
+<li><tt class="docutils literal">psutil.cpu_count(logical=False)</tt> always returns None.</li>
+</ul>
+<p>Similarly to FreeBSD, the OpenBSD implementation of <cite>Process.open_files()</cite> is also problematic as it is not able to return file paths (FreeBSD can sometimes). Other than these differences the functionalities are all there and pretty much the same, so overall I'm pretty satisfied with the result.</p>
+</div>
+<div class="section" id="considerations-about-bsd-platforms">
+<h2>Considerations about BSD platforms<a class="headerlink" href="#considerations-about-bsd-platforms" title="Permalink to this headline">¶</a></h2>
+<p>psutil has been supporting FreeBSD basically since the beginning (year 2009). At the time it made sense to support FreeBSD instead of other BSD variants because it is the <a class="reference external" href="https://en.wikipedia.org/wiki/Comparison_of_BSD_operating_systems#Popularity">most popular</a>, followed by OpenBSD and NetBSD. Compared to FreeBSD, OpenBSD appears to be more &quot;minimal&quot; both in terms of facilities provided by the kernel and the number of system administration tools available. One thing which I appreciate a lot about FreeBSD is that the source code of all CLI tools installed on the system is available under /usr/src, which was a big help for implementing all psutil APIs. OpenBSD source code is <a class="reference external" href="https://github.com/openbsd/src">also available</a> but it uses CVS and I am not sure it includes the source code for all CLI tools. There are still two more BSD variants for which it may be worth adding support for: NetBSD and DragonflyBSD (in this order). About a year ago some guy provided a <a class="reference external" href="https://github.com/giampaolo/psutil/issues/429">patch</a> for adding basic NetBSD support so it is likely that will happen sooner or later.</p>
+</div>
+<div class="section" id="other-enhancements-available-in-this-release">
+<h2>Other enhancements available in this release<a class="headerlink" href="#other-enhancements-available-in-this-release" title="Permalink to this headline">¶</a></h2>
+<p>The only other enhancement is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/558">issue #558</a>, which allows specifying a different location of /proc filesystem on Linux.</p>
+</div>
+<div class="section" id="external-discussions">
+<h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/3u8wm3/openbsd_support_for_psutil_330/">Reddit</a></li>
+<li><a class="reference external" href="https://news.ycombinator.com/item?id=10628726">Hacker news</a></li>
+</ul>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2015/psutil-30-aka-how-i-reimplemented-ifconfig-in-python" rel="bookmark"
                    title="Permalink to psutil 3.0, aka how I reimplemented ifconfig in Python">psutil 3.0, aka how I reimplemented ifconfig in Python</a></h1>
         </header>
@@ -48,15 +335,15 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>Here we are. It's been a long time since my last blog post and my last <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally had the chance to meet my friend <a class="reference external" href="http://jayloden.com/software.htm">Jay Loden</a> in person. <a class="reference external" href="https://fbcdn-sphotos-h-a.akamaihd.net/hphotos-ak-xta1/t31.0-8/11263024_10153285412879890_759604551146752808_o.jpg">Jay and I</a> originally started working on psutil together <a class="reference external" href="https://groups.google.com/forum/#!topic/psutil-dev/fj8DQ3lGFH4">7 years ago</a>.</p>
+</footer><!-- /.post-info -->            <p>Here we are. It's been a long time since my last blog post and my last <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally had the chance to meet my friend <a class="reference external" href="http://jayloden.com/software.htm">Jay Loden</a> in person. <a class="reference external" href="/images/me-with-jay.jpg">Jay and I</a> originally started working on psutil together <a class="reference external" href="https://groups.google.com/forum/#!topic/psutil-dev/fj8DQ3lGFH4">7 years ago</a>.</p>
 <div>
     <a href="/images/me-with-jay.jpg">
     <img src="/images/me-with-jay.jpg" style="width:750px; height:500px" />
     </a>
-</div><p>Back then I didn't know any C (and I still am a terrible C developer) so he's been crucial to develop the initial psutil skeleton including OSX and Windows support. I'm back home now (but not for long ;-)), so I finally have some time to write this blog post and tell you about the new psutil release. Let's see what happened.</p>
+</div><p>Back then I didn't know any C (and I still am a terrible C developer), so he's been crucial to developing the initial psutil skeleton, including OSX and Windows support. I'm back home now (but not for long ;-)), so I finally have some time to write this blog post and tell you about the new psutil release. Let's see what happened.</p>
 <div class="section" id="net-if-addrs">
 <h2>net_if_addrs()<a class="headerlink" href="#net-if-addrs" title="Permalink to this headline">¶</a></h2>
-<p>In a few words, we're now able to list network interface addresses similarly to &quot;ifconfig&quot; command on UNIX:</p>
+<p>In a few words, we're now able to list network interface addresses similarly to the &quot;ifconfig&quot; command on UNIX:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">pprint</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_if_addrs</span><span class="p">())</span>
@@ -77,7 +364,7 @@
                     <span class="n">netmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;00:00:00:00:00:00&#39;</span><span class="p">)]}</span>
 </pre></div>
-<p>This is limited to <cite>AF_INET</cite> (IPv4), <cite>AF_INET6</cite> (IPv6) and <cite>AF_LINK</cite> (Ethernet) address families. If you want something more poweful (e.g. <cite>AF_BLUETOOTH</cite>) you can take a look at <a class="reference external" href="https://pypi.python.org/pypi/netifaces/">netifaces</a> extension. And here's the code which does these tricks on POSIX and Windows:</p>
+<p>This is limited to <cite>AF_INET</cite> (IPv4), <cite>AF_INET6</cite> (IPv6) and <cite>AF_LINK</cite> (Ethernet) address families. If you want something more powerful (e.g. <cite>AF_BLUETOOTH</cite>) you can take a look at the <a class="reference external" href="https://pypi.python.org/pypi/netifaces/">netifaces</a> extension. And here's the code which does these tricks on POSIX and Windows:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L151">POSIX</a></li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L2907">Windows</a></li>
@@ -90,7 +377,7 @@
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">pprint</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_if_stats</span><span class="p">())</span>
-<span class="p">{</span><span class="s1">&#39;ethernet&#39;</span><span class="mi">0</span><span class="p">:</span> <span class="n">snicstats</span><span class="p">(</span><span class="n">isup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">{</span><span class="s1">&#39;ethernet0&#39;</span><span class="p">:</span> <span class="n">snicstats</span><span class="p">(</span><span class="n">isup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                         <span class="n">duplex</span><span class="o">=&lt;</span><span class="n">NicDuplex</span><span class="o">.</span><span class="n">NIC_DUPLEX_FULL</span><span class="p">:</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">,</span>
                         <span class="n">speed</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                         <span class="n">mtu</span><span class="o">=</span><span class="mi">1500</span><span class="p">),</span>
@@ -115,16 +402,16 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">IOPRIO_CLASS_IDLE</span>
 <span class="mi">3</span>
 </pre></div>
-<p>On Python 3.4 you'll see a more informative:</p>
+<p>On Python 3.4 you'll see a more informative result:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">IOPRIO_CLASS_IDLE</span>
 <span class="o">&lt;</span><span class="n">IOPriority</span><span class="o">.</span><span class="n">IOPRIO_CLASS_IDLE</span><span class="p">:</span> <span class="mi">3</span><span class="o">&gt;</span>
 </pre></div>
 <p>They are backward compatible, meaning if you're sending serialized data produced with psutil through the network you can safely use comparison operators and so on. The psutil APIs returning enums (on Python &gt;=3.4) are:</p>
 <ul class="simple">
-<li><cite>psutil.net_connections()</cite> (the address families):</li>
+<li><cite>psutil.net_connections()</cite> (the address families)</li>
 <li><cite>psutil.Process.connections()</cite> (same as above)</li>
-<li><cite>psutil.net_if_stats()</cite>  (all <tt class="docutils literal">NIC_DUPLEX_*</tt> constants)</li>
+<li><cite>psutil.net_if_stats()</cite> (all <tt class="docutils literal">NIC_DUPLEX_*</tt> constants)</li>
 <li><cite>psutil.Process.nice()</cite> on Windows (for all the <tt class="docutils literal">*_PRIORITY_CLASS</tt> constants)</li>
 <li><cite>psutil.Process.ionice()</cite> on Linux (for all the <tt class="docutils literal">IOPRIO_CLASS_*</tt> constants)</li>
 </ul>
@@ -150,7 +437,7 @@
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cmdline</span><span class="p">()</span>
 <span class="p">[</span><span class="s1">&#39;python&#39;</span><span class="p">]</span>
 </pre></div>
-<p>Also <cite>process_iter()</cite> did not return zombie processes at all. This was probably the worst aspect because being able to identify them is an important use case, as they signal an issue with process: if a parent process spawns a child, terminates it (via <cite>kill()</cite>), but doesn't <cite>wait()</cite> for it it will create a zombie. Long story short, the way this changed in psutil 3.0 is that:</p>
+<p>Also <cite>process_iter()</cite> did not return zombie processes at all. This was probably the worst aspect because being able to identify them is an important use case, as they signal an issue with a process: if a parent process spawns a child, terminates it (via <cite>kill()</cite>), but doesn't <cite>wait()</cite> for it, it will create a zombie. Long story short, the way this changed in psutil 3.0 is that:</p>
 <ul class="simple">
 <li>we now have a new <cite>ZombieProcess</cite> exception, raised every time we're not able to query a process because it's a zombie</li>
 <li>it is raised instead of <cite>NoSuchProcess</cite> (which was incorrect and misleading)</li>
@@ -169,7 +456,7 @@
 </div>
 <div class="section" id="removal-of-deprecated-apis">
 <h2>Removal of deprecated APIs<a class="headerlink" href="#removal-of-deprecated-apis" title="Permalink to this headline">¶</a></h2>
-<p>This is another big one, probably the biggest. In a previous blog post I already talked about deprecated APIs. What I did back then (January 2014) was to rename and officially deprecate different APIs and provide aliases for them so that people wouldn't yell at me because I broke their existent code. The most interesting deprecation was certainly the one affecting module constants and the hack which was used in order to provide &quot;module properties&quot;. With this new release I decided to get rid of all those aliases. I'm sure this will cause problems but hey! This is a new major release, right? =). Plus the amount of crap which was removed is impressive (see the <a class="reference external" href="https://github.com/giampaolo/psutil/commit/ab211934af0acf99091e4cd534fc5bbe7fd3b233">commit</a>). Here's the old aliases which are now gone for good (or bad, depending on how much headache they will cause you):</p>
+<p>This is another big one, probably the biggest. In a previous blog post I already talked about deprecated APIs. What I did back then (January 2014) was to rename and officially deprecate different APIs and provide aliases for them so that people wouldn't yell at me because I broke their existing code. The most interesting deprecation was certainly the one affecting module constants and the hack which was used in order to provide &quot;module properties&quot;. With this new release I decided to get rid of all those aliases. I'm sure this will cause problems but hey! This is a new major release, right? =). Plus the amount of crap which was removed is impressive (see the <a class="reference external" href="https://github.com/giampaolo/psutil/commit/ab211934af0acf99091e4cd534fc5bbe7fd3b233">commit</a>). Here's the old aliases which are now gone for good (or bad, depending on how much headache they will cause you):</p>
 </div>
 <div class="section" id="removed-module-functions-and-constants">
 <h2>Removed module functions and constants<a class="headerlink" href="#removed-module-functions-and-constants" title="Permalink to this headline">¶</a></h2>
@@ -184,61 +471,61 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>psutil.BOOT_TIME()</td>
-<td>psutil.boot_time()</td>
+<tr><td><tt class="docutils literal">psutil.BOOT_TIME()</tt></td>
+<td><tt class="docutils literal">psutil.boot_time()</tt></td>
 </tr>
-<tr><td>psutil.NUM_CPUS()</td>
-<td>psutil.cpu_count()</td>
+<tr><td><tt class="docutils literal">psutil.NUM_CPUS()</tt></td>
+<td><tt class="docutils literal">psutil.cpu_count()</tt></td>
 </tr>
-<tr><td>psutil.TOTAL_PHYMEM()</td>
-<td>psutil.virtual_memory().total</td>
+<tr><td><tt class="docutils literal">psutil.TOTAL_PHYMEM()</tt></td>
+<td><tt class="docutils literal"><span class="pre">psutil.virtual_memory().total</span></tt></td>
 </tr>
-<tr><td>psutil.avail_phymem()</td>
-<td>psutil.virtual_memory().free</td>
+<tr><td><tt class="docutils literal">psutil.avail_phymem()</tt></td>
+<td><tt class="docutils literal"><span class="pre">psutil.virtual_memory().free</span></tt></td>
 </tr>
-<tr><td>psutil.avail_virtmem()</td>
-<td>psutil.swap_memory().free</td>
+<tr><td><tt class="docutils literal">psutil.avail_virtmem()</tt></td>
+<td><tt class="docutils literal"><span class="pre">psutil.swap_memory().free</span></tt></td>
 </tr>
-<tr><td>psutil.cached_phymem()</td>
-<td>psutil.virtual_memory().cached</td>
+<tr><td><tt class="docutils literal">psutil.cached_phymem()</tt></td>
+<td><tt class="docutils literal"><span class="pre">psutil.virtual_memory().cached</span></tt></td>
 </tr>
-<tr><td>psutil.get_pid_list()</td>
-<td>psutil.pids().cached</td>
+<tr><td><tt class="docutils literal">psutil.get_pid_list()</tt></td>
+<td><tt class="docutils literal">psutil.pids()</tt></td>
 </tr>
-<tr><td>psutil.get_process_list()</td>
+<tr><td><tt class="docutils literal">psutil.get_process_list()</tt></td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>psutil.get_users()</td>
-<td>psutil.users()</td>
+<tr><td><tt class="docutils literal">psutil.get_users()</tt></td>
+<td><tt class="docutils literal">psutil.users()</tt></td>
 </tr>
-<tr><td>psutil.network_io_counters()</td>
-<td>psutil.net_io_counters()</td>
+<tr><td><tt class="docutils literal">psutil.network_io_counters()</tt></td>
+<td><tt class="docutils literal">psutil.net_io_counters()</tt></td>
 </tr>
-<tr><td>psutil.phymem_buffers()</td>
-<td>psutil.virtual_memory().buffers</td>
+<tr><td><tt class="docutils literal">psutil.phymem_buffers()</tt></td>
+<td><tt class="docutils literal"><span class="pre">psutil.virtual_memory().buffers</span></tt></td>
 </tr>
-<tr><td>psutil.phymem_usage()</td>
-<td>psutil.virtual_memory()</td>
+<tr><td><tt class="docutils literal">psutil.phymem_usage()</tt></td>
+<td><tt class="docutils literal">psutil.virtual_memory()</tt></td>
 </tr>
-<tr><td>psutil.total_virtmem()</td>
-<td>psutil.swap_memory().total</td>
+<tr><td><tt class="docutils literal">psutil.total_virtmem()</tt></td>
+<td><tt class="docutils literal"><span class="pre">psutil.swap_memory().total</span></tt></td>
 </tr>
-<tr><td>psutil.used_virtmem()</td>
-<td>psutil.swap_memory().used</td>
+<tr><td><tt class="docutils literal">psutil.used_virtmem()</tt></td>
+<td><tt class="docutils literal"><span class="pre">psutil.swap_memory().used</span></tt></td>
 </tr>
-<tr><td>psutil.used_phymem()</td>
-<td>psutil.virtual_memory().used</td>
+<tr><td><tt class="docutils literal">psutil.used_phymem()</tt></td>
+<td><tt class="docutils literal"><span class="pre">psutil.virtual_memory().used</span></tt></td>
 </tr>
-<tr><td>psutil.virtmem_usage()</td>
-<td>psutil.swap_memory()</td>
+<tr><td><tt class="docutils literal">psutil.virtmem_usage()</tt></td>
+<td><tt class="docutils literal">psutil.swap_memory()</tt></td>
 </tr>
 </tbody>
 </table>
 <p>Process methods (assuming <cite>p = psutil.Process()</cite>):</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="48%" />
-<col width="52%" />
+<col width="54%" />
+<col width="46%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">Already deprecated name</th>
@@ -246,82 +533,82 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>p.get_children()</td>
-<td>p.children()</td>
+<tr><td><tt class="docutils literal">p.get_children()</tt></td>
+<td><tt class="docutils literal">p.children()</tt></td>
 </tr>
-<tr><td>p.get_connections()</td>
-<td>p.connections()</td>
+<tr><td><tt class="docutils literal">p.get_connections()</tt></td>
+<td><tt class="docutils literal">p.connections()</tt></td>
 </tr>
-<tr><td>p.get_cpu_affinity()</td>
-<td>p.cpu_affinity()</td>
+<tr><td><tt class="docutils literal">p.get_cpu_affinity()</tt></td>
+<td><tt class="docutils literal">p.cpu_affinity()</tt></td>
 </tr>
-<tr><td>p.get_cpu_percent()</td>
-<td>p.cpu_percent()</td>
+<tr><td><tt class="docutils literal">p.get_cpu_percent()</tt></td>
+<td><tt class="docutils literal">p.cpu_percent()</tt></td>
 </tr>
-<tr><td>p.get_cpu_times()</td>
-<td>p.cpu_times()</td>
+<tr><td><tt class="docutils literal">p.get_cpu_times()</tt></td>
+<td><tt class="docutils literal">p.cpu_times()</tt></td>
 </tr>
-<tr><td>p.get_io_counters()</td>
-<td>p.io_counters()</td>
+<tr><td><tt class="docutils literal">p.get_io_counters()</tt></td>
+<td><tt class="docutils literal">p.io_counters()</tt></td>
 </tr>
-<tr><td>p.get_ionice()</td>
-<td>p.ionice()</td>
+<tr><td><tt class="docutils literal">p.get_ionice()</tt></td>
+<td><tt class="docutils literal">p.ionice()</tt></td>
 </tr>
-<tr><td>p.get_memory_info()</td>
-<td>p.memory_info()</td>
+<tr><td><tt class="docutils literal">p.get_memory_info()</tt></td>
+<td><tt class="docutils literal">p.memory_info()</tt></td>
 </tr>
-<tr><td>p.get_ext_memory_info()</td>
-<td>p.memory_info_ex()</td>
+<tr><td><tt class="docutils literal">p.get_ext_memory_info()</tt></td>
+<td><tt class="docutils literal">p.memory_info_ex()</tt></td>
 </tr>
-<tr><td>p.get_memory_maps()</td>
-<td>p.memory_maps()</td>
+<tr><td><tt class="docutils literal">p.get_memory_maps()</tt></td>
+<td><tt class="docutils literal">p.memory_maps()</tt></td>
 </tr>
-<tr><td>p.get_memory_percent()</td>
-<td>p.memory_percent()</td>
+<tr><td><tt class="docutils literal">p.get_memory_percent()</tt></td>
+<td><tt class="docutils literal">p.memory_percent()</tt></td>
 </tr>
-<tr><td>p.get_nice()</td>
-<td>p.nice()</td>
+<tr><td><tt class="docutils literal">p.get_nice()</tt></td>
+<td><tt class="docutils literal">p.nice()</tt></td>
 </tr>
-<tr><td>p.get_num_ctx_switches()</td>
-<td>p.num_ctx_switches()</td>
+<tr><td><tt class="docutils literal">p.get_num_ctx_switches()</tt></td>
+<td><tt class="docutils literal">p.num_ctx_switches()</tt></td>
 </tr>
-<tr><td>p.get_num_fds()</td>
-<td>p.num_fds()</td>
+<tr><td><tt class="docutils literal">p.get_num_fds()</tt></td>
+<td><tt class="docutils literal">p.num_fds()</tt></td>
 </tr>
-<tr><td>p.get_num_threads()</td>
-<td>p.num_threads()</td>
+<tr><td><tt class="docutils literal">p.get_num_threads()</tt></td>
+<td><tt class="docutils literal">p.num_threads()</tt></td>
 </tr>
-<tr><td>p.get_open_files()</td>
-<td>p.open_files()</td>
+<tr><td><tt class="docutils literal">p.get_open_files()</tt></td>
+<td><tt class="docutils literal">p.open_files()</tt></td>
 </tr>
-<tr><td>p.get_rlimit()</td>
-<td>p.rlimit()</td>
+<tr><td><tt class="docutils literal">p.get_rlimit()</tt></td>
+<td><tt class="docutils literal">p.rlimit()</tt></td>
 </tr>
-<tr><td>p.get_threads()</td>
-<td>p.threads()</td>
+<tr><td><tt class="docutils literal">p.get_threads()</tt></td>
+<td><tt class="docutils literal">p.threads()</tt></td>
 </tr>
-<tr><td>p.getcwd()</td>
-<td>p.cwd()</td>
+<tr><td><tt class="docutils literal">p.getcwd()</tt></td>
+<td><tt class="docutils literal">p.cwd()</tt></td>
 </tr>
-<tr><td>p.set_cpu_affinity()</td>
-<td>p.cpu_affinity()</td>
+<tr><td><tt class="docutils literal">p.set_cpu_affinity()</tt></td>
+<td><tt class="docutils literal">p.cpu_affinity()</tt></td>
 </tr>
-<tr><td>p.set_ionice()</td>
-<td>p.ionice()</td>
+<tr><td><tt class="docutils literal">p.set_ionice()</tt></td>
+<td><tt class="docutils literal">p.ionice()</tt></td>
 </tr>
-<tr><td>p.set_nice()</td>
-<td>p.nice()</td>
+<tr><td><tt class="docutils literal">p.set_nice()</tt></td>
+<td><tt class="docutils literal">p.nice()</tt></td>
 </tr>
-<tr><td>p.set_rlimit()</td>
-<td>p.rlimit()</td>
+<tr><td><tt class="docutils literal">p.set_rlimit()</tt></td>
+<td><tt class="docutils literal">p.rlimit()</tt></td>
 </tr>
 </tbody>
 </table>
-<p>If your code suddenly breaks with AttributeError after you upgraded psutil it means you were using one of those deprecated aliases. In that case just take a look at the table above and rename stuff in accordance.</p>
+<p>If your code suddenly breaks with AttributeError after you upgraded psutil, it means you were using one of those deprecated aliases. In that case, just take a look at the table above and rename stuff accordingly.</p>
 </div>
 <div class="section" id="bug-fixes">
 <h2>Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h2>
-<p>I fixed a lot of stuff (full list <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">here</a>), but here's the list of things which I think are worth mentioning:</p>
+<p>I fixed a lot of stuff (full list <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">here</a>), but here's the list of things which I think are worth mentioning:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/512">#512</a>: [FreeBSD] fix segfault in net_connections().</li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/593">#593</a>: [FreeBSD] Process.memory_maps() segfaults.</li>
@@ -332,18 +619,18 @@
 </div>
 <div class="section" id="ease-of-development">
 <h2>Ease of development<a class="headerlink" href="#ease-of-development" title="Permalink to this headline">¶</a></h2>
-<p>These are not enhancements you will directly benefit from but I put some effort into making my life easier every time I work on psutil.</p>
+<p>These are not enhancements you will directly benefit from, but I put some effort into making my life easier every time I work on psutil.</p>
 <ul class="simple">
-<li>I care about psutil code being fully <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8</a> compliant so I added a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/.git-pre-commit">pre-commit</a> GIT hook which runs <a class="reference external" href="https://pypi.python.org/pypi/flake8">flake8</a> on every commit and rejects it if the coding style is not compliant. The way I install this is via <a class="reference external" href="https://github.com/giampaolo/psutil/blob/82da82a6bb94ed5c6faf9d762ef4ad0fec18f01b/Makefile#L108)">make install-git-hooks</a>.</li>
+<li>I care about psutil code being fully <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8</a> compliant, so I added a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/v3.0.0/.git-pre-commit">pre-commit</a> Git hook which runs <a class="reference external" href="https://pypi.python.org/pypi/flake8">flake8</a> on every commit and rejects it if the coding style is not compliant. The way I install this is via <a class="reference external" href="https://github.com/giampaolo/psutil/blob/82da82a6bb94ed5c6faf9d762ef4ad0fec18f01b/Makefile#L108">make install-git-hooks</a>.</li>
 <li>I added a <tt class="docutils literal">make <span class="pre">install-dev-deps</span></tt> command which installs all deps and stuff which is useful for testing (<cite>ipdb</cite>, <cite>coverage</cite>, etc).</li>
-<li>A new <tt class="docutils literal">make coverage</tt> command which runs <a class="reference external" href="http://nedbatchelder.com/code/coverage/">coverage</a>. With this I discovered some of parts in the code which weren't covered by tests and I fixed that.</li>
-<li>I started using <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/tox.ini">tox</a> to easily test psutil against all supported Python versions (from 2.6 to 3.4) in one shot.</li>
-<li>I <a class="reference external" href="https://github.com/giampaolo/psutil/issues/629">reorganized tests</a> so that now they can be easily executed with py.test and nose (before, only unittest runner was fully supported)</li>
+<li>A new <tt class="docutils literal">make coverage</tt> command which runs <a class="reference external" href="http://nedbatchelder.com/code/coverage/">coverage</a>. With this I discovered some parts of the code which weren't covered by tests and I fixed that.</li>
+<li>I started using <a class="reference external" href="https://github.com/giampaolo/psutil/blob/v3.0.0/tox.ini">tox</a> to easily test psutil against all supported Python versions (from 2.6 to 3.4) in one shot.</li>
+<li>I <a class="reference external" href="https://github.com/giampaolo/psutil/issues/629">reorganized tests</a> so that now they can be easily executed with py.test and nose (before, only unittest runner was fully supported).</li>
 </ul>
 </div>
 <div class="section" id="final-words">
 <h2>Final words<a class="headerlink" href="#final-words" title="Permalink to this headline">¶</a></h2>
-<p>I must say I'm pretty satisfied with how psutil is going and the satisfaction I still get every time I work on it. Right now it gets almost <a class="reference external" href="https://pypi.python.org/pypi/psutil#downloads">800.000 download a month</a>, which is pretty great for a Python library. As of right now I consider psutil almost &quot;completed&quot; in terms of features, meaning I'm basically running out of ideas on what I should add next (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/TODO">TODO</a>). From now on the future development will probably focus on adding support for more exotic platforms (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/562">OpenBSD</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">NetBSD</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/355">Android</a>). There also have been some discussions on python-ideas mailing list about <a class="reference external" href="https://mail.python.org/pipermail//python-ideas/2014-October/029835.html">including psutil into Python stdlib</a> but, assuming that will ever happen, it's still far away in the future as it would require a lot of time which I currently don't have. That should be all. I hope you will all enjoy this new release.</p>
+<p>I must say I'm pretty satisfied with how psutil is going and the satisfaction I still get every time I work on it. Right now it gets almost <a class="reference external" href="https://pypi.python.org/pypi/psutil#downloads">800,000 downloads a month</a>, which is pretty great for a Python library. As of right now I consider psutil almost &quot;completed&quot; in terms of features, meaning I'm basically running out of ideas on what I should add next (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/v3.0.0/TODO">TODO</a>). From now on, future development will probably focus on adding support for more exotic platforms (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/562">OpenBSD</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">NetBSD</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/355">Android</a>). There have also been some discussions on the python-ideas mailing list about <a class="reference external" href="https://mail.python.org/pipermail//python-ideas/2014-October/029835.html">including psutil into Python stdlib</a> but, assuming it ever happens, it's still far away in the future as it would require a lot of time which I currently don't have. That should be all. I hope you will all enjoy this new release.</p>
 </div>
 
         </div>
@@ -370,14 +657,14 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate to the project. The main new &quot;feature&quot; of this release is that other than the exe files, Windows users can now also benefit of <a class="reference external" href="http://pythonwheels.com/">Python wheels</a> (full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/505">here</a>) which are available on PYPI. Frankly I don't know much about the new wheels packaging system but long story short is that Windows users can now install psutil via pip and therefore also include it as a dependency into requirements.txt. Other than this 2.1.2 can basically be considered a bug-fix release, including some important fixes amongst which:</p>
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate to the project. The main new &quot;feature&quot; of this release is that other than the exe files, Windows users can now also benefit from <a class="reference external" href="http://pythonwheels.com/">Python wheels</a> (full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/505">here</a>) which are available on PYPI. Frankly I don't know much about the new wheels packaging system but long story short is that Windows users can now install psutil via pip and therefore also include it as a dependency in requirements.txt. Other than this 2.1.2 can basically be considered a bug-fix release, including some important fixes amongst which:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/506">#506</a>: restored Python 2.4 compatibility</li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/340">#340</a>: <cite>Process.get_open_files()</cite> no longer hangs on Windows (this was a very old and high-priority issue)</li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/501">#501</a>: <cite>disk_io_counters()</cite> may return negative values on Windows</li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/504">#504</a>: (Linux) couldn't build RPM packages via setup.py</li>
 </ul>
-<p>The list of all fixes can be found <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">here</a>. For the next release I plan to drop support for Python 2.4 and 2.5 and hopefully network interfaces information similarly to <a class="reference external" href="https://github.com/giampaolo/psutil/issues/376">ifconfig</a>.</p>
+<p>The list of all fixes can be found <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">here</a>. For the next release I plan to drop support for Python 2.4 and 2.5 and hopefully add network interfaces information similarly to <a class="reference external" href="https://github.com/giampaolo/psutil/issues/376">ifconfig</a>.</p>
 
         </div>
             <div class="blogposts-separator"></div>
@@ -403,14 +690,14 @@
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p><a class="reference external" href="http://linux.die.net/man/2/sendfile">sendfile(2)</a> is a UNIX system call which provides a &quot;zero-copy&quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, <cite>sendfile(2)</cite> is more efficient than the combination of <cite>file.read()</cite> and <cite>socket.send()</cite>, which requires transferring data to and from user space.  This copying of the data twice imposes some performance and resource penalties which <cite>sendfile(2)</cite> syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of <a class="reference external" href="http://linux.die.net/man/2/read">read(2)</a> / <a class="reference external" href="http://linux.die.net/man/2/write">write(2)</a> system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how <cite>sendfile(2)</cite> works is available <a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/">here</a>, but long story short is that sending a file with <cite>sendfile()</cite> is usually <a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark">twice as fast</a> than using plain <a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send">socket.send()</a>. Typical applications which can benefit from using <cite>sendfile()</cite> are FTP and HTTP servers.</p>
+</footer><!-- /.post-info -->            <p><a class="reference external" href="http://linux.die.net/man/2/sendfile">sendfile(2)</a> is a UNIX system call which provides a &quot;zero-copy&quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, <cite>sendfile(2)</cite> is more efficient than the combination of <cite>file.read()</cite> and <cite>socket.send()</cite>, which requires transferring data to and from user space. This copying of the data twice imposes some performance and resource penalties which the <cite>sendfile(2)</cite> syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of <a class="reference external" href="http://linux.die.net/man/2/read">read(2)</a> / <a class="reference external" href="http://linux.die.net/man/2/write">write(2)</a> system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how <cite>sendfile(2)</cite> works is available <a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/">here</a>, but long story short is that sending a file with <cite>sendfile()</cite> is usually <a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark">twice as fast</a> as using plain <a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send">socket.send()</a>. Typical applications which can benefit from using <cite>sendfile()</cite> are FTP and HTTP servers.</p>
 <div class="section" id="socket-sendfile">
 <h2>socket.sendfile()<a class="headerlink" href="#socket-sendfile" title="Permalink to this headline">¶</a></h2>
 <p>I recently contributed a patch for Python's socket module which adds a high-level <a class="reference external" href="https://docs.python.org/3.5/library/socket.html#socket.socket.sendfile">socket.sendfile()</a> method (see full discussion at <a class="reference external" href="http://bugs.python.org/issue17552">BPO-17552</a>). <cite>socket.sendfile()</cite> will transmit a file until EOF is reached by attempting to use <a class="reference external" href="https://docs.python.org/3/library/os.html#os.sendfile">os.sendfile()</a>, if available, else it falls back on using plain <cite>socket.send()</cite>. Internally, it takes care of handling socket timeouts and provides two optional parameters to move the file offset or to send only a limited amount of bytes. I came up with this idea because getting all of that right is a bit tricky, so a generic wrapper seemed to be convenient to have. <cite>socket.sendfile()</cite> will make its appearance in Python 3.5.</p>
 </div>
 <div class="section" id="sendfile-and-python">
 <h2>sendfile and Python<a class="headerlink" href="#sendfile-and-python" title="Permalink to this headline">¶</a></h2>
-<p><cite>sendfile(2)</cite> made its first appearance into the Python stdlib kind of late: Python 3.3. It was contributed by Ross Lagerwall and me in <a class="reference external" href="http://bugs.python.org/issue10882">BPO-10882</a>. Since the patch didn't make it into python 2.X and I wanted to <a class="reference external" href="https://code.google.com/p/pyftpdlib/issues/detail?id=152">use sendfile() in pyftpdlib</a> I later decided to release it as a stand alone module working with older (2.5+) Python versions (see <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> project). Starting with version 3.5, Python will hopefully start using <cite>sendfile()</cite> more extensively, in details:</p>
+<p><cite>sendfile(2)</cite> made its first appearance into the Python stdlib kind of late: Python 3.3. It was contributed by Ross Lagerwall and me in <a class="reference external" href="http://bugs.python.org/issue10882">BPO-10882</a>. Since the patch didn't make it into python 2.X and I wanted to use sendfile() in pyftpdlib (code.google.com/p/pyftpdlib/issues/detail?id=152), I later decided to release it as a stand alone module working with older (2.5+) Python versions (see <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> project). Starting with version 3.5, Python will hopefully start using <cite>sendfile()</cite> more extensively, in detail:</p>
 <ul class="simple">
 <li><a class="reference external" href="http://bugs.python.org/issue13564">BPO-13563: ftplib</a></li>
 <li><a class="reference external" href="http://bugs.python.org/issue13559">BPO-13559: httplib</a></li>
@@ -623,153 +910,6 @@
     <span class="k">except</span> <span class="n">_GiveupOnSendfile</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_sendfile_use_send</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
 </pre></div>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2014/psutil-20" rel="bookmark"
-                   title="Permalink to psutil 2.0">psutil 2.0</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2014-03-10T00:00:00+01:00">
-        Created: 10 mar 2014,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>The time has finally come: <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0 is out! This is a release which took me a considerable amount of effort and careful thinking during the past 4 months as I went through a major <strong>rewrite and reorganization</strong> of both python and C extension modules. To get a sense of how much has changed you can compare the differences with old 1.2.1 version by running &quot;hg diff -r release-1.2.1:release-2.0.0&quot; which will produce more than <strong>22,000 lines</strong> of output! In those 22k lines I tried to nail down all the quirks the project had accumulated since its start 4 years ago and the resulting code base is now cleaner than ever, more manageable and fully compliant with PEP-7 and PEP-8 guidelines.
-There were some difficult decisions because many of the changes I introduced are not backward compatible so I was concerned with the pain this may cause existing users. I kind of still am, but I'm sure the transition will be well perceived on the long run as it will result in more manageable user code. OK, enough with the preface and let's see what changed.</p>
-<div class="section" id="api-changes">
-<h2>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h2>
-<p>I already wrote a detailed <a class="reference external" href="psutil-20-api-redesign">blog post</a> about what changed so I recommend you to use that as the official reference on how to port your code.</p>
-</div>
-<div class="section" id="rst-documentation">
-<h2>RST documentation<a class="headerlink" href="#rst-documentation" title="Permalink to this headline">¶</a></h2>
-<p>I've never been happy with old doc hosted on Google Code. The markup language provided by Google is pretty limited, plus it's not put under revision control. New doc is more detailed, it uses reStructuredText as the markup language, it lives in the same code repository as psutil's and it is hosted on the excellent readthedocs web site: <a class="reference external" href="http://psutil.readthedocs.org/">http://psutil.readthedocs.org/</a></p>
-</div>
-<div class="section" id="physical-cpus-count">
-<h2>Physical CPUs count<a class="headerlink" href="#physical-cpus-count" title="Permalink to this headline">¶</a></h2>
-<p>You're now able to distinguish between logical and physical CPUs:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
-<span class="mi">4</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># physical cores only</span>
-<span class="mi">2</span>
-</pre></div>
-<p>Full story is in <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=427">issue 427</a>.</p>
-</div>
-<div class="section" id="process-instances-are-hashable">
-<h2>Process instances are hashable<a class="headerlink" href="#process-instances-are-hashable" title="Permalink to this headline">¶</a></h2>
-<p>Basically this means process instances can now be checked for equality and can be used with set()s:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p1</span> <span class="o">==</span> <span class="n">p2</span>
-<span class="kc">True</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">set</span><span class="p">((</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">))</span>
-<span class="nb">set</span><span class="p">([</span><span class="o">&lt;</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">8217</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">140007043550608</span><span class="o">&gt;</span><span class="p">])</span>
-</pre></div>
-<p>Full story is in <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=452">issue 452</a>.</p>
-</div>
-<div class="section" id="speedups">
-<h2>Speedups<a class="headerlink" href="#speedups" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=477">#477</a>: process <cite>cpu_percent()</cite> is about 30% faster.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=478">#478</a>: (Linux) almost all APIs are about 30% faster on Python 3.X.</li>
-</ul>
-</div>
-<div class="section" id="other-improvements-and-bugfixes">
-<h2>Other improvements and bugfixes<a class="headerlink" href="#other-improvements-and-bugfixes" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=424">#424</a>: Windows installers for Python 3.X 64-bit</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=447">#447</a>: <cite>psutil.wait_procs()</cite> timeout parameter is now optional.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=459">#459</a>: a Makefile is now available for running tests and other repetitive tasks (also on Windows)</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=463">#463</a>: timeout parameter of <tt class="docutils literal">cpu_percent*</tt> functions default to 0.0 because it was a common trap to introduce slowdowns.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=340">#340</a>: (Windows) process <cite>open_files()</cite> no longer hangs.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=448">#448</a>: (Windows) fixed a memory leak affecting <cite>children()</cite> and <cite>ppid()</cite> methods.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=461">#461</a>: namedtuples are now pickle-able.</li>
-<li><a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=474">#474</a>: (Windows) <cite>Process.cpu_percent()</cite> is no longer capped at 100%</li>
-</ul>
-<p>OK, that's all folks. I hope you will enjoy this new version and report your feedback.</p>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2014/reimplementing-netstat-in-python" rel="bookmark"
-                   title="Permalink to Reimplementing netstat in Python">Reimplementing netstat in Python</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2014-03-10T00:00:00+01:00">
-        Created: 10 mar 2014,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/network">network</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.0 is out and with it I finally managed to implement something I've been wanting to have for a long time: netstat-like functionalities (see <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=387">ticket</a>). Similarly to <cite>&quot;netstat -antp&quot;</cite> on UNIX you can now list system-wide connections in pure python and also determine <strong>what process (PID) is using a particular connection</strong>:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_connections</span><span class="p">())</span>
-<span class="p">[</span><span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">587</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">6379</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.1.1&#39;</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;10.0.3.1&#39;</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">631</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="mi">3389</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">34785</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="mi">3591</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">56359</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="mi">3591</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;::&#39;</span><span class="p">,</span> <span class="mi">56720</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">)]</span>
-<span class="o">&gt;&gt;&gt;</span>
-</pre></div>
-<p>This is yet another functionality which can be used for monitoring purposes. For example, say you want to make sure your HTTP server is running on port 80, you can do something like this:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">check_listening_port</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if the given TCP port is busy and in LISTEN mode.&quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">conn</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">net_connections</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;tcp&#39;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">conn</span><span class="o">.</span><span class="n">laddr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">port</span> <span class="ow">and</span> <span class="n">conn</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">psutil</span><span class="o">.</span><span class="n">CONN_LISTEN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="kc">False</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">check_listening_port</span><span class="p">(</span><span class="mi">80</span><span class="p">))</span>
-</pre></div>
-<div class="section" id="netstat-in-pure-python">
-<h2>Netstat in pure python<a class="headerlink" href="#netstat-in-pure-python" title="Permalink to this headline">¶</a></h2>
-<p>Here it is, in 65 lines of code: <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/netstat.py">netstat.py</a>. Pretty neat right? ;-)</p>
-</div>
-<div class="section" id="implementation-s">
-<h2>Implementation(s)<a class="headerlink" href="#implementation-s" title="Permalink to this headline">¶</a></h2>
-<p>As always, each platform required its own, different, implementation. Luckily for some platforms (OSX, Windows) I was able to reuse and customize some code from the existing <cite>Process.connections()</cite> implementation which was already in place. For those of you who are interested in knowing how this was done here's the source code references:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/_pslinux.py#L741">Linux</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/arch/windows/socks.c">Windows</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/arch/freebsd/sys_socks.c">FreeBSD</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/_psutil_sunos.c#L1115">Solaris</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/_psutil_osx.c#L1072">OSX</a></li>
-</ul>
-<p>Hopefully this will help whoever needs to do this into another language. The only platform where this is sort of clunky is OSX, which does not expose anything to list all system-wide sockets in a single shot, so you're forced to query each process. That means you'll need root privileges otherwise you'll get an access denied error. For what it's worth, I took a look at <cite>lsof</cite> and it has the same limitation and netstat runs with SUID. Well, I guess this is it. I'll leave you with <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_connections">some docs</a>. For the next one I'm planning on working on a couple of other network-related functionalities: <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=376">&quot;ifconfig&quot;</a> and <a class="reference external" href="https://code.google.com/p/psutil/issues/detail?id=250">NIC speeds</a>. But that's for another time...</p>
 </div>
 
         </div>

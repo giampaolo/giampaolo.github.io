@@ -28,6 +28,216 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2017/psutil-511-system-temperature-battery-and-cpu-frequency" rel="bookmark"
+                   title="Permalink to psutil 5.1.1 system temperature, battery and CPU frequency">psutil 5.1.1 system temperature, battery and CPU frequency</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2017-02-01T00:00:00+01:00">
+        Created: 01 feb 2017,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> release. Main highlights of this release are sensors-related APIs.</p>
+<div class="section" id="temperatures">
+<h2>Temperatures<a class="headerlink" href="#temperatures" title="Permalink to this headline">¶</a></h2>
+<p>It is now possible to retrieve hardware temperatures. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/962/files">here</a>. Unfortunately this is Linux only. I couldn't manage to implement this on other platforms mainly for two reasons:</p>
+<ul class="simple">
+<li>On Windows it is hard to do this in a hardware agnostic fashion. I bumped into 3 different approaches, all using WMI, and none of them worked with my hardware so I gave up.</li>
+<li>On OSX it appears it is possible to retrieve temperatures relatively easily, but I have a virtualized OSX box which does not support sensors, so basically I gave up on this due to lack of hardware. If somebody wants to give it a try <a class="reference external" href="https://github.com/giampaolo/psutil/issues/371#issuecomment-274961948">be my guest</a>.</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">sensors_temperatures</span><span class="p">()</span>
+<span class="p">{</span><span class="s1">&#39;acpitz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">47.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">103.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">103.0</span><span class="p">)],</span>
+ <span class="s1">&#39;asus&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">47.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="kc">None</span><span class="p">)],</span>
+ <span class="s1">&#39;coretemp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Physical id 0&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">52.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">),</span>
+              <span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Core 0&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">45.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">),</span>
+              <span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Core 1&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">52.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">),</span>
+              <span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Core 2&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">45.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">),</span>
+              <span class="n">shwtemp</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Core 3&#39;</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="mf">47.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">critical</span><span class="o">=</span><span class="mf">100.0</span><span class="p">)]}</span>
+</pre></div>
+</div>
+<div class="section" id="battery-status">
+<h2>Battery status<a class="headerlink" href="#battery-status" title="Permalink to this headline">¶</a></h2>
+<p>This works on Linux, Windows and FreeBSD and provides battery status information. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/963/files">here</a>.</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span><span class="w"> </span><span class="nf">secs2hours</span><span class="p">(</span><span class="n">secs</span><span class="p">):</span>
+<span class="o">...</span>     <span class="n">mm</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">secs</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="o">...</span>     <span class="n">hh</span><span class="p">,</span> <span class="n">mm</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="o">...</span>     <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">hh</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">ss</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">battery</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">sensors_battery</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">battery</span>
+<span class="n">sbattery</span><span class="p">(</span><span class="n">percent</span><span class="o">=</span><span class="mi">93</span><span class="p">,</span> <span class="n">secsleft</span><span class="o">=</span><span class="mi">16628</span><span class="p">,</span> <span class="n">power_plugged</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;charge = </span><span class="si">%s%%</span><span class="s2">, time left = </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">batt</span><span class="o">.</span><span class="n">percent</span><span class="p">,</span> <span class="n">secs2hours</span><span class="p">(</span><span class="n">batt</span><span class="o">.</span><span class="n">secsleft</span><span class="p">)))</span>
+<span class="n">charge</span> <span class="o">=</span> <span class="mi">93</span><span class="o">%</span><span class="p">,</span> <span class="n">time</span> <span class="n">left</span> <span class="o">=</span> <span class="mi">4</span><span class="p">:</span><span class="mi">37</span><span class="p">:</span><span class="mi">08</span>
+</pre></div>
+</div>
+<div class="section" id="cpu-frequency">
+<h2>CPU frequency<a class="headerlink" href="#cpu-frequency" title="Permalink to this headline">¶</a></h2>
+<p>Available under Linux, Windows and OSX. Relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/952/files">here</a>. Linux is the only platform which reports the real-time value (always changing); on all other platforms current frequency is represented as the nominal “fixed” value.</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_freq</span><span class="p">()</span>
+<span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">931.42925</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_freq</span><span class="p">(</span><span class="n">percpu</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">[</span><span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">2394.945</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">),</span>
+ <span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">2236.812</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">),</span>
+ <span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">1703.609</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">),</span>
+ <span class="n">scpufreq</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="mf">1754.289</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">800.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">3500.0</span><span class="p">)]</span>
+</pre></div>
+</div>
+<div class="section" id="what-cpu-a-process-is-on">
+<h2>What CPU a process is on<a class="headerlink" href="#what-cpu-a-process-is-on" title="Permalink to this headline">¶</a></h2>
+<p>This will let you know what CPU number a process is currently running on, which is somewhat related to the existing <a class="reference external" href="https://pythonhosted.org/psutil/#psutil.Process.cpu_affinity">cpu_affinity()</a> functionality. The relevant commit is <a class="reference external" href="https://github.com/giampaolo/psutil/pull/954/files">here</a>. It is interesting to use this method to visualize how the OS scheduler continuously evenly reassigns processes to different CPUs (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-5.1.0/scripts/cpu_distribution.py">cpu_distribution.py</a> script).</p>
+</div>
+<div class="section" id="cpu-affinity">
+<h2>CPU affinity<a class="headerlink" href="#cpu-affinity" title="Permalink to this headline">¶</a></h2>
+<p>A new syntax can now be used as an alias for &quot;set affinity against all eligible CPUs&quot;.</p>
+<div class="highlight"><pre><span></span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">cpu_affinity</span><span class="p">([])</span>
+</pre></div>
+<p>This was implemented because it turns out <a class="reference external" href="https://github.com/giampaolo/psutil/issues/956">on Linux</a> it is not always possible to set affinity against all CPUs. Having such an alias is also a shortcut to avoid doing this, which is kinda verbose:</p>
+<div class="highlight"><pre><span></span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">cpu_affinity</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())))</span>
+</pre></div>
+</div>
+<div class="section" id="other-bug-fixes">
+<h2>Other bug fixes<a class="headerlink" href="#other-bug-fixes" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">full list</a>.</p>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2016/psutil-550-is-twice-as-fast" rel="bookmark"
+                   title="Permalink to psutil 5.5.0 is twice as fast">psutil 5.5.0 is twice as fast</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2016-11-06T00:00:00+01:00">
+        Created: 06 nov 2016,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>,        <a href="https://gmpy.dev/tags/macos">macos</a>,        <a href="https://gmpy.dev/tags/bsd">bsd</a>,        <a href="https://gmpy.dev/tags/sunos">sunos</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>OK, this is a big one. Starting from psutil 5.0.0 you can query multiple <cite>Process</cite> information around twice as fast as with previous versions (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/799">original ticket</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot">updated doc</a>). It took me 7 months, 108 commits and a massive refactoring of psutil internals (here is the <a class="reference external" href="https://github.com/giampaolo/psutil/pull/937/files">big commit</a>), and I can safely say this is one of the best improvements and long standing issues which have been addressed in a major psutil release. Here goes.</p>
+<div class="section" id="the-problem">
+<h2>The problem<a class="headerlink" href="#the-problem" title="Permalink to this headline">¶</a></h2>
+<p>Except for some cases, the way different process information is retrieved varies depending on the OS. Sometimes it requires reading a file in the /proc filesystem (Linux), some other times it requires using C (Windows, BSD, OSX, SunOS), but every time it's done differently. Psutil abstracts this complexity by providing a nice high-level interface so that you, say, call <tt class="docutils literal">Process.name()</tt> without worrying about what happens behind the curtains or on what OS you're on.</p>
+<p>Internally, it is not rare that multiple process info (e.g. <cite>name()</cite>, <cite>ppid()</cite>, <cite>uids()</cite>, <cite>create_time()</cite>) may be fetched by using the same routine. For example, on Linux we read <cite>/proc/stat</cite> to get the process name, terminal, CPU times, creation time, status and parent PID, but only one value is returned and the others are discarded. On Linux, the code below reads <cite>/proc/stat</cite> 6 times:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">cpu_times</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">create_time</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">ppid</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">terminal</span><span class="p">()</span>
+</pre></div>
+<p>Another example is BSD. In order to get process name, memory, CPU times and other metrics, a single <cite>sysctl()</cite> call is necessary, but again, because of how psutil used to work so far that same sysctl() call is executed every time (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/2fe3f456321ca1605aaa2b71a7193de59d93075c/psutil/_psutil_bsd.c#L242-L258">here</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/blob/2fe3f456321ca1605aaa2b71a7193de59d93075c/psutil/_psutil_bsd.c#L261-L277">here</a>, and so on), one piece of information is returned (say <cite>name()</cite>) and the rest is discarded. Not anymore.</p>
+</div>
+<div class="section" id="do-it-in-one-shot">
+<h2>Do it in one shot<a class="headerlink" href="#do-it-in-one-shot" title="Permalink to this headline">¶</a></h2>
+<p>It appears clear how the approach described above is not efficient, also considering that applications similar to top, htop, ps or glances usually collect more than one info per-process.
+psutil 5.0.0 introduces a new <cite>oneshot()</cite> context manager. When used, the internal routine is executed once (in the example below on name()) and the other values are cached. The subsequent calls sharing the same internal routine (read <cite>/proc/stat</cite>, call <cite>sysctl()</cite> or whatever) will return the cached value.
+With psutil 5.0.0 the code above can be rewritten like this, and on Linux it will run 2.4 times faster:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">p</span><span class="o">.</span><span class="n">oneshot</span><span class="p">():</span>
+<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">cpu_times</span><span class="p">()</span>
+<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">create_time</span><span class="p">()</span>
+<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">ppid</span><span class="p">()</span>
+<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+<span class="o">...</span>     <span class="n">p</span><span class="o">.</span><span class="n">terminal</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p>One great thing about psutil design is its abstraction. It is divided into 3 &quot;layers&quot;. The first layer is represented by the main <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/__init__.py#L340">Process class</a> (python), which is what dictates the end-user high-level API. The second layer is the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_pslinux.py#L1097">OS-specific Python module</a> which is a thin wrapper on top of the OS-specific <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_linux.c">C extension module</a> (third layer). Because this was organized this way (modularly) the refactoring was reasonably smooth. In order to do this I first refactored those C functions collecting multiple info and grouped them into a single function (e.g. see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_bsd.c#L198-L338">BSD implementation</a>). Then I wrote a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_common.py#L264-L314">decorator</a> which enables the cache only when requested (when entering the context manager) and decorated the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psbsd.py#L491">&quot;grouped functions&quot;</a> with it. The whole thing is enabled on request by the highest-level <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/__init__.py#L458-L518">oneshot()</a> context manager, which is the only thing which is exposed to the end user. Here's the decorator:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">memoize_when_activated</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A memoize decorator which is disabled by default. It can be</span>
+<span class="sd">    activated and deactivated on request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fun</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">fun</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">fun</span><span class="p">]</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">cache_activate</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Activate cache.&quot;&quot;&quot;</span>
+        <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">cache_deactivate</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deactivate and clear cache.&quot;&quot;&quot;</span>
+        <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activated</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_activate</span> <span class="o">=</span> <span class="n">cache_activate</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_deactivate</span> <span class="o">=</span> <span class="n">cache_deactivate</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+</pre></div>
+<p>In order to measure the various speedups I finally wrote a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/scripts/internal/bench_oneshot.py">benchmark script</a> (well, <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/scripts/internal/bench_oneshot_2.py">two</a> actually) and kept tuning until I was sure the various changes made psutil actually faster. The benchmark scripts calculate the speedup you can get if you call all the &quot;grouped&quot; methods together (best case scenario).</p>
+</div>
+<div class="section" id="linux-2-56x-speedup">
+<h2>Linux: +2.56x speedup<a class="headerlink" href="#linux-2-56x-speedup" title="Permalink to this headline">¶</a></h2>
+<p>Linux process is the only pure-python implementation as (almost) all process info is gathered by reading files in the <cite>/proc</cite> filesystem. <cite>/proc</cite> files typically contain different information about the process and <cite>/proc/PID/stat</cite> and <cite>/proc/PID/status</cite> are the perfect examples. That's why on Linux we aggregate them in 3 groups. The relevant part of the Linux implementation can be seen <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_pslinux.py#L1108-L1153">here</a>.</p>
+</div>
+<div class="section" id="windows-from-1-9x-to-6-5x-speedup">
+<h2>Windows: from +1.9x to +6.5x speedup<a class="headerlink" href="#windows-from-1-9x-to-6-5x-speedup" title="Permalink to this headline">¶</a></h2>
+<p>Windows is an interesting one. In normal circumstances, if we're querying a process owned by our user, we group together only process' <cite>num_threads()</cite>, <cite>num_ctx_switches()</cite> and <cite>num_handles()</cite>, getting a +1.9x speedup if we access those methods in one shot. Windows is particular though, because certain methods use a <a class="reference external" href="https://github.com/giampaolo/psutil/issues/304">dual implementation</a>: a &quot;fast method&quot; is attempted first, but if the process is owned by another user it fails with AccessDenied. In that case psutil falls back on using a second &quot;slower&quot; method (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_pswindows.py#L681">here</a> for example).
+The second method is slower because it <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/arch/windows/process_info.c#L790">iterates over all PIDs</a> but unlike &quot;plain&quot; Windows APIs it can be used to <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_windows.c#L2789">get multiple info in one shot</a>: num threads, context switches, handles, CPU times, create time and IO counters. That is why querying processes owned by other users results in an impressive +6.5 speedup.</p>
+</div>
+<div class="section" id="osx-1-92x-speedup">
+<h2>OSX: +1.92x speedup<a class="headerlink" href="#osx-1-92x-speedup" title="Permalink to this headline">¶</a></h2>
+<p>On OSX we can get 2 groups of information. With <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_osx.c#L129">sysctl()</a> syscall we get process parent PID, uids, gids, terminal, create time, name. With <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_osx.c#L183">proc_info()</a> syscall we get CPU times (for PIDs owned by another user), memory metrics and ctx switches. Not bad.</p>
+</div>
+<div class="section" id="bsd-2-18x-speedup">
+<h2>BSD: +2.18x speedup<a class="headerlink" href="#bsd-2-18x-speedup" title="Permalink to this headline">¶</a></h2>
+<p>BSD was an interesting one as we gather tons of process info just by calling <cite>sysctl()</cite> (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_bsd.c#L199">implementation</a>). In a single shot we get process name, ppid, status, uids, gids, IO counters, CPU and create times, terminal and ctx switches.</p>
+</div>
+<div class="section" id="sunos-1-37-speedup">
+<h2>SunOS: +1.37 speedup<a class="headerlink" href="#sunos-1-37-speedup" title="Permalink to this headline">¶</a></h2>
+<p>SunOS implementation is similar to Linux implementation in that it reads files in the <cite>/proc</cite> filesystem but differently from Linux this is done in C. Also in this case, we can group different metrics together (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_psutil_sunos.c#L83-L142">here</a> and <a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_psutil_sunos.c#L171-L189">here</a>).</p>
+</div>
+<div class="section" id="external-links">
+<h2>External links<a class="headerlink" href="#external-links" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/5bhn4q/psutil_500_is_around_twice_as_fast/">Reddit</a></li>
+</ul>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2016/psutil-440-improved-linux-memory-metrics" rel="bookmark"
                    title="Permalink to psutil 4.4.0: improved Linux memory metrics">psutil 4.4.0: improved Linux memory metrics</a></h1>
         </header>
@@ -50,11 +260,11 @@
 </footer><!-- /.post-info -->            <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. Main highlights of this release are more accurate memory metrics on Linux and different OSX fixes. Here goes.</p>
 <div class="section" id="linux-virtual-memory">
 <h2>Linux virtual memory<a class="headerlink" href="#linux-virtual-memory" title="Permalink to this headline">¶</a></h2>
-<p>This new release sets a milestone regarding <tt class="docutils literal">virtual_memory()</tt> metrics on Linux which are now calculated way <a class="reference external" href="https://github.com/giampaolo/psutil/issues/887">more precisely</a> (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/890/files">commit</a>). Across the years different people complained that the numbers reported by <cite>virtual_memory()</cite> were not accurate or did not match the ones reported by <cite>free</cite> command line utility exactly (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/862">#862</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/685">#685</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/538">#538</a>). As such I investigated how &quot;available memory&quot; is calculated on Linux and indeed psutil were doing it wrong. It turns out &quot;free&quot; cmdline itself, and many other similar tools, also did it wrong up until <a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773">2 years ago</a> when somebody finally decided to accurately calculate the available system memory straight into the Linux kernel and expose this info to user-level applications. Starting from Linux kernel 3.14, a new <cite>&quot;MemAvailable&quot;</cite> column was added to <cite>/proc/meminfo</cite> and this is how psutil now determines available memory. Because of this both &quot;available&quot; and &quot;used&quot; memory fields returned by virtual_memory() precisely match <cite>free</cite> command line utility. As for older kernels (&lt; 3.14), psutil tries to determine this value by using the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L291">same algorithm</a> which was used in the original <a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773">Linux kernel commit</a>. Free cmdline utility source code also inspired an additional fix which prevents available memory overflowing total memory on <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L435">LCX containers</a>.</p>
+<p>This new release sets a milestone regarding <tt class="docutils literal">virtual_memory()</tt> metrics on Linux which are now calculated way <a class="reference external" href="https://github.com/giampaolo/psutil/issues/887">more precisely</a> (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/890/files">commit</a>). Across the years different people complained that the numbers reported by <cite>virtual_memory()</cite> were not accurate or did not match the ones reported by the <cite>free</cite> command line utility exactly (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/862">#862</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/685">#685</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/538">#538</a>). As such I investigated how &quot;available memory&quot; is calculated on Linux and indeed psutil was doing it wrong. It turns out &quot;free&quot; cmdline itself, and many other similar tools, also did it wrong up until <a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773">2 years ago</a> when somebody finally decided to accurately calculate the available system memory straight into the Linux kernel and expose this info to user-level applications. Starting from Linux kernel 3.14, a new <cite>&quot;MemAvailable&quot;</cite> column was added to <cite>/proc/meminfo</cite> and this is how psutil now determines available memory. Because of this, both &quot;available&quot; and &quot;used&quot; memory fields returned by virtual_memory() precisely match the <cite>free</cite> command line utility. As for older kernels (&lt; 3.14), psutil tries to determine this value by using the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L291">same algorithm</a> which was used in the original <a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773">Linux kernel commit</a>. Free cmdline utility source code also inspired an additional fix which prevents available memory from overflowing total memory on <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L435">LCX containers</a>.</p>
 </div>
 <div class="section" id="osx-fixes">
 <h2>OSX fixes<a class="headerlink" href="#osx-fixes" title="Permalink to this headline">¶</a></h2>
-<p>For many years the OSX development of psutil occurred on a very old OSX 10.5 version, which I emulated via VirtualBox. The OS itself was a hacked version of OSX, called iDeneb. After many years I finally managed to get access to a more recent version of OSX (El Captain) thanks to VirtualBox + Vagrant. With this I finally had the chance to address many long standing OSX bugs. Here's the list:</p>
+<p>For many years the OSX development of psutil occurred on a very old OSX 10.5 version, which I emulated via VirtualBox. The OS itself was a hacked version of OSX, called iDeneb. After many years I finally managed to get access to a more recent version of OSX (El Capitan) thanks to VirtualBox + Vagrant. With this I finally had the chance to address many long standing OSX bugs. Here's the list:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/514">514</a>: fix <tt class="docutils literal">Process.memory_maps()</tt> segfault (critical!).</li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/783">783</a>: <tt class="docutils literal">Process.status()</tt> may erroneously return &quot;running&quot; for zombie processes.</li>
@@ -65,7 +275,7 @@
 </div>
 <div class="section" id="improved-procinfo-py-script">
 <h2>Improved procinfo.py script<a class="headerlink" href="#improved-procinfo-py-script" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/procinfo.py">procinfo.py</a> is a script which shows psutil capabilities regarding obtaining different info about processes. I improved it so that now it reports a lot more info. Here's a sample output:</p>
+<p><a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-4.4.0/scripts/procinfo.py">procinfo.py</a> is a script which shows psutil capabilities regarding obtaining different info about processes. I improved it so that now it reports a lot more info. Here's a sample output:</p>
 <pre class="literal-block">
 $ python scripts/procinfo.py
 pid           4600
@@ -150,7 +360,7 @@ mem-maps      RSS      PATH
 </div>
 <div class="section" id="other-improvements-and-bug-fixes">
 <h2>Other improvements and bug fixes<a class="headerlink" href="#other-improvements-and-bug-fixes" title="Permalink to this headline">¶</a></h2>
-<p>Just take a look at the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#440---2016-10-23">HISTORY</a> file.</p>
+<p>Just take a look at the <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">HISTORY</a> file.</p>
 </div>
 
         </div>
@@ -206,7 +416,7 @@ mem-maps      RSS      PATH
 <p>Initially I thought to expose and provide a complete set of APIs to handle all aspects of service handling including <tt class="docutils literal">start()</tt>, <tt class="docutils literal">stop()</tt>, <tt class="docutils literal">restart()</tt>, <tt class="docutils literal">install()</tt>, <tt class="docutils literal">uninstall()</tt> and <tt class="docutils literal">modify()</tt> but I soon realized that I would have ended up reimplementing what pywin32 already provides at the cost of overcrowding psutil API (see my reasoning <a class="reference external" href="https://github.com/giampaolo/psutil/blob/d28de253a2e6d7f368e5260d7a4ab14b285c5083/psutil/_pswindows.py#L426">here</a>). I think psutil should really be about monitoring, not about installing and modifying system stuff, especially something as critical as a Windows service.</p>
 <div class="section" id="considerations-about-windows-services">
 <h2>Considerations about Windows services<a class="headerlink" href="#considerations-about-windows-services" title="Permalink to this headline">¶</a></h2>
-<p>For those of you who are not familiar with Windows, a service is something, generally an executable (.exe), which runs at system startup and keeps running in background. We can say they are the equivalent of a UNIX init script. All service are controlled by a &quot;manager&quot; which keeps track of their status and metadata (e.g. description, startup type) and with that you can start and stop them. It is interesting to note that since (most) services are bound to an executable (and hence a process) you can reference the process via its PID:</p>
+<p>For those of you who are not familiar with Windows, a service is something, generally an executable (.exe), which runs at system startup and keeps running in the background. We can say they are the equivalent of a UNIX init script. All services are controlled by a &quot;manager&quot; which keeps track of their status and metadata (e.g. description, startup type) and with that you can start and stop them. It is interesting to note that since (most) services are bound to an executable (and hence a process) you can reference the process via its PID:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">win_service_get</span><span class="p">(</span><span class="s1">&#39;sshd&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">s</span>
 <span class="o">&lt;</span><span class="n">WindowsService</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;sshd&#39;</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;Open SSH server&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">38853046</span><span class="o">&gt;</span>
@@ -224,7 +434,7 @@ mem-maps      RSS      PATH
 <p>psutil 4.2.0 comes with 2 other enhancements for Linux:</p>
 <ul class="simple">
 <li><tt class="docutils literal">psutil.virtual_memory()</tt> returns a new &quot;shared&quot; memory field. This is the same value reported by <tt class="docutils literal">free</tt> cmdline utility.</li>
-<li>I changed the way how <tt class="docutils literal">/proc</tt> was parsed. Instead of reading <tt class="docutils literal"><span class="pre">/proc/{pid}/status</span></tt> line by line I used a regular expression. Here's the speedups:<ul>
+<li>I changed the way <tt class="docutils literal">/proc</tt> was parsed. Instead of reading <tt class="docutils literal"><span class="pre">/proc/{pid}/status</span></tt> line by line I used a regular expression. Here are the speedups:<ul>
 <li><tt class="docutils literal">Process.ppid()</tt> is 20% faster</li>
 <li><tt class="docutils literal">Process.status()</tt> is 28% faster</li>
 <li><tt class="docutils literal">Process.name()</tt> is 25% faster</li>
@@ -268,12 +478,12 @@ mem-maps      RSS      PATH
 </footer><!-- /.post-info -->            <p>Roughly two months have passed since I last announced <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> added support for OpenBSD platforms. Today I am happy to announce we also have NetBSD support! This was contributed by <a class="reference external" href="https://github.com/0-wiz-0">Thomas Klausner</a>, <a class="reference external" href="https://github.com/ryoon">Ryo Onodera</a> and myself in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">#570</a>.</p>
 <div class="section" id="differences-with-freebsd-and-openbsd">
 <h2>Differences with FreeBSD (and OpenBSD)<a class="headerlink" href="#differences-with-freebsd-and-openbsd" title="Permalink to this headline">¶</a></h2>
-<p>NetBSD implementation has similar limitations as the ones I encountered with OpenBSD. Again, FreeBSD presents itself as the BSD variant with the best support in terms of kernel functionalities.</p>
+<p>The NetBSD implementation has similar limitations to the ones I encountered with OpenBSD. Again, FreeBSD presents itself as the BSD variant with the best support in terms of kernel functionalities.</p>
 <ul class="simple">
 <li><tt class="docutils literal">Process.memory_maps()</tt> is not implemented. The kernel provides the necessary pieces but I didn't do this yet (hopefully later).</li>
 <li><tt class="docutils literal">Process.num_ctx_switches()</tt>'s involuntary field is always 0. <tt class="docutils literal">kinfo_proc</tt> syscall provides this info but it is always set to 0.</li>
 <li><tt class="docutils literal">Process.cpu_affinity()</tt> (get and set) is not supported.</li>
-<li><tt class="docutils literal">psutil.cpu_count(logical=False)</tt> always return <tt class="docutils literal">None</tt>.</li>
+<li><tt class="docutils literal">psutil.cpu_count(logical=False)</tt> always returns <tt class="docutils literal">None</tt>.</li>
 </ul>
 <p>As for the rest: it is all there. All memory, disk, network and process APIs are fully supported and functioning.</p>
 </div>
@@ -284,11 +494,11 @@ mem-maps      RSS      PATH
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/708">#708</a>: [Linux] <tt class="docutils literal">psutil.net_connections()</tt> and <tt class="docutils literal">Process.connections()</tt> on Python can be up to 3x faster in case of many connections.</li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/718">#718</a>: <tt class="docutils literal">process_iter()</tt> is now thread safe.</li>
 </ul>
-<p>You can read the rest in the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">HISTORY</a> file, as usual.</p>
+<p>You can read the rest in the <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">HISTORY</a> file, as usual.</p>
 </div>
 <div class="section" id="move-to-prague">
 <h2>Move to Prague<a class="headerlink" href="#move-to-prague" title="Permalink to this headline">¶</a></h2>
-<p>As a personal note I'd like to add that I'm currently in Prague (Czech Republic) and I'm thinking about moving down here for a while. The city is great and girls are beautiful. ;-)</p>
+<p>As a personal note I'd like to add that I'm currently in Prague (Czech Republic) and I'm thinking about moving down here for a while.</p>
 </div>
 <div class="section" id="external-discussions">
 <h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>
@@ -299,399 +509,15 @@ mem-maps      RSS      PATH
 </div>
 
         </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python" rel="bookmark"
-                   title="Permalink to Real process memory and environ in Python">Real process memory and environ in Python</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2016-02-17T00:00:00+01:00">
-        Created: 17 feb 2016,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>New psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll just get straight to the point and describe what's new.</p>
-<div class="section" id="real-process-memory-info">
-<h2>&quot;Real&quot; process memory info<a class="headerlink" href="#real-process-memory-info" title="Permalink to this headline">¶</a></h2>
-<p>Determining how much memory a process <strong>really</strong> uses is not an easy matter (see <a class="reference external" href="https://lwn.net/Articles/230975/">this</a> and <a class="reference external" href="http://bmaurer.blogspot.it/2006/03/memory-usage-with-smaps.html">this</a>). RSS (Resident Set Size), which is what most people usually rely on, is misleading because it includes both the memory which is unique to the process and the memory shared with other processes. What would be more interesting in terms of profiling is the memory which would be freed if the process was terminated <strong>right now</strong>. In the Linux world this is called USS (Unique Set Size), and this is the major feature which was introduced in psutil 4.0.0 (not only for Linux but also for Windows and OSX).</p>
-</div>
-<div class="section" id="uss-memory">
-<h2>USS memory<a class="headerlink" href="#uss-memory" title="Permalink to this headline">¶</a></h2>
-<p>The USS (Unique Set Size) is the memory which is unique to a process and which would be freed if the process was terminated right now. On Linux this can be determined by parsing all the &quot;private&quot; blocks in /proc/pid/smaps. The Firefox team pushed this further and managed to do the same also on <a class="reference external" href="https://dxr.mozilla.org/mozilla-central/rev/aa90f482e16db77cdb7dea84564ea1cbd8f7f6b3/xpcom/base/nsMemoryReporterManager.cpp">OSX and Windows</a>, which is great. New version of psutil is now able to do the same:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_full_info</span><span class="p">()</span>
-<span class="n">pfullmem</span><span class="p">(</span><span class="n">rss</span><span class="o">=</span><span class="mi">101990</span><span class="p">,</span> <span class="n">vms</span><span class="o">=</span><span class="mi">521888</span><span class="p">,</span> <span class="n">shared</span><span class="o">=</span><span class="mi">38804</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="mi">28200</span><span class="p">,</span> <span class="n">lib</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="mi">59672</span><span class="p">,</span> <span class="n">dirty</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">uss</span><span class="o">=</span><span class="mi">81623</span><span class="p">,</span> <span class="n">pss</span><span class="o">=</span><span class="mi">91788</span><span class="p">,</span> <span class="n">swap</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="section" id="pss-and-swap">
-<h2>PSS and swap<a class="headerlink" href="#pss-and-swap" title="Permalink to this headline">¶</a></h2>
-<p>On Linux there are two additional metrics which can also be determined via <cite>/proc/pid/smaps</cite>: PSS and swap. PSS, aka &quot;Proportional Set Size&quot;, represents the amount of memory shared with other processes, accounted in a way that the amount is divided evenly between the processes that share it. I.e. if a process has 10 MBs all to itself (USS) and 10 MBs shared with another process, its PSS will be 15 MBs. &quot;swap&quot; is simply the amount of memory that has been swapped out to disk. With memory_full_info() it is possible to implement a tool <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/scripts/procsmem.py">like this</a>, similar to <a class="reference external" href="https://www.selenic.com/smem/">smem</a> on Linux, which provides a list of processes sorted by &quot;USS&quot;. It is interesting to notice how RSS differs from USS:</p>
-<pre class="literal-block">
-~/svn/psutil$ ./scripts/procsmem.py
-PID     User    Cmdline                            USS     PSS    Swap     RSS
-==============================================================================
-...
-3986    giampao /usr/bin/python3 /usr/bin/indi   15.3M   16.6M      0B   25.6M
-3906    giampao /usr/lib/ibus/ibus-ui-gtk3       17.6M   18.1M      0B   26.7M
-3991    giampao python /usr/bin/hp-systray -x    19.0M   23.3M      0B   40.7M
-3830    giampao /usr/bin/ibus-daemon --daemoni   19.0M   19.0M      0B   21.4M
-20529   giampao /opt/sublime_text/plugin_host    19.9M   20.1M      0B   22.0M
-3990    giampao nautilus -n                      20.6M   29.9M      0B   50.2M
-3898    giampao /usr/lib/unity/unity-panel-ser   27.1M   27.9M      0B   37.7M
-4176    giampao /usr/lib/evolution/evolution-c   35.7M   36.2M      0B   41.5M
-20712   giampao /usr/bin/python -B /home/giamp   45.6M   45.9M      0B   49.4M
-3880    giampao /usr/lib/x86_64-linux-gnu/hud/   51.6M   52.7M      0B   61.3M
-20513   giampao /opt/sublime_text/sublime_text   65.8M   73.0M      0B   87.9M
-3976    giampao compiz                          115.0M  117.0M      0B  130.9M
-32486   giampao skype                           145.1M  147.5M      0B  149.6M
-</pre>
-</div>
-<div class="section" id="implementation">
-<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
-<p>In order to get these values (USS, PSS and swap) we need to pass through the whole process address space. This usually requires higher user privileges and is considerably slower than getting the &quot;usual&quot; memory metrics via Process.memory_info(), which is probably the reason why tools like ps and top show RSS/VMS instead of USS. A big thanks goes to the Mozilla team which figured out all this stuff on Windows and OSX, and to Eric Rahm who put the PRs for psutil together (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/744">#744</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/pull/745">#745</a> and <a class="reference external" href="https://github.com/giampaolo/psutil/pull/746">#746</a>). For those of you who don't use Python and would like to port the code on other languages here's the interesting parts:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/42b34049cf96e845b6423db91f991849a2f87578/psutil/_pslinux.py#L1026">Linux</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_psutil_osx.c#L568">OSX</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_psutil_windows.c#L811">Windows</a></li>
-</ul>
-</div>
-<div class="section" id="memory-type-percent">
-<h2>Memory type percent<a class="headerlink" href="#memory-type-percent" title="Permalink to this headline">¶</a></h2>
-<p>After <a class="reference external" href="https://github.com/giampaolo/psutil/pull/744#issuecomment-180054438">reorganizing process memory APIs</a> I decided to add a new memtype parameter to Process.memory_percent(). With this it is now possible to compare a specific memory type (not only RSS) against the total physical memory. E.g.</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_percent</span><span class="p">(</span><span class="n">memtype</span><span class="o">=</span><span class="s1">&#39;pss&#39;</span><span class="p">)</span>
-<span class="mf">0.06877466326787016</span>
-</pre></div>
-</div>
-<div class="section" id="process-environ">
-<h2>Process environ<a class="headerlink" href="#process-environ" title="Permalink to this headline">¶</a></h2>
-<p>Second biggest improvement in psutil 4.0.0 is the ability to determine the process environment variables. This opens interesting possibilities about process recognition and monitoring techniques. For instance, one might start a process by passing a certain custom environment variable, then iterate over all processes to find the one of interest (and figure out whether it's running or whatever):</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">env</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">environ</span><span class="p">()</span>
-    <span class="k">except</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
-        <span class="k">pass</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s1">&#39;MYAPP&#39;</span> <span class="ow">in</span> <span class="n">env</span><span class="p">:</span>
-            <span class="o">...</span>
-</pre></div>
-<p>Process environ was a <a class="reference external" href="https://code.google.com/archive/p/psutil/issues/52">long standing issue</a> (year 2009) who I gave up to implement because the Windows implementation worked for the current process only. Frank Benkstein <a class="reference external" href="https://github.com/giampaolo/psutil/pull/747">solved that</a> and the process environ can now be determined on Linux, Windows and OSX for all processes (of course you may still bump into <cite>AccessDenied</cite> for processes owned by another user):</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">environ</span><span class="p">())</span>
-<span class="p">{</span><span class="o">...</span>
- <span class="s1">&#39;CLUTTER_IM_MODULE&#39;</span><span class="p">:</span> <span class="s1">&#39;xim&#39;</span><span class="p">,</span>
- <span class="s1">&#39;COLORTERM&#39;</span><span class="p">:</span> <span class="s1">&#39;gnome-terminal&#39;</span><span class="p">,</span>
- <span class="s1">&#39;COMPIZ_BIN_PATH&#39;</span><span class="p">:</span> <span class="s1">&#39;/usr/bin/&#39;</span><span class="p">,</span>
- <span class="s1">&#39;HOME&#39;</span><span class="p">:</span> <span class="s1">&#39;/home/giampaolo&#39;</span><span class="p">,</span>
- <span class="s1">&#39;PWD&#39;</span><span class="p">:</span> <span class="s1">&#39;/home/giampaolo/svn/psutil&#39;</span><span class="p">,</span>
-  <span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span>
-</pre></div>
-<p>It must be noted that the resulting dict usually does not reflect changes made after the process started (e.g. <tt class="docutils literal"><span class="pre">os.environ['MYAPP']</span> = '1'</tt>). Again, for whoever is interested in doing this in other languages, here's the interesting parts:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_pslinux.py#L928">Linux</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/arch/osx/process_info.c#L241">OSX</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/pull/747">Windows</a></li>
-</ul>
-</div>
-<div class="section" id="extended-disk-io-stats">
-<h2>Extended disk IO stats<a class="headerlink" href="#extended-disk-io-stats" title="Permalink to this headline">¶</a></h2>
-<p><tt class="docutils literal">psutil.disk_io_counters()</tt> has been extended to report additional metrics on Linux and FreeBSD:</p>
-<ul class="simple">
-<li>busy_time, which is the time spent doing actual I/Os (in milliseconds).</li>
-<li>read_merged_count and write_merged_count (Linux only), which is number of merged reads and writes (see <a class="reference external" href="https://www.kernel.org/doc/Documentation/iostats.txt">iostats</a> doc).</li>
-</ul>
-<p>With these new metrics it is possible to have a better representation of actual <a class="reference external" href="https://github.com/giampaolo/psutil/issues/756">disk utilization</a>, similarly to <tt class="docutils literal">iostat</tt> command on Linux.</p>
-</div>
-<div class="section" id="os-constants">
-<h2>OS constants<a class="headerlink" href="#os-constants" title="Permalink to this headline">¶</a></h2>
-<p>Given the increasing number of platform-specific metrics I added a new set of constants to quickly differentiate what platform you're on: <tt class="docutils literal">psutil.LINUX</tt>, <tt class="docutils literal">psutil.WINDOWS</tt>, etc. Main bug fixes:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/734">#734</a>: on Python 3 invalid UTF-8 data was not correctly handled for proces <tt class="docutils literal">name()</tt>, <tt class="docutils literal">cwd()</tt>, <tt class="docutils literal">exe()</tt>, <tt class="docutils literal">cmdline()</tt> and <tt class="docutils literal">open_files()</tt> methods, resulting in UnicodeDecodeError. This was affecting all platforms. Now <tt class="docutils literal">surrogateescape</tt> error handler is used as a workaround for replacing the corrupted data.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/761">#761</a>: [Windows] <tt class="docutils literal">psutil.boot_time()</tt> no longer wraps to 0 after 49 days.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/767">#767</a>: [Linux] <tt class="docutils literal">disk_io_counters()</tt> may raise ValueError on 2.6 kernels and it's  broken on 2.4 kernels.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/764">#764</a>: psutil can now be compiled on NetBSD-6.X.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/704">#704</a>: psutil can now be compiled on Solaris sparc.</li>
-</ul>
-<p>Complete list of bug fixes is available <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst">here</a>.</p>
-</div>
-<div class="section" id="porting-code">
-<h2>Porting code<a class="headerlink" href="#porting-code" title="Permalink to this headline">¶</a></h2>
-<p>Being 4.0.0 a major version, I took the chance to (lightly) change / break some APIs.</p>
-<ul class="simple">
-<li><tt class="docutils literal">Process.memory_info()</tt> no longer returns just an (rss, vms) namedtuple. Instead it returns a namedtuple of variable length, changing depending on the platform (rss and vms are always present though, also on Windows). Basically it returns the same result of old <tt class="docutils literal">memory_info_ex()</tt>. This shouldn't break your existent code, unless you were doing <tt class="docutils literal">rss, vms = p.memory_info()</tt>.</li>
-<li>At the same time process_memory_info_ex() is now deprecated. The method is still there as an alias for <tt class="docutils literal">memory_info()</tt>, issuing a deprecation warning.</li>
-<li><tt class="docutils literal">psutil.disk_io_counters()</tt> returns 2 additional fields on Linux and 1 additional field on FreeBSD.</li>
-<li><tt class="docutils literal">psutil.disk_io_counters()</tt> on NetBSD and OpenBSD no longer return write_count and read_count metrics because the kernel do not provide them (we were returning the busy time instead). I also don't expect this to be a big issue because NetBSD and OpenBSD support is very recent.</li>
-</ul>
-</div>
-<div class="section" id="final-notes-and-looking-for-a-job">
-<h2>Final notes and looking for a job<a class="headerlink" href="#final-notes-and-looking-for-a-job" title="Permalink to this headline">¶</a></h2>
-<p>OK, this is it. I would like to spend a couple more words to announce the world that I'm currently unemployed and looking for a remote gig again! =) I want remote because my plan for this year is to remain in Prague (Czech Republic) and possibly spend 2-3 months in Asia. If you know about any company who's looking for a Python backend dev who can work from afar feel free to share my <a class="reference external" href="https://www.linkedin.com/in/grodola/">Linkedin profile</a> or mail me at g.rodola [at] gmail [dot] com.</p>
-</div>
-<div class="section" id="external-links">
-<h2>External links<a class="headerlink" href="#external-links" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/469p2c/psutil_400_real_process_memory_info_and_process/">Reddit</a></li>
-<li><a class="reference external" href="https://news.ycombinator.com/item?id=11119298">Hacker news</a></li>
-</ul>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2016/how-to-always-execute-exit-functions-in-python" rel="bookmark"
-                   title="Permalink to How to always execute exit functions in Python">How to always execute exit functions in Python</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2016-02-12T00:00:00+01:00">
-        Created: 12 feb 2016,
-        </a>
-                <a class="modified" title="2016-02-13T00:00:00+01:00">
-                Modified: 13 feb 2016,</a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/recipe">recipe</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p><em>...or why atexit.register() and signal.signal() are evil</em></p>
-<ul class="simple">
-<li><strong>UPDATE (2016-02-13)</strong>: this recipe no longer handles <tt class="docutils literal">SIGINT</tt>, <tt class="docutils literal">SIGQUIT</tt> and <tt class="docutils literal">SIGABRT</tt> as aliases for &quot;application exit&quot; because it was a <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038471.html">bad idea</a>. It only handles <tt class="docutils literal">SIGTERM</tt>. Also it no longer support Windows because <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> implementation is <a class="reference external" href="http://bugs.python.org/issue26350">too different</a> than POSIX.*</li>
-</ul>
-<p>Many people erroneously think that any function registered via <a class="reference external" href="https://docs.python.org/3/library/atexit.html">atexit module</a> is guaranteed to always be executed when the program terminates. You may have noticed this is not the case when, for example, you daemonize your app in production then try to stop it or restart it: the cleanup functions will not be executed. This is because functions registered wth atexit module are <strong>not called</strong> when the program is killed by a signal:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">atexit</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">signal</span>
-
-<span class="nd">@atexit</span><span class="o">.</span><span class="n">register</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;on exit&quot;</span><span class="p">)</span>  <span class="c1"># XXX this never gets printed</span>
-
-<span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
-</pre></div>
-<p>It must be noted that the same thing would happen if instead of <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> we would use a &quot;finally&quot; clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. That has a drawback though: in case a third-party module has already registered a function for that signal (<tt class="docutils literal">SIGTERM</tt> or whatever), your new function will <strong>overwrite</strong> the old one:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">signal</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">old</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;old&quot;</span><span class="p">)</span>  <span class="c1"># XXX this never gets printed</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">new</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">)</span>
-
-<span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">old</span><span class="p">)</span>
-<span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
-<span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
-</pre></div>
-<p>Also, we would still have to use <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> so that the function is called also on &quot;clean&quot; interpreter exit <span class="strike">and take into account other signals other than SIGTERM which would cause the process to terminate</span>. This recipe attempts to address all these issues so that:</p>
-<ul class="simple">
-<li>the exit function is always executed <span class="strike">for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT)</span> on <tt class="docutils literal">SIGTERM</tt> and on &quot;clean&quot; interpreter exit.</li>
-<li>any exit function(s) previously registered via <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> or <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> will be executed as well (after the new one).</li>
-<li>It must be noted that the exit function will never be executed in case of <tt class="docutils literal">SIGKILL</tt>, <tt class="docutils literal">SIGSTOP</tt> or <tt class="docutils literal">os._exit()</tt>.</li>
-</ul>
-<div class="section" id="the-code">
-<h2>The code<a class="headerlink" href="#the-code" title="Permalink to this headline">¶</a></h2>
-<div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Function / decorator which tries very hard to register a function to</span>
-<span class="sd">be executed at importerer exit.</span>
-
-<span class="sd">Author: Giampaolo Rodola&#39;</span>
-<span class="sd">License: MIT</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_function</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">atexit</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">signal</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-
-
-<span class="n">_registered_exit_funs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-<span class="n">_executed_exit_funs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">register_exit_fun</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">signals</span><span class="o">=</span><span class="p">[</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">],</span>
-                      <span class="n">logfun</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register a function which will be executed on &quot;normal&quot;</span>
-<span class="sd">    interpreter exit or in case one of the `signals` is received</span>
-<span class="sd">    by this process (differently from `atexit.register() &lt;https://docs.python.org/3/library/atexit.html#atexit.register&gt;`__).</span>
-<span class="sd">    Also, it makes sure to execute any other function which was</span>
-<span class="sd">    previously registered via signal.signal(). If any, it will be</span>
-<span class="sd">    executed after our own `fun`.</span>
-
-<span class="sd">    Functions which were already registered or executed via this</span>
-<span class="sd">    function will be ignored.</span>
-
-<span class="sd">    Note: there&#39;s no way to escape SIGKILL, SIGSTOP or os._exit(0)</span>
-<span class="sd">    so don&#39;t bother trying.</span>
-
-<span class="sd">    You can use this either as a function or as a decorator:</span>
-
-<span class="sd">        @register_exit_fun</span>
-<span class="sd">        def cleanup():</span>
-<span class="sd">            pass</span>
-
-<span class="sd">        # ...or</span>
-
-<span class="sd">        register_exit_fun(cleanup)</span>
-
-<span class="sd">    Note about Windows: I tested this some time ago and didn&#39;t work</span>
-<span class="sd">    exactly the same as on UNIX, then I didn&#39;t care about it</span>
-<span class="sd">    anymore and didn&#39;t test since then so may not work on Windows.</span>
-
-<span class="sd">    Parameters:</span>
-
-<span class="sd">    - fun: a callable</span>
-<span class="sd">    - signals: a list of signals for which this function will be</span>
-<span class="sd">      executed (default SIGTERM)</span>
-<span class="sd">    - logfun: a logging function which is called when a signal is</span>
-<span class="sd">      received. Default: print to standard error. May be set to</span>
-<span class="sd">      None if no logging is desired.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">stringify_sig</span><span class="p">(</span><span class="n">signum</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
-            <span class="n">smap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
-                         <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SIG&#39;</span><span class="p">)])</span>
-            <span class="k">return</span> <span class="n">smap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">signum</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">signum</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">fun_wrapper</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">fun</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_executed_exit_funs</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">fun</span><span class="p">()</span>
-            <span class="k">finally</span><span class="p">:</span>
-                <span class="n">_executed_exit_funs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">signal_wrapper</span><span class="p">(</span><span class="n">signum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">signum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">logfun</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">logfun</span><span class="p">(</span><span class="s2">&quot;signal </span><span class="si">{}</span><span class="s2"> received by process with PID </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">stringify_sig</span><span class="p">(</span><span class="n">signum</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()))</span>
-        <span class="n">fun_wrapper</span><span class="p">()</span>
-        <span class="c1"># Only return the original signal this process was hit with</span>
-        <span class="c1"># in case fun returns with no errors, otherwise process will</span>
-        <span class="c1"># return with sig 1.</span>
-        <span class="k">if</span> <span class="n">signum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">signum</span> <span class="o">==</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyboardInterrupt</span>
-            <span class="c1"># XXX - should we do the same for SIGTERM / SystemExit?</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">signum</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{!r}</span><span class="s2"> is not callable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fun</span><span class="p">))</span>
-        <span class="nb">set</span><span class="p">([</span><span class="n">fun</span><span class="p">])</span>  <span class="c1"># raise exc if obj is not hash-able</span>
-
-        <span class="n">signals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">signals</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">sig</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
-            <span class="c1"># Register function for this signal and pop() the previously</span>
-            <span class="c1"># registered one (if any). This can either be a callable,</span>
-            <span class="c1"># SIG_IGN (ignore signal) or SIG_DFL (perform default action</span>
-            <span class="c1"># for signal).</span>
-            <span class="n">old_handler</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">signal_wrapper</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">old_handler</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIG_DFL</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_IGN</span><span class="p">):</span>
-                <span class="c1"># ...just for extra safety.</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">old_handler</span><span class="p">):</span>
-                    <span class="k">continue</span>
-                <span class="c1"># This is needed otherwise we&#39;ll get a KeyboardInterrupt</span>
-                <span class="c1"># strace on interpreter exit, even if the process exited</span>
-                <span class="c1"># with sig 0.</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">sig</span> <span class="o">==</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span> <span class="ow">and</span>
-                        <span class="n">old_handler</span> <span class="ow">is</span> <span class="n">signal</span><span class="o">.</span><span class="n">default_int_handler</span><span class="p">):</span>
-                    <span class="k">continue</span>
-                <span class="c1"># There was a function which was already registered for this</span>
-                <span class="c1"># signal. Register it again so it will get executed (after our</span>
-                <span class="c1"># new fun).</span>
-                <span class="k">if</span> <span class="n">old_handler</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_registered_exit_funs</span><span class="p">:</span>
-                    <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">old_handler</span><span class="p">)</span>
-                    <span class="n">_registered_exit_funs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">old_handler</span><span class="p">)</span>
-
-        <span class="c1"># This further registration will be executed in case of clean</span>
-        <span class="c1"># interpreter exit (no signals received).</span>
-        <span class="k">if</span> <span class="n">fun</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_registered_exit_funs</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">signals</span><span class="p">:</span>
-            <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">fun_wrapper</span><span class="p">)</span>
-            <span class="n">_registered_exit_funs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
-
-    <span class="c1"># This piece of machinery handles 3 usage cases. register_exit_fun()</span>
-    <span class="c1"># used as:</span>
-    <span class="c1"># - a function</span>
-    <span class="c1"># - a decorator without parentheses</span>
-    <span class="c1"># - a decorator with parentheses</span>
-    <span class="k">if</span> <span class="n">fun</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span>
-        <span class="k">def</span><span class="w"> </span><span class="nf">outer</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">outer</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">register_fun</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">signals</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">fun</span>
-</pre></div>
-</div>
-<div class="section" id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>As a function:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cleanup&quot;</span><span class="p">)</span>
-
-<span class="n">register_exit_fun</span><span class="p">(</span><span class="n">cleanup</span><span class="p">)</span>
-</pre></div>
-<p>As a decorator:</p>
-<div class="highlight"><pre><span></span><span class="nd">@register_exit_fun</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cleanup&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="section" id="unit-tests">
-<h2>Unit tests<a class="headerlink" href="#unit-tests" title="Permalink to this headline">¶</a></h2>
-<p>This recipe is hosted on <a class="reference external" href="https://code.activestate.com/recipes/580672-register-exit-function/">ActiveState</a> and has a full set of unittests. It works with Python 2 and 3.</p>
-</div>
-<div class="section" id="notes-about-windows">
-<h2>Notes about Windows<a class="headerlink" href="#notes-about-windows" title="Permalink to this headline">¶</a></h2>
-<p><span class="strike">On Windows signals are only partially supported meaning a function which was previously registered via signal.signal() will be executed only on interpreter exit, but not if the process receives a signal. Apparently this is a limitation either of Windows or the signal module.</span></p>
-<p>Because of how different <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> behaves on Windows, this code is UNIX only, see <a class="reference external" href="https://bugs.python.org/issue26350">BPO-26350</a>.</p>
-</div>
-<div class="section" id="proposal-for-stdlib-inclusion">
-<h2>Proposal for stdlib inclusion<a class="headerlink" href="#proposal-for-stdlib-inclusion" title="Permalink to this headline">¶</a></h2>
-<p>The fact that atexit module <a class="reference external" href="http://stackoverflow.com/a/2546397/376587">does not handle signals</a> and that <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> overwrites previously registered handlers is unfortunate. It is also <a class="reference external" href="http://ambracode.com/index/show/92669">confusing</a> because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the times you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. To me this suggests there could be space for something like <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038431.html">atexit.register_w_signals</a>.</p>
-</div>
-<div class="section" id="external-discussions">
-<h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/45fvd9/how_to_always_execute_exit_functions_in_python/">Reddit</a></li>
-<li><a class="reference external" href="https://news.ycombinator.com/item?id=11088938">Hacker news</a></li>
-</ul>
-</div>
-
-        </div>
     </article></li>
             </ol><!-- /#posts-list -->
   <nav>
     <ul>
         <li><a href="https://gmpy.dev/index.html">&Lang;</a></li>
         <li><a href="https://gmpy.dev/index3.html">&lang;</a></li>
-      <li>Page 4 / 6</li>
+      <li>Page 4 / 7</li>
         <li><a href="https://gmpy.dev/index5.html">&rang;</a></li>
-        <li><a href="https://gmpy.dev/index6.html">&Rang;</a></li>
+        <li><a href="https://gmpy.dev/index7.html">&Rang;</a></li>
     </ul>
   </nav>
  <!-- /blog posts -->

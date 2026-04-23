@@ -186,8 +186,8 @@ a way to identify what constitutes a <strong>connection error</strong>.</p>
 purpose, but it turns out it's not enough. After observing logs in production,
 I found some errors that were not related to the socket connection per se, but
 rather to the <strong>system connectivity</strong>, like <cite>ENETUNREACH</cite>
-(&quot;network unreachable&quot;) or <cite>ENETDOWN</cite> (&quot;network down&quot;).  It's interesting to
-note how this distinction is reflected in the UNIX <a class="reference external" href="https://www.thegeekstuff.com/2010/10/linux-error-codes/">errno</a>  code prefixes:
+(&quot;network unreachable&quot;) or <cite>ENETDOWN</cite> (&quot;network down&quot;). It's interesting to
+note how this distinction is reflected in the UNIX <a class="reference external" href="https://www.thegeekstuff.com/2010/10/linux-error-codes/">errno</a> code prefixes:
 <cite>ECONN*</cite> (connection errors) vs. <cite>ENET*</cite> (network errors). I've noticed
 <cite>ENET*</cite> errors usually occur on a DHCP renewal, or more in general when the
 Wi-Fi signal is weak or absent. Because this code runs on a cleaning robot
@@ -214,7 +214,7 @@ socket.timeout: The write operation timed out
 was uncertain what to do about those. The app is supposed to gracefully handle
 them, so theoretically they should represent a bug. Still, they are
 unequivocally related to the connection stream, and represent a failed attempt
-to send data, so we want to retry it. Example of logs I found:</p>
+to send data, so we want to retry it. Examples of logs I found:</p>
 <div class="highlight"><pre><span></span>File &quot;/usr/lib/python3.7/ssl.py&quot;, line 934, in send
     return self._sslobj.write(data)
 ssl.SSLZeroReturnError: TLS/SSL connection has been closed (EOF)
@@ -227,8 +227,8 @@ ssl.SSLError: [SSL: BAD_LENGTH] bad length
 the Internet is, and how a network app must be ready to handle all sorts of
 unexpected error conditions which hardly show up during testing. To handle all
 of these cases I came up with this solution which I think is worth sharing, as
-it's generic enough to be reused in similar situations. If needed, this can be
-easily extended to include specific exceptions of third party libraries, like
+it's generic enough to be reused in similar situations. If needed, this can
+easily be extended to include specific exceptions of third party libraries, like
 <cite>requests.exceptions.ConnectionError</cite> (<em>EDIT: 2026-02: done for requests + botocore</em>).</p>
 <div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Recognize a connection error from an exception object.</span>
@@ -409,10 +409,10 @@ by writing my first ST plugin, which I paste below.</p>
 <li>if that same file is re-opened, restore the cursor at that position</li>
 </ul>
 <p>What's neat about ST plugins is that they are just Python files which you can
-install by copying them in ST's config directory. On Linux you can copy the
-script below in:</p>
+install by copying them into ST's config directory. On Linux you can copy the
+script below to:</p>
 <p><tt class="docutils literal"><span class="pre">~/.config/sublime-text-3/Packages/User/cursor_positions.py</span></tt></p>
-<p>...and will work out of the box.
+<p>...and it will work out of the box.
 This is exactly the kind of minimalism which I love about ST, and which I've
 always missed in other IDEs.</p>
 <div class="highlight"><pre><span></span><span class="c1"># cursor_positions.py</span>
@@ -587,10 +587,10 @@ This new site is based on <a class="reference external" href="https://docs.getpe
 <li>easy integration with GitHub pages</li>
 <li>ability to add comments via Disqus</li>
 </ul>
-<p>To this I added a mailing list (I used feedburner), so that users can subscribe and receive an email every time I make a new blog post. As you can see the website is very simple, but it's exactly what I wanted (minimalism). As for the domain name I opted for <a class="reference external" href="https://gmpy.dev/">gmpy.dev</a>, mostly because I know my name is hard to type and pronounce for non-english speakers. And also because I couldn't come up with a better name. ;)</p>
+<p>To this I added a mailing list (I used feedburner), so that users can subscribe and receive an email every time I make a new blog post. As you can see the website is very simple, but it's exactly what I wanted (minimalism). As for the domain name I opted for <a class="reference external" href="https://gmpy.dev/">gmpy.dev</a>, mostly because I know my name is hard to type and pronounce for non-English speakers. And also because I couldn't come up with a better name. ;)</p>
 <div class="section" id="git-based-workflow">
 <h2>GIT-based workflow<a class="headerlink" href="#git-based-workflow" title="Permalink to this headline">¶</a></h2>
-<p>The main reason why I blogged so rarely over the years was mostly because blogger.com provided me no way to edit content in RsT or markdown, and the lack of GIT integration. This made me lazy. With Pelican + GitHub pages the workflow to create and publish new content is very straightforward. I use 2 branches: <a class="reference external" href="https://github.com/giampaolo/giampaolo.github.io/tree/gh-pages">gh-pages</a>, which is the source code of this web-site, and <a class="reference external" href="https://github.com/giampaolo/giampaolo.github.io/tree/master">master</a>, which is where the generated HTML content lives and it is being served by GitHub pages. This is what I do when I have to create a new blog post:</p>
+<p>The main reason why I blogged so rarely over the years was mostly because blogger.com provided me no way to edit content in RsT or markdown, and the lack of GIT integration. This made me lazy. With Pelican + GitHub pages the workflow to create and publish new content is very straightforward. I use 2 branches: <a class="reference external" href="https://github.com/giampaolo/giampaolo.github.io/tree/gh-pages">gh-pages</a>, which is the source code of this web-site, and <a class="reference external" href="https://github.com/giampaolo/giampaolo.github.io/tree/master">master</a>, which is where the generated HTML content lives and is being served by GitHub pages. This is what I do when I have to create a new blog post:</p>
 <ul class="simple">
 <li>under <cite>gh-pages</cite> branch I create a new file, e.g. <cite>content/blog/2020/new-blog-post.rst</cite>:</li>
 </ul>
@@ -619,10 +619,10 @@ The core of Pelican is <a class="reference external" href="https://github.com/gi
 </div>
 <div class="section" id="about-me">
 <h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
-<p>I spent most of last year (2019) in China, dating my girlfriend, remote working from a shared office space in Shenzhen, and I even taught some Python to a class of Chinese folks with no previous programming experience. The course was about the basics of the language + basic filesystem operations, and the most difficult thing to explain was indentation. I guess that shows the difference between knowing a language and knowing how to teach it.</p>
+<p>I spent most of last year (2019) in China, dating my girlfriend, remote working from a shared office space in Shenzhen, and I even taught some Python to a class of Chinese folks with no previous programming experience. The course was about the basics of the language plus basic filesystem operations, and the most difficult thing to explain was indentation. I guess that shows the difference between knowing a language and knowing how to teach it.</p>
 <p>I got back to Italy in December 2020, just before the pandemic occurred. Because of my connections with China, I knew about the incoming pandemic sooner than the rest of my friends, which for a while (until the lockdown) made them think I was crazy. =)</p>
-<p>Since I knew I would be stuck at home for a long time, I bought a quite nice acoustic guitar (Taylor) after many years, and resumed playing (and singing). I learned a bunch of new songs, mostly about Queen, including Bohemian Rhapsody, which is something I've been wanting to do since forever.</p>
-<p>I also spent some time working on a personal project that I'm keeping private for the moment, something to speed up file copies, which follows the experiments I made in <a class="reference external" href="https://bugs.python.org/issue33671">BPO-33671</a>. It's still very beta, but I managed to make file copies around 170% faster compared to <tt class="docutils literal">cp</tt> command on Linux, which is pretty impressive (and I think I can push it even further). I will blog about that once I'll have something more solid / stable. Most likely it'll become my next OSS project, even tough I have mixed feelings about that, since the amount of time I'm devoting to psutil is already a lot.</p>
+<p>Since I knew I would be stuck at home for a long time, I bought a quite nice acoustic guitar (Taylor) after many years, and resumed playing (and singing). I learned a bunch of new songs, mostly by Queen, including Bohemian Rhapsody, which is something I've been wanting to do since forever.</p>
+<p>I also spent some time working on a personal project that I'm keeping private for the moment, something to speed up file copies, which follows the experiments I made in <a class="reference external" href="https://bugs.python.org/issue33671">BPO-33671</a>. It's still very beta, but I managed to make file copies around 170% faster compared to the <tt class="docutils literal">cp</tt> command on Linux, which is pretty impressive (and I think I can push it even further). I will blog about that once I have something more solid / stable. Most likely it'll become my next OSS project, even though I have mixed feelings about that, since the amount of time I'm devoting to psutil is already a lot.</p>
 <p>Speaking of which, today I'm also releasing <a class="reference external" href="https://groups.google.com/forum/#!topic/psutil/zT0jUE2IaE4">psutil 5.7.1</a>, which adds support for <strong>Windows Nano</strong>.</p>
 <p>I guess this is all. Cheers and subscribe!</p>
 </div>
@@ -651,22 +651,22 @@ The core of Pelican is <a class="reference external" href="https://github.com/gi
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>New <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.6.2 release implements an emulation of <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getloadavg">os.getloadavg()</a> on Windows which was kindly <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1485">contributed by Ammar Askar</a> who originally implemented it for <a class="reference external" href="https://github.com/python/cpython/pull/8357/files">cPython's test suite</a>. This idea has been floating around for quite a while. The first proposal dates back to <a class="reference external" href="https://code.google.com/archive/p/psutil/issues/139">2010</a>, when psutil was still hosted on Google Code, and it popped up <a class="reference external" href="https://github.com/giampaolo/psutil/issues?utf8=%E2%9C%93&amp;q=getloadavg">multiple times</a> throughout the years. There was/is a bunch of info on internet mentioning the bits with which it's theoretically possible to do this (the so called <cite>System Processor Queue Length</cite>), but I couldn't find any real implementation. A <a class="reference external" href="https://www.google.com/search?client=ubuntu&amp;hs=2EI&amp;channel=fs&amp;ei=LafCXO2ZE8PKswX9kY-wAw&amp;q=windows+load+average&amp;oq=windows+load+average&amp;gs_l=psy-ab.3..0j0i22i30l7.12536.13873..14008...0.0..0.482.2591.4-6......0....1..gws-wiz.......0i71j0i131.37ys3SB25pE">Google search</a> tells there is quite some demand for this, but very few tools out there providing this natively (the only one I could find is this <a class="reference external" href="https://blog.sflow.com/2011/02/windows-load-average.html">sFlowTrend</a> tool and <a class="reference external" href="https://www.zabbix.com/forum/zabbix-help/50423-windows-cpu-load">Zabbix</a>), so I'm very happy this finally landed into psutil / Python.</p>
+</footer><!-- /.post-info -->            <p>New <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.6.2 release implements an emulation of <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getloadavg">os.getloadavg()</a> on Windows which was kindly <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1485">contributed by Ammar Askar</a> who originally implemented it for <a class="reference external" href="https://github.com/python/cpython/pull/8357/files">cPython's test suite</a>. This idea has been floating around for quite a while. The first proposal dates back to 2010 (code.google.com/archive/p/psutil/issues/139), when psutil was still hosted on Google Code, and it popped up <a class="reference external" href="https://github.com/giampaolo/psutil/issues?utf8=%E2%9C%93&amp;q=getloadavg">multiple times</a> throughout the years. There was/is a bunch of info on the internet mentioning the bits with which it's theoretically possible to do this (the so called <cite>System Processor Queue Length</cite>), but I couldn't find any real implementation. A <a class="reference external" href="https://www.google.com/search?client=ubuntu&amp;hs=2EI&amp;channel=fs&amp;ei=LafCXO2ZE8PKswX9kY-wAw&amp;q=windows+load+average&amp;oq=windows+load+average&amp;gs_l=psy-ab.3..0j0i22i30l7.12536.13873..14008...0.0..0.482.2591.4-6......0....1..gws-wiz.......0i71j0i131.37ys3SB25pE">Google search</a> tells there is quite some demand for this, but very few tools out there provide this natively (the only ones I could find are this <a class="reference external" href="https://blog.sflow.com/2011/02/windows-load-average.html">sFlowTrend</a> tool and <a class="reference external" href="https://www.zabbix.com/forum/zabbix-help/50423-windows-cpu-load">Zabbix</a>), so I'm very happy this finally landed in psutil / Python.</p>
 <div class="section" id="other-improvements-and-bugfixes-in-psutil-5-6-2">
 <h2>Other improvements and bugfixes in psutil 5.6.2<a class="headerlink" href="#other-improvements-and-bugfixes-in-psutil-5-6-2" title="Permalink to this headline">¶</a></h2>
-<p>The full list is <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/HISTORY.rst#562">here</a> but I would like to mention a couple:</p>
+<p>The full list is <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">here</a> but I would like to mention a couple:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">1476</a>: the possibility to set process' high I/O priority on Windows</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">1458</a>: colorized test output. I admit nobody will use this directly but it's very cool and I'm porting it to a bunch of other projects I work on (e.g. pyftpdlib). Also, perhaps this could be a good candidate for a small module to put on PYPI which can also include some functionalities taken from pytest and which I'm gradually re-implementing in unittest module amongst which:<ul>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">1458</a>: colorized test output. I admit nobody will use this directly but it's very cool and I'm porting it to a bunch of other projects I work on (e.g. pyftpdlib). Also, perhaps this could be a good candidate for a small module to put on PYPI which can also include some functionalities taken from pytest and which I'm gradually re-implementing in the unittest module amongst which:<ul>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1478">1478</a>: re-running failed tests</li>
-<li>display test timings/durations: this is something I'm contributing to cPython, see <a class="reference external" href="https://bugs.python.org/issue4080">BPO-4080</a> and and <a class="reference external" href="https://github.com/python/cpython/pull/12271/files">PR-12271</a></li>
+<li>display test timings/durations: this is something I'm contributing to cPython, see <a class="reference external" href="https://bugs.python.org/issue4080">BPO-4080</a> and <a class="reference external" href="https://github.com/python/cpython/pull/12271/files">PR-12271</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="about-me">
 <h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
-<p>I'm currently in China (Shenzhen) for a mix of vacation and work, and I will likely take a break from Open Source for a while (likely 2.5 months, during which I will also go to Philippines and Japan - I love Asia ;-)).</p>
+<p>I'm currently in China (Shenzhen) for a mix of vacation and work, and I will likely take a break from Open Source for a while (likely 2.5 months, during which I will also go to the Philippines and Japan - I love Asia ;-)).</p>
 </div>
 <div class="section" id="external">
 <h2>External<a class="headerlink" href="#external" title="Permalink to this headline">¶</a></h2>
@@ -682,9 +682,9 @@ The core of Pelican is <a class="reference external" href="https://github.com/gi
     <ul>
         <li><a href="https://gmpy.dev/index.html">&Lang;</a></li>
         <li><a href="https://gmpy.dev/index.html">&lang;</a></li>
-      <li>Page 2 / 6</li>
+      <li>Page 2 / 7</li>
         <li><a href="https://gmpy.dev/index3.html">&rang;</a></li>
-        <li><a href="https://gmpy.dev/index6.html">&Rang;</a></li>
+        <li><a href="https://gmpy.dev/index7.html">&Rang;</a></li>
     </ul>
   </nav>
  <!-- /blog posts -->
