@@ -420,7 +420,11 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 		.social a[href*='slideshare.net'] {background-image: url('../images/icons/slideshare.png');}
 		.social a[href*='speakerdeck.com'] {background-image: url('../images/icons/speakerdeck.png');}
 		.social a[href*='stackoverflow.com'] {background-image: url('../images/icons/stackoverflow.png');}
-		.social a[href*='twitter.com'] {background-image: url('../images/icons/twitter.png');}
+		.social a[href*='twitter.com'],
+		.social a[href*='x.com'] {
+			background-image: url('../images/icons/x.svg');
+			background-size: 16px 16px;
+		}
 		.social a[href*='vimeo.com'] {background-image: url('../images/icons/vimeo.png');}
 		.social a[href*='youtube.com'] {background-image: url('../images/icons/youtube.png');}
 
