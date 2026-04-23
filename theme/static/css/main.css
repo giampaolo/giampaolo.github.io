@@ -112,16 +112,23 @@ dt {font-weight: bold;}
 dd {margin-left: 1.5em;}
 
 .highlight,
+.highlight pre,
+.highlight pre code,
+.highlight pre span {
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", Courier, monospace !important;
+    font-size: 15px;
+    line-height: 1.4 !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.highlight,
 .highlight pre {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     border-radius: 6px;
     overflow: hidden;
     white-space: pre-wrap;
     word-break: break-all;
     padding: 8px;
-    line-height: 1.3 !important;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Quotes */
@@ -413,7 +420,11 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 		.social a[href*='slideshare.net'] {background-image: url('../images/icons/slideshare.png');}
 		.social a[href*='speakerdeck.com'] {background-image: url('../images/icons/speakerdeck.png');}
 		.social a[href*='stackoverflow.com'] {background-image: url('../images/icons/stackoverflow.png');}
-		.social a[href*='twitter.com'] {background-image: url('../images/icons/twitter.png');}
+		.social a[href*='twitter.com'],
+		.social a[href*='x.com'] {
+			background-image: url('../images/icons/x.svg');
+			background-size: 16px 16px;
+		}
 		.social a[href*='vimeo.com'] {background-image: url('../images/icons/vimeo.png');}
 		.social a[href*='youtube.com'] {background-image: url('../images/icons/youtube.png');}
 
@@ -566,7 +577,34 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 }
 
 .paginator {
-	padding-left:20px;
+	display: flex;
+	gap: .5em;
+	align-items: center;
+	flex-wrap: wrap;
+	margin: 2em 0 0 0;
+	font-size: 15px;
+}
+
+.paginator a,
+.paginator a:link,
+.paginator a:visited {
+	display: inline-block;
+	padding: .25em .7em;
+	border: 1px solid #d0d7de;
+	border-radius: 6px;
+	text-decoration: none;
+	color: #24292f;
+	line-height: 1.2;
+}
+
+.paginator a:hover {
+	background: #f6f8fa;
+	text-decoration: none;
+}
+
+.paginator .paginator-info {
+	color: #57606a;
+	padding: 0 .25em;
 }
 
 input[type=button], input[type=submit], input[type=reset] {
@@ -605,6 +643,8 @@ div.code-block-caption:hover > a.headerlink {
 
 code {
 	background: #f0f1f2;
+	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", Courier, monospace;
+	font-size: 90%;
 }
 
 .highlight code {

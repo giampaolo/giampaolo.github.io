@@ -34,7 +34,7 @@ TRANSLATION_FEED_RSS = None
 SOCIAL = (
     ("github", "https://github.com/giampaolo"),
     ("linkedin", "https://www.linkedin.com/in/grodola/"),
-    ("twitter", "https://twitter.com/grodola"),
+    ("x", "https://x.com/grodola"),
 )
 
 # --- menu
