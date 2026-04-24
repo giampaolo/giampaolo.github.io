@@ -11,7 +11,7 @@
 <!-- blog posts -->
 {% for article in articles_page.object_list %}
     {% if loop.first %}
-        <ol id="posts-list" class="hfeed" start="{{ articles_paginator.per_page -1 }}">
+        <ol id="posts-list" class="hfeed">
     {% endif %}
     <li><article class="hentry">
         <header>

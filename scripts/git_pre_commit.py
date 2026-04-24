@@ -96,8 +96,8 @@ def black(files):
     cmd = [PYTHON, "-m", "black", "--check", "--safe"] + files
     if subprocess.call(cmd) != 0:
         return exit(
-            "Python code didn't pass 'ruff' style check."
-            "Try running 'make fix-ruff'."
+            "Python code didn't pass 'black' style check. "
+            "Try running 'make fix-black'."
         )
 
 

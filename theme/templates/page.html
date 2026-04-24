@@ -2,6 +2,16 @@
 {% block html_lang %}{{ page.lang }}{% endblock %}
 {% block title %}{{ page.title }} - {{ SITENAME }}{% endblock %}
 
+{% import 'meta.html' as meta with context %}
+{% block meta %}
+{{ meta.og_tags(
+    page.title,
+    page.summary|striptags|truncate(200) if page.summary else SITESUBTITLE,
+    SITEURL + '/' + page.url,
+    og_type='article',
+) }}
+{% endblock meta %}
+
 {% block extra_head %}
 {% import 'translations.html' as translations with context %}
 {% if translations.entry_hreflang(page) %}

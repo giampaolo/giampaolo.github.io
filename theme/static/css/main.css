@@ -19,9 +19,8 @@
 body {
     background: #eaecef;
     color: #000305;
-    font-size: 18px; /* Base font size: 14px */
-    font-family: 'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+    font-size: 18px;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
     line-height: 1.429;
     margin: 0;
     padding: 0;
@@ -146,8 +145,6 @@ cite, .literal {
 	font-size:15px;
 }
 
-q {}
-
 div.note {
    float: right;
    margin: 5px;
@@ -168,25 +165,8 @@ table, th, td {
 }
 
 
-/* Thead */
-thead th {
-	padding: .5em .4em; text-align: left;
-	/* background: #eaecef; */
-}
-thead td {
-}
-
-/* Tbody */
+thead th {padding: .5em .4em; text-align: left;}
 tbody td {padding: .5em .4em;}
-tbody th {
-}
-
-tbody .alt td {}
-tbody .alt th {}
-
-/* Tfoot */
-tfoot th {}
-tfoot td {}
 
 /* HTML5 tags */
 header, section, footer,
@@ -222,7 +202,12 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 }
 
 	/* Banner */
-	#banner h1 {font-size: 3.571em; line-height: 0;}
+	#banner h1 {
+		font-size: 3.571em;
+		line-height: 0;
+		margin-top: 40px;
+		margin-bottom: -3px;
+	}
 	#banner h1 a:link, #banner h1 a:visited {
 		color: #000305;
 		display: block;
@@ -246,8 +231,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 		width: 900px;
 
 		border-radius: 5px;
-		-moz-border-radius: 5px;
-		-webkit-border-radius: 5px;
 	}
 
 	#banner nav ul {list-style: none; margin: 0 auto; width: 900px;}
@@ -269,46 +252,8 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 
 	#banner nav li:first-child a {
 		border-top-left-radius: 5px;
-		-moz-border-radius-topleft: 5px;
-		-webkit-border-top-left-radius: 5px;
-
 		border-bottom-left-radius: 5px;
-		-moz-border-radius-bottomleft: 5px;
-		-webkit-border-bottom-left-radius: 5px;
 	}
-
-	#banner h1 {
-		margin-bottom: -3px;
-	}
-
-/*
-	Featured
-*****************/
-#featured {
-	background: #fff;
-	margin-bottom: 2em;
-	overflow: hidden;
-	padding: 20px;
-	width: 860px;
-
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-}
-
-#featured figure {
-	border: 2px solid #eee;
-	float: right;
-	margin: 0.786em 2em 0 5em;
-	width: 248px;
-}
-#featured figure img {display: block; float: right;}
-
-#featured h2 {color: #2980B9; font-size: 1.714em; margin-bottom: 0.333em;}
-#featured h3 {font-size: 1.429em; margin-bottom: .5em;}
-
-#featured h3 a:link, #featured h3 a:visited {color: #000305; text-decoration: none;}
-#featured h3 a:hover, #featured h3 a:active {color: #fff;}
 
 /*
 	Body
@@ -321,8 +266,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	width: 860px;
 
 	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
 }
 
 /*
@@ -402,66 +345,15 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 }
 
 		/* Icons */
-		.social a[href*='about.me'] {background-image: url('../images/icons/aboutme.png');}
-		.social a[href*='bitbucket.org'] {background-image: url('../images/icons/bitbucket.png');}
-		.social a[href*='delicious.com'] {background-image: url('../images/icons/delicious.png');}
-		.social a[href*='digg.com'] {background-image: url('../images/icons/digg.png');}
-		.social a[href*='facebook.com'] {background-image: url('../images/icons/facebook.png');}
-		.social a[href*='gitorious.org'] {background-image: url('../images/icons/gitorious.png');}
-		.social a[href*='github.com'],
-		.social a[href*='git.io'] {
+		.social a[href*='github.com'] {
 			background-image: url('../images/icons/github.png');
 			background-size: 16px 16px;
 		}
-		.social a[href*='gittip.com'] {background-image: url('../images/icons/gittip.png');}
-		.social a[href*='plus.google.com'] {background-image: url('../images/icons/google-plus.png');}
-		.social a[href*='groups.google.com'] {background-image: url('../images/icons/google-groups.png');}
-		.social a[href*='news.ycombinator.com'],
-		.social a[href*='hackernewsers.com'] {background-image: url('../images/icons/hackernews.png');}
-		.social a[href*='last.fm'], .social a[href*='lastfm.'] {background-image: url('../images/icons/lastfm.png');}
 		.social a[href*='linkedin.com'] {background-image: url('../images/icons/linkedin.png');}
-		.social a[href*='reddit.com'] {background-image: url('../images/icons/reddit.png');}
-		.social a[type$='atom+xml'], .social a[type$='rss+xml'] {background-image: url('../images/icons/rss.png');}
-		.social a[href*='slideshare.net'] {background-image: url('../images/icons/slideshare.png');}
-		.social a[href*='speakerdeck.com'] {background-image: url('../images/icons/speakerdeck.png');}
-		.social a[href*='stackoverflow.com'] {background-image: url('../images/icons/stackoverflow.png');}
-		.social a[href*='twitter.com'],
 		.social a[href*='x.com'] {
 			background-image: url('../images/icons/x.svg');
 			background-size: 16px 16px;
 		}
-		.social a[href*='vimeo.com'] {background-image: url('../images/icons/vimeo.png');}
-		.social a[href*='youtube.com'] {background-image: url('../images/icons/youtube.png');}
-
-/*
-	About
-*****************/
-#about {
-	background: #fff;
-	font-style: normal;
-	margin-bottom: 2em;
-	overflow: hidden;
-	padding: 20px;
-	text-align: left;
-	width: 860px;
-
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-}
-
-#about .primary {float: left; width: 165px;}
-#about .primary strong {color: #C64350; display: block; font-size: 1.286em;}
-#about .photo {float: left; margin: 5px 20px;}
-
-#about .url:link, #about .url:visited {text-decoration: none;}
-
-#about .bio {float: right; width: 500px;}
-
-/*
-	Footer
-*****************/
-#contentinfo {padding-bottom: 2em; text-align: right;}
 
 /***** Sections *****/
 /* Blog */
@@ -474,15 +366,12 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 .hentry img{display : none ;}
 .entry-title {font-size: 3em; margin-bottom: 10px; margin-top: 0;}
 .entry-title a:link, .entry-title a:visited {text-decoration: none; color: #000;}
-.entry-title a:visited {background-color: #fff;}
 
 
 .hentry .post-info * {font-style: normal;}
 
 	/* Content */
 	.hentry footer {margin-bottom: 2em;}
-	.hentry footer address {display: inline;}
-	#posts-list footer address {display: block;}
 
 	/* Blog Index */
 	#posts-list {list-style: none; margin: 0;}
@@ -492,66 +381,9 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 		position: relative;
 	}
 
-	/* About the Author */
-	#about-author {
-		background: #f9f9f9;
-		clear: both;
-		font-style: normal;
-		margin: 2em 0;
-		padding: 10px 20px 15px 20px;
-
-		border-radius: 5px;
-		-moz-border-radius: 5px;
-		-webkit-border-radius: 5px;
-	}
-
-	#about-author strong {
-		color: #C64350;
-		clear: both;
-		display: block;
-		font-size: 1.429em;
-	}
-
-	#about-author .photo {border: 1px solid #ddd; float: left; margin: 5px 1em 0 0;}
-
-	/* Comments */
-	#comments-list {list-style: none; margin: 0 1em;}
-	#comments-list blockquote {
-		background: #f8f8f8;
-		clear: both;
-		font-style: normal;
-		margin: 0;
-		padding: 15px 20px;
-
-		border-radius: 5px;
-		-moz-border-radius: 5px;
-		-webkit-border-radius: 5px;
-	}
-	#comments-list footer {color: #888; padding: .5em 1em 0 0; text-align: right;}
-
-	#comments-list li:nth-child(2n) blockquote {background: #F5f5f5;}
-
-	/* Add a Comment */
-	#add-comment label {clear: left; float: left; text-align: left; width: 150px;}
-	#add-comment input[type='text'],
-	#add-comment input[type='email'],
-	#add-comment input[type='url'] {float: left; width: 200px;}
-
-	#add-comment textarea {float: left; height: 150px; width: 495px;}
-
-	#add-comment p.req {clear: both; margin: 0 .5em 1em 0; text-align: right;}
-
-	#add-comment input[type='submit'] {float: right; margin: 0 .5em; height: 34px;}
-	#add-comment * {margin-bottom: .5em;}
-
 .entry-content {
 	padding-bottom:20px;
 }
-
-#banner h1 {
-	margin-top:40px;
-}
-
 
 .archives {
 	width: 100%;
@@ -612,25 +444,14 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 	padding: 0 .25em;
 }
 
-input[type=button], input[type=submit], input[type=reset] {
-	height: 34px !important;
-}
-
-input[type=text] {
-	width:140px
-}
-
-#nav li {
-	padding:0px;
-}
-
 .blogposts-separator {
 	border-top: 3px solid #ccc;
 }
 
 a.headerlink {
-    visibility: hidden;
-    padding-left:5px;
+    opacity: 0;
+    padding-left: 5px;
+    transition: opacity 0.15s;
 }
 
 h1:hover > a.headerlink,
@@ -642,8 +463,9 @@ h6:hover > a.headerlink,
 dt:hover > a.headerlink,
 caption:hover > a.headerlink,
 p.caption:hover > a.headerlink,
-div.code-block-caption:hover > a.headerlink {
-    visibility: visible;
+div.code-block-caption:hover > a.headerlink,
+a.headerlink:focus {
+    opacity: 1;
 }
 
 code {
@@ -663,10 +485,8 @@ code {
     .body,
     #banner nav,
     #banner nav ul,
-    #featured,
     #content,
-    #extras,
-    #about {
+    #extras {
         width: auto;
         max-width: 100%;
         margin-left: 0;
@@ -682,8 +502,6 @@ code {
 
      #banner h1 strong {
          display: block;
-         /*font-size: 0.5em;*/
-         /*margin-top: 0.2em;*/
      }
 
     #content {

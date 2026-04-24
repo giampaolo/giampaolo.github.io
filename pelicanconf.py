@@ -6,7 +6,6 @@ AUTHOR = "Giampaolo Rodola"
 SITENAME = "Giampaolo Rodola"
 SITESUBTITLE = "Python enthusiast, core developer, psutil author"
 SITEURL = "http://127.0.0.1:8000"
-TWITTER_USERNAME = "grodola"
 THEME = "theme"
 PATH = "content"
 TIMEZONE = "Europe/Rome"
@@ -43,8 +42,6 @@ SOCIAL = (
 
 # --- menu
 
-DISPLAY_CATEGORIES_ON_MENU = False
-DISPLAY_PAGES_ON_MENU = False
 MENUITEMS = (
     ("Blog", "/"),
     ("Archives", "/archives"),
@@ -63,10 +60,13 @@ DEFAULT_PAGINATION = 5
 PAGE_PATHS = [""]
 PAGE_URL = "{slug}"
 PAGE_SAVE_AS = "{slug}.html"
+# Categories are not used; disable per-category pages and the index.
+# Also stop auto-assigning a category from the folder name.
+USE_FOLDER_AS_CATEGORY = False
+CATEGORY_SAVE_AS = ""
+CATEGORIES_SAVE_AS = ""
 # Do not generate /author/* HTML files.
 AUTHOR_SAVE_AS = ""
-# Do not generate /categories.html
-CATEGORIES_SAVE_AS = ""
 
 # --- tags
 
@@ -76,7 +76,28 @@ TAG_URL = "tags/{slug}"
 # --- plugins
 
 PLUGIN_PATHS = ["plugins"]
+# headerid is for RST; Markdown posts use the `toc` extension below.
 PLUGINS = ["headerid"]
+
+MARKDOWN = {
+    "extensions": [
+        "markdown.extensions.codehilite",
+        "markdown.extensions.extra",
+        "markdown.extensions.meta",
+        "markdown.extensions.toc",
+    ],
+    "extension_configs": {
+        "markdown.extensions.codehilite": {"css_class": "highlight"},
+        "markdown.extensions.extra": {},
+        "markdown.extensions.meta": {},
+        "markdown.extensions.toc": {
+            "permalink": "¶",  # matches headerid.py output for RST
+            "permalink_class": "headerlink",
+            "permalink_title": "Permalink to this headline",
+        },
+    },
+    "output_format": "html5",
+}
 
 # ---paths
 
@@ -85,15 +106,17 @@ STATIC_PATHS = [
     "static",
     "images",
     "extra",
-    "extra/CNAME",
 ]
 
 EXTRA_PATH_METADATA = {
     "extra/favicon.ico": {"path": "favicon.ico"},
     "extra/htaccess": {"path": ".htaccess"},
     "extra/CNAME": {"path": "CNAME"},
+    "extra/robots.txt": {"path": "robots.txt"},
 }
-DIRECT_TEMPLATES = ["index", "tags", "categories", "archives"]
+DIRECT_TEMPLATES = ["index", "tags", "categories", "archives", "sitemap"]
+TEMPLATE_EXTENSIONS = [".html", ".xml"]
+SITEMAP_SAVE_AS = "sitemap.xml"
 
 # --- others
 
@@ -127,5 +150,3 @@ JINJA_FILTERS = {
 }
 
 DEFAULT_DATE_FORMAT = "%d %b %Y"
-
-PYGMENTS_STYLE = "monokai"
