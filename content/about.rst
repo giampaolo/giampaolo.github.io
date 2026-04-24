@@ -28,7 +28,7 @@ Projects
 
 * `psutil`_: a cross-platform library for retrieving information on running processes and system utilization (CPU, memory, disks, network) in Python.  *(2008 - now)*
 
-  .. image:: https://img.shields.io/github/stars/giampaolo/psutil.svg
+  .. image:: https://img.shields.io/github/stars/giampaolo/psutil
     :target: https://github.com/giampaolo/psutil/stargazers
     :alt: Github stars
 
@@ -38,7 +38,7 @@ Projects
 
 * `pyftpdlib`_: a very fast, asynchronous, pure-python FTP server.  *(2006 - now)*
 
-  .. image:: https://img.shields.io/github/stars/giampaolo/pyftpdlib.svg
+  .. image:: https://img.shields.io/github/stars/giampaolo/pyftpdlib
     :target: https://github.com/giampaolo/pyftpdlib/stargazers
     :alt: Github stars
 
@@ -64,7 +64,7 @@ In `2010 <https://mail.python.org/pipermail/python-committers/2010-April/000891.
      - Description
    * - `144047`_
      - `subprocess`_
-     - use efficient event-driven process `wait()` on POSIX (`blog post <blog/2026/event-driven-process-waiting>`_)
+     - use efficient event-driven process `wait()` on POSIX (`blog post </blog/2026/event-driven-process-waiting>`_)
    * - `33671`_
      - `shutil`_
      - faster file copy with zero-copy syscalls (`PyCon China talk`_)
@@ -106,14 +106,14 @@ Python recipes
 Whatever is not big enough to become an actual project I usually turn into an independent recipe.
 Here are the ones I like the most:
 
-* `Log / directory watcher <http://code.activestate.com/recipes/577968-log-watcher-tail-f-log/?in=user-4178764>`__
+* `Log / directory watcher <https://code.activestate.com/recipes/577968-log-watcher-tail-f-log/?in=user-4178764>`__
 * `Handle exit context manager <https://gmpy.dev/blog/2016/how-to-always-execute-exit-functions-in-python>`__
-* `IPv4/v6 agnostic server <http://code.activestate.com/recipes/578504-server-supporting-ipv4-and-ipv6/?in=user-4178764>`__
+* `IPv4/v6 agnostic server <https://code.activestate.com/recipes/578504-server-supporting-ipv4-and-ipv6/?in=user-4178764>`__
 * `socket.sendfile() <https://code.activestate.com/recipes/578889-socketsendfile/>`__ (backport of `BPO-17552 <https://bugs.python.org/issue17552>`__)
-* `shutil.disk_usage() <http://code.activestate.com/recipes/577972-disk-usage/?in=user-4178764>`__ (backport of `BPO-12442 <http://bugs.python.org/issue12442>`__)
+* `shutil.disk_usage() <https://code.activestate.com/recipes/577972-disk-usage/?in=user-4178764>`__ (backport of `BPO-12442 <https://bugs.python.org/issue12442>`__)
 * `Recognize connection errors <https://gist.github.com/giampaolo/905b38a5ea9d5179eb0138e2f37a01a8>`__
-* `Wait for PID <http://code.activestate.com/recipes/578022-wait-for-pid-and-check-for-pid-existance-posix/?in=user-4178764>`__
-* `bytes-to-human converter <http://code.activestate.com/recipes/578019-bytes-to-human-human-to-bytes-converter/?in=user-4178764>`__
+* `Wait for PID <https://code.activestate.com/recipes/578022-wait-for-pid-and-check-for-pid-existance-posix/?in=user-4178764>`__
+* `bytes-to-human converter <https://code.activestate.com/recipes/578019-bytes-to-human-human-to-bytes-converter/?in=user-4178764>`__
 
 Abandoned projects
 ------------------
@@ -127,7 +127,7 @@ These are from when I took my first steps with Python in 2005. Listed here mainl
 Contacts
 --------
 
-* `GitHub <http://github.com/giampaolo>`__
+* `GitHub <https://github.com/giampaolo>`__
 * `X <https://x.com/grodola>`__
 * `LinkedIn <https://www.linkedin.com/in/grodola/>`__
 * `Medium <https://medium.com/@g.rodola>`__
@@ -136,7 +136,7 @@ Contacts
 
 .. _`10784`: https://bugs.python.org/issue10784
 .. _`10882`: https://bugs.python.org/issue10882
-.. _`12442`: http://bugs.python.org/issue12442
+.. _`12442`: https://bugs.python.org/issue12442
 .. _`144047`: https://github.com/python/cpython/pull/144047
 .. _`17552`: https://bugs.python.org/issue17552
 .. _`17561`: https://bugs.python.org/issue17561
