@@ -32,7 +32,7 @@ Projects
     :target: https://github.com/giampaolo/psutil/stargazers
     :alt: Github stars
 
-  .. image:: https://img.shields.io/pypi/dm/psutil?color=%232980B9&style=flat
+  .. image:: https://static.pepy.tech/badge/psutil/month
     :target: https://pepy.tech/project/psutil
     :alt: Downloads
 
@@ -42,7 +42,7 @@ Projects
     :target: https://github.com/giampaolo/psutil/stargazers
     :alt: Github stars
 
-  .. image:: https://img.shields.io/pypi/dm/pyftpdlib?color=%232980B9&style=flat
+  .. image:: https://static.pepy.tech/badge/pyftpdlib/month
     :target: https://pepy.tech/project/pyftpdlib
     :alt: Downloads
 
