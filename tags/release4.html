@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<title>Giampaolo Rodola - release</title>-->
+    <title>Giampaolo Rodola</title>
+    <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
+    <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
+    <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
+    <link rel="icon" type="image/x-icon" href="https://gmpy.dev/favicon.ico">
+</head>
+
+<body id="index" class="home">
+    <header id="banner" class="body">
+        <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+        <nav><ul>
+            <li><a href="/">Blog</a></li>
+            <li><a href="/archives">Archives</a></li>
+            <li><a href="/about">About</a></li>
+        </ul></nav>
+    </header><!-- /#banner -->
+
+<section id="content" class="body">
+    <h1 class="entry-title">Blog posts for tags/release</h1>
+
+<!-- blog posts -->
+        <ol id="posts-list" class="hfeed" start="4">
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2014/windows-wheels-available-in-psutil-212" rel="bookmark"
+                   title="Permalink to Windows wheels available in psutil 2.1.2">Windows wheels available in psutil 2.1.2</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2014-09-21T00:00:00+02:00">
+        Created: 21 set 2014,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/wheels">wheels</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/personal">personal</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate to the project. The main new &quot;feature&quot; of this release is that other than the exe files, Windows users can now also benefit from <a class="reference external" href="http://pythonwheels.com/">Python wheels</a> (full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/505">here</a>) which are available on PYPI. Frankly I don't know much about the new wheels packaging system but long story short is that Windows users can now install psutil via pip and therefore also include it as a dependency in requirements.txt. Other than this 2.1.2 can basically be considered a bug-fix release, including some important fixes amongst which:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/506">#506</a>: restored Python 2.4 compatibility</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/340">#340</a>: <cite>Process.get_open_files()</cite> no longer hangs on Windows (this was a very old and high-priority issue)</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/501">#501</a>: <cite>disk_io_counters()</cite> may return negative values on Windows</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/504">#504</a>: (Linux) couldn't build RPM packages via setup.py</li>
+</ul>
+<p>The list of all fixes can be found <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">here</a>. For the next release I plan to drop support for Python 2.4 and 2.5 and hopefully add network interfaces information similarly to <a class="reference external" href="https://github.com/giampaolo/psutil/issues/376">ifconfig</a>.</p>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2014/psutil-20" rel="bookmark"
+                   title="Permalink to Announcing psutil 2.0">Announcing psutil 2.0</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2014-03-10T00:00:00+01:00">
+        Created: 10 mar 2014,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0 is out. This is a major rewrite and reorganization of both the Python and C extension modules. It costed me four months of work and more than <strong>22,000 lines</strong> (the diff against old 1.2.1). Many of the changes are not backward compatible; I'm sure this will cause some pain, but I think it's for the better and needed to be done.</p>
+<div class="section" id="api-changes">
+<h2>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h2>
+<p>I already wrote a detailed <a class="reference external" href="psutil-20-api-redesign">blog post</a> about this, so use that as the official reference on how to port your code.</p>
+</div>
+<div class="section" id="rst-documentation">
+<h2>RST documentation<a class="headerlink" href="#rst-documentation" title="Permalink to this headline">¶</a></h2>
+<p>I've never been happy with the old doc hosted on Google Code. The markup language provided by Google is pretty limited, plus it's not under revision control. The new doc is more detailed, uses reStructuredText as the markup language, lives in the same code repository as psutil, and is hosted on the excellent Read the Docs: <a class="reference external" href="http://psutil.readthedocs.org/">http://psutil.readthedocs.org/</a></p>
+</div>
+<div class="section" id="physical-cpus-count">
+<h2>Physical CPUs count<a class="headerlink" href="#physical-cpus-count" title="Permalink to this headline">¶</a></h2>
+<p>You're now able to distinguish between logical and physical CPUs. The full story is in <a class="reference external" href="https://github.com/giampaolo/psutil/issues/427">#427</a>.</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
+<span class="go">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># physical cores only</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<div class="section" id="process-instances-are-hashable">
+<h2>Process instances are hashable<a class="headerlink" href="#process-instances-are-hashable" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal">psutil.Process</tt> instances can now be compared for equality and used in sets and dicts. The most useful application is diffing process snapshots:</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">before</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ... some time passes ...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">after</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_procs</span> <span class="o">=</span> <span class="n">after</span> <span class="o">-</span> <span class="n">before</span>  <span class="c1"># processes spawned in between</span>
+</pre></div>
+<p>Equality is not just PID-based. It also includes the process creation time, so a <tt class="docutils literal">Process</tt> whose PID got reused by the kernel won't be mistaken for the original. The full story is in <a class="reference external" href="https://github.com/giampaolo/psutil/issues/452">#452</a>.</p>
+</div>
+<div class="section" id="speedups">
+<h2>Speedups<a class="headerlink" href="#speedups" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/477">#477</a>: <tt class="docutils literal">Process.cpu_percent()</tt> is about 30% faster.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/478">#478</a>: (Linux) almost all APIs are about 30% faster on Python 3.X.</li>
+</ul>
+</div>
+<div class="section" id="other-improvements-and-bugfixes">
+<h2>Other improvements and bugfixes<a class="headerlink" href="#other-improvements-and-bugfixes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/424">#424</a>: published Windows installers for Python 3.X 64-bit.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/447">#447</a>: the <tt class="docutils literal">psutil.wait_procs()</tt> <tt class="docutils literal">timeout</tt> parameter is now optional.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/459">#459</a>: a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/v2.0.0/Makefile">Makefile</a> is now available for running tests and other repetitive tasks (also on Windows).</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/463">#463</a>: the <tt class="docutils literal">timeout</tt> parameter of <tt class="docutils literal">cpu_percent*</tt> functions defaults to 0.0, because the previous default was a common source of slowdowns.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/340">#340</a>: (Windows) <tt class="docutils literal">Process.open_files()</tt> no longer hangs.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/448">#448</a>: (Windows) fixed a memory leak affecting <tt class="docutils literal">Process.children()</tt> and <tt class="docutils literal">Process.ppid()</tt>.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/461">#461</a>: namedtuples are now pickle-able.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/474">#474</a>: (Windows) <tt class="docutils literal">Process.cpu_percent()</tt> is no longer capped at 100%.</li>
+</ul>
+</div>
+
+        </div>
+    </article></li>
+            </ol><!-- /#posts-list -->
+<nav class="paginator">
+        <a href="https://gmpy.dev/tags/release.html" title="First page">&laquo;</a>
+        <a href="https://gmpy.dev/tags/release3.html" title="Previous page">&lsaquo;</a>
+    <span class="paginator-info">Page 4 of 4</span>
+</nav>
+ <!-- /blog posts -->
+</section>
+
+    <!-- Footer -->
+    <section id="extras" class="body">
+
+        <div class="social">
+            <h2>Social</h2>
+            <ul>
+                <li><a href="https://github.com/giampaolo">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/grodola/">LinkedIn</a></li>
+                <li><a href="https://x.com/grodola">X</a></li>
+            </ul>
+        </div><!-- /.social -->
+
+        <div class="feeds">
+            <h2>Feeds</h2>
+            <ul>
+                <li><a href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate">atom</a></li>
+                <li><a href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate">rss</a></li>
+            </ul>
+        </div>
+    </div>
+    </section>
+    <!-- /Footer -->
+
+    <footer id="contentinfo" class="body">
+        <!--
+            <address id="about" class="vcard body">
+            Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+            </address>
+
+            <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        -->
+    </footer>
+
+    <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164357405-2', 'auto');
+    ga('send', 'pageview');
+    </script>
+</body>
+</html>

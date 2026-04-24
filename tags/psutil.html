@@ -43,26 +43,14 @@
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>,        <a href="https://gmpy.dev/tags/async">async</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>One of the less fun aspects of process management on POSIX systems is waiting
-for a process to terminate. The standard library's <code>subprocess</code> module has
-relied on a busy-loop polling approach since the <em>timeout</em> parameter was added
-to
-<a href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen.wait">Popen.wait()</a>
-in Python 3.3, around 15 years ago (see
-<a href="[https://url.com](https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077)">source</a>).
-And psutil's
-<a href="https://psutil.readthedocs.io/en/latest/#psutil.Process.wait">Process.wait()</a>
-method uses exactly the same technique (see
-<a href="https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160">source</a>).</p>
-<p>The logic is straightforward: check whether the process has exited using
-non-blocking <code>waitpid(WNOHANG)</code>, sleep briefly, check again, sleep a bit
-longer, and so on.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span>
+</footer><!-- /.post-info -->            <p>One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's <tt class="docutils literal">subprocess</tt> module has relied on a busy-loop polling approach since the <em>timeout</em> parameter was added to <tt class="docutils literal">subprocess.Popen.wait()</tt> in Python 3.3, around 15 years ago (see <a class="reference external" href="https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077">source</a>). And psutil's <tt class="docutils literal">Process.wait()</tt> method uses exactly the same technique (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160">source</a>).</p>
+<p>The logic is straightforward: check whether the process has exited using non-blocking <tt class="docutils literal">waitpid(WNOHANG)</tt>, sleep briefly, check again, sleep a bit longer, and so on.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">wait_busy</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
     <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout</span>
@@ -73,40 +61,25 @@ longer, and so on.</p>
             <span class="k">return</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
         <span class="n">interval</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">interval</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">)</span>
-    <span class="k">raise</span> <span class="n">TimeoutExpired</span>
-</code></pre></div>
-
-<p>In this blog post I'll show how I finally addressed this long-standing
-inefficiency, first in psutil, and most excitingly, directly in CPython's
-standard library subprocess module.</p>
-<h2>The problem with busy-polling</h2>
-<ul>
-<li>CPU wake-ups: even with exponential backoff (starting at 0.1ms, capping at
-  40ms), the system constantly wakes up to check process status, wasting CPU
-  cycles and draining batteries.</li>
-<li>Latency: there's always a gap between when a process actually terminates and
-  when you detect it.</li>
-<li>Scalability: monitoring many processes simultaneously magnifies all of the
-  above.</li>
+    <span class="k">raise</span> <span class="ne">TimeoutError</span>
+</pre></div>
+<p>In this blog post I'll show how I finally addressed this long-standing inefficiency, first in psutil, and most excitingly, directly in CPython's standard library <tt class="docutils literal">subprocess</tt> module.</p>
+<div class="section" id="the-problem-with-busy-polling">
+<h2>The problem with busy-polling<a class="headerlink" href="#the-problem-with-busy-polling" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>CPU wake-ups: even with exponential backoff (starting at 0.1ms, capping at 40ms), the system constantly wakes up to check process status, wasting CPU cycles and draining batteries.</li>
+<li>Latency: there's always a gap between when a process actually terminates and when you detect it.</li>
+<li>Scalability: monitoring many processes simultaneously magnifies all of the above.</li>
 </ul>
-<h2>Event-driven waiting</h2>
-<p>All POSIX systems provide at least one mechanism to be notified when a file
-descriptor becomes ready. These are
-<a href="https://man7.org/linux/man-pages/man2/select.2.html">select()</a>,
-<a href="https://man7.org/linux/man-pages/man2/poll.2.html">poll()</a>,
-<a href="https://man7.org/linux/man-pages/man7/epoll.7.html">epoll()</a> (Linux) and
-<a href="https://man.freebsd.org/cgi/man.cgi?query=kqueue">kqueue()</a> (BSD / macOS)
-system calls. Until recently, I believed they could only be used with file
-descriptors referencing sockets, pipes, etc., but it turns out they can also be
-used to wait for events on process PIDs!</p>
-<h2>Linux</h2>
-<p>In 2019, Linux 5.3 introduced a new syscall,
-<strong><a href="https://man7.org/linux/man-pages/man2/pidfd_open.2.html">pidfd_open()</a></strong>,
-which was added to the <code>os</code> module in Python 3.9. It returns a file descriptor
-referencing a process PID. The interesting thing is that <code>pidfd_open()</code> can be
-used in conjunction with <code>select()</code>, <code>poll()</code> or <code>epoll()</code> to effectively wait
-until the process exits. E.g. by using <code>poll()</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">select</span>
+</div>
+<div class="section" id="event-driven-waiting">
+<h2>Event-driven waiting<a class="headerlink" href="#event-driven-waiting" title="Permalink to this headline">¶</a></h2>
+<p>All POSIX systems provide at least one mechanism to be notified when a file descriptor becomes ready. These are <a class="reference external" href="https://man7.org/linux/man-pages/man2/select.2.html">select()</a>, <a class="reference external" href="https://man7.org/linux/man-pages/man2/poll.2.html">poll()</a>, <a class="reference external" href="https://man7.org/linux/man-pages/man7/epoll.7.html">epoll()</a> (Linux) and <a class="reference external" href="https://man.freebsd.org/cgi/man.cgi?query=kqueue">kqueue()</a> (BSD / macOS) system calls. Until recently, I believed they could only be used with file descriptors referencing sockets, pipes, etc., but it turns out they can also be used to wait for events on process PIDs!</p>
+</div>
+<div class="section" id="linux">
+<h2>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h2>
+<p>In 2019, Linux 5.3 introduced a new syscall, <tt class="docutils literal">os.pidfd_open()</tt>, which was added in Python 3.9. It returns a file descriptor referencing a process PID. The interesting thing is that <tt class="docutils literal">pidfd_open()</tt> can be used in conjunction with <tt class="docutils literal">select()</tt>, <tt class="docutils literal">poll()</tt> or <tt class="docutils literal">epoll()</tt> to effectively wait until the process exits. E.g. by using <tt class="docutils literal">poll()</tt>:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">select</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">wait_pidfd</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
     <span class="n">pidfd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">pidfd_open</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
@@ -117,23 +90,15 @@ until the process exits. E.g. by using <code>poll()</code>:</p>
     <span class="k">if</span> <span class="n">events</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="k">raise</span> <span class="ne">TimeoutError</span>
-</code></pre></div>
-
-<p>This approach has zero busy-looping. The kernel wakes us up exactly when the
-process terminates or when the timeout expires if the PID is still alive.</p>
-<p>I chose <code>poll()</code> over <code>select()</code> because <code>select()</code> has a historical file
-descriptor limit (<code>FD_SETSIZE</code>), which typically caps it at 1024 file
-descriptors per-process (reminded me of
-<a href="https://bugs.python.org/issue1685000">BPO-1685000</a>).</p>
-<p>I chose <code>poll()</code> over <code>epoll()</code> because it does not require creating an
-additional file descriptor. It also needs only a single syscall, which should
-make it a bit more efficient when monitoring a single FD rather than many.</p>
-<h2>macOS and BSD</h2>
-<p>BSD-derived systems (including macOS) provide the <code>kqueue()</code> syscall. It's
-conceptually similar to <code>select()</code>, <code>poll()</code> and <code>epoll()</code>, but more powerful
-(e.g. it can also handle regular files). <code>kqueue()</code> can be passed a PID
-directly, and it will return once the PID disappears or the timeout expires:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">select</span>
+</pre></div>
+<p>This approach has zero busy-looping. The kernel wakes us up exactly when the process terminates or when the timeout expires if the PID is still alive.</p>
+<p>I chose <tt class="docutils literal">poll()</tt> over <tt class="docutils literal">select()</tt> because <tt class="docutils literal">select()</tt> has a historical file descriptor limit (<tt class="docutils literal">FD_SETSIZE</tt>), which typically caps it at 1024 file descriptors per-process (reminded me of <a class="reference external" href="https://bugs.python.org/issue1685000">BPO-1685000</a>).</p>
+<p>I chose <tt class="docutils literal">poll()</tt> over <tt class="docutils literal">epoll()</tt> because it does not require creating an additional file descriptor. It also needs only a single syscall, which should make it a bit more efficient when monitoring a single FD rather than many.</p>
+</div>
+<div class="section" id="macos-and-bsd">
+<h2>macOS and BSD<a class="headerlink" href="#macos-and-bsd" title="Permalink to this headline">¶</a></h2>
+<p>BSD-derived systems (including macOS) provide the <tt class="docutils literal">kqueue()</tt> syscall. It's conceptually similar to <tt class="docutils literal">select()</tt>, <tt class="docutils literal">poll()</tt> and <tt class="docutils literal">epoll()</tt>, but more powerful (e.g. it can also handle regular files). <tt class="docutils literal">kqueue()</tt> can be passed a PID directly, and it will return once the PID disappears or the timeout expires:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">select</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">wait_kqueue</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
     <span class="n">kq</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">kqueue</span><span class="p">()</span>
@@ -148,133 +113,98 @@ directly, and it will return once the PID disappears or the timeout expires:</p>
     <span class="k">if</span> <span class="n">events</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="k">raise</span> <span class="ne">TimeoutError</span>
-</code></pre></div>
-
-<h2>Windows</h2>
-<p>Windows does not busy-loop, both in psutil and subprocess module, thanks to
-<code>WaitForSingleObject</code>. This means Windows has effectively had event-driven
-process waiting from the start. So nothing to do on that front.</p>
-<h2>Graceful fallbacks</h2>
-<p>Both <code>pidfd_open()</code> and <code>kqueue()</code> can fail for different reasons. For example,
-with <code>EMFILE</code> if the process runs out of file descriptors (usually 1024), or
-with <code>EACCES</code> / <code>EPERM</code> if the syscall was explicitly blocked at the system
-level by the sysadmin (e.g. via SECCOMP). In all cases, psutil silently falls
-back to the traditional busy-loop polling approach rather than raising an
-exception.</p>
-<p>This fast-path-with-fallback approach is similar in spirit to
-<a href="https://bugs.python.org/issue33671">BPO-33671</a>, where I sped up
-<code>shutil.copyfile()</code> by using zero-copy system calls back in 2018. In there,
-more efficient <code>os.sendfile()</code> is attempted first, and if it fails (e.g. on
-network filesystems) we fall back to the traditional <code>read()</code> / <code>write()</code>
-approach to copy regular files.</p>
-<h2>Measurement</h2>
-<p>As a simple experiment, here's a simple program which waits on itself for 10
-seconds without terminating:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># test.py</span>
+</pre></div>
+</div>
+<div class="section" id="windows">
+<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
+<p>Windows does not busy-loop, both in psutil and <tt class="docutils literal">subprocess</tt> module, thanks to <tt class="docutils literal">WaitForSingleObject</tt>. This means Windows has effectively had event-driven process waiting from the start. So nothing to do on that front.</p>
+</div>
+<div class="section" id="graceful-fallbacks">
+<h2>Graceful fallbacks<a class="headerlink" href="#graceful-fallbacks" title="Permalink to this headline">¶</a></h2>
+<p>Both <tt class="docutils literal">pidfd_open()</tt> and <tt class="docutils literal">kqueue()</tt> can fail for different reasons. For example, with <tt class="docutils literal">EMFILE</tt> if the process runs out of file descriptors (usually 1024), or with <tt class="docutils literal">EACCES</tt> / <tt class="docutils literal">EPERM</tt> if the syscall was explicitly blocked at the system level by the sysadmin (e.g. via SECCOMP). In all cases, psutil silently falls back to the traditional busy-loop polling approach rather than raising an exception.</p>
+<p>This fast-path-with-fallback approach is similar in spirit to <a class="reference external" href="https://bugs.python.org/issue33671">BPO-33671</a>, where I sped up <tt class="docutils literal">shutil.copyfile()</tt> by using zero-copy system calls back in 2018. In there, more efficient <tt class="docutils literal">os.sendfile()</tt> is attempted first, and if it fails (e.g. on network filesystems) we fall back to the traditional <tt class="docutils literal">read()</tt> / <tt class="docutils literal">write()</tt> approach to copy regular files.</p>
+</div>
+<div class="section" id="measurement">
+<h2>Measurement<a class="headerlink" href="#measurement" title="Permalink to this headline">¶</a></h2>
+<p>As a simple experiment, here's a simple program which waits on itself for 10 seconds without terminating:</p>
+<div class="highlight"><pre><span></span><span class="c1"># test.py</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="k">except</span> <span class="n">psutil</span><span class="o">.</span><span class="n">TimeoutExpired</span><span class="p">:</span>
     <span class="k">pass</span>
-</code></pre></div>
-
-<p>We can measure the CPU context switching using <code>/usr/bin/time -v</code>. Before the
-patch (the busy-loop):</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>/usr/bin/time<span class="w"> </span>-v<span class="w"> </span>python3<span class="w"> </span>test.py<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>context
-<span class="w">    </span>Voluntary<span class="w"> </span>context<span class="w"> </span>switches:<span class="w"> </span><span class="m">258</span>
-<span class="w">    </span>Involuntary<span class="w"> </span>context<span class="w"> </span>switches:<span class="w"> </span><span class="m">4</span>
-</code></pre></div>
-
+</pre></div>
+<p>We can measure the CPU context switching using <tt class="docutils literal">/usr/bin/time <span class="pre">-v</span></tt>. Before the patch (the busy-loop):</p>
+<pre class="literal-block">
+$ /usr/bin/time -v python3 test.py 2&gt;&amp;1 | grep context
+    Voluntary context switches: 258
+    Involuntary context switches: 4
+</pre>
 <p>After the patch (the event-driven approach):</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>/usr/bin/time<span class="w"> </span>-v<span class="w"> </span>python3<span class="w"> </span>test.py<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>context
-<span class="w">    </span>Voluntary<span class="w"> </span>context<span class="w"> </span>switches:<span class="w"> </span><span class="m">2</span>
-<span class="w">    </span>Involuntary<span class="w"> </span>context<span class="w"> </span>switches:<span class="w"> </span><span class="m">1</span>
-</code></pre></div>
-
-<p>This shows that instead of spinning in userspace, the process blocks in
-<code>poll()</code> / <code>kqueue()</code>, and is woken up only when the kernel notifies it,
-resulting in just a few CPU context switches.</p>
-<h2>Sleeping state</h2>
-<p>It's also interesting to note that waiting via <code>poll()</code> (or <code>kqueue()</code>) puts
-the process into the exact same sleeping state as a plain <code>time.sleep()</code> call.
-From the kernel's perspective, both are interruptible sleeps: the process is
-de-scheduled, consumes zero CPU, and sits quietly in kernel space.</p>
-<p>The <code>"S+"</code> state shown below by <code>ps</code> means that the process "sleeps in
-foreground".</p>
-<ul>
-<li><code>time.sleep()</code>:</li>
+<pre class="literal-block">
+$ /usr/bin/time -v python3 test.py 2&gt;&amp;1 | grep context
+    Voluntary context switches: 2
+    Involuntary context switches: 1
+</pre>
+<p>This shows that instead of spinning in userspace, the process blocks in <tt class="docutils literal">poll()</tt> / <tt class="docutils literal">kqueue()</tt>, and is woken up only when the kernel notifies it, resulting in just a few CPU context switches.</p>
+</div>
+<div class="section" id="sleeping-state">
+<h2>Sleeping state<a class="headerlink" href="#sleeping-state" title="Permalink to this headline">¶</a></h2>
+<p>It's also interesting to note that waiting via <tt class="docutils literal">poll()</tt> (or <tt class="docutils literal">kqueue()</tt>) puts the process into the exact same sleeping state as a plain <tt class="docutils literal">time.sleep</tt> call. From the kernel's perspective, both are interruptible sleeps: the process is de-scheduled, consumes zero CPU, and sits quietly in kernel space.</p>
+<p>The <tt class="docutils literal">&quot;S+&quot;</tt> state shown below by <tt class="docutils literal">ps</tt> means that the process &quot;sleeps in foreground&quot;.</p>
+<ul class="simple">
+<li><tt class="docutils literal">time.sleep</tt>:</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="err">$</span> <span class="p">(</span><span class="n">python3</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import time; time.sleep(10)&#39;</span> <span class="o">&amp;</span> <span class="n">pid</span><span class="o">=</span><span class="err">$!</span><span class="p">;</span> <span class="n">sleep</span> <span class="mf">0.3</span><span class="p">;</span> <span class="n">ps</span> <span class="o">-</span><span class="n">o</span> <span class="n">pid</span><span class="p">,</span><span class="n">stat</span><span class="p">,</span><span class="n">comm</span> <span class="o">-</span><span class="n">p</span> <span class="err">$</span><span class="n">pid</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">fg</span> <span class="o">&amp;&gt;/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span>
-    <span class="n">PID</span> <span class="n">STAT</span> <span class="n">COMMAND</span>
- <span class="mi">491573</span> <span class="n">S</span><span class="o">+</span>   <span class="n">python3</span>
-</code></pre></div>
-
-<ul>
-<li><code>poll()</code>:</li>
+<pre class="literal-block">
+$ (python3 -c 'import time; time.sleep(10)' &amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;&amp; fg &amp;&gt;/dev/null
+    PID STAT COMMAND
+ 491573 S+   python3
+</pre>
+<ul class="simple">
+<li><tt class="docutils literal">select.poll</tt>:</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="err">$</span> <span class="p">(</span><span class="n">python3</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)&#39;</span> <span class="o">&amp;</span> <span class="n">pid</span><span class="o">=</span><span class="err">$!</span><span class="p">;</span> <span class="n">sleep</span> <span class="mf">0.3</span><span class="p">;</span> <span class="n">ps</span> <span class="o">-</span><span class="n">o</span> <span class="n">pid</span><span class="p">,</span><span class="n">stat</span><span class="p">,</span><span class="n">comm</span> <span class="o">-</span><span class="n">p</span> <span class="err">$</span><span class="n">pid</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">fg</span> <span class="o">&amp;&gt;/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span>
-    <span class="n">PID</span> <span class="n">STAT</span> <span class="n">COMMAND</span>
- <span class="mi">491748</span> <span class="n">S</span><span class="o">+</span>   <span class="n">python3</span>
-</code></pre></div>
-
-<h2>CPython contribution</h2>
-<p>After landing the psutil implementation
-(<a href="https://github.com/giampaolo/psutil/pull/2706">psutil/PR-2706</a>), I took the
-extra step and submitted a matching pull request for CPython <code>subprocess</code>
-module: <a href="https://github.com/python/cpython/pull/144047">cpython/PR-144047</a>.</p>
-<p>I'm especially proud of this one: this is the <strong>third time</strong> in psutil's 17+
-year history that a feature developed in psutil made its way upstream into the
-Python standard library.</p>
-<ul>
-<li>
-<p>The first was back in 2010, when <code>psutil.Process.nice()</code>
-  inspired
-  <a href="https://docs.python.org/3/library/os.html#os.getpriority">os.getpriority()</a> and
-  <a href="https://docs.python.org/3/library/os.html#os.setpriority">os.setpriority()</a>, see
-  <a href="https://bugs.python.org/issue10784">BPO-10784</a>.
-  Landed in Python 3.3.</p>
-</li>
-<li>
-<p>The second was back in 2011, when <code>psutil.disk_usage()</code> inspired
-  <a href="https://docs.python.org/3/library/shutil.html#shutil.disk_usage">shutil.disk_usage()</a>, see
-  <a href="https://mail.python.org/archives/list/python-ideas@python.org/thread/67A7ML2TJ7MBS3WOL6IZKLD2C3B3VCQG">python-ideas ML proposal</a>.
-  Landed in Python 3.3.</p>
-</li>
+<pre class="literal-block">
+$ (python3 -c 'import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)' &amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;&amp; fg &amp;&gt;/dev/null
+    PID STAT COMMAND
+ 491748 S+   python3
+</pre>
+</div>
+<div class="section" id="cpython-contribution">
+<h2>CPython contribution<a class="headerlink" href="#cpython-contribution" title="Permalink to this headline">¶</a></h2>
+<p>After landing the psutil implementation (<a class="reference external" href="https://github.com/giampaolo/psutil/pull/2706">PR-2706</a>), I took the extra step and submitted a matching pull request for CPython <tt class="docutils literal">subprocess</tt> module: <a class="reference external" href="https://github.com/python/cpython/pull/144047">cpython/PR-144047</a>.</p>
+<p>I'm especially proud of this one: this is the <strong>third time</strong> in psutil's 17+ year history that a feature developed in psutil made its way upstream into the Python standard library.</p>
+<ul class="simple">
+<li>The first was back in 2010, when <tt class="docutils literal">Process.nice()</tt> inspired <tt class="docutils literal">os.getpriority()</tt> and <tt class="docutils literal">os.setpriority()</tt>, see <a class="reference external" href="https://bugs.python.org/issue10784">BPO-10784</a>. Landed in Python 3.3.</li>
+<li>The second was back in 2011, when <tt class="docutils literal">psutil.disk_usage()</tt> inspired <tt class="docutils literal">shutil.disk_usage()</tt>, see <a class="reference external" href="https://mail.python.org/archives/list/python-ideas&#64;python.org/thread/67A7ML2TJ7MBS3WOL6IZKLD2C3B3VCQG">python-ideas ML proposal</a>. Landed in Python 3.3.</li>
 </ul>
-<p><em>Funny thing:</em> 15 years ago, Python 3.3 added the <em>timeout</em> parameter to
-<code>subprocess.Popen.wait()</code> (see
-<a href="https://github.com/python/cpython/commit/31aa7dd1419">commit</a>). That's
-probably where I took inspiration when I first added the <em>timeout</em> parameter to
-psutil's <code>Process.wait()</code> around the same time (see
-<a href="https://github.com/giampaolo/psutil/commit/886710daf">commit</a>). Now, 15 years
-later, I'm contributing back a similar improvement for that very same <em>timeout</em>
-parameter. <strong>The circle is complete</strong>.</p>
-<h2>Links</h2>
+<p><em>Funny thing:</em> 15 years ago, Python 3.3 added the <em>timeout</em> parameter to <tt class="docutils literal">subprocess.Popen.wait</tt> (see <a class="reference external" href="https://github.com/python/cpython/commit/31aa7dd1419">commit</a>). That's probably where I took inspiration when I first added the <em>timeout</em> parameter to psutil's <tt class="docutils literal">Process.wait()</tt> around the same time (see <a class="reference external" href="https://github.com/giampaolo/psutil/commit/886710daf">commit</a>). Now, 15 years later, I'm contributing back a similar improvement for that very same <em>timeout</em> parameter. <strong>The circle is complete</strong>.</p>
+</div>
+<div class="section" id="links">
+<h2>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
 <p>Topics related to this:</p>
-<ul>
-<li><a href="https://github.com/giampaolo/psutil/issues/2712">psutil/#2712</a>: proposal to
-  extend this to multiple PIDs (<code>psutil.wait_procs()</code>).</li>
-<li><a href="https://github.com/giampaolo/psutil/issues/2703">psutil/#2703</a>: proposal for
-  asynchronous <code>psutil.Process.wait()</code> integration with <code>asyncio</code>.</li>
-<li><a href="https://github.com/python/cpython/issues/144211">cpython/#144211</a>: proposal
-  to extend the <a href="https://docs.python.org/3/library/selectors.html">selectors</a>
-  module to enable <code>asyncio</code> optimization on BSD /
-  macOS via <code>kqueue()</code>.</li>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/2712">#2712</a>: proposal to extend this to multiple PIDs (<tt class="docutils literal">psutil.wait_procs()</tt>).</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/2703">#2703</a>: proposal for asynchronous <tt class="docutils literal">Process.wait()</tt> integration with <tt class="docutils literal">asyncio</tt>.</li>
+<li><a class="reference external" href="https://github.com/python/cpython/issues/144211">cpython/#144211</a>: proposal to extend the <tt class="docutils literal">selectors</tt> module to enable <tt class="docutils literal">asyncio</tt> optimization on BSD / macOS via <tt class="docutils literal">kqueue()</tt>.</li>
 </ul>
-<h2>Discussion</h2>
-<ul>
-<li><a href="https://www.reddit.com/r/Python/comments/1qpp42k/from_python_33_to_today_ending_15_years_of/">Reddit</a></li>
-<li><a href="https://news.ycombinator.com/item?id=46802061">Hacker News</a></li>
-<li><a href="https://medium.com/@g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86">Medium</a></li>
-<li><a href="https://www.linkedin.com/feed/update/urn:li:share:7422396026449391616/">LinkedIn</a></li>
+</div>
+<div class="section" id="discussion">
+<h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/1qpp42k/from_python_33_to_today_ending_15_years_of/">Reddit</a></li>
+<li><a class="reference external" href="https://news.ycombinator.com/item?id=46802061">Hacker News</a></li>
+<li><a class="reference external" href="https://medium.com/&#64;g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86">Medium</a></li>
+<li><a class="reference external" href="https://www.linkedin.com/feed/update/urn:li:share:7422396026449391616/">Linkedin</a></li>
 </ul>
+</div>
+
         </div>
             <div class="blogposts-separator"></div>
     </article></li>
     <li><article class="hentry">
         <header>
             <h1><a href="https://gmpy.dev/blog/2025/psutil-heap-introspection-apis" rel="bookmark"
-                   title="Permalink to Detect memory leaks of C extensions with psutil and psleak">Detect memory leaks of C extensions with psutil and psleak</a></h1>
+                   title="Permalink to Detecting memory leaks in C extensions with psutil and psleak">Detecting memory leaks in C extensions with psutil and psleak</a></h1>
         </header>
         <div class="entry-content">
 <footer class="post-info">
@@ -287,113 +217,89 @@ parameter. <strong>The circle is complete</strong>.</p>
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/psleak">psleak</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/c">c</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/c">c</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>Memory leaks in Python are usually straightforward to diagnose. Just look at
-RSS, track Python object counts, follow reference graphs, etc. But leaks inside
-<strong>C extension modules</strong> are another story. Traditional memory metrics such as
-RSS and VMS fail to reveal them because Python's memory allocator
-(<a href="https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator">pymalloc</a>)
-sits above the platform's native heap. If something in an extension calls
-<code>malloc()</code> without a corresponding <code>free()</code>, that memory often won't show
-up in RSS / VMS. You have a leak, and you don't know.</p>
-<p>psutil 7.2.0 introduces two new APIs for <strong>C heap introspection</strong>, designed
-specifically to catch these kinds of native leaks. They give you a window
-directly into the underlying platform allocator (e.g. glibc's malloc), letting
-you track how much memory the C layer actually allocates. If your RSS is flat
-but your C heap usage climbs, you now have a way to see it.</p>
-<h2>Why native heap introspection matters</h2>
-<p>Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL, lxml,
-psycopg, PyTorch, custom in-house modules, etc. And even cPython itself, which
-implements many of its standard library modules in C. If any of these
-components mishandle memory at the C level, you get a leak that doesn't show up in:</p>
-<ul>
-<li>Python reference counts
-  (<a href="https://docs.python.org/dev/library/sys.html#sys.getrefcount">sys.getrefcount</a>)</li>
-<li><a href="https://docs.python.org/3/library/tracemalloc.html">tracemalloc module</a></li>
-<li>Python's <a href="https://docs.python.org/dev/library/gc.html">gc</a> stats</li>
-<li>RSS, VMS or
-  <a href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python">USS</a>
-  due to allocator caching, especially for small objects. This can happen, for
-  example, when you forget to <code>Py_DECREF</code> a Python object.</li>
+</footer><!-- /.post-info -->            <p>Memory leaks in Python are usually straightforward to diagnose. Just look at RSS, track Python object counts, follow reference graphs, etc. But leaks inside C extension modules are another story. Traditional memory metrics such as RSS and VMS fail to reveal them because Python's memory allocator (<a class="reference external" href="https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator">pymalloc</a>) sits above the platform's native heap. If something in an extension calls <tt class="docutils literal">malloc()</tt> without a corresponding <tt class="docutils literal">free()</tt>, that memory often won't show up in RSS / VMS. You have a leak, and you don't know.</p>
+<p>psutil 7.2.0 introduces two new APIs for <strong>C heap introspection</strong>, designed specifically to catch these kinds of native leaks. They give you a window directly into the underlying platform allocator (e.g. glibc's malloc), letting you track how much memory the C layer actually allocates. If your RSS is flat but your C heap usage climbs, you now have a way to see it.</p>
+<div class="section" id="why-native-heap-introspection-matters">
+<h2>Why native heap introspection matters<a class="headerlink" href="#why-native-heap-introspection-matters" title="Permalink to this headline">¶</a></h2>
+<p>Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL, lxml, psycopg, PyTorch, custom in-house modules, etc. And even CPython itself, which implements many of its standard library modules in C. If any of these components mishandle memory at the C level, you get a leak that doesn't show up in:</p>
+<ul class="simple">
+<li>Python reference counts (<tt class="docutils literal">sys.getrefcount</tt>).</li>
+<li><tt class="docutils literal">tracemalloc</tt> module.</li>
+<li>Python's <tt class="docutils literal">gc</tt> stats.</li>
+<li>RSS, VMS or USS due to allocator caching, especially for small objects. This can happen, for example, when you forget to <tt class="docutils literal">Py_DECREF</tt> a Python object.</li>
 </ul>
-<p>psutil's new functions let you query the allocator (e.g. glibc) directly,
-returning low-level metrics from the platform's native heap.</p>
-<h2>heap_info(): direct allocator statistics</h2>
-<p><code>heap_info()</code> exposes the following metrics:</p>
-<ul>
-<li><code>heap_used</code>: total number of bytes currently allocated via <code>malloc()</code>
-  (small allocations).</li>
-<li><code>mmap_used</code>: total number of bytes currently allocated via <code>mmap()</code> or
-  via large <code>malloc()</code> allocations.</li>
-<li><code>heap_count</code>: (Windows only) number of private heaps created via
-  <code>HeapCreate()</code>.</li>
+<p>psutil's new functions let you query the allocator (e.g. glibc) directly, returning low-level metrics from the platform's native heap.</p>
+</div>
+<div class="section" id="heap-info-direct-allocator-statistics">
+<h2>heap_info(): direct allocator statistics<a class="headerlink" href="#heap-info-direct-allocator-statistics" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal">psutil.heap_info()</tt> exposes the following metrics:</p>
+<ul class="simple">
+<li><tt class="docutils literal">heap_used</tt>: total number of bytes currently allocated via <tt class="docutils literal">malloc()</tt> (small allocations).</li>
+<li><tt class="docutils literal">mmap_used</tt>: total number of bytes currently allocated via <tt class="docutils literal">mmap()</tt> or via large <tt class="docutils literal">malloc()</tt> allocations.</li>
+<li><tt class="docutils literal">heap_count</tt>: (Windows only) number of private heaps created via <tt class="docutils literal">HeapCreate()</tt>.</li>
 </ul>
 <p>Example:</p>
-<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">heap_info</span><span class="p">()</span>
-<span class="n">pheap</span><span class="p">(</span><span class="n">heap_used</span><span class="o">=</span><span class="mi">5177792</span><span class="p">,</span> <span class="n">mmap_used</span><span class="o">=</span><span class="mi">819200</span><span class="p">)</span>
-</code></pre></div>
-
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">psutil</span><span class="o">.</span><span class="n">heap_info</span><span class="p">()</span>
+<span class="go">pheap(heap_used=5177792, mmap_used=819200)</span>
+</pre></div>
 <p>Reference for what contributes to each field:</p>
-<table>
-<thead>
-<tr>
-<th>Platform</th>
-<th>Allocation type</th>
-<th>Field affected</th>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Platform</th>
+<th class="head">Allocation type</th>
+<th class="head">Field affected</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td>UNIX / Windows</td>
-<td>small <code>malloc()</code> ≤128 KB without <code>free()</code></td>
-<td><code>heap_used</code></td>
+<tbody valign="top">
+<tr><td>UNIX / Windows</td>
+<td>small <tt class="docutils literal">malloc()</tt> ≤128 KB without <tt class="docutils literal">free()</tt></td>
+<td><tt class="docutils literal">heap_used</tt></td>
 </tr>
-<tr>
-<td>UNIX / Windows</td>
-<td>large <code>malloc()</code> &gt;128 KB without <code>free()</code>, or <code>mmap()</code> without <code>munmap()</code> (UNIX)</td>
-<td><code>mmap_used</code></td>
+<tr><td>UNIX / Windows</td>
+<td>large <tt class="docutils literal">malloc()</tt> &gt;128 KB without <tt class="docutils literal">free()</tt>, or <tt class="docutils literal">mmap()</tt> without <tt class="docutils literal">munmap()</tt> (UNIX)</td>
+<td><tt class="docutils literal">mmap_used</tt></td>
 </tr>
-<tr>
-<td>Windows</td>
-<td><code>HeapAlloc()</code> without <code>HeapFree()</code></td>
-<td><code>heap_used</code></td>
+<tr><td>Windows</td>
+<td><tt class="docutils literal">HeapAlloc()</tt> without <tt class="docutils literal">HeapFree()</tt></td>
+<td><tt class="docutils literal">heap_used</tt></td>
 </tr>
-<tr>
-<td>Windows</td>
-<td><code>VirtualAlloc()</code> without <code>VirtualFree()</code></td>
-<td><code>mmap_used</code></td>
+<tr><td>Windows</td>
+<td><tt class="docutils literal">VirtualAlloc()</tt> without <tt class="docutils literal">VirtualFree()</tt></td>
+<td><tt class="docutils literal">mmap_used</tt></td>
 </tr>
-<tr>
-<td>Windows</td>
-<td><code>HeapCreate()</code> without <code>HeapDestroy()</code></td>
-<td><code>heap_count</code></td>
+<tr><td>Windows</td>
+<td><tt class="docutils literal">HeapCreate()</tt> without <tt class="docutils literal">HeapDestroy()</tt></td>
+<td><tt class="docutils literal">heap_count</tt></td>
 </tr>
 </tbody>
 </table>
-<h2>heap_trim(): returning unused heap memory</h2>
-<p><code>heap_trim()</code> provides a cross-platform way to request that the underlying
-allocator free any unused memory it's holding in the heap (typically small
-<code>malloc()</code> allocations).</p>
-<p>In practice, modern allocators rarely comply, so this is not a general-purpose
-memory-reduction tool and won't meaningfully shrink RSS in real programs. Its
-primary value is in leak detection tools. Calling <code>heap_trim()</code> before taking
-measurements helps reduce allocator noise, giving you a cleaner baseline so
-that changes in <code>heap_used</code> come from the code you're testing, not from
-internal allocator caching or fragmentation.</p>
-<h2>Real-world use: finding a C extension leak</h2>
+</div>
+<div class="section" id="heap-trim-returning-unused-heap-memory">
+<h2>heap_trim(): returning unused heap memory<a class="headerlink" href="#heap-trim-returning-unused-heap-memory" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal">psutil.heap_trim()</tt> provides a cross-platform way to request that the underlying allocator free any unused memory it's holding in the heap (typically small <tt class="docutils literal">malloc()</tt> allocations).</p>
+<p>In practice, modern allocators rarely comply, so this is not a general-purpose memory-reduction tool and won't meaningfully shrink RSS in real programs. Its primary value is in leak detection tools. Calling <tt class="docutils literal">psutil.heap_trim()</tt> before taking measurements helps reduce allocator noise, giving you a cleaner baseline so that changes in <tt class="docutils literal">heap_used</tt> come from the code you're testing, not from internal allocator caching or fragmentation.</p>
+</div>
+<div class="section" id="real-world-use-finding-a-c-extension-leak">
+<h2>Real-world use: finding a C extension leak<a class="headerlink" href="#real-world-use-finding-a-c-extension-leak" title="Permalink to this headline">¶</a></h2>
 <p>The workflow is simple:</p>
-<ol>
+<ol class="arabic simple">
 <li>Take a baseline snapshot of the heap.</li>
 <li>Call the C extension hundreds of times.</li>
 <li>Take another snapshot.</li>
 <li>Compare.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 
 <span class="n">psutil</span><span class="o">.</span><span class="n">heap_trim</span><span class="p">()</span>  <span class="c1"># reduce noise</span>
 
@@ -404,29 +310,22 @@ internal allocator caching or fragmentation.</p>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;delta heap_used =&quot;</span><span class="p">,</span> <span class="n">after</span><span class="o">.</span><span class="n">heap_used</span> <span class="o">-</span> <span class="n">before</span><span class="o">.</span><span class="n">heap_used</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;delta mmap_used =&quot;</span><span class="p">,</span> <span class="n">after</span><span class="o">.</span><span class="n">mmap_used</span> <span class="o">-</span> <span class="n">before</span><span class="o">.</span><span class="n">mmap_used</span><span class="p">)</span>
-</code></pre></div>
-
-<p>If <code>heap_used</code> or <code>mmap_used</code>  values increase consistently, you've found a
-native leak.</p>
-<p>To reduce false positives, repeat the test multiple times, increasing the
-number of calls on each retry. This approach helps distinguish real leaks from
-random noise or transient allocations.</p>
-<h2>A new tool: psleak</h2>
-<p>The strategy described above is exactly what I implemented in a new PyPI
-package, which I called <strong><a href="https://github.com/giampaolo/psleak">psleak</a></strong>. It
-runs the target function repeatedly, trims the allocator before each run, and
-tracks differences across retries. Memory that grows consistently after several
-runs is flagged as a leak.</p>
+</pre></div>
+<p>If <tt class="docutils literal">heap_used</tt> or <tt class="docutils literal">mmap_used</tt> values increase consistently, you've found a native leak.</p>
+<p>To reduce false positives, repeat the test multiple times, increasing the number of calls on each retry. This approach helps distinguish real leaks from random noise or transient allocations.</p>
+</div>
+<div class="section" id="a-new-tool-psleak">
+<h2>A new tool: psleak<a class="headerlink" href="#a-new-tool-psleak" title="Permalink to this headline">¶</a></h2>
+<p>The strategy described above is exactly what I implemented in a new PyPI package, which I called <a class="reference external" href="https://github.com/giampaolo/psleak">psleak</a>. It runs the target function repeatedly, trims the allocator before each run, and tracks differences across retries. Memory that grows consistently after several runs is flagged as a leak.</p>
 <p>A minimal test suite looks like this:</p>
-<div class="highlight"><pre><span></span><code>  <span class="kn">from</span><span class="w"> </span><span class="nn">psleak</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemoryLeakTestCase</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">psleak</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemoryLeakTestCase</span>
 
-  <span class="k">class</span><span class="w"> </span><span class="nc">TestLeaks</span><span class="p">(</span><span class="n">MemoryLeakTestCase</span><span class="p">):</span>
-      <span class="k">def</span><span class="w"> </span><span class="nf">test_fun</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-          <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">some_c_function</span><span class="p">)</span>
-</code></pre></div>
-
+<span class="k">class</span><span class="w"> </span><span class="nc">TestLeaks</span><span class="p">(</span><span class="n">MemoryLeakTestCase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_fun</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">some_c_function</span><span class="p">)</span>
+</pre></div>
 <p>If the function leaks memory, the test will fail with a descriptive exception:</p>
-<div class="highlight"><pre><span></span><code>psleak.MemoryLeakError: memory kept increasing after 10 runs
+<div class="highlight"><pre><span></span>psleak.MemoryLeakError: memory kept increasing after 10 runs
 Run # 1: heap=+388160  | uss=+356352  | rss=+327680  | (calls= 200, avg/call=+1940)
 Run # 2: heap=+584848  | uss=+614400  | rss=+491520  | (calls= 300, avg/call=+1949)
 Run # 3: heap=+778320  | uss=+782336  | rss=+819200  | (calls= 400, avg/call=+1945)
@@ -437,61 +336,44 @@ Run # 7: heap=+1552336 | uss=+1634304 | rss=+1638400 | (calls= 800, avg/call=+19
 Run # 8: heap=+1752032 | uss=+1781760 | rss=+1802240 | (calls= 900, avg/call=+1946)
 Run # 9: heap=+1945056 | uss=+2031616 | rss=+2129920 | (calls=1000, avg/call=+1945)
 Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+1946)
-</code></pre></div>
-
-<p>Psleak is now part of the psutil test suite. All psutil APIs are tested (see
-<a href="https://github.com/giampaolo/psutil/blob/1a946cfe738045cecf031222cd5078da21946af4/tests/test_memleaks.py">test_memleaks.py</a>),
-making it a de facto <strong>regression-testing tool</strong>.</p>
-<p>It's worth noting that without inspecting heap metrics, missing calls in the C
-code such as <code>Py_CLEAR</code> and <code>Py_DECREF</code> often go unnoticed, because they don't
-affect RSS, VMS, and USS. Something I confirmed from experimenting by
-commenting them out. Monitoring the heap is therefore essential to reliably
-detect memory leaks in Python C extensions.</p>
-<h2>Under the hood</h2>
+</pre></div>
+<p>Psleak is now part of the psutil test suite. All psutil APIs are tested (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/1a946cfe738045cecf031222cd5078da21946af4/tests/test_memleaks.py">test_memleaks.py</a>), making it a de facto <strong>regression-testing tool</strong>.</p>
+<p>It's worth noting that without inspecting heap metrics, missing calls in the C code such as <tt class="docutils literal">Py_CLEAR</tt> and <tt class="docutils literal">Py_DECREF</tt> often go unnoticed, because they don't affect RSS, VMS, and USS. I confirmed this by commenting them out. Monitoring the heap is therefore essential to reliably detect memory leaks in Python C extensions.</p>
+</div>
+<div class="section" id="under-the-hood">
+<h2>Under the hood<a class="headerlink" href="#under-the-hood" title="Permalink to this headline">¶</a></h2>
 <p>For those interested in seeing how I did this in terms of code:</p>
-<ul>
-<li><strong><a href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/linux/heap.c">Linux</a></strong>:
-  uses glibc's
-  <a href="https://man7.org/linux/man-pages/man3/mallinfo.3.html">mallinfo2()</a> to report
-  <code>uordblks</code> (heap allocations) and <code>hblkhd</code> (mmap-backed blocks).</li>
-<li><strong><a href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/windows/heap.c">Windows</a></strong>:
-  enumerates heaps and aggregates <code>HeapAlloc</code> / <code>VirtualAlloc</code> usage.</li>
-<li><strong><a href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/osx/heap.c">macOS</a></strong>:
-  uses malloc zone statistics.</li>
-<li><strong><a href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/bsd/heap.c">BSD</a></strong>:
-  uses jemalloc's arena and stats interfaces.</li>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/linux/heap.c">Linux</a>: uses glibc's <a class="reference external" href="https://man7.org/linux/man-pages/man3/mallinfo.3.html">mallinfo2()</a> to report <tt class="docutils literal">uordblks</tt> (heap allocations) and <tt class="docutils literal">hblkhd</tt> (mmap-backed blocks).</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/windows/heap.c">Windows</a>: enumerates heaps and aggregates <tt class="docutils literal">HeapAlloc</tt> / <tt class="docutils literal">VirtualAlloc</tt> usage.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/osx/heap.c">macOS</a>: uses malloc zone statistics.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/bsd/heap.c">BSD</a>: uses jemalloc's arena and stats interfaces.</li>
 </ul>
-<h2>Summary</h2>
-<p>psutil 7.2.0 fills a long-standing observability gap: native-level memory leaks
-in C extensions are now visible directly from Python. You now have a simple
-method to <strong>test C extensions for leaks</strong>. This turns psutil into not just a
-monitoring library, but a practical debugging tool for Python projects that
-rely on native C extension modules.</p>
-<p>To make leak detection practical, I created
-<a href="https://github.com/giampaolo/psleak">psleak</a>, a test-regression framework
-designed to integrate into Python unit tests.</p>
-<h2>References</h2>
-<ul>
-<li><strong><a href="https://github.com/giampaolo/psleak">psleak</a></strong>, the new memory leak
-  testing framework.</li>
-<li><strong><a href="https://github.com/giampaolo/psutil/pull/2692/">psutil PR #2692</a></strong>, the
-  implementation.</li>
-<li><strong><a href="https://github.com/giampaolo/psutil/issues/1275">psutil issue #1275</a></strong>,
-  the original proposal from 8 years earlier.</li>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psleak">psleak</a>, the new memory leak testing framework.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/pull/2692">PR-2692</a>, the implementation.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1275">#1275</a>, the original proposal from 8 years earlier.</li>
 </ul>
-<h2>Discussion</h2>
-<ul>
-<li><a href="https://www.reddit.com/r/Python/comments/1puqgfg/detect_memory_leaks_of_c_extensions_with_psutil/">Reddit</a></li>
-<li><a href="https://news.ycombinator.com/item?id=46376608">Hacker News</a></li>
-<li><a href="https://medium.com/@g.rodola/detect-memory-leaks-of-c-extensions-with-psutil-and-psleak-a0521ba6315f">Medium</a></li>
+</div>
+<div class="section" id="discussion">
+<h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/1puqgfg/detect_memory_leaks_of_c_extensions_with_psutil/">Reddit</a></li>
+<li><a class="reference external" href="https://news.ycombinator.com/item?id=46376608">Hacker News</a></li>
+<li><a class="reference external" href="https://medium.com/&#64;g.rodola/detect-memory-leaks-of-c-extensions-with-psutil-and-psleak-a0521ba6315f">Medium</a></li>
 </ul>
+</div>
+
         </div>
             <div class="blogposts-separator"></div>
     </article></li>
     <li><article class="hentry">
         <header>
             <h1><a href="https://gmpy.dev/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil" rel="bookmark"
-                   title="Permalink to Wheels for free-threaded Python now available in psutil">Wheels for free-threaded Python now available in psutil</a></h1>
+                   title="Permalink to Wheels for free-threaded Python now available">Wheels for free-threaded Python now available</a></h1>
         </header>
         <div class="entry-content">
 <footer class="post-info">
@@ -504,49 +386,28 @@ designed to integrate into Python unit tests.</p>
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/wheels">wheels</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/wheels">wheels</a>,        <a href="https://gmpy.dev/tags/community">community</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>With the release of <strong>psutil 7.1.2</strong>, wheels for free-threaded Python are now
-available. This milestone was achieved largely through a <strong>community effort</strong>,
-as several internal refactorings to the C code were required to make it
-possible (see <a href="https://github.com/giampaolo/psutil/issues/2565#issuecomment-2910225647">issue #2565</a>).
-Many of these changes were contributed by <a href="https://github.com/lysnikolaou">Lysandros
-Nikolaou</a>.
-Thanks to him for the effort and for bearing with me in code reviews! ;-)</p>
-<h2>What is free-threaded Python?</h2>
-<p>Free-threaded Python (available since <strong>Python 3.13</strong>) refers to Python builds
-that are compiled with the <strong>GIL (Global Interpreter Lock) disabled</strong>, allowing
-true parallel execution of Python bytecodes across multiple threads. This is
-particularly beneficial for <strong>CPU-bound applications</strong>, as it enables better
-utilization of multi-core processors.</p>
-<h2>The state of free-threaded wheels</h2>
-<p>According to Hugo van Kemenade's <a href="https://hugovk.github.io/free-threaded-wheels/">free-threaded wheels
-tracker</a>, the adoption of
-free-threaded wheels among the <strong>top 360 most-downloaded PyPI packages with C
-extensions</strong> is still limited. Only <strong>128 out of these 360 packages</strong> provide
-wheels compiled for free-threaded Python, meaning they can run on Python builds
-with the GIL disabled. This shows that, while progress has been made, most
-popular packages with C extensions still do not offer ready-made wheels for
-free-threaded Python.</p>
-<h2>What it means for users</h2>
-<p>When a library author provides a wheel, users can install a <strong>pre-compiled
-binary package</strong> without having to build it from source. This is especially
-important for packages with <strong>C extensions</strong>, like psutil, which is largely
-written in C. Such packages often have complex build requirements and require
-installing a C compiler. On Windows, that means installing <strong>Visual Studio</strong> or
-the Build Tools, which can take several gigabytes and a <em>significant</em> setup
-effort. Providing wheels spare users from this hassle, makes installation far
-simpler, and is effectively <strong>essential for the users</strong> of that package. You
-basically <code>pip install psutil</code> and you're done.</p>
-<h2>What it means for library authors</h2>
-<p>Currently, <strong>universal wheels for free-threaded Python do not exist</strong>. Each
-wheel must be built specifically for a Python version. Right now authors must
-create separate wheels for Python 3.13 and 3.14. Which means distributing <em>a
-lot</em> of files already:</p>
-<div class="highlight"><pre><span></span><code>psutil-7.1.2-cp313-cp313t-macosx_10_13_x86_64.whl
+</footer><!-- /.post-info -->            <p>With the release of psutil 7.1.2, wheels for free-threaded Python are now available. This milestone was achieved largely through a community effort, as several internal refactorings to the C code were required to make it possible (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/2565">#2565</a>). Many of these changes were contributed by <a class="reference external" href="https://github.com/lysnikolaou">Lysandros Nikolaou</a>. Thanks to him for the effort and for bearing with me in code reviews! ;-)</p>
+<div class="section" id="what-is-free-threaded-python">
+<h2>What is free-threaded Python?<a class="headerlink" href="#what-is-free-threaded-python" title="Permalink to this headline">¶</a></h2>
+<p>Free-threaded Python (available since Python 3.13) refers to Python builds that are compiled with the <strong>GIL (Global Interpreter Lock) disabled</strong>, allowing true parallel execution of Python bytecodes across multiple threads. This is particularly beneficial for CPU-bound applications, as it enables better utilization of multi-core processors.</p>
+</div>
+<div class="section" id="the-state-of-free-threaded-wheels">
+<h2>The state of free-threaded wheels<a class="headerlink" href="#the-state-of-free-threaded-wheels" title="Permalink to this headline">¶</a></h2>
+<p>According to Hugo van Kemenade's <a class="reference external" href="https://hugovk.github.io/free-threaded-wheels/">free-threaded wheels tracker</a>, the adoption of free-threaded wheels among the top 360 most-downloaded PyPI packages with C extensions is still limited. Only 128 out of these 360 packages provide wheels compiled for free-threaded Python, meaning they can run on Python builds with the GIL disabled. This shows that, while progress has been made, most popular packages with C extensions still do not offer ready-made wheels for free-threaded Python.</p>
+</div>
+<div class="section" id="what-it-means-for-users">
+<h2>What it means for users<a class="headerlink" href="#what-it-means-for-users" title="Permalink to this headline">¶</a></h2>
+<p>When a library author provides a wheel, users can install a pre-compiled binary package without having to build it from source. This is especially important for packages with C extensions, like psutil, which is largely written in C. Such packages often have complex build requirements and require installing a C compiler. On Windows, that means installing Visual Studio or the Build Tools, which can take several gigabytes and a <em>significant</em> setup effort. Providing wheels spares users from this hassle, makes installation far simpler, and is effectively essential for the users of that package. You basically <tt class="docutils literal">pip install psutil</tt> and you're done.</p>
+</div>
+<div class="section" id="what-it-means-for-library-authors">
+<h2>What it means for library authors<a class="headerlink" href="#what-it-means-for-library-authors" title="Permalink to this headline">¶</a></h2>
+<p>Currently, <strong>universal wheels for free-threaded Python do not exist</strong>. Each wheel must be built specifically for a Python version. Right now authors must create separate wheels for Python 3.13 and 3.14. Which means distributing <em>a lot</em> of files already:</p>
+<div class="highlight"><pre><span></span>psutil-7.1.2-cp313-cp313t-macosx_10_13_x86_64.whl
 psutil-7.1.2-cp313-cp313t-macosx_11_0_arm64.whl
 psutil-7.1.2-cp313-cp313t-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl
 psutil-7.1.2-cp313-cp313t-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
@@ -558,37 +419,30 @@ psutil-7.1.2-cp314-cp314t-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2
 psutil-7.1.2-cp314-cp314t-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
 psutil-7.1.2-cp314-cp314t-win_amd64.whl
 psutil-7.1.2-cp314-cp314t-win_arm64.whl
-</code></pre></div>
-
-<p>This also multiplies CI jobs and slows down the test matrix (see
-<a href="https://github.com/giampaolo/psutil/blob/7dfd0ed34fe70ffd879ae62d21aabd4a8ed06d6f/.github/workflows/build.yml">build.yml</a>).
-A <strong>true universal wheel</strong> would greatly reduce this overhead, allowing a
-single wheel to support multiple Python versions and platforms. Hopefully,
-<strong>Python 3.15</strong> will simplify this process. Two competing proposals, <a href="https://www.python.org/dev/peps/pep-0803/">PEP
-803</a> and <a href="https://www.python.org/dev/peps/pep-0809/">PEP
-809</a>, aim to standardize wheel
-naming and metadata to allow producing <strong>a single wheel that covers multiple
-Python versions</strong>. That would drastically reduce distribution complexity for
-library authors, and it's fair to say it's essential for free-threaded CPython
-to truly succeed.</p>
-<h2>How to install free-threaded psutil</h2>
-<p>You can now install psutil for free-threaded Python directly via <code>pip</code>:</p>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>psutil<span class="w"> </span>--only-binary<span class="o">=</span>:all:
-</code></pre></div>
-
-<p>This ensures you get the <strong>pre-compiled wheels</strong> without triggering a source
-build.</p>
-<h2>External links</h2>
-<ul>
-<li><a href="https://www.reddit.com/r/Python/comments/1ofrx8v/comment/nllztz6/">Reddit</a></li>
+</pre></div>
+<p>This also multiplies CI jobs and slows down the test matrix (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/7dfd0ed34fe70ffd879ae62d21aabd4a8ed06d6f/.github/workflows/build.yml">build.yml</a>). A true universal wheel would greatly reduce this overhead, allowing a single wheel to support multiple Python versions and platforms. Hopefully, Python 3.15 will simplify this process. Two competing proposals, <a class="reference external" href="https://www.python.org/dev/peps/pep-0803/">PEP 803</a> and <a class="reference external" href="https://www.python.org/dev/peps/pep-0809/">PEP 809</a>, aim to standardize wheel naming and metadata to allow producing a single wheel that covers multiple Python versions. That would drastically reduce distribution complexity for library authors, and it's fair to say it's essential for free-threaded CPython to truly succeed.</p>
+</div>
+<div class="section" id="how-to-install-free-threaded-psutil">
+<h2>How to install free-threaded psutil<a class="headerlink" href="#how-to-install-free-threaded-psutil" title="Permalink to this headline">¶</a></h2>
+<p>You can now install psutil for free-threaded Python directly via <tt class="docutils literal">pip</tt>:</p>
+<div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>psutil<span class="w"> </span>--only-binary<span class="o">=</span>:all:
+</pre></div>
+<p>This ensures you get the pre-compiled wheels without triggering a source build.</p>
+</div>
+<div class="section" id="discussion">
+<h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/1ofrx8v/comment/nllztz6/">Reddit</a></li>
 </ul>
+</div>
+
         </div>
             <div class="blogposts-separator"></div>
     </article></li>
     <li><article class="hentry">
         <header>
             <h1><a href="https://gmpy.dev/blog/2025/speedup-pytest-startup" rel="bookmark"
-                   title="Permalink to Speedup pytest startup">Speedup pytest startup</a></h1>
+                   title="Permalink to Speeding up pytest startup">Speeding up pytest startup</a></h1>
         </header>
         <div class="entry-content">
 <footer class="post-info">
@@ -601,92 +455,47 @@ build.</p>
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/pytest">pytest</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/tests">tests</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <h1>Preface: the migration to pytest</h1>
-<p>Last year, after 17 years since the inception of the project, I decided to
-start adopting pytest into psutil (see
-<a href="https://github.com/giampaolo/psutil/issues/2446">psutil/#2446</a>). The
-advantages over unittest are numerous, but the two I cared about most are:</p>
-<ul>
-<li>Being able to use base <code>assert</code> statements instead of unittest's
-  <code>self.assert*()</code> APIs.</li>
-<li>The excellent <a href="https://pypi.org/project/pytest-xdist/">pytest-xdist</a>
-  extension, that lets you run tests in parallel, basically for free.</li>
-</ul>
-<p>Beyond that, I don't rely on any pytest-specific features in the code, like
-<a href="https://docs.pytest.org/en/6.2.x/fixture.html">fixtures</a> or conftest.py. I
-still organize tests in classes, with each one inheriting from
-<code>unittest.TestCase</code>. Why?</p>
-<ul>
-<li>I like unittest's <code>self.addCleanup</code> too much to give it up (see some
-  <a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/__init__.py#L984-L1010">usages</a>).
-  I find it superior to fixtures. Less magical and more explicit.</li>
-<li>I want users to be able to test their psutil installation in production
-  environments where pytest might not be installed. To accommodate this, I
-  created a minimal "fake" pytest class that emulates essential features like
-  <code>pytest.raises</code>, <code>@pytest.skip</code> etc. (see
-  <a href="https://github.com/giampaolo/psutil/pull/2456">PR-2456</a>).</li>
-</ul>
-<p>But that's a separate topic. What I want to focus on here is one of pytest's
-most frustrating aspects: slow startup times.</p>
-<h1>pytest invocation is slow</h1>
-<p>To measure pytest's startup time, let's run a very
-<a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236">simple test</a>
-where execution time won't significantly affect the results:</p>
-<div class="highlight"><pre><span></span><code>$ time python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
-================== test session starts ==================
-collected 1 item
-psutil/tests/test_misc.py::TestMisc::test_version PASSED
-=================== 1 passed in 0.05s ===================
-
+</footer><!-- /.post-info -->            <div class="section" id="preface-the-migration-to-pytest">
+<h2>Preface: the migration to pytest<a class="headerlink" href="#preface-the-migration-to-pytest" title="Permalink to this headline">¶</a></h2>
+<p>Last year, after 17 years of <tt class="docutils literal">unittest</tt>, I started adopting pytest in psutil (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/2446">#2446</a>). The two advantages I cared about most were plain <tt class="docutils literal">assert</tt> statements and <a class="reference external" href="https://pypi.org/project/pytest-xdist/">pytest-xdist</a>'s free parallelism. Tests still inherit from <tt class="docutils literal">unittest.TestCase</tt> and there's no <tt class="docutils literal">conftest.py</tt> or fixture use (rationale in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2456">PR-2456</a>).</p>
+<p>What I want to focus on here is one of pytest's most frustrating aspects: slow startup.</p>
+</div>
+<div class="section" id="pytest-invocation-is-slow">
+<h2>pytest invocation is slow<a class="headerlink" href="#pytest-invocation-is-slow" title="Permalink to this headline">¶</a></h2>
+<p>To measure pytest's startup time, let's run a very <a class="reference external" href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236">simple test</a> where execution time itself is negligible:</p>
+<div class="highlight"><pre><span></span>$ time python3 -m pytest psutil/tests/test_misc.py::TestMisc::test_version
+1 passed in 0.05s
 real    0m0,427s
-user    0m0,375s
-sys     0m0,051s
-</code></pre></div>
-
-<p>0,427s. Almost half of a second. That's excessive for something I frequently
-execute during development. For comparison, running the same test with
-<code>unittest</code>:</p>
-<div class="highlight"><pre><span></span><code>$ time python3 -m unittest psutil.tests.test_misc.TestMisc.test_version
-----------------------------------------------------------------------
+</pre></div>
+<p>Almost half a second, which is excessive for something I run repeatedly during development. For comparison, the same test under <tt class="docutils literal">unittest</tt>:</p>
+<div class="highlight"><pre><span></span>$ time python3 -m unittest psutil.tests.test_misc.TestMisc.test_version
 Ran 1 test in 0.000s
-OK
-
 real    0m0,204s
-user    0m0,169s
-sys     0m0,035s
-</code></pre></div>
-
-<p>0,204 secs. Meaning unittest is roughly twice as fast as pytest. But why?</p>
-<h1>Where is time being spent?</h1>
-<p>A significant portion of pytest's overhead comes from import time:</p>
-<div class="highlight"><pre><span></span><code>$ time python3 -c &quot;import pytest&quot;
+</pre></div>
+<p>Roughly twice as fast. Why?</p>
+</div>
+<div class="section" id="where-is-time-being-spent">
+<h2>Where is time being spent?<a class="headerlink" href="#where-is-time-being-spent" title="Permalink to this headline">¶</a></h2>
+<p>A significant portion of pytest's overhead comes from import time, and there's not much one can do about it:</p>
+<div class="highlight"><pre><span></span>$ time python3 -c &quot;import pytest&quot;
 real    0m0,151s
-user    0m0,135s
-sys     0m0,016s
 
 $ time python3 -c &quot;import unittest&quot;
 real    0m0,065s
-user    0m0,055s
-sys     0m0,010s
-</code></pre></div>
 
-<p>There's nothing I can do about that. For the record, psutil import timing is:</p>
-<div class="highlight"><pre><span></span><code>$ time python3 -c &quot;import psutil&quot;
+$ time python3 -c &quot;import psutil&quot;
 real    0m0,056s
-user    0m0,050s
-sys     0m0,006s
-</code></pre></div>
-
-<h1>Disable plugin auto loading</h1>
-<p>After some research, I discovered that pytest automatically loads all plugins
-installed on the system, even if they aren't used. Here's how to list them
-(output is cut):</p>
-<div class="highlight"><pre><span></span><code>$ pytest --trace-config --collect-only
+</pre></div>
+</div>
+<div class="section" id="disable-plugin-auto-loading">
+<h2>Disable plugin auto loading<a class="headerlink" href="#disable-plugin-auto-loading" title="Permalink to this headline">¶</a></h2>
+<p>After some research, I discovered that pytest automatically loads all plugins installed on the system, even if they aren't used. Here's how to list them (output is cut):</p>
+<div class="highlight"><pre><span></span>$ pytest --trace-config --collect-only
 ...
 active plugins:
     ...
@@ -706,74 +515,39 @@ active plugins:
     xdist               : ~/.local/lib/python3.12/site-packages/xdist/plugin.py
     xdist.looponfail    : ~/.local/lib/python3.12/site-packages/xdist/looponfail.py
     ...
-</code></pre></div>
-
-<p>It turns out <code>PYTEST_DISABLE_PLUGIN_AUTOLOAD</code> environment variable can be used
-to disable them. By running
-<code>PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
---trace-config --collect-only</code> again I
-can see that the following plugins disappeared:</p>
-<div class="highlight"><pre><span></span><code>anyio
+</pre></div>
+<p>It turns out <tt class="docutils literal">PYTEST_DISABLE_PLUGIN_AUTOLOAD</tt> environment variable can be used to disable them. By running <tt class="docutils literal">PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest <span class="pre">--trace-config</span> <span class="pre">--collect-only</span></tt> again I can see that the following plugins disappeared:</p>
+<div class="highlight"><pre><span></span>anyio
 pytest_cov
 pytest_instafail
 pytest_subtests
 xdist
 xdist.looponfail
-</code></pre></div>
-
-<p>Now let's run the test again by using <code>PYTEST_DISABLE_PLUGIN_AUTOLOAD</code>:</p>
-<div class="highlight"><pre><span></span><code>$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
-================== test session starts ==================
-collected 1 item
-psutil/tests/test_misc.py::TestMisc::test_version PASSED
-=================== 1 passed in 0.05s ===================
-
+</pre></div>
+<p>Now let's run the test again with <tt class="docutils literal">PYTEST_DISABLE_PLUGIN_AUTOLOAD</tt>:</p>
+<div class="highlight"><pre><span></span>$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest psutil/tests/test_misc.py::TestMisc::test_version
+1 passed in 0.05s
 real    0m0,285s
-user    0m0,267s
-sys     0m0,040s
-</code></pre></div>
-
-<p>We went from 0,427 secs to 0,285 secs, a ~40% improvement. Not bad. We now need
-to selectively enable only the plugins we actually use, via <code>-p</code> CLI option.
-Plugins used by psutil are <code>pytest-instafail</code> and <code>pytest-subtests</code> (we'll
-think about <code>pytest-xdist</code> later):</p>
-<div class="highlight"><pre><span></span><code>$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests --no-header psutil/tests/test_misc.py::TestMisc::test_version
-================= test session starts =================
-collected 1 item
-psutil/tests/test_misc.py::TestMisc::test_version PASSED
-================== 1 passed in 0.05s ==================
+</pre></div>
+<p>We went from 0.427s to 0.285s, a ~40% improvement. Not bad. We now need to selectively enable only the plugins we actually use, via <tt class="docutils literal"><span class="pre">-p</span></tt>. psutil uses <tt class="docutils literal"><span class="pre">pytest-instafail</span></tt> and <tt class="docutils literal"><span class="pre">pytest-subtests</span></tt> (we'll deal with <tt class="docutils literal"><span class="pre">pytest-xdist</span></tt> later):</p>
+<div class="highlight"><pre><span></span>$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests ...
 real    0m0,320s
-user    0m0,283s
-sys     0m0,037s
-</code></pre></div>
-
-<p>Time went up again, from 0,285 secs to 0,320s. Quite a slowdown, but still
-better than the initial 0,427s. Now, let's add <code>pytest-xdist</code> to the mix:</p>
-<div class="highlight"><pre><span></span><code>$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests -p xdist --no-header psutil/tests/test_misc.py::TestMisc::test_version
-=================== test session starts ===================
-collected 1 item
-psutil/tests/test_misc.py::TestMisc::test_version PASSED
-==================== 1 passed in 0.05s ====================
-
+</pre></div>
+<p>Time went back up to 0.320s. Quite a slowdown, but still better than the original 0.427s. Adding <tt class="docutils literal"><span class="pre">pytest-xdist</span></tt>:</p>
+<div class="highlight"><pre><span></span>$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests -p xdist ...
 real    0m0,369s
-user    0m0,286s
-sys     0m0,049s
-</code></pre></div>
-
-<p>We now went from 0,320s to 0,369s. Not too much, but still it's a pity to pay
-the price when NOT running tests in parallel.</p>
-<h1>Handling pytest-xdist</h1>
-<p>If we disable <code>pytest-xdist</code> psutil tests still run, but we get a warning:</p>
-<div class="highlight"><pre><span></span><code>psutil/tests/test_testutils.py:367
+</pre></div>
+<p>0.369s. Not much, but still a pity to pay the price when NOT running tests in parallel.</p>
+</div>
+<div class="section" id="handling-pytest-xdist">
+<h2>Handling pytest-xdist<a class="headerlink" href="#handling-pytest-xdist" title="Permalink to this headline">¶</a></h2>
+<p>If we disable <tt class="docutils literal"><span class="pre">pytest-xdist</span></tt> psutil tests still run, but we get a warning:</p>
+<div class="highlight"><pre><span></span>psutil/tests/test_testutils.py:367
   ~/svn/psutil/psutil/tests/test_testutils.py:367: PytestUnknownMarkWarning: Unknown pytest.mark.xdist_group - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     @pytest.mark.xdist_group(name=&quot;serial&quot;)
-</code></pre></div>
-
-<p>This warning appears for methods that are intended to run serially, those
-decorated with <code>@pytest.mark.xdist_group(name="serial")</code>. However, since
-<code>pytest-xdist</code> is now disabled, the decorator no longer exists. To address
-this, I implemented the following solution in <code>psutil/tests/__init__.py</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span><span class="o">,</span><span class="w"> </span><span class="nn">functools</span>
+</pre></div>
+<p>This warning appears for methods that are intended to run serially, those decorated with <tt class="docutils literal"><span class="pre">&#64;pytest.mark.xdist_group(name=&quot;serial&quot;)</span></tt>. However, since <tt class="docutils literal"><span class="pre">pytest-xdist</span></tt> is now disabled, the decorator no longer exists. To address this, I implemented the following solution in <tt class="docutils literal">psutil/tests/__init__.py</tt>:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span><span class="o">,</span><span class="w"> </span><span class="nn">functools</span>
 
 <span class="n">PYTEST_PARALLEL</span> <span class="o">=</span> <span class="s2">&quot;PYTEST_XDIST_WORKER&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span>  <span class="c1"># True if running parallel tests</span>
 
@@ -791,61 +565,39 @@ this, I implemented the following solution in <code>psutil/tests/__init__.py</co
         <span class="k">return</span> <span class="n">wrapper</span>
 
     <span class="n">pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">xdist_group</span> <span class="o">=</span> <span class="n">fake_xdist_group</span>  <span class="c1"># monkey patch</span>
-</code></pre></div>
-
-<p>With this in place the warning disappears when running tests serially. To run
-tests in parallel, we'll manually enable <code>xdist</code>:</p>
-<div class="highlight"><pre><span></span><code>$ python3 -m pytest -p xdist -n auto --dist loadgroup
-</code></pre></div>
-
-<h1>Disable some default plugins</h1>
-<p>pytests also loads quite a bunch of plugins by default (see output of
-<code>pytest
---trace-config --collect-only</code>). I tried to disable some of them with:</p>
-<div class="highlight"><pre><span></span><code>pytest -p no:junitxml -p no:doctest -p no:nose -p no:pastebin
-</code></pre></div>
-
-<p>...but that didn't make much of a difference.</p>
-<h1>Optimizing test collection time</h1>
-<p>By default, pytest searches the entire directory for tests, adding unnecessary
-overhead. In <code>pyproject.toml</code> you can tell pytest where test files are located,
-and only to consider <code>test_*.py</code> files:</p>
-<div class="highlight"><pre><span></span><code><span class="k">[tool.pytest.ini_options]</span>
+</pre></div>
+<p>With this in place the warning disappears when running tests serially. To run tests in parallel, we'll manually enable <tt class="docutils literal">xdist</tt>:</p>
+<div class="highlight"><pre><span></span>$ python3 -m pytest -p xdist -n auto --dist loadgroup
+</pre></div>
+</div>
+<div class="section" id="optimizing-test-collection-time">
+<h2>Optimizing test collection time<a class="headerlink" href="#optimizing-test-collection-time" title="Permalink to this headline">¶</a></h2>
+<p>By default, pytest searches the entire directory for tests, adding unnecessary overhead. In <tt class="docutils literal">pyproject.toml</tt> you can tell pytest where test files are located, and only to consider <tt class="docutils literal"><span class="pre">test_*.py</span></tt> files:</p>
+<div class="highlight"><pre><span></span><span class="k">[tool.pytest.ini_options]</span>
 <span class="n">testpaths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;psutil/tests/&quot;</span><span class="p">]</span>
 <span class="n">python_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;test_*.py&quot;</span><span class="p">]</span>
-</code></pre></div>
-
-<p>With this I saved another 0.03 seconds. Before:</p>
-<div class="highlight"><pre><span></span><code>$ python3 -m pytest --collect-only
-...
-============ 685 tests collected in 0.20s =============
-</code></pre></div>
-
-<p>After:</p>
-<div class="highlight"><pre><span></span><code>$ python3 -m pytest --collect-only
-...
-============ 685 tests collected in 0.17s =============
-</code></pre></div>
-
-<h1>Putting it all together</h1>
-<p>With these small optimizations, I managed to reduce <code>pytest</code> startup time by
-~0.12 seconds, bringing it down from 0.42 seconds. While this improvement is
-insignificant for full test runs, it somewhat makes a noticeable difference
-(~28% faster) when repeatedly running individual tests from the command line,
-which is something I do frequently during development. Final result is visible
-in <a href="https://github.com/giampaolo/psutil/pull/2538">PR-2538</a>.</p>
-<h1>Other links which may be useful</h1>
-<ul>
-<li><a href="https://github.com/zupo/awesome-pytest-speedup">https://github.com/zupo/awesome-pytest-speedup</a></li>
-<li><a href="https://projects.gentoo.org/python/guide/pytest.html">https://projects.gentoo.org/python/guide/pytest.html</a></li>
+</pre></div>
+<p>Collection time dropped from 0.20s to 0.17s, another ~0.03s shaved off.</p>
+</div>
+<div class="section" id="putting-it-all-together">
+<h2>Putting it all together<a class="headerlink" href="#putting-it-all-together" title="Permalink to this headline">¶</a></h2>
+<p>With these small optimizations, I managed to reduce <tt class="docutils literal">pytest</tt> startup time by ~0.12 seconds, bringing it down from 0.42 seconds. While this improvement is insignificant for full test runs, it makes a noticeable difference (~28% faster) when repeatedly running individual tests from the command line, which is something I do frequently during development. Final result is visible in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2538">PR-2538</a>.</p>
+</div>
+<div class="section" id="other-links-which-may-be-useful">
+<h2>Other links which may be useful<a class="headerlink" href="#other-links-which-may-be-useful" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/zupo/awesome-pytest-speedup">https://github.com/zupo/awesome-pytest-speedup</a></li>
+<li><a class="reference external" href="https://projects.gentoo.org/python/guide/pytest.html">https://projects.gentoo.org/python/guide/pytest.html</a></li>
 </ul>
+</div>
+
         </div>
             <div class="blogposts-separator"></div>
     </article></li>
     <li><article class="hentry">
         <header>
             <h1><a href="https://gmpy.dev/blog/2025/psutil-drop-python-27-support" rel="bookmark"
-                   title="Permalink to psutil: drop Python 2.7 support">psutil: drop Python 2.7 support</a></h1>
+                   title="Permalink to Letting go of Python 2.7">Letting go of Python 2.7</a></h1>
         </header>
         <div class="entry-content">
 <footer class="post-info">
@@ -858,117 +610,80 @@ in <a href="https://github.com/giampaolo/psutil/pull/2538">PR-2538</a>.</p>
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>About dropping Python 2.7 support in psutil, 3 years ago
-<a href="https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432">I stated</a>:</p>
+</footer><!-- /.post-info -->            <p>About dropping Python 2.7 support in psutil, 3 years ago I stated (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/2014">#2014</a>):</p>
 <blockquote>
-<p>Not a chance, for many years to come. [Python 2.7] currently represents 7-10%
-of total downloads, meaning around 70k / 100k downloads per day.</p>
-</blockquote>
-<p>Only 3 years later, and to my surprise, <strong>downloads for Python 2.7 dropped to
-0.36%</strong>! As such, as of psutil 7.0.0, I finally decided to drop support for
-Python 2.7!</p>
-<h2>The numbers</h2>
+Not a chance, for many years to come. [Python 2.7] currently
+represents 7-10% of total downloads, meaning around 70k / 100k
+downloads per day.</blockquote>
+<p>Only 3 years later, and to my surprise, <strong>downloads for Python 2.7 dropped to 0.36%</strong>! As such, as of psutil 7.0.0, I finally decided to drop support for Python 2.7!</p>
+<div class="section" id="the-numbers">
+<h2>The numbers<a class="headerlink" href="#the-numbers" title="Permalink to this headline">¶</a></h2>
 <p>These are downloads per month:</p>
-<div class="highlight"><pre><span></span><code><span class="o">$</span><span class="w"> </span><span class="n">pypinfo</span><span class="w"> </span><span class="o">--</span><span class="n">percent</span><span class="w"> </span><span class="n">psutil</span><span class="w"> </span><span class="n">pyversion</span>
-<span class="n">Served</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">cache</span><span class="p">:</span><span class="w"> </span><span class="n">False</span>
-<span class="n">Data</span><span class="w"> </span><span class="n">processed</span><span class="p">:</span><span class="w"> </span><span class="mf">4.65</span><span class="w"> </span><span class="n">GiB</span>
-<span class="n">Data</span><span class="w"> </span><span class="n">billed</span><span class="p">:</span><span class="w"> </span><span class="mf">4.65</span><span class="w"> </span><span class="n">GiB</span>
-<span class="n">Estimated</span><span class="w"> </span><span class="n">cost</span><span class="p">:</span><span class="w"> </span><span class="o">$</span><span class="mf">0.03</span>
+<div class="highlight"><pre><span></span>$ pypinfo --percent psutil pyversion
+Served from cache: False
+Data processed: 4.65 GiB
+Data billed: 4.65 GiB
+Estimated cost: $0.03
 
-<span class="o">|</span><span class="w"> </span><span class="n">python_version</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">percent</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">download_count</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="o">--------------</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">-------</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">--------------</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.10</span><span class="w">           </span><span class="o">|</span><span class="w">  </span><span class="mf">23.84</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">26</span><span class="p">,</span><span class="mi">354</span><span class="p">,</span><span class="mi">506</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.8</span><span class="w">            </span><span class="o">|</span><span class="w">  </span><span class="mf">18.87</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">20</span><span class="p">,</span><span class="mi">862</span><span class="p">,</span><span class="mi">015</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.7</span><span class="w">            </span><span class="o">|</span><span class="w">  </span><span class="mf">17.38</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">19</span><span class="p">,</span><span class="mi">217</span><span class="p">,</span><span class="mi">960</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.9</span><span class="w">            </span><span class="o">|</span><span class="w">  </span><span class="mf">17.00</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">18</span><span class="p">,</span><span class="mi">798</span><span class="p">,</span><span class="mi">843</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.11</span><span class="w">           </span><span class="o">|</span><span class="w">  </span><span class="mf">13.63</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">15</span><span class="p">,</span><span class="mi">066</span><span class="p">,</span><span class="mi">706</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.12</span><span class="w">           </span><span class="o">|</span><span class="w">   </span><span class="mf">7.01</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">      </span><span class="mi">7</span><span class="p">,</span><span class="mi">754</span><span class="p">,</span><span class="mi">751</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.13</span><span class="w">           </span><span class="o">|</span><span class="w">   </span><span class="mf">1.15</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">      </span><span class="mi">1</span><span class="p">,</span><span class="mi">267</span><span class="p">,</span><span class="mi">008</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.6</span><span class="w">            </span><span class="o">|</span><span class="w">   </span><span class="mf">0.73</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">        </span><span class="mi">803</span><span class="p">,</span><span class="mi">189</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">2.7</span><span class="w">            </span><span class="o">|</span><span class="w">   </span><span class="mf">0.36</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">        </span><span class="mi">402</span><span class="p">,</span><span class="mi">111</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.5</span><span class="w">            </span><span class="o">|</span><span class="w">   </span><span class="mf">0.03</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">         </span><span class="mi">28</span><span class="p">,</span><span class="mi">656</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="n">Total</span><span class="w">          </span><span class="o">|</span><span class="w">         </span><span class="o">|</span><span class="w">    </span><span class="mi">110</span><span class="p">,</span><span class="mi">555</span><span class="p">,</span><span class="mi">745</span><span class="w"> </span><span class="o">|</span>
-</code></pre></div>
-
-<p>According to <a href="https://archive.is/wip/knzql">pypistats.org</a> Python 2.7 downloads
-represents the 0.28% of the total, around 15.000 downloads per day.</p>
-<h2>The pain</h2>
-<p>Maintaining 2.7 support in psutil had become increasingly difficult, but still
-possible. E.g. I could still run tests by using
-<a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">old PYPI backports</a>.
-GitHub Actions could still be
-<a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112">tweaked</a>
-to run tests and produce 2.7 wheels on Linux and macOS. Not on Windows though,
-for which I had to use a separate service (Appveyor). Still, the amount of
-hacks in psutil source code necessary to support Python 2.7 piled up over the
-years, and became quite big. Some disadvantages that come to mind:</p>
-<ul>
-<li>Having to maintain a Python compatibility layers like
-  <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py">psutil/_compat.py</a>.
-  This translated in extra extra code and extra imports.</li>
-<li>The C compatibility layer to differentiate between Python 2 and 3
-  (<code>#if
-  PY_MAJOR_VERSION &lt;= 3</code>, etc.).</li>
-<li>Dealing with the string vs. unicode differences, both in Python and in C.</li>
-<li>Inability to use modern language features, especially f-strings.</li>
-<li>Inability to freely use <code>enum</code>s, which created a difference on how CONSTANTS
-  were exposed in terms of API.</li>
-<li>Having to install a specific version of <code>pip</code> and other (outdated)
-  <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">deps</a>.</li>
-<li>Relying on the third-party Appveyor CI service to run tests and produce 2.7
-  wheels.</li>
-<li>Running 4 extra CI jobs on every commit (Linux, macOS, Windows 32-bit,
-  Windows 64-bit) making the CI slower and more subject to failures (we have
-  quite a bit of flaky tests).</li>
-<li>The distribution of 7 wheels specific for Python 2.7. E.g. in the previous
-  release I had to upload:</li>
+| python_version | percent | download_count |
+| -------------- | ------- | -------------- |
+| 3.10           |  23.84% |     26,354,506 |
+| 3.8            |  18.87% |     20,862,015 |
+| 3.7            |  17.38% |     19,217,960 |
+| 3.9            |  17.00% |     18,798,843 |
+| 3.11           |  13.63% |     15,066,706 |
+| 3.12           |   7.01% |      7,754,751 |
+| 3.13           |   1.15% |      1,267,008 |
+| 3.6            |   0.73% |        803,189 |
+| 2.7            |   0.36% |        402,111 |
+| 3.5            |   0.03% |         28,656 |
+| Total          |         |    110,555,745 |
+</pre></div>
+<p>According to <a class="reference external" href="https://archive.is/wip/knzql">pypistats.org</a> Python 2.7 downloads represent 0.28% of the total, around 15,000 downloads per day.</p>
+</div>
+<div class="section" id="the-pain">
+<h2>The pain<a class="headerlink" href="#the-pain" title="Permalink to this headline">¶</a></h2>
+<p>Keeping 2.7 alive had become increasingly difficult, but still possible: tests ran via <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">old PyPI backports</a> and a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112">tweaked GitHub Actions workflow</a> on Linux and macOS, plus a separate third-party service (Appveyor) for Windows. But the workarounds in the source kept piling up:</p>
+<ul class="simple">
+<li>A Python compatibility layer (<a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py">psutil/_compat.py</a>) plus <tt class="docutils literal">#if PY_MAJOR_VERSION &lt;= 3</tt> branches in C, with constant str-vs-unicode juggling on both sides.</li>
+<li>No f-strings, and no free use of <tt class="docutils literal">enum</tt> for constants (which ended up with a different API shape than on Python 3).</li>
+<li>An outdated <tt class="docutils literal">pip</tt> and <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">outdated deps</a>.</li>
+<li>4 extra CI jobs per commit (Linux, macOS, Windows 32-bit and 64-bit), making the pipeline slower and flakier.</li>
+<li>7 wheels specific to Python 2.7 to ship on every release:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>psutil-6.1.1-cp27-cp27m-macosx_10_9_x86_64.whl
+<div class="highlight"><pre><span></span>psutil-6.1.1-cp27-cp27m-macosx_10_9_x86_64.whl
 psutil-6.1.1-cp27-none-win32.whl
 psutil-6.1.1-cp27-none-win_amd64.whl
 psutil-6.1.1-cp27-cp27m-manylinux2010_i686.whl
 psutil-6.1.1-cp27-cp27m-manylinux2010_x86_64.whl
 psutil-6.1.1-cp27-cp27mu-manylinux2010_i686.whl
 psutil-6.1.1-cp27-cp27mu-manylinux2010_x86_64.whl
-</code></pre></div>
-
-<h2>The removal</h2>
-<p>The removal was done in
-<a href="https://github.com/giampaolo/psutil/pull/2481">PR-2841</a>, which removed around
-1500 lines of code (nice!). <strong>It felt liberating</strong>. In doing so, in the doc I
-still made the promise that the 6.1.* serie will keep supporting Python 2.7
-and will receive <strong>critical bug-fixes only</strong> (no new features). It will be
-maintained in a specific
-<a href="https://github.com/giampaolo/psutil/tree/python2">python2 branch</a>. I
-explicitly kept the
-<a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py">setup.py</a>
-script compatible with Python 2.7 in terms of syntax, so that, when the tarball
-is fetched from PYPI, it will emit an informative error message on
-<code>pip install
-psutil</code>. The user trying to install psutil on Python 2.7 will see:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip2<span class="w"> </span>install<span class="w"> </span>psutil
-As<span class="w"> </span>of<span class="w"> </span>version<span class="w"> </span><span class="m">7</span>.0.0<span class="w"> </span>psutil<span class="w"> </span>no<span class="w"> </span>longer<span class="w"> </span>supports<span class="w"> </span>Python<span class="w"> </span><span class="m">2</span>.7.
-Latest<span class="w"> </span>version<span class="w"> </span>supporting<span class="w"> </span>Python<span class="w"> </span><span class="m">2</span>.7<span class="w"> </span>is<span class="w"> </span>psutil<span class="w"> </span><span class="m">6</span>.1.X.
-Install<span class="w"> </span>it<span class="w"> </span>with:<span class="w"> </span><span class="s2">&quot;pip2 install psutil==6.1.*&quot;</span>.
-</code></pre></div>
-
-<p>As the informative message states, users that are still on Python 2.7 can still
-use psutil with:</p>
-<div class="highlight"><pre><span></span><code>pip2 install psutil==6.1.*
-</code></pre></div>
-
-<h2>Related tickets</h2>
-<ul>
-<li>2017-06: <a href="https://github.com/giampaolo/psutil/issues/1053">#1053</a></li>
-<li>2022-04: <a href="https://github.com/giampaolo/psutil/pull/2099">#2099</a></li>
-<li>2023-04: <a href="https://github.com/giampaolo/psutil/pull/2246">#2246</a></li>
-<li>2024-12: <a href="https://github.com/giampaolo/psutil/pull/2481">PR-635</a></li>
+</pre></div>
+</div>
+<div class="section" id="the-removal">
+<h2>The removal<a class="headerlink" href="#the-removal" title="Permalink to this headline">¶</a></h2>
+<p>The removal was done in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2481">PR-2481</a>, which dropped around 1500 lines of code (nice!). <strong>It felt liberating</strong>. In doing so, in the doc I still made the promise that the 6.1.* series will keep supporting Python 2.7 and will receive <strong>critical bug-fixes only</strong> (no new features). It will be maintained in a specific <a class="reference external" href="https://github.com/giampaolo/psutil/tree/python2">python2 branch</a>. I explicitly kept the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py">setup.py</a> script compatible with Python 2.7 in terms of syntax, so that, when the tarball is fetched from PyPI, it will emit an informative error message on <tt class="docutils literal">pip install psutil</tt>. The user trying to install psutil on Python 2.7 will see:</p>
+<div class="highlight"><pre><span></span>$ pip2 install psutil
+As of version 7.0.0 psutil no longer supports Python 2.7.
+Latest version supporting Python 2.7 is psutil 6.1.X.
+Install it with: &quot;pip2 install psutil==6.1.*&quot;.
+</pre></div>
+</div>
+<div class="section" id="related">
+<h2>Related<a class="headerlink" href="#related" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>2017-06: <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1053">#1053</a> (2.7 ticket)</li>
+<li>2022-04: <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2099">PR-2099</a> (drop 2.6)</li>
+<li>2023-04: <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2246">PR-2246</a> (drop 3.4 &amp; 3.5)</li>
+<li>2024-12: <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2481">PR-2481</a> (drop 2.7)</li>
 </ul>
+</div>
+
         </div>
     </article></li>
             </ol><!-- /#posts-list -->

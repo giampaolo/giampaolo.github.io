@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!--<title>psutil 4.4.0: improved Linux memory metrics</title>-->
+    <!--<title>Improved Linux memory metrics</title>-->
     <title>Giampaolo Rodola</title>
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
@@ -26,7 +26,7 @@
     <header>
       <h1 class="entry-title">
         <a href="https://gmpy.dev/blog/2016/psutil-440-improved-linux-memory-metrics" rel="bookmark"
-           title="Permalink to psutil 4.4.0: improved Linux memory metrics">psutil 4.4.0: improved Linux memory metrics</a></h1>
+           title="Permalink to Improved Linux memory metrics">Improved Linux memory metrics</a></h1>
     </header>
 
     <div class="entry-content">
@@ -40,32 +40,37 @@
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/linux">linux</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->      <p>OK, here's another <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. Main highlights of this release are more accurate memory metrics on Linux and different OSX fixes. Here goes.</p>
+</footer><!-- /.post-info -->      <p>OK, another psutil release. The headline of 4.4.0 is more accurate memory metrics on Linux, plus a pile of macOS fixes I'd been sitting on for years.</p>
 <div class="section" id="linux-virtual-memory">
 <h2>Linux virtual memory<a class="headerlink" href="#linux-virtual-memory" title="Permalink to this headline">¶</a></h2>
-<p>This new release sets a milestone regarding <tt class="docutils literal">virtual_memory()</tt> metrics on Linux which are now calculated way <a class="reference external" href="https://github.com/giampaolo/psutil/issues/887">more precisely</a> (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/890/files">commit</a>). Across the years different people complained that the numbers reported by <cite>virtual_memory()</cite> were not accurate or did not match the ones reported by the <cite>free</cite> command line utility exactly (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/862">#862</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/685">#685</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/538">#538</a>). As such I investigated how &quot;available memory&quot; is calculated on Linux and indeed psutil was doing it wrong. It turns out &quot;free&quot; cmdline itself, and many other similar tools, also did it wrong up until <a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773">2 years ago</a> when somebody finally decided to accurately calculate the available system memory straight into the Linux kernel and expose this info to user-level applications. Starting from Linux kernel 3.14, a new <cite>&quot;MemAvailable&quot;</cite> column was added to <cite>/proc/meminfo</cite> and this is how psutil now determines available memory. Because of this, both &quot;available&quot; and &quot;used&quot; memory fields returned by virtual_memory() precisely match the <cite>free</cite> command line utility. As for older kernels (&lt; 3.14), psutil tries to determine this value by using the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L291">same algorithm</a> which was used in the original <a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773">Linux kernel commit</a>. Free cmdline utility source code also inspired an additional fix which prevents available memory from overflowing total memory on <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L435">LCX containers</a>.</p>
+<p>People had been complaining for a while that <tt class="docutils literal">virtual_memory()</tt> didn't match what <tt class="docutils literal">free</tt> reported on Linux (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/862">#862</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/685">#685</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/538">#538</a>). I finally dug into it (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/887">#887</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/pull/890">PR-890</a>) and, funny enough, it turns out <tt class="docutils literal">free</tt> itself was doing it wrong until <a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773">about two years ago</a>, when somebody got tired of everyone guessing and moved the calculation into the kernel.</p>
+<p>Starting with Linux 3.14, <tt class="docutils literal">/proc/meminfo</tt> has a <tt class="docutils literal">MemAvailable</tt> column. That's what psutil now uses, and the <tt class="docutils literal">available</tt> / <tt class="docutils literal">used</tt> fields match <tt class="docutils literal">free</tt> exactly. On older kernels (&lt; 3.14) psutil falls back to the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L291">same formula</a> that kernel commit introduced.</p>
+<p><tt class="docutils literal">free</tt>'s source code also inspired a fix that prevents available memory from overflowing total memory on <a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L435">LXC containers</a>.</p>
 </div>
-<div class="section" id="osx-fixes">
-<h2>OSX fixes<a class="headerlink" href="#osx-fixes" title="Permalink to this headline">¶</a></h2>
-<p>For many years the OSX development of psutil occurred on a very old OSX 10.5 version, which I emulated via VirtualBox. The OS itself was a hacked version of OSX, called iDeneb. After many years I finally managed to get access to a more recent version of OSX (El Capitan) thanks to VirtualBox + Vagrant. With this I finally had the chance to address many long standing OSX bugs. Here's the list:</p>
+<div class="section" id="macos-fixes">
+<h2>macOS fixes<a class="headerlink" href="#macos-fixes" title="Permalink to this headline">¶</a></h2>
+<p>For years I did psutil's macOS development on an old 10.5 install emulated via VirtualBox, running iDeneb (a hacked macOS). I finally got access to a more recent version (El Capitan) via VirtualBox + Vagrant, and could address a pile of long-standing bugs:</p>
 <ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/514">514</a>: fix <tt class="docutils literal">Process.memory_maps()</tt> segfault (critical!).</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/783">783</a>: <tt class="docutils literal">Process.status()</tt> may erroneously return &quot;running&quot; for zombie processes.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/908">908</a>: different process methods could erroneously mask the real error for high-privileged PIDs and raise NoSuchProcess and <tt class="docutils literal">AccessDenied</tt> instead of <tt class="docutils literal">OSError</tt> and <tt class="docutils literal">RuntimeError</tt>.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/909">909</a>: <tt class="docutils literal">Process.open_files()</tt> and <tt class="docutils literal">Process.connections()</tt> methods may raise <tt class="docutils literal">OSError</tt> with no exception set if process is gone.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/916">916</a>: fix many compilation warnings.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/514">#514</a>: <tt class="docutils literal">Process.memory_maps()</tt> segfault (critical).</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/783">#783</a>: <tt class="docutils literal">Process.status()</tt> could return <tt class="docutils literal">&quot;running&quot;</tt> for zombie processes.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/908">#908</a>: several methods could mask the real error for high-privileged PIDs, raising <tt class="docutils literal">NoSuchProcess</tt> / <tt class="docutils literal">AccessDenied</tt> instead of <tt class="docutils literal">OSError</tt> / <tt class="docutils literal">RuntimeError</tt>.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/909">#909</a>: <tt class="docutils literal">Process.open_files()</tt> and <tt class="docutils literal">Process.connections()</tt> could raise <tt class="docutils literal">OSError</tt> with no exception set when the process was gone.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/916">#916</a>: fixed many compilation warnings.</li>
 </ul>
 </div>
-<div class="section" id="improved-procinfo-py-script">
-<h2>Improved procinfo.py script<a class="headerlink" href="#improved-procinfo-py-script" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-4.4.0/scripts/procinfo.py">procinfo.py</a> is a script which shows psutil capabilities regarding obtaining different info about processes. I improved it so that now it reports a lot more info. Here's a sample output:</p>
-<pre class="literal-block">
-$ python scripts/procinfo.py
+<div class="section" id="nic-netmask-on-windows">
+<h2>NIC netmask on Windows<a class="headerlink" href="#nic-netmask-on-windows" title="Permalink to this headline">¶</a></h2>
+<p>Small but nice: <tt class="docutils literal">net_if_addrs()</tt> on Windows now returns the netmask too.</p>
+</div>
+<div class="section" id="improved-procinfo-py">
+<h2>Improved procinfo.py<a class="headerlink" href="#improved-procinfo-py" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-4.4.0/scripts/procinfo.py">scripts/procinfo.py</a> is my kitchen-sink demo script. I taught it a bunch of new tricks, so it now dumps pretty much everything psutil knows about a process:</p>
+<div class="highlight"><pre><span></span>$ python scripts/procinfo.py
 pid           4600
 name          chrome
 parent        4554 (bash)
@@ -81,7 +86,6 @@ memory        rss=520.5M, vms=1.9G, shared=132.6M, text=95.0M, lib=0B,
               data=816.5M, dirty=0B
 memory %      3.26
 user          giampaolo
-uids          real=1000, effective=1000, saved=1000
 uids          real=1000, effective=1000, saved=1000
 terminal      /dev/pts/2
 status        sleeping
@@ -140,15 +144,11 @@ mem-maps      RSS      PATH
               15.8M    /home/giampaolo/.config/google-chrome/Default/History
               6.6M     /home/giampaolo/.config/google-chrome/Default/Favicons
               [...]
-</pre>
+</pre></div>
 </div>
-<div class="section" id="nic-netmask-on-windows">
-<h2>NIC netmask on Windows<a class="headerlink" href="#nic-netmask-on-windows" title="Permalink to this headline">¶</a></h2>
-<p><tt class="docutils literal">net_if_addrs()</tt> on Windows is now able to return the netmask.</p>
-</div>
-<div class="section" id="other-improvements-and-bug-fixes">
-<h2>Other improvements and bug fixes<a class="headerlink" href="#other-improvements-and-bug-fixes" title="Permalink to this headline">¶</a></h2>
-<p>Just take a look at the <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">HISTORY</a> file.</p>
+<div class="section" id="other-changes">
+<h2>Other changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h2>
+<p>The full list is in the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html">changelog</a>.</p>
 </div>
 
     </div><!-- /.entry-content -->

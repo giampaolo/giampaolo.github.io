@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - community</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.community.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2025-10-25T00:00:00+02:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Wheels for free-threaded Python now available</title><link href="https://gmpy.dev/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil" rel="alternate"></link><published>2025-10-25T00:00:00+02:00</published><updated>2025-10-25T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-10-25:/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil</id><summary type="html">&lt;p&gt;With the release of psutil 7.1.2, wheels for free-threaded Python are now available. This milestone was achieved largely through a community effort, as several internal refactorings to the C code were required to make it possible (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2565"&gt;#2565&lt;/a&gt;). Many of these changes were contributed by &lt;a class="reference external" href="https://github.com/lysnikolaou"&gt;Lysandros Nikolaou&lt;/a&gt;. Thanks …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With the release of psutil 7.1.2, wheels for free-threaded Python are now available. This milestone was achieved largely through a community effort, as several internal refactorings to the C code were required to make it possible (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2565"&gt;#2565&lt;/a&gt;). Many of these changes were contributed by &lt;a class="reference external" href="https://github.com/lysnikolaou"&gt;Lysandros Nikolaou&lt;/a&gt;. Thanks to him for the effort and for bearing with me in code reviews! ;-)&lt;/p&gt;
+&lt;div class="section" id="what-is-free-threaded-python"&gt;
+&lt;h2&gt;What is free-threaded Python?&lt;a class="headerlink" href="#what-is-free-threaded-python" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Free-threaded Python (available since Python 3.13) refers to Python builds that are compiled with the &lt;strong&gt;GIL (Global Interpreter Lock) disabled&lt;/strong&gt;, allowing true parallel execution of Python bytecodes across multiple threads. This is particularly beneficial for CPU-bound applications, as it enables better utilization of multi-core processors.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-state-of-free-threaded-wheels"&gt;
+&lt;h2&gt;The state of free-threaded wheels&lt;a class="headerlink" href="#the-state-of-free-threaded-wheels" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;According to Hugo van Kemenade's &lt;a class="reference external" href="https://hugovk.github.io/free-threaded-wheels/"&gt;free-threaded wheels tracker&lt;/a&gt;, the adoption of free-threaded wheels among the top 360 most-downloaded PyPI packages with C extensions is still limited. Only 128 out of these 360 packages provide wheels compiled for free-threaded Python, meaning they can run on Python builds with the GIL disabled. This shows that, while progress has been made, most popular packages with C extensions still do not offer ready-made wheels for free-threaded Python.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-it-means-for-users"&gt;
+&lt;h2&gt;What it means for users&lt;a class="headerlink" href="#what-it-means-for-users" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;When a library author provides a wheel, users can install a pre-compiled binary package without having to build it from source. This is especially important for packages with C extensions, like psutil, which is largely written in C. Such packages often have complex build requirements and require installing a C compiler. On Windows, that means installing Visual Studio or the Build Tools, which can take several gigabytes and a &lt;em&gt;significant&lt;/em&gt; setup effort. Providing wheels spares users from this hassle, makes installation far simpler, and is effectively essential for the users of that package. You basically &lt;tt class="docutils literal"&gt;pip install psutil&lt;/tt&gt; and you're done.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-it-means-for-library-authors"&gt;
+&lt;h2&gt;What it means for library authors&lt;a class="headerlink" href="#what-it-means-for-library-authors" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Currently, &lt;strong&gt;universal wheels for free-threaded Python do not exist&lt;/strong&gt;. Each wheel must be built specifically for a Python version. Right now authors must create separate wheels for Python 3.13 and 3.14. Which means distributing &lt;em&gt;a lot&lt;/em&gt; of files already:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;psutil-7.1.2-cp313-cp313t-macosx_10_13_x86_64.whl
+psutil-7.1.2-cp313-cp313t-macosx_11_0_arm64.whl
+psutil-7.1.2-cp313-cp313t-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl
+psutil-7.1.2-cp313-cp313t-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
+psutil-7.1.2-cp313-cp313t-win_amd64.whl
+psutil-7.1.2-cp313-cp313t-win_arm64.whl
+psutil-7.1.2-cp314-cp314t-macosx_10_15_x86_64.whl
+psutil-7.1.2-cp314-cp314t-macosx_11_0_arm64.whl
+psutil-7.1.2-cp314-cp314t-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl
+psutil-7.1.2-cp314-cp314t-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
+psutil-7.1.2-cp314-cp314t-win_amd64.whl
+psutil-7.1.2-cp314-cp314t-win_arm64.whl
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This also multiplies CI jobs and slows down the test matrix (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/7dfd0ed34fe70ffd879ae62d21aabd4a8ed06d6f/.github/workflows/build.yml"&gt;build.yml&lt;/a&gt;). A true universal wheel would greatly reduce this overhead, allowing a single wheel to support multiple Python versions and platforms. Hopefully, Python 3.15 will simplify this process. Two competing proposals, &lt;a class="reference external" href="https://www.python.org/dev/peps/pep-0803/"&gt;PEP 803&lt;/a&gt; and &lt;a class="reference external" href="https://www.python.org/dev/peps/pep-0809/"&gt;PEP 809&lt;/a&gt;, aim to standardize wheel naming and metadata to allow producing a single wheel that covers multiple Python versions. That would drastically reduce distribution complexity for library authors, and it's fair to say it's essential for free-threaded CPython to truly succeed.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="how-to-install-free-threaded-psutil"&gt;
+&lt;h2&gt;How to install free-threaded psutil&lt;a class="headerlink" href="#how-to-install-free-threaded-psutil" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can now install psutil for free-threaded Python directly via &lt;tt class="docutils literal"&gt;pip&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;psutil&lt;span class="w"&gt; &lt;/span&gt;--only-binary&lt;span class="o"&gt;=&lt;/span&gt;:all:
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This ensures you get the pre-compiled wheels without triggering a source build.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="discussion"&gt;
+&lt;h2&gt;Discussion&lt;a class="headerlink" href="#discussion" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/1ofrx8v/comment/nllztz6/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="wheels"></category><category term="community"></category><category term="python-core"></category></entry><entry><title>AIX support</title><link href="https://gmpy.dev/blog/2017/psutil-540-and-aix-support" rel="alternate"></link><published>2017-10-12T00:00:00+02:00</published><updated>2017-10-12T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2017-10-12:/blog/2017/psutil-540-and-aix-support</id><summary type="html">&lt;p&gt;After a long wait psutil finally supports a new exotic platform: AIX!&lt;/p&gt;
+&lt;p&gt;Honestly I'm not sure how many AIX Python users are out there (probably not many), but here it is.&lt;/p&gt;
+&lt;p&gt;For this we have to thank &lt;a class="reference external" href="https://github.com/wiggin15"&gt;Arnon Yaari&lt;/a&gt;, who started working on the port a couple of years ago …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After a long wait psutil finally supports a new exotic platform: AIX!&lt;/p&gt;
+&lt;p&gt;Honestly I'm not sure how many AIX Python users are out there (probably not many), but here it is.&lt;/p&gt;
+&lt;p&gt;For this we have to thank &lt;a class="reference external" href="https://github.com/wiggin15"&gt;Arnon Yaari&lt;/a&gt;, who started working on the port a couple of years ago (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/605"&gt;#605&lt;/a&gt;). I was skeptical at first, because AIX is the only platform I can't virtualize and test on my laptop, so that made me a bit nervous. Arnon did a great job. The final &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/1123"&gt;PR-1123&lt;/a&gt; is huge: it required a considerable amount of work on his part, and a review of more than 140 messages exchanged between us over about a month, during which I was travelling through China.&lt;/p&gt;
+&lt;p&gt;The end result is very good: almost all original unit tests pass, and code quality is awesome, which (I must say) is fairly unusual for an external contribution like this. Kudos to you, Arnon! ;-)&lt;/p&gt;
+&lt;div class="section" id="other-changes"&gt;
+&lt;h2&gt;Other changes&lt;a class="headerlink" href="#other-changes" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Besides AIX support, release 5.4.0 also includes a couple of important bug fixes for &lt;tt class="docutils literal"&gt;psutil.sensors_temperatures()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;psutil.sensors_fans()&lt;/tt&gt; on Linux, and a fix for a bug on macOS that could cause a segmentation fault when using &lt;tt class="docutils literal"&gt;Process.open_files()&lt;/tt&gt;. The complete list of bug fixes is in the &lt;a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-future"&gt;
+&lt;h2&gt;The future&lt;a class="headerlink" href="#the-future" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Looking ahead at other exotic, still-unsupported platforms, two contributions are worth mentioning: a (still incomplete) PR for Cygwin which looks promising (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/998"&gt;PR-998&lt;/a&gt;), and Mingw32 compiler support on Windows (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/845"&gt;PR-845&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;psutil is gradually reaching a point where adding new features is becoming rarer, so it's a good moment to welcome new platforms while the API is mature and stable.&lt;/p&gt;
+&lt;p&gt;Future work along these lines could also include Android and (hopefully) iOS support. Now &lt;em&gt;that&lt;/em&gt; would be really awesome to have.&lt;/p&gt;
+&lt;p&gt;Stay tuned.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="discussion"&gt;
+&lt;h2&gt;Discussion&lt;a class="headerlink" href="#discussion" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/75wsfu/psutil_540_with_aix_support_is_out/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="http://grodola.blogspot.com/2017/10/psutil-540-with-aix-support-is-out.html"&gt;Blogspot&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2017"></category><category term="psutil"></category><category term="python"></category><category term="new-platform"></category><category term="community"></category><category term="personal"></category><category term="release"></category></entry><entry><title>NetBSD support</title><link href="https://gmpy.dev/blog/2016/psutil-netbsd-support" rel="alternate"></link><published>2016-02-25T00:00:00+01:00</published><updated>2016-02-25T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2016-02-25:/blog/2016/psutil-netbsd-support</id><summary type="html">&lt;p&gt;Roughly two months have passed since I last &lt;a class="reference external" href="../2015/psutil-openbsd-support"&gt;announced&lt;/a&gt; that &lt;a class="reference external" href="https://github.com/giampaolo/psutil"&gt;psutil&lt;/a&gt; added support for OpenBSD. Today I'm happy to announce that it's the turn of NetBSD! This was contributed by &lt;a class="reference external" href="https://github.com/0-wiz-0"&gt;Thomas Klausner&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/ryoon"&gt;Ryo Onodera&lt;/a&gt; and myself in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/557"&gt;PR-557&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="section" id="differences-with-freebsd-and-openbsd"&gt;
+&lt;h2&gt;Differences with FreeBSD (and OpenBSD)&lt;a class="headerlink" href="#differences-with-freebsd-and-openbsd" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The NetBSD implementation has limitations similar to …&lt;/p&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Roughly two months have passed since I last &lt;a class="reference external" href="../2015/psutil-openbsd-support"&gt;announced&lt;/a&gt; that &lt;a class="reference external" href="https://github.com/giampaolo/psutil"&gt;psutil&lt;/a&gt; added support for OpenBSD. Today I'm happy to announce that it's the turn of NetBSD! This was contributed by &lt;a class="reference external" href="https://github.com/0-wiz-0"&gt;Thomas Klausner&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/ryoon"&gt;Ryo Onodera&lt;/a&gt; and myself in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/557"&gt;PR-557&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="section" id="differences-with-freebsd-and-openbsd"&gt;
+&lt;h2&gt;Differences with FreeBSD (and OpenBSD)&lt;a class="headerlink" href="#differences-with-freebsd-and-openbsd" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The NetBSD implementation has limitations similar to the ones I encountered with OpenBSD. Again, FreeBSD remains the BSD variant with the best support in terms of kernel functionality.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;Process.memory_maps()&lt;/tt&gt; is not implemented. The kernel provides the necessary pieces, but I haven't done this yet (hopefully later).&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;Process.num_ctx_switches()&lt;/tt&gt;'s &lt;tt class="docutils literal"&gt;involuntary&lt;/tt&gt; field is always 0. The &lt;tt class="docutils literal"&gt;kinfo_proc()&lt;/tt&gt; syscall provides this info, but it's always set to 0.&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;Process.cpu_affinity()&lt;/tt&gt; (get and set) is not supported.&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;psutil.cpu_count(logical=False)&lt;/tt&gt; always returns &lt;tt class="docutils literal"&gt;None&lt;/tt&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As for the rest: it is all there. All memory, disk, network and process APIs are fully supported and functioning.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="other-enhancements-available-in-this-psutil-release"&gt;
+&lt;h2&gt;Other enhancements available in this psutil release&lt;a class="headerlink" href="#other-enhancements-available-in-this-psutil-release" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Besides NetBSD support, this release has a couple of interesting enhancements:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/708"&gt;#708&lt;/a&gt;: [Linux] &lt;tt class="docutils literal"&gt;psutil.net_connections()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;Process.connections()&lt;/tt&gt; can be up to 3x faster when there are many connections.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/718"&gt;#718&lt;/a&gt;: &lt;tt class="docutils literal"&gt;psutil.process_iter()&lt;/tt&gt; is now thread safe.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You can read the rest in the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#id23"&gt;changelog&lt;/a&gt;, as usual.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="move-to-prague"&gt;
+&lt;h2&gt;Move to Prague&lt;a class="headerlink" href="#move-to-prague" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;As a personal note I'd like to add that I'm currently in Prague (Czech Republic) and I'm thinking about moving down here for a while.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="discussion"&gt;
+&lt;h2&gt;Discussion&lt;a class="headerlink" href="#discussion" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/4131q2/netbsd_support_for_psutil/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://news.ycombinator.com/item?id=10909101"&gt;Hacker News&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2016"></category><category term="psutil"></category><category term="python"></category><category term="bsd"></category><category term="new-platform"></category><category term="community"></category><category term="release"></category></entry><entry><title>Real process memory and environ in Python</title><link href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python" rel="alternate"></link><published>2016-02-17T00:00:00+01:00</published><updated>2016-02-17T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2016-02-17:/blog/2016/real-process-memory-and-environ-in-python</id><summary type="html">&lt;p&gt;psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll get straight to the point and describe what's new.&lt;/p&gt;
+&lt;div class="section" id="real-process-memory-info"&gt;
+&lt;h2&gt;&amp;quot;Real&amp;quot; process memory info&lt;a class="headerlink" href="#real-process-memory-info" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Determining how much memory a process &lt;strong&gt;really&lt;/strong&gt; uses is not an easy matter (see &lt;a class="reference external" href="https://lwn.net/Articles/230975/"&gt;this&lt;/a&gt; and &lt;a class="reference external" href="http://bmaurer.blogspot.it/2006/03/memory-usage-with-smaps.html"&gt;this&lt;/a&gt;). RSS (Resident Set Size), which …&lt;/p&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll get straight to the point and describe what's new.&lt;/p&gt;
+&lt;div class="section" id="real-process-memory-info"&gt;
+&lt;h2&gt;&amp;quot;Real&amp;quot; process memory info&lt;a class="headerlink" href="#real-process-memory-info" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Determining how much memory a process &lt;strong&gt;really&lt;/strong&gt; uses is not an easy matter (see &lt;a class="reference external" href="https://lwn.net/Articles/230975/"&gt;this&lt;/a&gt; and &lt;a class="reference external" href="http://bmaurer.blogspot.it/2006/03/memory-usage-with-smaps.html"&gt;this&lt;/a&gt;). RSS (Resident Set Size), which most people rely on, is misleading because it includes both memory unique to the process and memory shared with others. What's more interesting for profiling is the memory that would be freed if the process were terminated &lt;strong&gt;right now&lt;/strong&gt;. In the Linux world this is called USS (Unique Set Size), the major feature introduced in psutil 4.0.0 (not only for Linux but also for Windows and macOS).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="uss-memory"&gt;
+&lt;h2&gt;USS memory&lt;a class="headerlink" href="#uss-memory" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The USS (Unique Set Size) is the memory unique to a process, that would be freed if the process were terminated right now. On Linux it can be determined by parsing the &amp;quot;private&amp;quot; blocks in &lt;tt class="docutils literal"&gt;/proc/PID/smaps&lt;/tt&gt;. The Firefox team pushed this further and got it working on &lt;a class="reference external" href="https://dxr.mozilla.org/mozilla-central/rev/aa90f482e16db77cdb7dea84564ea1cbd8f7f6b3/xpcom/base/nsMemoryReporterManager.cpp"&gt;macOS and Windows&lt;/a&gt; too.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;memory_full_info&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="go"&gt;pfullmem(rss=101990, vms=521888, shared=38804, text=28200, lib=0, data=59672, dirty=0, uss=81623, pss=91788, swap=0)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="pss-and-swap"&gt;
+&lt;h2&gt;PSS and swap&lt;a class="headerlink" href="#pss-and-swap" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;On Linux there are two additional metrics that can also be determined via &lt;tt class="docutils literal"&gt;/proc/PID/smaps&lt;/tt&gt;: PSS and swap.&lt;/p&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;pss&lt;/tt&gt;, aka &amp;quot;Proportional Set Size&amp;quot;, represents the amount of memory shared with other processes, accounted so that the amount is divided evenly between the processes that share it. I.e. if a process has 10 MBs all to itself (USS) and 10 MBs shared with another process, its PSS will be 15 MBs.&lt;/p&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;swap&lt;/tt&gt; is simply the amount of memory that has been swapped out to disk. With &lt;tt class="docutils literal"&gt;Process.memory_full_info()&lt;/tt&gt; it is possible to implement a tool like &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-4.0.0/scripts/procsmem.py"&gt;procsmem.py&lt;/a&gt;, similar to &lt;a class="reference external" href="https://www.selenic.com/smem/"&gt;smem&lt;/a&gt; on Linux, which provides a list of processes sorted by &lt;tt class="docutils literal"&gt;uss&lt;/tt&gt;. It's interesting to see how &lt;tt class="docutils literal"&gt;rss&lt;/tt&gt; differs from &lt;tt class="docutils literal"&gt;uss&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~/svn/psutil$ ./scripts/procsmem.py
+PID     User    Cmdline                            USS     PSS    Swap     RSS
+==============================================================================
+...
+3986    giampao /usr/bin/python3 /usr/bin/indi   15.3M   16.6M      0B   25.6M
+3906    giampao /usr/lib/ibus/ibus-ui-gtk3       17.6M   18.1M      0B   26.7M
+3991    giampao python /usr/bin/hp-systray -x    19.0M   23.3M      0B   40.7M
+3830    giampao /usr/bin/ibus-daemon --daemoni   19.0M   19.0M      0B   21.4M
+20529   giampao /opt/sublime_text/plugin_host    19.9M   20.1M      0B   22.0M
+3990    giampao nautilus -n                      20.6M   29.9M      0B   50.2M
+3898    giampao /usr/lib/unity/unity-panel-ser   27.1M   27.9M      0B   37.7M
+4176    giampao /usr/lib/evolution/evolution-c   35.7M   36.2M      0B   41.5M
+20712   giampao /usr/bin/python -B /home/giamp   45.6M   45.9M      0B   49.4M
+3880    giampao /usr/lib/x86_64-linux-gnu/hud/   51.6M   52.7M      0B   61.3M
+20513   giampao /opt/sublime_text/sublime_text   65.8M   73.0M      0B   87.9M
+3976    giampao compiz                          115.0M  117.0M      0B  130.9M
+32486   giampao skype                           145.1M  147.5M      0B  149.6M
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="implementation"&gt;
+&lt;h2&gt;Implementation&lt;a class="headerlink" href="#implementation" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;To get these values (&lt;tt class="docutils literal"&gt;uss&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;pss&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;swap&lt;/tt&gt;) we need to walk the whole process address space. This usually requires higher privileges and is considerably slower than &lt;tt class="docutils literal"&gt;Process.memory_info()&lt;/tt&gt;, which is probably why tools like &lt;tt class="docutils literal"&gt;ps&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;top&lt;/tt&gt; show RSS/VMS instead of USS. A big thanks goes to the Mozilla team for figuring this out on Windows and macOS, and to &lt;a class="reference external" href="https://github.com/EricRahm"&gt;Eric Rahm&lt;/a&gt; who put the psutil PRs together (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/744"&gt;PR-744&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/745"&gt;PR-745&lt;/a&gt; and &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/746"&gt;PR-746&lt;/a&gt;). If you don't use Python and want to port the code to another language, here are the interesting parts:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/42b34049cf96e845b6423db91f991849a2f87578/psutil/_pslinux.py#L1026"&gt;Linux&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_psutil_osx.c#L568"&gt;macOS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_psutil_windows.c#L811"&gt;Windows&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="memory-type-percent"&gt;
+&lt;h2&gt;Memory type percent&lt;a class="headerlink" href="#memory-type-percent" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;After reorganizing the process memory APIs (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/744"&gt;PR-744&lt;/a&gt;), I added a new &lt;tt class="docutils literal"&gt;memtype&lt;/tt&gt; parameter to &lt;tt class="docutils literal"&gt;Process.memory_percent()&lt;/tt&gt;. You can now compare a specific memory type (not only RSS) against the total physical memory. E.g.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;memory_percent&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;memtype&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;pss&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="go"&gt;0.06877466326787016&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="process-environ"&gt;
+&lt;h2&gt;Process environ&lt;a class="headerlink" href="#process-environ" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The second biggest improvement in psutil 4.0.0 is the ability to read a process's environment variables. This opens up interesting possibilities for process recognition and monitoring. For instance, you can start a process with a custom environment variable, then iterate over all processes to find the one of interest:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;process_iter&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;env&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Error&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;pass&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;MYAPP&amp;#39;&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;env&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="o"&gt;...&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Process environ was a long-standing issue (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/52"&gt;#52&lt;/a&gt;, from 2009) that I gave up on because the Windows implementation only worked for the current process. &lt;a class="reference external" href="https://github.com/fbenkstein"&gt;Frank Benkstein&lt;/a&gt; solved that (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/747"&gt;PR-747&lt;/a&gt;), and it now works on Linux, Windows and macOS for all processes (you may still hit &lt;tt class="docutils literal"&gt;AccessDenied&lt;/tt&gt; for processes owned by another user):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pprint&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;pprint&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;pp&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;pp&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;span class="go"&gt;{...&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;CLUTTER_IM_MODULE&amp;#39;: &amp;#39;xim&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;COLORTERM&amp;#39;: &amp;#39;gnome-terminal&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;COMPIZ_BIN_PATH&amp;#39;: &amp;#39;/usr/bin/&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;HOME&amp;#39;: &amp;#39;/home/giampaolo&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;PWD&amp;#39;: &amp;#39;/home/giampaolo/svn/psutil&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt;  }&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Note that the resulting dict usually doesn't reflect changes made after the process started (e.g. &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;os.environ['MYAPP']&lt;/span&gt; = '1'&lt;/tt&gt;). Again, for anyone porting this to other languages, here are the interesting parts:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_pslinux.py#L928"&gt;Linux&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/arch/osx/process_info.c#L241"&gt;macOS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/747"&gt;Windows&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="extended-disk-io-stats"&gt;
+&lt;h2&gt;Extended disk IO stats&lt;a class="headerlink" href="#extended-disk-io-stats" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;psutil.disk_io_counters()&lt;/tt&gt; now reports additional metrics on Linux and FreeBSD:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;busy_time&lt;/tt&gt;: the time spent doing actual I/Os (in milliseconds).&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;read_merged_count&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;write_merged_count&lt;/tt&gt; (Linux only): the number of merged reads and writes (see the &lt;a class="reference external" href="https://www.kernel.org/doc/Documentation/iostats.txt"&gt;iostats&lt;/a&gt; doc).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These give a better picture of actual disk utilization (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/756"&gt;#756&lt;/a&gt;), similar to the &lt;tt class="docutils literal"&gt;iostat&lt;/tt&gt; command on Linux.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="os-constants"&gt;
+&lt;h2&gt;OS constants&lt;a class="headerlink" href="#os-constants" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Given the growing number of platform-specific metrics, I added a set of constants to tell which platform you're on: &lt;tt class="docutils literal"&gt;psutil.LINUX&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;psutil.WINDOWS&lt;/tt&gt;, etc.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="other-fixes"&gt;
+&lt;h2&gt;Other fixes&lt;a class="headerlink" href="#other-fixes" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The complete list of changes is available in the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#id22"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="porting-code"&gt;
+&lt;h2&gt;Porting code&lt;a class="headerlink" href="#porting-code" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Since 4.0.0 is a major version, I took the chance to (lightly) change / break some APIs.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;Process.memory_info()&lt;/tt&gt; no longer returns just an (&lt;tt class="docutils literal"&gt;rss&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;vms&lt;/tt&gt;) namedtuple. It returns a variable-length namedtuple that varies by platform (&lt;tt class="docutils literal"&gt;rss&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;vms&lt;/tt&gt; are always present, even on Windows). Essentially the same result as the old &lt;tt class="docutils literal"&gt;Process.memory_info_ex()&lt;/tt&gt;. This shouldn't break your code unless you were doing &lt;tt class="docutils literal"&gt;rss, vms = p.memory_info()&lt;/tt&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;Process.memory_info_ex()&lt;/tt&gt; is deprecated. It still works as an alias for &lt;tt class="docutils literal"&gt;Process.memory_info()&lt;/tt&gt;, issuing a &lt;tt class="docutils literal"&gt;DeprecationWarning&lt;/tt&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;psutil.disk_io_counters()&lt;/tt&gt; on NetBSD and OpenBSD no longer returns &lt;tt class="docutils literal"&gt;write_count&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;read_count&lt;/tt&gt; because the kernel doesn't provide them (we were returning the busy time instead). Should be a small issue given NetBSD and OpenBSD support is very recent.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="discussion"&gt;
+&lt;h2&gt;Discussion&lt;a class="headerlink" href="#discussion" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/469p2c/psutil_400_real_process_memory_info_and_process/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://news.ycombinator.com/item?id=11119298"&gt;Hacker News&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2016"></category><category term="psutil"></category><category term="python"></category><category term="memory"></category><category term="new-api"></category><category term="compatibility"></category><category term="release"></category><category term="community"></category><category term="linux"></category></entry><entry><title>OpenBSD support</title><link href="https://gmpy.dev/blog/2015/psutil-openbsd-support" rel="alternate"></link><published>2015-11-25T00:00:00+01:00</published><updated>2015-11-25T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2015-11-25:/blog/2015/psutil-openbsd-support</id><summary type="html">&lt;p&gt;Starting from version 3.3.0 (released just now) &lt;a class="reference external" href="https://github.com/giampaolo/psutil"&gt;psutil&lt;/a&gt; officially supports OpenBSD. This was contributed by &lt;a class="reference external" href="https://github.com/landryb"&gt;Landry Breuil&lt;/a&gt; and myself in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/615"&gt;PR-615&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="section" id="differences-with-freebsd"&gt;
+&lt;h2&gt;Differences with FreeBSD&lt;a class="headerlink" href="#differences-with-freebsd" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;As expected, the OpenBSD implementation is very similar to FreeBSD's, so I merged most of it into a single C file (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-3.3.0/psutil/_psutil_bsd.c"&gt;_psutil_bsd.c&lt;/a&gt;), with …&lt;/p&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Starting from version 3.3.0 (released just now) &lt;a class="reference external" href="https://github.com/giampaolo/psutil"&gt;psutil&lt;/a&gt; officially supports OpenBSD. This was contributed by &lt;a class="reference external" href="https://github.com/landryb"&gt;Landry Breuil&lt;/a&gt; and myself in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/615"&gt;PR-615&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="section" id="differences-with-freebsd"&gt;
+&lt;h2&gt;Differences with FreeBSD&lt;a class="headerlink" href="#differences-with-freebsd" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;As expected, the OpenBSD implementation is very similar to FreeBSD's, so I merged most of it into a single C file (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-3.3.0/psutil/_psutil_bsd.c"&gt;_psutil_bsd.c&lt;/a&gt;), with 2 separate files (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-3.3.0/psutil/arch/bsd/freebsd.c"&gt;freebsd.c&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-3.3.0/psutil/arch/bsd/openbsd.c"&gt;openbsd.c&lt;/a&gt;) for the parts that differ. Here are the functional differences with FreeBSD:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;Process.memory_maps()&lt;/tt&gt; is not implemented. The kernel provides the necessary pieces but I haven't done this yet (hopefully later).&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;Process.num_ctx_switches()&lt;/tt&gt;'s &lt;tt class="docutils literal"&gt;involuntary&lt;/tt&gt; field is always 0. &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/fc1e59d08c968898c2ede425a621b62ccf44681c/psutil/_psutil_bsd.c#L335"&gt;kinfo_proc&lt;/a&gt; provides this info but it is always set to 0.&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;Process.cpu_affinity()&lt;/tt&gt; (get and set) is not supported.&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;Process.exe()&lt;/tt&gt; is determined by inspecting the command line, so it may not always be available (returns &lt;tt class="docutils literal"&gt;None&lt;/tt&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;psutil.swap_memory()&lt;/tt&gt; &lt;tt class="docutils literal"&gt;sin&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;sout&lt;/tt&gt; (swap in and swap out) values are not available, and are therefore always set to 0.&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;psutil.cpu_count(logical=False)&lt;/tt&gt; always returns &lt;tt class="docutils literal"&gt;None&lt;/tt&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As with FreeBSD, &lt;tt class="docutils literal"&gt;Process.open_files()&lt;/tt&gt; can't return file paths (FreeBSD can sometimes). Otherwise everything is there and I'm satisfied with the result.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="considerations-about-bsd-platforms"&gt;
+&lt;h2&gt;Considerations about BSD platforms&lt;a class="headerlink" href="#considerations-about-bsd-platforms" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;psutil has supported FreeBSD since the beginning (year 2009). At the time, it made sense to prefer it as the preferred BSD variant as it's the &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Comparison_of_BSD_operating_systems#Popularity"&gt;most popular&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Compared to FreeBSD, OpenBSD appears to be more &amp;quot;minimal&amp;quot;, both in terms of kernel facilities and the number of CLI tools available. One thing I particularly appreciate about FreeBSD is that the source code for all CLI tools is available under &lt;tt class="docutils literal"&gt;/usr/src&lt;/tt&gt;, which was a big help when implementing psutil APIs.&lt;/p&gt;
+&lt;p&gt;OpenBSD source code is &lt;a class="reference external" href="https://github.com/openbsd/src"&gt;also available&lt;/a&gt;, but it uses CVS and I am not sure it includes the source code for all CLI tools.&lt;/p&gt;
+&lt;p&gt;There are still two more BSD variants worth supporting: NetBSD and DragonFlyBSD (in this order). About a year ago, someone provided a &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/429"&gt;patch&lt;/a&gt; adding basic NetBSD support, so that will likely happen sooner or later.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="other-enhancements-available-in-this-release"&gt;
+&lt;h2&gt;Other enhancements available in this release&lt;a class="headerlink" href="#other-enhancements-available-in-this-release" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The only other enhancement is &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/558"&gt;#558&lt;/a&gt;, which allows specifying a different location for the &lt;tt class="docutils literal"&gt;/proc&lt;/tt&gt; filesystem on Linux.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="discussion"&gt;
+&lt;h2&gt;Discussion&lt;a class="headerlink" href="#discussion" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/3u8wm3/openbsd_support_for_psutil_330/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://news.ycombinator.com/item?id=10628726"&gt;Hacker News&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2015"></category><category term="psutil"></category><category term="python"></category><category term="bsd"></category><category term="new-platform"></category><category term="community"></category><category term="release"></category></entry></feed>

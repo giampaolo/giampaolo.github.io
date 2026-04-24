@@ -1,25 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - python-core</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.python-core.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2026-01-28T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>From Python 3.3 to today: ending 15 years of subprocess polling</title><link href="https://gmpy.dev/blog/2026/event-driven-process-waiting" rel="alternate"></link><published>2026-01-28T00:00:00+01:00</published><updated>2026-01-28T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2026-01-28:/blog/2026/event-driven-process-waiting</id><summary type="html">&lt;p&gt;One of the less fun aspects of process management on POSIX systems is waiting
-for a process to terminate. The standard library's &lt;code&gt;subprocess&lt;/code&gt; module has
-relied on a busy-loop polling approach since the &lt;em&gt;timeout&lt;/em&gt; parameter was added
-to
-&lt;a href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen.wait"&gt;Popen.wait()&lt;/a&gt;
-in Python 3.3, around 15 years ago (see
-&lt;a href="[https://url.com](https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077)"&gt;source …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the less fun aspects of process management on POSIX systems is waiting
-for a process to terminate. The standard library's &lt;code&gt;subprocess&lt;/code&gt; module has
-relied on a busy-loop polling approach since the &lt;em&gt;timeout&lt;/em&gt; parameter was added
-to
-&lt;a href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen.wait"&gt;Popen.wait()&lt;/a&gt;
-in Python 3.3, around 15 years ago (see
-&lt;a href="[https://url.com](https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077)"&gt;source&lt;/a&gt;).
-And psutil's
-&lt;a href="https://psutil.readthedocs.io/en/latest/#psutil.Process.wait"&gt;Process.wait()&lt;/a&gt;
-method uses exactly the same technique (see
-&lt;a href="https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160"&gt;source&lt;/a&gt;).&lt;/p&gt;
-&lt;p&gt;The logic is straightforward: check whether the process has exited using
-non-blocking &lt;code&gt;waitpid(WNOHANG)&lt;/code&gt;, sleep briefly, check again, sleep a bit
-longer, and so on.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;time&lt;/span&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - python-core</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.python-core.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2026-01-28T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>From Python 3.3 to today: ending 15 years of subprocess polling</title><link href="https://gmpy.dev/blog/2026/event-driven-process-waiting" rel="alternate"></link><published>2026-01-28T00:00:00+01:00</published><updated>2026-01-28T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2026-01-28:/blog/2026/event-driven-process-waiting</id><summary type="html">&lt;p&gt;One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module has relied on a busy-loop polling approach since the &lt;em&gt;timeout&lt;/em&gt; parameter was added to &lt;tt class="docutils literal"&gt;subprocess.Popen.wait()&lt;/tt&gt; in Python 3.3, around 15 years ago (see …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module has relied on a busy-loop polling approach since the &lt;em&gt;timeout&lt;/em&gt; parameter was added to &lt;tt class="docutils literal"&gt;subprocess.Popen.wait()&lt;/tt&gt; in Python 3.3, around 15 years ago (see &lt;a class="reference external" href="https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077"&gt;source&lt;/a&gt;). And psutil's &lt;tt class="docutils literal"&gt;Process.wait()&lt;/tt&gt; method uses exactly the same technique (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160"&gt;source&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;The logic is straightforward: check whether the process has exited using non-blocking &lt;tt class="docutils literal"&gt;waitpid(WNOHANG)&lt;/tt&gt;, sleep briefly, check again, sleep a bit longer, and so on.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;time&lt;/span&gt;
 
 &lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;wait_busy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;end&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;monotonic&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;
@@ -30,40 +12,25 @@ longer, and so on.&lt;/p&gt;
             &lt;span class="k"&gt;return&lt;/span&gt;
         &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;interval&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
         &lt;span class="n"&gt;interval&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;min&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;interval&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.04&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="n"&gt;TimeoutExpired&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;In this blog post I'll show how I finally addressed this long-standing
-inefficiency, first in psutil, and most excitingly, directly in CPython's
-standard library subprocess module.&lt;/p&gt;
-&lt;h2&gt;The problem with busy-polling&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;CPU wake-ups: even with exponential backoff (starting at 0.1ms, capping at
-  40ms), the system constantly wakes up to check process status, wasting CPU
-  cycles and draining batteries.&lt;/li&gt;
-&lt;li&gt;Latency: there's always a gap between when a process actually terminates and
-  when you detect it.&lt;/li&gt;
-&lt;li&gt;Scalability: monitoring many processes simultaneously magnifies all of the
-  above.&lt;/li&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TimeoutError&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In this blog post I'll show how I finally addressed this long-standing inefficiency, first in psutil, and most excitingly, directly in CPython's standard library &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module.&lt;/p&gt;
+&lt;div class="section" id="the-problem-with-busy-polling"&gt;
+&lt;h2&gt;The problem with busy-polling&lt;a class="headerlink" href="#the-problem-with-busy-polling" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;CPU wake-ups: even with exponential backoff (starting at 0.1ms, capping at 40ms), the system constantly wakes up to check process status, wasting CPU cycles and draining batteries.&lt;/li&gt;
+&lt;li&gt;Latency: there's always a gap between when a process actually terminates and when you detect it.&lt;/li&gt;
+&lt;li&gt;Scalability: monitoring many processes simultaneously magnifies all of the above.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Event-driven waiting&lt;/h2&gt;
-&lt;p&gt;All POSIX systems provide at least one mechanism to be notified when a file
-descriptor becomes ready. These are
-&lt;a href="https://man7.org/linux/man-pages/man2/select.2.html"&gt;select()&lt;/a&gt;,
-&lt;a href="https://man7.org/linux/man-pages/man2/poll.2.html"&gt;poll()&lt;/a&gt;,
-&lt;a href="https://man7.org/linux/man-pages/man7/epoll.7.html"&gt;epoll()&lt;/a&gt; (Linux) and
-&lt;a href="https://man.freebsd.org/cgi/man.cgi?query=kqueue"&gt;kqueue()&lt;/a&gt; (BSD / macOS)
-system calls. Until recently, I believed they could only be used with file
-descriptors referencing sockets, pipes, etc., but it turns out they can also be
-used to wait for events on process PIDs!&lt;/p&gt;
-&lt;h2&gt;Linux&lt;/h2&gt;
-&lt;p&gt;In 2019, Linux 5.3 introduced a new syscall,
-&lt;strong&gt;&lt;a href="https://man7.org/linux/man-pages/man2/pidfd_open.2.html"&gt;pidfd_open()&lt;/a&gt;&lt;/strong&gt;,
-which was added to the &lt;code&gt;os&lt;/code&gt; module in Python 3.9. It returns a file descriptor
-referencing a process PID. The interesting thing is that &lt;code&gt;pidfd_open()&lt;/code&gt; can be
-used in conjunction with &lt;code&gt;select()&lt;/code&gt;, &lt;code&gt;poll()&lt;/code&gt; or &lt;code&gt;epoll()&lt;/code&gt; to effectively wait
-until the process exits. E.g. by using &lt;code&gt;poll()&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;select&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class="section" id="event-driven-waiting"&gt;
+&lt;h2&gt;Event-driven waiting&lt;a class="headerlink" href="#event-driven-waiting" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;All POSIX systems provide at least one mechanism to be notified when a file descriptor becomes ready. These are &lt;a class="reference external" href="https://man7.org/linux/man-pages/man2/select.2.html"&gt;select()&lt;/a&gt;, &lt;a class="reference external" href="https://man7.org/linux/man-pages/man2/poll.2.html"&gt;poll()&lt;/a&gt;, &lt;a class="reference external" href="https://man7.org/linux/man-pages/man7/epoll.7.html"&gt;epoll()&lt;/a&gt; (Linux) and &lt;a class="reference external" href="https://man.freebsd.org/cgi/man.cgi?query=kqueue"&gt;kqueue()&lt;/a&gt; (BSD / macOS) system calls. Until recently, I believed they could only be used with file descriptors referencing sockets, pipes, etc., but it turns out they can also be used to wait for events on process PIDs!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="linux"&gt;
+&lt;h2&gt;Linux&lt;a class="headerlink" href="#linux" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;In 2019, Linux 5.3 introduced a new syscall, &lt;tt class="docutils literal"&gt;os.pidfd_open()&lt;/tt&gt;, which was added in Python 3.9. It returns a file descriptor referencing a process PID. The interesting thing is that &lt;tt class="docutils literal"&gt;pidfd_open()&lt;/tt&gt; can be used in conjunction with &lt;tt class="docutils literal"&gt;select()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;epoll()&lt;/tt&gt; to effectively wait until the process exits. E.g. by using &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;select&lt;/span&gt;
 
 &lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;wait_pidfd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;pidfd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pidfd_open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -74,23 +41,15 @@ until the process exits. E.g. by using &lt;code&gt;poll()&lt;/code&gt;:&lt;/p&gt
     &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;events&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
         &lt;span class="k"&gt;return&lt;/span&gt;
     &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TimeoutError&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;This approach has zero busy-looping. The kernel wakes us up exactly when the
-process terminates or when the timeout expires if the PID is still alive.&lt;/p&gt;
-&lt;p&gt;I chose &lt;code&gt;poll()&lt;/code&gt; over &lt;code&gt;select()&lt;/code&gt; because &lt;code&gt;select()&lt;/code&gt; has a historical file
-descriptor limit (&lt;code&gt;FD_SETSIZE&lt;/code&gt;), which typically caps it at 1024 file
-descriptors per-process (reminded me of
-&lt;a href="https://bugs.python.org/issue1685000"&gt;BPO-1685000&lt;/a&gt;).&lt;/p&gt;
-&lt;p&gt;I chose &lt;code&gt;poll()&lt;/code&gt; over &lt;code&gt;epoll()&lt;/code&gt; because it does not require creating an
-additional file descriptor. It also needs only a single syscall, which should
-make it a bit more efficient when monitoring a single FD rather than many.&lt;/p&gt;
-&lt;h2&gt;macOS and BSD&lt;/h2&gt;
-&lt;p&gt;BSD-derived systems (including macOS) provide the &lt;code&gt;kqueue()&lt;/code&gt; syscall. It's
-conceptually similar to &lt;code&gt;select()&lt;/code&gt;, &lt;code&gt;poll()&lt;/code&gt; and &lt;code&gt;epoll()&lt;/code&gt;, but more powerful
-(e.g. it can also handle regular files). &lt;code&gt;kqueue()&lt;/code&gt; can be passed a PID
-directly, and it will return once the PID disappears or the timeout expires:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;select&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This approach has zero busy-looping. The kernel wakes us up exactly when the process terminates or when the timeout expires if the PID is still alive.&lt;/p&gt;
+&lt;p&gt;I chose &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; over &lt;tt class="docutils literal"&gt;select()&lt;/tt&gt; because &lt;tt class="docutils literal"&gt;select()&lt;/tt&gt; has a historical file descriptor limit (&lt;tt class="docutils literal"&gt;FD_SETSIZE&lt;/tt&gt;), which typically caps it at 1024 file descriptors per-process (reminded me of &lt;a class="reference external" href="https://bugs.python.org/issue1685000"&gt;BPO-1685000&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;I chose &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; over &lt;tt class="docutils literal"&gt;epoll()&lt;/tt&gt; because it does not require creating an additional file descriptor. It also needs only a single syscall, which should make it a bit more efficient when monitoring a single FD rather than many.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="macos-and-bsd"&gt;
+&lt;h2&gt;macOS and BSD&lt;a class="headerlink" href="#macos-and-bsd" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;BSD-derived systems (including macOS) provide the &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt; syscall. It's conceptually similar to &lt;tt class="docutils literal"&gt;select()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;epoll()&lt;/tt&gt;, but more powerful (e.g. it can also handle regular files). &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt; can be passed a PID directly, and it will return once the PID disappears or the timeout expires:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;select&lt;/span&gt;
 
 &lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;wait_kqueue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;kq&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;kqueue&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
@@ -105,123 +64,183 @@ directly, and it will return once the PID disappears or the timeout expires:&lt;
     &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;events&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
         &lt;span class="k"&gt;return&lt;/span&gt;
     &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TimeoutError&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h2&gt;Windows&lt;/h2&gt;
-&lt;p&gt;Windows does not busy-loop, both in psutil and subprocess module, thanks to
-&lt;code&gt;WaitForSingleObject&lt;/code&gt;. This means Windows has effectively had event-driven
-process waiting from the start. So nothing to do on that front.&lt;/p&gt;
-&lt;h2&gt;Graceful fallbacks&lt;/h2&gt;
-&lt;p&gt;Both &lt;code&gt;pidfd_open()&lt;/code&gt; and &lt;code&gt;kqueue()&lt;/code&gt; can fail for different reasons. For example,
-with &lt;code&gt;EMFILE&lt;/code&gt; if the process runs out of file descriptors (usually 1024), or
-with &lt;code&gt;EACCES&lt;/code&gt; / &lt;code&gt;EPERM&lt;/code&gt; if the syscall was explicitly blocked at the system
-level by the sysadmin (e.g. via SECCOMP). In all cases, psutil silently falls
-back to the traditional busy-loop polling approach rather than raising an
-exception.&lt;/p&gt;
-&lt;p&gt;This fast-path-with-fallback approach is similar in spirit to
-&lt;a href="https://bugs.python.org/issue33671"&gt;BPO-33671&lt;/a&gt;, where I sped up
-&lt;code&gt;shutil.copyfile()&lt;/code&gt; by using zero-copy system calls back in 2018. In there,
-more efficient &lt;code&gt;os.sendfile()&lt;/code&gt; is attempted first, and if it fails (e.g. on
-network filesystems) we fall back to the traditional &lt;code&gt;read()&lt;/code&gt; / &lt;code&gt;write()&lt;/code&gt;
-approach to copy regular files.&lt;/p&gt;
-&lt;h2&gt;Measurement&lt;/h2&gt;
-&lt;p&gt;As a simple experiment, here's a simple program which waits on itself for 10
-seconds without terminating:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# test.py&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="windows"&gt;
+&lt;h2&gt;Windows&lt;a class="headerlink" href="#windows" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Windows does not busy-loop, both in psutil and &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module, thanks to &lt;tt class="docutils literal"&gt;WaitForSingleObject&lt;/tt&gt;. This means Windows has effectively had event-driven process waiting from the start. So nothing to do on that front.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="graceful-fallbacks"&gt;
+&lt;h2&gt;Graceful fallbacks&lt;a class="headerlink" href="#graceful-fallbacks" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Both &lt;tt class="docutils literal"&gt;pidfd_open()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt; can fail for different reasons. For example, with &lt;tt class="docutils literal"&gt;EMFILE&lt;/tt&gt; if the process runs out of file descriptors (usually 1024), or with &lt;tt class="docutils literal"&gt;EACCES&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;EPERM&lt;/tt&gt; if the syscall was explicitly blocked at the system level by the sysadmin (e.g. via SECCOMP). In all cases, psutil silently falls back to the traditional busy-loop polling approach rather than raising an exception.&lt;/p&gt;
+&lt;p&gt;This fast-path-with-fallback approach is similar in spirit to &lt;a class="reference external" href="https://bugs.python.org/issue33671"&gt;BPO-33671&lt;/a&gt;, where I sped up &lt;tt class="docutils literal"&gt;shutil.copyfile()&lt;/tt&gt; by using zero-copy system calls back in 2018. In there, more efficient &lt;tt class="docutils literal"&gt;os.sendfile()&lt;/tt&gt; is attempted first, and if it fails (e.g. on network filesystems) we fall back to the traditional &lt;tt class="docutils literal"&gt;read()&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;write()&lt;/tt&gt; approach to copy regular files.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="measurement"&gt;
+&lt;h2&gt;Measurement&lt;a class="headerlink" href="#measurement" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;As a simple experiment, here's a simple program which waits on itself for 10 seconds without terminating:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# test.py&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;
 &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getpid&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TimeoutExpired&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="k"&gt;pass&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;We can measure the CPU context switching using &lt;code&gt;/usr/bin/time -v&lt;/code&gt;. Before the
-patch (the busy-loop):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;/usr/bin/time&lt;span class="w"&gt; &lt;/span&gt;-v&lt;span class="w"&gt; &lt;/span&gt;python3&lt;span class="w"&gt; &lt;/span&gt;test.py&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;grep&lt;span class="w"&gt; &lt;/span&gt;context
-&lt;span class="w"&gt;    &lt;/span&gt;Voluntary&lt;span class="w"&gt; &lt;/span&gt;context&lt;span class="w"&gt; &lt;/span&gt;switches:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;258&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;Involuntary&lt;span class="w"&gt; &lt;/span&gt;context&lt;span class="w"&gt; &lt;/span&gt;switches:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We can measure the CPU context switching using &lt;tt class="docutils literal"&gt;/usr/bin/time &lt;span class="pre"&gt;-v&lt;/span&gt;&lt;/tt&gt;. Before the patch (the busy-loop):&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+$ /usr/bin/time -v python3 test.py 2&amp;gt;&amp;amp;1 | grep context
+    Voluntary context switches: 258
+    Involuntary context switches: 4
+&lt;/pre&gt;
 &lt;p&gt;After the patch (the event-driven approach):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;/usr/bin/time&lt;span class="w"&gt; &lt;/span&gt;-v&lt;span class="w"&gt; &lt;/span&gt;python3&lt;span class="w"&gt; &lt;/span&gt;test.py&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;grep&lt;span class="w"&gt; &lt;/span&gt;context
-&lt;span class="w"&gt;    &lt;/span&gt;Voluntary&lt;span class="w"&gt; &lt;/span&gt;context&lt;span class="w"&gt; &lt;/span&gt;switches:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;Involuntary&lt;span class="w"&gt; &lt;/span&gt;context&lt;span class="w"&gt; &lt;/span&gt;switches:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;This shows that instead of spinning in userspace, the process blocks in
-&lt;code&gt;poll()&lt;/code&gt; / &lt;code&gt;kqueue()&lt;/code&gt;, and is woken up only when the kernel notifies it,
-resulting in just a few CPU context switches.&lt;/p&gt;
-&lt;h2&gt;Sleeping state&lt;/h2&gt;
-&lt;p&gt;It's also interesting to note that waiting via &lt;code&gt;poll()&lt;/code&gt; (or &lt;code&gt;kqueue()&lt;/code&gt;) puts
-the process into the exact same sleeping state as a plain &lt;code&gt;time.sleep()&lt;/code&gt; call.
-From the kernel's perspective, both are interruptible sleeps: the process is
-de-scheduled, consumes zero CPU, and sits quietly in kernel space.&lt;/p&gt;
-&lt;p&gt;The &lt;code&gt;"S+"&lt;/code&gt; state shown below by &lt;code&gt;ps&lt;/code&gt; means that the process "sleeps in
-foreground".&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;time.sleep()&lt;/code&gt;:&lt;/li&gt;
+&lt;pre class="literal-block"&gt;
+$ /usr/bin/time -v python3 test.py 2&amp;gt;&amp;amp;1 | grep context
+    Voluntary context switches: 2
+    Involuntary context switches: 1
+&lt;/pre&gt;
+&lt;p&gt;This shows that instead of spinning in userspace, the process blocks in &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt;, and is woken up only when the kernel notifies it, resulting in just a few CPU context switches.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="sleeping-state"&gt;
+&lt;h2&gt;Sleeping state&lt;a class="headerlink" href="#sleeping-state" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;It's also interesting to note that waiting via &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; (or &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt;) puts the process into the exact same sleeping state as a plain &lt;tt class="docutils literal"&gt;time.sleep&lt;/tt&gt; call. From the kernel's perspective, both are interruptible sleeps: the process is de-scheduled, consumes zero CPU, and sits quietly in kernel space.&lt;/p&gt;
+&lt;p&gt;The &lt;tt class="docutils literal"&gt;&amp;quot;S+&amp;quot;&lt;/tt&gt; state shown below by &lt;tt class="docutils literal"&gt;ps&lt;/tt&gt; means that the process &amp;quot;sleeps in foreground&amp;quot;.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;time.sleep&lt;/tt&gt;:&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;python3&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;import time; time.sleep(10)&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;$!&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;sleep&lt;/span&gt; &lt;span class="mf"&gt;0.3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;ps&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;stat&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;comm&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;fg&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;gt;/&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;null&lt;/span&gt;
-    &lt;span class="n"&gt;PID&lt;/span&gt; &lt;span class="n"&gt;STAT&lt;/span&gt; &lt;span class="n"&gt;COMMAND&lt;/span&gt;
- &lt;span class="mi"&gt;491573&lt;/span&gt; &lt;span class="n"&gt;S&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;   &lt;span class="n"&gt;python3&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;poll()&lt;/code&gt;:&lt;/li&gt;
+&lt;pre class="literal-block"&gt;
+$ (python3 -c 'import time; time.sleep(10)' &amp;amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;amp;&amp;amp; fg &amp;amp;&amp;gt;/dev/null
+    PID STAT COMMAND
+ 491573 S+   python3
+&lt;/pre&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;select.poll&lt;/tt&gt;:&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;python3&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;$!&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;sleep&lt;/span&gt; &lt;span class="mf"&gt;0.3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;ps&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;stat&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;comm&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;fg&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;gt;/&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;null&lt;/span&gt;
-    &lt;span class="n"&gt;PID&lt;/span&gt; &lt;span class="n"&gt;STAT&lt;/span&gt; &lt;span class="n"&gt;COMMAND&lt;/span&gt;
- &lt;span class="mi"&gt;491748&lt;/span&gt; &lt;span class="n"&gt;S&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;   &lt;span class="n"&gt;python3&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h2&gt;CPython contribution&lt;/h2&gt;
-&lt;p&gt;After landing the psutil implementation
-(&lt;a href="https://github.com/giampaolo/psutil/pull/2706"&gt;psutil/PR-2706&lt;/a&gt;), I took the
-extra step and submitted a matching pull request for CPython &lt;code&gt;subprocess&lt;/code&gt;
-module: &lt;a href="https://github.com/python/cpython/pull/144047"&gt;cpython/PR-144047&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;I'm especially proud of this one: this is the &lt;strong&gt;third time&lt;/strong&gt; in psutil's 17+
-year history that a feature developed in psutil made its way upstream into the
-Python standard library.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;The first was back in 2010, when &lt;code&gt;psutil.Process.nice()&lt;/code&gt;
-  inspired
-  &lt;a href="https://docs.python.org/3/library/os.html#os.getpriority"&gt;os.getpriority()&lt;/a&gt; and
-  &lt;a href="https://docs.python.org/3/library/os.html#os.setpriority"&gt;os.setpriority()&lt;/a&gt;, see
-  &lt;a href="https://bugs.python.org/issue10784"&gt;BPO-10784&lt;/a&gt;.
-  Landed in Python 3.3.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;The second was back in 2011, when &lt;code&gt;psutil.disk_usage()&lt;/code&gt; inspired
-  &lt;a href="https://docs.python.org/3/library/shutil.html#shutil.disk_usage"&gt;shutil.disk_usage()&lt;/a&gt;, see
-  &lt;a href="https://mail.python.org/archives/list/python-ideas@python.org/thread/67A7ML2TJ7MBS3WOL6IZKLD2C3B3VCQG"&gt;python-ideas ML proposal&lt;/a&gt;.
-  Landed in Python 3.3.&lt;/p&gt;
-&lt;/li&gt;
+&lt;pre class="literal-block"&gt;
+$ (python3 -c 'import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)' &amp;amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;amp;&amp;amp; fg &amp;amp;&amp;gt;/dev/null
+    PID STAT COMMAND
+ 491748 S+   python3
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class="section" id="cpython-contribution"&gt;
+&lt;h2&gt;CPython contribution&lt;a class="headerlink" href="#cpython-contribution" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;After landing the psutil implementation (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/2706"&gt;PR-2706&lt;/a&gt;), I took the extra step and submitted a matching pull request for CPython &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module: &lt;a class="reference external" href="https://github.com/python/cpython/pull/144047"&gt;cpython/PR-144047&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I'm especially proud of this one: this is the &lt;strong&gt;third time&lt;/strong&gt; in psutil's 17+ year history that a feature developed in psutil made its way upstream into the Python standard library.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;The first was back in 2010, when &lt;tt class="docutils literal"&gt;Process.nice()&lt;/tt&gt; inspired &lt;tt class="docutils literal"&gt;os.getpriority()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;os.setpriority()&lt;/tt&gt;, see &lt;a class="reference external" href="https://bugs.python.org/issue10784"&gt;BPO-10784&lt;/a&gt;. Landed in Python 3.3.&lt;/li&gt;
+&lt;li&gt;The second was back in 2011, when &lt;tt class="docutils literal"&gt;psutil.disk_usage()&lt;/tt&gt; inspired &lt;tt class="docutils literal"&gt;shutil.disk_usage()&lt;/tt&gt;, see &lt;a class="reference external" href="https://mail.python.org/archives/list/python-ideas&amp;#64;python.org/thread/67A7ML2TJ7MBS3WOL6IZKLD2C3B3VCQG"&gt;python-ideas ML proposal&lt;/a&gt;. Landed in Python 3.3.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;em&gt;Funny thing:&lt;/em&gt; 15 years ago, Python 3.3 added the &lt;em&gt;timeout&lt;/em&gt; parameter to
-&lt;code&gt;subprocess.Popen.wait()&lt;/code&gt; (see
-&lt;a href="https://github.com/python/cpython/commit/31aa7dd1419"&gt;commit&lt;/a&gt;). That's
-probably where I took inspiration when I first added the &lt;em&gt;timeout&lt;/em&gt; parameter to
-psutil's &lt;code&gt;Process.wait()&lt;/code&gt; around the same time (see
-&lt;a href="https://github.com/giampaolo/psutil/commit/886710daf"&gt;commit&lt;/a&gt;). Now, 15 years
-later, I'm contributing back a similar improvement for that very same &lt;em&gt;timeout&lt;/em&gt;
-parameter. &lt;strong&gt;The circle is complete&lt;/strong&gt;.&lt;/p&gt;
-&lt;h2&gt;Links&lt;/h2&gt;
+&lt;p&gt;&lt;em&gt;Funny thing:&lt;/em&gt; 15 years ago, Python 3.3 added the &lt;em&gt;timeout&lt;/em&gt; parameter to &lt;tt class="docutils literal"&gt;subprocess.Popen.wait&lt;/tt&gt; (see &lt;a class="reference external" href="https://github.com/python/cpython/commit/31aa7dd1419"&gt;commit&lt;/a&gt;). That's probably where I took inspiration when I first added the &lt;em&gt;timeout&lt;/em&gt; parameter to psutil's &lt;tt class="docutils literal"&gt;Process.wait()&lt;/tt&gt; around the same time (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/commit/886710daf"&gt;commit&lt;/a&gt;). Now, 15 years later, I'm contributing back a similar improvement for that very same &lt;em&gt;timeout&lt;/em&gt; parameter. &lt;strong&gt;The circle is complete&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="links"&gt;
+&lt;h2&gt;Links&lt;a class="headerlink" href="#links" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Topics related to this:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://github.com/giampaolo/psutil/issues/2712"&gt;psutil/#2712&lt;/a&gt;: proposal to
-  extend this to multiple PIDs (&lt;code&gt;psutil.wait_procs()&lt;/code&gt;).&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://github.com/giampaolo/psutil/issues/2703"&gt;psutil/#2703&lt;/a&gt;: proposal for
-  asynchronous &lt;code&gt;psutil.Process.wait()&lt;/code&gt; integration with &lt;code&gt;asyncio&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://github.com/python/cpython/issues/144211"&gt;cpython/#144211&lt;/a&gt;: proposal
-  to extend the &lt;a href="https://docs.python.org/3/library/selectors.html"&gt;selectors&lt;/a&gt;
-  module to enable &lt;code&gt;asyncio&lt;/code&gt; optimization on BSD /
-  macOS via &lt;code&gt;kqueue()&lt;/code&gt;.&lt;/li&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2712"&gt;#2712&lt;/a&gt;: proposal to extend this to multiple PIDs (&lt;tt class="docutils literal"&gt;psutil.wait_procs()&lt;/tt&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2703"&gt;#2703&lt;/a&gt;: proposal for asynchronous &lt;tt class="docutils literal"&gt;Process.wait()&lt;/tt&gt; integration with &lt;tt class="docutils literal"&gt;asyncio&lt;/tt&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/python/cpython/issues/144211"&gt;cpython/#144211&lt;/a&gt;: proposal to extend the &lt;tt class="docutils literal"&gt;selectors&lt;/tt&gt; module to enable &lt;tt class="docutils literal"&gt;asyncio&lt;/tt&gt; optimization on BSD / macOS via &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt;.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Discussion&lt;/h2&gt;
+&lt;/div&gt;
+&lt;div class="section" id="discussion"&gt;
+&lt;h2&gt;Discussion&lt;a class="headerlink" href="#discussion" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/1qpp42k/from_python_33_to_today_ending_15_years_of/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://news.ycombinator.com/item?id=46802061"&gt;Hacker News&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://medium.com/&amp;#64;g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86"&gt;Medium&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.linkedin.com/feed/update/urn:li:share:7422396026449391616/"&gt;Linkedin&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2026"></category><category term="psutil"></category><category term="python"></category><category term="python-core"></category><category term="performance"></category><category term="featured"></category></entry><entry><title>Wheels for free-threaded Python now available</title><link href="https://gmpy.dev/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil" rel="alternate"></link><published>2025-10-25T00:00:00+02:00</published><updated>2025-10-25T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-10-25:/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil</id><summary type="html">&lt;p&gt;With the release of psutil 7.1.2, wheels for free-threaded Python are now available. This milestone was achieved largely through a community effort, as several internal refactorings to the C code were required to make it possible (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2565"&gt;#2565&lt;/a&gt;). Many of these changes were contributed by &lt;a class="reference external" href="https://github.com/lysnikolaou"&gt;Lysandros Nikolaou&lt;/a&gt;. Thanks …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With the release of psutil 7.1.2, wheels for free-threaded Python are now available. This milestone was achieved largely through a community effort, as several internal refactorings to the C code were required to make it possible (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2565"&gt;#2565&lt;/a&gt;). Many of these changes were contributed by &lt;a class="reference external" href="https://github.com/lysnikolaou"&gt;Lysandros Nikolaou&lt;/a&gt;. Thanks to him for the effort and for bearing with me in code reviews! ;-)&lt;/p&gt;
+&lt;div class="section" id="what-is-free-threaded-python"&gt;
+&lt;h2&gt;What is free-threaded Python?&lt;a class="headerlink" href="#what-is-free-threaded-python" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Free-threaded Python (available since Python 3.13) refers to Python builds that are compiled with the &lt;strong&gt;GIL (Global Interpreter Lock) disabled&lt;/strong&gt;, allowing true parallel execution of Python bytecodes across multiple threads. This is particularly beneficial for CPU-bound applications, as it enables better utilization of multi-core processors.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-state-of-free-threaded-wheels"&gt;
+&lt;h2&gt;The state of free-threaded wheels&lt;a class="headerlink" href="#the-state-of-free-threaded-wheels" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;According to Hugo van Kemenade's &lt;a class="reference external" href="https://hugovk.github.io/free-threaded-wheels/"&gt;free-threaded wheels tracker&lt;/a&gt;, the adoption of free-threaded wheels among the top 360 most-downloaded PyPI packages with C extensions is still limited. Only 128 out of these 360 packages provide wheels compiled for free-threaded Python, meaning they can run on Python builds with the GIL disabled. This shows that, while progress has been made, most popular packages with C extensions still do not offer ready-made wheels for free-threaded Python.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-it-means-for-users"&gt;
+&lt;h2&gt;What it means for users&lt;a class="headerlink" href="#what-it-means-for-users" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;When a library author provides a wheel, users can install a pre-compiled binary package without having to build it from source. This is especially important for packages with C extensions, like psutil, which is largely written in C. Such packages often have complex build requirements and require installing a C compiler. On Windows, that means installing Visual Studio or the Build Tools, which can take several gigabytes and a &lt;em&gt;significant&lt;/em&gt; setup effort. Providing wheels spares users from this hassle, makes installation far simpler, and is effectively essential for the users of that package. You basically &lt;tt class="docutils literal"&gt;pip install psutil&lt;/tt&gt; and you're done.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-it-means-for-library-authors"&gt;
+&lt;h2&gt;What it means for library authors&lt;a class="headerlink" href="#what-it-means-for-library-authors" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Currently, &lt;strong&gt;universal wheels for free-threaded Python do not exist&lt;/strong&gt;. Each wheel must be built specifically for a Python version. Right now authors must create separate wheels for Python 3.13 and 3.14. Which means distributing &lt;em&gt;a lot&lt;/em&gt; of files already:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;psutil-7.1.2-cp313-cp313t-macosx_10_13_x86_64.whl
+psutil-7.1.2-cp313-cp313t-macosx_11_0_arm64.whl
+psutil-7.1.2-cp313-cp313t-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl
+psutil-7.1.2-cp313-cp313t-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
+psutil-7.1.2-cp313-cp313t-win_amd64.whl
+psutil-7.1.2-cp313-cp313t-win_arm64.whl
+psutil-7.1.2-cp314-cp314t-macosx_10_15_x86_64.whl
+psutil-7.1.2-cp314-cp314t-macosx_11_0_arm64.whl
+psutil-7.1.2-cp314-cp314t-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl
+psutil-7.1.2-cp314-cp314t-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
+psutil-7.1.2-cp314-cp314t-win_amd64.whl
+psutil-7.1.2-cp314-cp314t-win_arm64.whl
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This also multiplies CI jobs and slows down the test matrix (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/7dfd0ed34fe70ffd879ae62d21aabd4a8ed06d6f/.github/workflows/build.yml"&gt;build.yml&lt;/a&gt;). A true universal wheel would greatly reduce this overhead, allowing a single wheel to support multiple Python versions and platforms. Hopefully, Python 3.15 will simplify this process. Two competing proposals, &lt;a class="reference external" href="https://www.python.org/dev/peps/pep-0803/"&gt;PEP 803&lt;/a&gt; and &lt;a class="reference external" href="https://www.python.org/dev/peps/pep-0809/"&gt;PEP 809&lt;/a&gt;, aim to standardize wheel naming and metadata to allow producing a single wheel that covers multiple Python versions. That would drastically reduce distribution complexity for library authors, and it's fair to say it's essential for free-threaded CPython to truly succeed.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="how-to-install-free-threaded-psutil"&gt;
+&lt;h2&gt;How to install free-threaded psutil&lt;a class="headerlink" href="#how-to-install-free-threaded-psutil" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can now install psutil for free-threaded Python directly via &lt;tt class="docutils literal"&gt;pip&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;psutil&lt;span class="w"&gt; &lt;/span&gt;--only-binary&lt;span class="o"&gt;=&lt;/span&gt;:all:
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This ensures you get the pre-compiled wheels without triggering a source build.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="discussion"&gt;
+&lt;h2&gt;Discussion&lt;a class="headerlink" href="#discussion" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/1ofrx8v/comment/nllztz6/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="wheels"></category><category term="community"></category><category term="python-core"></category></entry><entry><title>Fixing Unicode across Python 2 and 3</title><link href="https://gmpy.dev/blog/2017/fixing-unicode-in-psutil-across-python-2-and-3" rel="alternate"></link><published>2017-09-03T00:00:00+02:00</published><updated>2017-09-03T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2017-09-03:/blog/2017/fixing-unicode-in-psutil-across-python-2-and-3</id><summary type="html">&lt;p&gt;This one took a while. Adding proper Unicode support to &lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; took four months of auditing, design decisions, and rewriting nearly every API that returned a string. The full journey is documented in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/1040"&gt;#1040&lt;/a&gt;, and what follows is a summary.&lt;/p&gt;
+&lt;p&gt;This can serve as a case study for any Python …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This one took a while. Adding proper Unicode support to &lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; took four months of auditing, design decisions, and rewriting nearly every API that returned a string. The full journey is documented in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/1040"&gt;#1040&lt;/a&gt;, and what follows is a summary.&lt;/p&gt;
+&lt;p&gt;This can serve as a case study for any Python library with a C extension that needs to support both Python 2 &lt;em&gt;and&lt;/em&gt; Python 3, as it will encounter the exact same set of problems.&lt;/p&gt;
+&lt;div class="section" id="what-was-broken"&gt;
+&lt;h2&gt;What was broken&lt;a class="headerlink" href="#what-was-broken" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;psutil has different APIs returning a string, many of which misbehaved when it came to unicode. There were three distinctive problems (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/1040"&gt;#1040&lt;/a&gt;). Each API could:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;A&lt;/strong&gt;: raise a decoding error for non-ASCII strings (Python 3).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;B&lt;/strong&gt;: return &lt;tt class="docutils literal"&gt;unicode&lt;/tt&gt; instead of &lt;tt class="docutils literal"&gt;str&lt;/tt&gt; (Python 2).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;C&lt;/strong&gt;: return incorrect / invalid encoded data for non-ASCII strings (both).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;Process.memory_maps()&lt;/tt&gt; hit all three on various OSes. &lt;tt class="docutils literal"&gt;disk_partitions()&lt;/tt&gt; raised decoding errors on every UNIX except Linux. Windows service methods leaked &lt;tt class="docutils literal"&gt;unicode&lt;/tt&gt; into Python 2 return values. The C extension had accumulated years of ad-hoc encode/decode decisions, with no single rule covering all of them.&lt;/p&gt;
+&lt;p&gt;It was a mess.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="filesystem-or-locale-encoding"&gt;
+&lt;h2&gt;Filesystem or locale encoding?&lt;a class="headerlink" href="#filesystem-or-locale-encoding" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;First problem was that the C extension was using 2 approaches when it came to decoding and returning a string: &lt;a class="reference external" href="https://docs.python.org/3/c-api/unicode.html#c.PyUnicode_DecodeFSDefault"&gt;PyUnicode_DecodeFSDefault&lt;/a&gt; (filesystem encoding) for path-like APIs, and &lt;a class="reference external" href="https://docs.python.org/3/c-api/unicode.html#c.PyUnicode_DecodeLocale"&gt;PyUnicode_DecodeLocale&lt;/a&gt; (user locale) for non-path strings like &lt;tt class="docutils literal"&gt;Process.username()&lt;/tt&gt;.&lt;/p&gt;
+&lt;p&gt;It appeared clear that I had to use &lt;tt class="docutils literal"&gt;PyUnicode_DecodeFSDefault&lt;/tt&gt; for all filesystem-related APIs like &lt;tt class="docutils literal"&gt;Process.exe()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;Process.open_files()&lt;/tt&gt;.&lt;/p&gt;
+&lt;p&gt;It was less clear, though, when to use &lt;tt class="docutils literal"&gt;PyUnicode_DecodeLocale&lt;/tt&gt;.&lt;/p&gt;
+&lt;p&gt;After some back and forth, I decided to use a single encoding for all APIs: the &lt;strong&gt;filesystem encoding&lt;/strong&gt; (&lt;tt class="docutils literal"&gt;PyUnicode_DecodeFSDefault&lt;/tt&gt;). This makes the encoding choice an implementation detail of psutil, not something the user has to care about.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="error-handling"&gt;
+&lt;h2&gt;Error handling&lt;a class="headerlink" href="#error-handling" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Second question was what to do in case the string cannot be correctly decoded (because invalid, corrupted or whatever). On Python 3 + UNIX the natural choice was &lt;tt class="docutils literal"&gt;'surrogateescape'&lt;/tt&gt;, which is also the default for &lt;tt class="docutils literal"&gt;PyUnicode_DecodeFSDefault&lt;/tt&gt;. On Windows the default is &lt;tt class="docutils literal"&gt;'surrogatepass'&lt;/tt&gt; (Python 3.6) or &lt;tt class="docutils literal"&gt;'replace'&lt;/tt&gt; as per &lt;a class="reference external" href="https://www.python.org/dev/peps/pep-0529/"&gt;PEP 529&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;And here come the troubles: Python 2 is different. To correctly handle all kinds of strings on Python 2 we should return &lt;tt class="docutils literal"&gt;unicode&lt;/tt&gt; instead of &lt;tt class="docutils literal"&gt;str&lt;/tt&gt;, but I didn't want to do that, nor have APIs which return two different types depending on the circumstance.&lt;/p&gt;
+&lt;p&gt;Since unicode support is already broken in Python 2 and its stdlib (see &lt;a class="reference external" href="https://bugs.python.org/issue18695"&gt;bpo-18695&lt;/a&gt;), I was happy to always return &lt;tt class="docutils literal"&gt;str&lt;/tt&gt;, use &lt;tt class="docutils literal"&gt;'replace'&lt;/tt&gt; as the error handler, and simply consider unicode support in psutil + Python 2 broken.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="final-behavior"&gt;
+&lt;h2&gt;Final behavior&lt;a class="headerlink" href="#final-behavior" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Starting from 5.3.0, psutil behaves consistently across all APIs that return a string. The rules are intentionally simple, even if the underlying implementation is not.&lt;/p&gt;
+&lt;p&gt;The notes below apply to &lt;em&gt;any&lt;/em&gt; method returning a string such as &lt;tt class="docutils literal"&gt;Process.exe()&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;Process.cwd()&lt;/tt&gt;, including non-filesystem-related methods such as &lt;tt class="docutils literal"&gt;Process.username()&lt;/tt&gt;:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="https://www.reddit.com/r/Python/comments/1qpp42k/from_python_33_to_today_ending_15_years_of/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://news.ycombinator.com/item?id=46802061"&gt;Hacker News&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://medium.com/@g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86"&gt;Medium&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://www.linkedin.com/feed/update/urn:li:share:7422396026449391616/"&gt;LinkedIn&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><category term="2026"></category><category term="psutil"></category><category term="python"></category><category term="python-core"></category><category term="async"></category></entry></feed>
+&lt;li&gt;&lt;p class="first"&gt;all strings are encoded using the OS filesystem encoding (&lt;tt class="docutils literal"&gt;PyUnicode_DecodeFSDefault&lt;/tt&gt;), which varies depending on the platform you're on (e.g. &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;'UTF-8'&lt;/span&gt;&lt;/tt&gt; on Linux, &lt;tt class="docutils literal"&gt;'mbcs'&lt;/tt&gt; on Windows).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;no API call is supposed to crash with &lt;tt class="docutils literal"&gt;UnicodeDecodeError&lt;/tt&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;in case of badly encoded data returned by the OS, the following error handlers are used to replace the bad characters in the string:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Python 2: &lt;tt class="docutils literal"&gt;'replace'&lt;/tt&gt;.&lt;/li&gt;
+&lt;li&gt;Python 3: &lt;tt class="docutils literal"&gt;'surrogateescape'&lt;/tt&gt; on POSIX, &lt;tt class="docutils literal"&gt;'replace'&lt;/tt&gt; on Windows.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;on Python 2 all APIs return bytes (&lt;tt class="docutils literal"&gt;str&lt;/tt&gt; type), never &lt;tt class="docutils literal"&gt;unicode&lt;/tt&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;on Python 2 you can go back to unicode by doing:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;unicode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;proc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exe&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getdefaultencoding&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;errors&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;replace&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The full journey was implemented in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/1052"&gt;PR-1052&lt;/a&gt;, and shipped in 5.3.0 (see the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html"&gt;changelog&lt;/a&gt;).&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="2017"></category><category term="psutil"></category><category term="python"></category><category term="api-design"></category><category term="compatibility"></category><category term="python-core"></category></entry></feed>

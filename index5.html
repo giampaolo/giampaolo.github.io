@@ -28,6 +28,63 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2016/psutil-netbsd-support" rel="bookmark"
+                   title="Permalink to NetBSD support">NetBSD support</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2016-02-25T00:00:00+01:00">
+        Created: 25 feb 2016,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/bsd">bsd</a>,        <a href="https://gmpy.dev/tags/new-platform">new-platform</a>,        <a href="https://gmpy.dev/tags/community">community</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>Roughly two months have passed since I last <a class="reference external" href="../2015/psutil-openbsd-support">announced</a> that <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> added support for OpenBSD. Today I'm happy to announce that it's the turn of NetBSD! This was contributed by <a class="reference external" href="https://github.com/0-wiz-0">Thomas Klausner</a>, <a class="reference external" href="https://github.com/ryoon">Ryo Onodera</a> and myself in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">PR-557</a>.</p>
+<div class="section" id="differences-with-freebsd-and-openbsd">
+<h2>Differences with FreeBSD (and OpenBSD)<a class="headerlink" href="#differences-with-freebsd-and-openbsd" title="Permalink to this headline">¶</a></h2>
+<p>The NetBSD implementation has limitations similar to the ones I encountered with OpenBSD. Again, FreeBSD remains the BSD variant with the best support in terms of kernel functionality.</p>
+<ul class="simple">
+<li><tt class="docutils literal">Process.memory_maps()</tt> is not implemented. The kernel provides the necessary pieces, but I haven't done this yet (hopefully later).</li>
+<li><tt class="docutils literal">Process.num_ctx_switches()</tt>'s <tt class="docutils literal">involuntary</tt> field is always 0. The <tt class="docutils literal">kinfo_proc()</tt> syscall provides this info, but it's always set to 0.</li>
+<li><tt class="docutils literal">Process.cpu_affinity()</tt> (get and set) is not supported.</li>
+<li><tt class="docutils literal">psutil.cpu_count(logical=False)</tt> always returns <tt class="docutils literal">None</tt>.</li>
+</ul>
+<p>As for the rest: it is all there. All memory, disk, network and process APIs are fully supported and functioning.</p>
+</div>
+<div class="section" id="other-enhancements-available-in-this-psutil-release">
+<h2>Other enhancements available in this psutil release<a class="headerlink" href="#other-enhancements-available-in-this-psutil-release" title="Permalink to this headline">¶</a></h2>
+<p>Besides NetBSD support, this release has a couple of interesting enhancements:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/708">#708</a>: [Linux] <tt class="docutils literal">psutil.net_connections()</tt> and <tt class="docutils literal">Process.connections()</tt> can be up to 3x faster when there are many connections.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/718">#718</a>: <tt class="docutils literal">psutil.process_iter()</tt> is now thread safe.</li>
+</ul>
+<p>You can read the rest in the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#id23">changelog</a>, as usual.</p>
+</div>
+<div class="section" id="move-to-prague">
+<h2>Move to Prague<a class="headerlink" href="#move-to-prague" title="Permalink to this headline">¶</a></h2>
+<p>As a personal note I'd like to add that I'm currently in Prague (Czech Republic) and I'm thinking about moving down here for a while.</p>
+</div>
+<div class="section" id="discussion">
+<h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/4131q2/netbsd_support_for_psutil/">Reddit</a></li>
+<li><a class="reference external" href="https://news.ycombinator.com/item?id=10909101">Hacker News</a></li>
+</ul>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python" rel="bookmark"
                    title="Permalink to Real process memory and environ in Python">Real process memory and environ in Python</a></h1>
         </header>
@@ -42,28 +99,29 @@
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/community">community</a>,        <a href="https://gmpy.dev/tags/linux">linux</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>New psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll just get straight to the point and describe what's new.</p>
+</footer><!-- /.post-info -->            <p>psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll get straight to the point and describe what's new.</p>
 <div class="section" id="real-process-memory-info">
 <h2>&quot;Real&quot; process memory info<a class="headerlink" href="#real-process-memory-info" title="Permalink to this headline">¶</a></h2>
-<p>Determining how much memory a process <strong>really</strong> uses is not an easy matter (see <a class="reference external" href="https://lwn.net/Articles/230975/">this</a> and <a class="reference external" href="http://bmaurer.blogspot.it/2006/03/memory-usage-with-smaps.html">this</a>). RSS (Resident Set Size), which is what most people usually rely on, is misleading because it includes both the memory which is unique to the process and the memory shared with other processes. What would be more interesting in terms of profiling is the memory which would be freed if the process was terminated <strong>right now</strong>. In the Linux world this is called USS (Unique Set Size), and this is the major feature which was introduced in psutil 4.0.0 (not only for Linux but also for Windows and OSX).</p>
+<p>Determining how much memory a process <strong>really</strong> uses is not an easy matter (see <a class="reference external" href="https://lwn.net/Articles/230975/">this</a> and <a class="reference external" href="http://bmaurer.blogspot.it/2006/03/memory-usage-with-smaps.html">this</a>). RSS (Resident Set Size), which most people rely on, is misleading because it includes both memory unique to the process and memory shared with others. What's more interesting for profiling is the memory that would be freed if the process were terminated <strong>right now</strong>. In the Linux world this is called USS (Unique Set Size), the major feature introduced in psutil 4.0.0 (not only for Linux but also for Windows and macOS).</p>
 </div>
 <div class="section" id="uss-memory">
 <h2>USS memory<a class="headerlink" href="#uss-memory" title="Permalink to this headline">¶</a></h2>
-<p>The USS (Unique Set Size) is the memory which is unique to a process and which would be freed if the process was terminated right now. On Linux this can be determined by parsing all the &quot;private&quot; blocks in /proc/pid/smaps. The Firefox team pushed this further and managed to do the same also on <a class="reference external" href="https://dxr.mozilla.org/mozilla-central/rev/aa90f482e16db77cdb7dea84564ea1cbd8f7f6b3/xpcom/base/nsMemoryReporterManager.cpp">OSX and Windows</a>, which is great. New version of psutil is now able to do the same:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_full_info</span><span class="p">()</span>
-<span class="n">pfullmem</span><span class="p">(</span><span class="n">rss</span><span class="o">=</span><span class="mi">101990</span><span class="p">,</span> <span class="n">vms</span><span class="o">=</span><span class="mi">521888</span><span class="p">,</span> <span class="n">shared</span><span class="o">=</span><span class="mi">38804</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="mi">28200</span><span class="p">,</span> <span class="n">lib</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="mi">59672</span><span class="p">,</span> <span class="n">dirty</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">uss</span><span class="o">=</span><span class="mi">81623</span><span class="p">,</span> <span class="n">pss</span><span class="o">=</span><span class="mi">91788</span><span class="p">,</span> <span class="n">swap</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<p>The USS (Unique Set Size) is the memory unique to a process, that would be freed if the process were terminated right now. On Linux it can be determined by parsing the &quot;private&quot; blocks in <tt class="docutils literal">/proc/PID/smaps</tt>. The Firefox team pushed this further and got it working on <a class="reference external" href="https://dxr.mozilla.org/mozilla-central/rev/aa90f482e16db77cdb7dea84564ea1cbd8f7f6b3/xpcom/base/nsMemoryReporterManager.cpp">macOS and Windows</a> too.</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_full_info</span><span class="p">()</span>
+<span class="go">pfullmem(rss=101990, vms=521888, shared=38804, text=28200, lib=0, data=59672, dirty=0, uss=81623, pss=91788, swap=0)</span>
 </pre></div>
 </div>
 <div class="section" id="pss-and-swap">
 <h2>PSS and swap<a class="headerlink" href="#pss-and-swap" title="Permalink to this headline">¶</a></h2>
-<p>On Linux there are two additional metrics which can also be determined via <cite>/proc/pid/smaps</cite>: PSS and swap. PSS, aka &quot;Proportional Set Size&quot;, represents the amount of memory shared with other processes, accounted in a way that the amount is divided evenly between the processes that share it. I.e. if a process has 10 MBs all to itself (USS) and 10 MBs shared with another process, its PSS will be 15 MBs. &quot;swap&quot; is simply the amount of memory that has been swapped out to disk. With memory_full_info() it is possible to implement a tool <a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-4.0.0/scripts/procsmem.py">like this</a>, similar to <a class="reference external" href="https://www.selenic.com/smem/">smem</a> on Linux, which provides a list of processes sorted by &quot;USS&quot;. It is interesting to notice how RSS differs from USS:</p>
-<pre class="literal-block">
-~/svn/psutil$ ./scripts/procsmem.py
+<p>On Linux there are two additional metrics that can also be determined via <tt class="docutils literal">/proc/PID/smaps</tt>: PSS and swap.</p>
+<p><tt class="docutils literal">pss</tt>, aka &quot;Proportional Set Size&quot;, represents the amount of memory shared with other processes, accounted so that the amount is divided evenly between the processes that share it. I.e. if a process has 10 MBs all to itself (USS) and 10 MBs shared with another process, its PSS will be 15 MBs.</p>
+<p><tt class="docutils literal">swap</tt> is simply the amount of memory that has been swapped out to disk. With <tt class="docutils literal">Process.memory_full_info()</tt> it is possible to implement a tool like <a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-4.0.0/scripts/procsmem.py">procsmem.py</a>, similar to <a class="reference external" href="https://www.selenic.com/smem/">smem</a> on Linux, which provides a list of processes sorted by <tt class="docutils literal">uss</tt>. It's interesting to see how <tt class="docutils literal">rss</tt> differs from <tt class="docutils literal">uss</tt>:</p>
+<div class="highlight"><pre><span></span>~/svn/psutil$ ./scripts/procsmem.py
 PID     User    Cmdline                            USS     PSS    Swap     RSS
 ==============================================================================
 ...
@@ -80,27 +138,27 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 20513   giampao /opt/sublime_text/sublime_text   65.8M   73.0M      0B   87.9M
 3976    giampao compiz                          115.0M  117.0M      0B  130.9M
 32486   giampao skype                           145.1M  147.5M      0B  149.6M
-</pre>
+</pre></div>
 </div>
 <div class="section" id="implementation">
 <h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
-<p>In order to get these values (USS, PSS and swap) we need to pass through the whole process address space. This usually requires higher user privileges and is considerably slower than getting the &quot;usual&quot; memory metrics via Process.memory_info(), which is probably the reason why tools like ps and top show RSS/VMS instead of USS. A big thanks goes to the Mozilla team which figured out all this stuff on Windows and OSX, and to Eric Rahm who put the PRs for psutil together (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/744">#744</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/pull/745">#745</a> and <a class="reference external" href="https://github.com/giampaolo/psutil/pull/746">#746</a>). For those of you who don't use Python and would like to port the code to other languages here are the interesting parts:</p>
+<p>To get these values (<tt class="docutils literal">uss</tt>, <tt class="docutils literal">pss</tt> and <tt class="docutils literal">swap</tt>) we need to walk the whole process address space. This usually requires higher privileges and is considerably slower than <tt class="docutils literal">Process.memory_info()</tt>, which is probably why tools like <tt class="docutils literal">ps</tt> and <tt class="docutils literal">top</tt> show RSS/VMS instead of USS. A big thanks goes to the Mozilla team for figuring this out on Windows and macOS, and to <a class="reference external" href="https://github.com/EricRahm">Eric Rahm</a> who put the psutil PRs together (see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/744">PR-744</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/pull/745">PR-745</a> and <a class="reference external" href="https://github.com/giampaolo/psutil/pull/746">PR-746</a>). If you don't use Python and want to port the code to another language, here are the interesting parts:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/42b34049cf96e845b6423db91f991849a2f87578/psutil/_pslinux.py#L1026">Linux</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_psutil_osx.c#L568">OSX</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_psutil_osx.c#L568">macOS</a></li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_psutil_windows.c#L811">Windows</a></li>
 </ul>
 </div>
 <div class="section" id="memory-type-percent">
 <h2>Memory type percent<a class="headerlink" href="#memory-type-percent" title="Permalink to this headline">¶</a></h2>
-<p>After <a class="reference external" href="https://github.com/giampaolo/psutil/pull/744#issuecomment-180054438">reorganizing process memory APIs</a> I decided to add a new memtype parameter to Process.memory_percent(). With this it is now possible to compare a specific memory type (not only RSS) against the total physical memory. E.g.</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_percent</span><span class="p">(</span><span class="n">memtype</span><span class="o">=</span><span class="s1">&#39;pss&#39;</span><span class="p">)</span>
-<span class="mf">0.06877466326787016</span>
+<p>After reorganizing the process memory APIs (<a class="reference external" href="https://github.com/giampaolo/psutil/pull/744">PR-744</a>), I added a new <tt class="docutils literal">memtype</tt> parameter to <tt class="docutils literal">Process.memory_percent()</tt>. You can now compare a specific memory type (not only RSS) against the total physical memory. E.g.</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_percent</span><span class="p">(</span><span class="n">memtype</span><span class="o">=</span><span class="s1">&#39;pss&#39;</span><span class="p">)</span>
+<span class="go">0.06877466326787016</span>
 </pre></div>
 </div>
 <div class="section" id="process-environ">
 <h2>Process environ<a class="headerlink" href="#process-environ" title="Permalink to this headline">¶</a></h2>
-<p>Second biggest improvement in psutil 4.0.0 is the ability to determine the process environment variables. This opens interesting possibilities about process recognition and monitoring techniques. For instance, one might start a process by passing a certain custom environment variable, then iterate over all processes to find the one of interest (and figure out whether it's running or whatever):</p>
+<p>The second biggest improvement in psutil 4.0.0 is the ability to read a process's environment variables. This opens up interesting possibilities for process recognition and monitoring. For instance, you can start a process with a custom environment variable, then iterate over all processes to find the one of interest:</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
@@ -111,66 +169,57 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
         <span class="k">if</span> <span class="s1">&#39;MYAPP&#39;</span> <span class="ow">in</span> <span class="n">env</span><span class="p">:</span>
             <span class="o">...</span>
 </pre></div>
-<p>Process environ was a long standing issue (code.google.com/archive/p/psutil/issues/52, year 2009) which I gave up on implementing because the Windows implementation worked for the current process only. Frank Benkstein <a class="reference external" href="https://github.com/giampaolo/psutil/pull/747">solved that</a> and the process environ can now be determined on Linux, Windows and OSX for all processes (of course you may still bump into <cite>AccessDenied</cite> for processes owned by another user):</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">environ</span><span class="p">())</span>
-<span class="p">{</span><span class="o">...</span>
- <span class="s1">&#39;CLUTTER_IM_MODULE&#39;</span><span class="p">:</span> <span class="s1">&#39;xim&#39;</span><span class="p">,</span>
- <span class="s1">&#39;COLORTERM&#39;</span><span class="p">:</span> <span class="s1">&#39;gnome-terminal&#39;</span><span class="p">,</span>
- <span class="s1">&#39;COMPIZ_BIN_PATH&#39;</span><span class="p">:</span> <span class="s1">&#39;/usr/bin/&#39;</span><span class="p">,</span>
- <span class="s1">&#39;HOME&#39;</span><span class="p">:</span> <span class="s1">&#39;/home/giampaolo&#39;</span><span class="p">,</span>
- <span class="s1">&#39;PWD&#39;</span><span class="p">:</span> <span class="s1">&#39;/home/giampaolo/svn/psutil&#39;</span><span class="p">,</span>
-  <span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span>
+<p>Process environ was a long-standing issue (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/52">#52</a>, from 2009) that I gave up on because the Windows implementation only worked for the current process. <a class="reference external" href="https://github.com/fbenkstein">Frank Benkstein</a> solved that (<a class="reference external" href="https://github.com/giampaolo/psutil/pull/747">PR-747</a>), and it now works on Linux, Windows and macOS for all processes (you may still hit <tt class="docutils literal">AccessDenied</tt> for processes owned by another user):</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pp</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">environ</span><span class="p">())</span>
+<span class="go">{...</span>
+<span class="go"> &#39;CLUTTER_IM_MODULE&#39;: &#39;xim&#39;,</span>
+<span class="go"> &#39;COLORTERM&#39;: &#39;gnome-terminal&#39;,</span>
+<span class="go"> &#39;COMPIZ_BIN_PATH&#39;: &#39;/usr/bin/&#39;,</span>
+<span class="go"> &#39;HOME&#39;: &#39;/home/giampaolo&#39;,</span>
+<span class="go"> &#39;PWD&#39;: &#39;/home/giampaolo/svn/psutil&#39;,</span>
+<span class="go">  }</span>
+<span class="gp">&gt;&gt;&gt;</span>
 </pre></div>
-<p>It must be noted that the resulting dict usually does not reflect changes made after the process started (e.g. <tt class="docutils literal"><span class="pre">os.environ['MYAPP']</span> = '1'</tt>). Again, for whoever is interested in doing this in other languages, here are the interesting parts:</p>
+<p>Note that the resulting dict usually doesn't reflect changes made after the process started (e.g. <tt class="docutils literal"><span class="pre">os.environ['MYAPP']</span> = '1'</tt>). Again, for anyone porting this to other languages, here are the interesting parts:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_pslinux.py#L928">Linux</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/arch/osx/process_info.c#L241">OSX</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/arch/osx/process_info.c#L241">macOS</a></li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/pull/747">Windows</a></li>
 </ul>
 </div>
 <div class="section" id="extended-disk-io-stats">
 <h2>Extended disk IO stats<a class="headerlink" href="#extended-disk-io-stats" title="Permalink to this headline">¶</a></h2>
-<p><tt class="docutils literal">psutil.disk_io_counters()</tt> has been extended to report additional metrics on Linux and FreeBSD:</p>
+<p><tt class="docutils literal">psutil.disk_io_counters()</tt> now reports additional metrics on Linux and FreeBSD:</p>
 <ul class="simple">
-<li>busy_time, which is the time spent doing actual I/Os (in milliseconds).</li>
-<li>read_merged_count and write_merged_count (Linux only), which is number of merged reads and writes (see <a class="reference external" href="https://www.kernel.org/doc/Documentation/iostats.txt">iostats</a> doc).</li>
+<li><tt class="docutils literal">busy_time</tt>: the time spent doing actual I/Os (in milliseconds).</li>
+<li><tt class="docutils literal">read_merged_count</tt> and <tt class="docutils literal">write_merged_count</tt> (Linux only): the number of merged reads and writes (see the <a class="reference external" href="https://www.kernel.org/doc/Documentation/iostats.txt">iostats</a> doc).</li>
 </ul>
-<p>With these new metrics it is possible to have a better representation of actual <a class="reference external" href="https://github.com/giampaolo/psutil/issues/756">disk utilization</a>, similarly to <tt class="docutils literal">iostat</tt> command on Linux.</p>
+<p>These give a better picture of actual disk utilization (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/756">#756</a>), similar to the <tt class="docutils literal">iostat</tt> command on Linux.</p>
 </div>
 <div class="section" id="os-constants">
 <h2>OS constants<a class="headerlink" href="#os-constants" title="Permalink to this headline">¶</a></h2>
-<p>Given the increasing number of platform-specific metrics I added a new set of constants to quickly differentiate what platform you're on: <tt class="docutils literal">psutil.LINUX</tt>, <tt class="docutils literal">psutil.WINDOWS</tt>, etc. Main bug fixes:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/734">#734</a>: on Python 3 invalid UTF-8 data was not correctly handled for process <tt class="docutils literal">name()</tt>, <tt class="docutils literal">cwd()</tt>, <tt class="docutils literal">exe()</tt>, <tt class="docutils literal">cmdline()</tt> and <tt class="docutils literal">open_files()</tt> methods, resulting in UnicodeDecodeError. This was affecting all platforms. Now <tt class="docutils literal">surrogateescape</tt> error handler is used as a workaround for replacing the corrupted data.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/761">#761</a>: [Windows] <tt class="docutils literal">psutil.boot_time()</tt> no longer wraps to 0 after 49 days.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/767">#767</a>: [Linux] <tt class="docutils literal">disk_io_counters()</tt> may raise ValueError on 2.6 kernels and it's broken on 2.4 kernels.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/764">#764</a>: psutil can now be compiled on NetBSD-6.X.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/704">#704</a>: psutil can now be compiled on Solaris sparc.</li>
-</ul>
-<p>Complete list of bug fixes is available <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">here</a>.</p>
+<p>Given the growing number of platform-specific metrics, I added a set of constants to tell which platform you're on: <tt class="docutils literal">psutil.LINUX</tt>, <tt class="docutils literal">psutil.WINDOWS</tt>, etc.</p>
+</div>
+<div class="section" id="other-fixes">
+<h2>Other fixes<a class="headerlink" href="#other-fixes" title="Permalink to this headline">¶</a></h2>
+<p>The complete list of changes is available in the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#id22">changelog</a>.</p>
 </div>
 <div class="section" id="porting-code">
 <h2>Porting code<a class="headerlink" href="#porting-code" title="Permalink to this headline">¶</a></h2>
-<p>Being 4.0.0 a major version, I took the chance to (lightly) change / break some APIs.</p>
+<p>Since 4.0.0 is a major version, I took the chance to (lightly) change / break some APIs.</p>
 <ul class="simple">
-<li><tt class="docutils literal">Process.memory_info()</tt> no longer returns just an (rss, vms) namedtuple. Instead it returns a namedtuple of variable length, changing depending on the platform (rss and vms are always present though, also on Windows). Basically it returns the same result as the old <tt class="docutils literal">memory_info_ex()</tt>. This shouldn't break your existing code, unless you were doing <tt class="docutils literal">rss, vms = p.memory_info()</tt>.</li>
-<li>At the same time process_memory_info_ex() is now deprecated. The method is still there as an alias for <tt class="docutils literal">memory_info()</tt>, issuing a deprecation warning.</li>
-<li><tt class="docutils literal">psutil.disk_io_counters()</tt> returns 2 additional fields on Linux and 1 additional field on FreeBSD.</li>
-<li><tt class="docutils literal">psutil.disk_io_counters()</tt> on NetBSD and OpenBSD no longer returns write_count and read_count metrics because the kernel does not provide them (we were returning the busy time instead). I also don't expect this to be a big issue because NetBSD and OpenBSD support is very recent.</li>
+<li><tt class="docutils literal">Process.memory_info()</tt> no longer returns just an (<tt class="docutils literal">rss</tt>, <tt class="docutils literal">vms</tt>) namedtuple. It returns a variable-length namedtuple that varies by platform (<tt class="docutils literal">rss</tt> and <tt class="docutils literal">vms</tt> are always present, even on Windows). Essentially the same result as the old <tt class="docutils literal">Process.memory_info_ex()</tt>. This shouldn't break your code unless you were doing <tt class="docutils literal">rss, vms = p.memory_info()</tt>.</li>
+<li><tt class="docutils literal">Process.memory_info_ex()</tt> is deprecated. It still works as an alias for <tt class="docutils literal">Process.memory_info()</tt>, issuing a <tt class="docutils literal">DeprecationWarning</tt>.</li>
+<li><tt class="docutils literal">psutil.disk_io_counters()</tt> on NetBSD and OpenBSD no longer returns <tt class="docutils literal">write_count</tt> and <tt class="docutils literal">read_count</tt> because the kernel doesn't provide them (we were returning the busy time instead). Should be a small issue given NetBSD and OpenBSD support is very recent.</li>
 </ul>
 </div>
-<div class="section" id="final-notes-and-looking-for-a-job">
-<h2>Final notes and looking for a job<a class="headerlink" href="#final-notes-and-looking-for-a-job" title="Permalink to this headline">¶</a></h2>
-<p>OK, this is it. I would like to spend a couple more words to announce to the world that I'm currently unemployed and looking for a remote gig again! =) I want remote because my plan for this year is to remain in Prague (Czech Republic) and possibly spend 2-3 months in Asia. If you know of any company who's looking for a Python backend dev who can work from afar feel free to share my <a class="reference external" href="https://www.linkedin.com/in/grodola/">Linkedin profile</a> or mail me at g.rodola [at] gmail [dot] com.</p>
-</div>
-<div class="section" id="external-links">
-<h2>External links<a class="headerlink" href="#external-links" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="discussion">
+<h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/469p2c/psutil_400_real_process_memory_info_and_process/">Reddit</a></li>
-<li><a class="reference external" href="https://news.ycombinator.com/item?id=11119298">Hacker news</a></li>
+<li><a class="reference external" href="https://news.ycombinator.com/item?id=11119298">Hacker News</a></li>
 </ul>
 </div>
 
@@ -213,7 +262,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 
 <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
 </pre></div>
-<p>It must be noted that the same thing would happen if instead of <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> we used a &quot;finally&quot; clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. That has a drawback though: in case a third-party module has already registered a function for that signal (<tt class="docutils literal">SIGTERM</tt> or whatever), your new function will <strong>overwrite</strong> the old one:</p>
+<p>Note that the same thing happens if instead of <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> we used a &quot;finally&quot; clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. That has a drawback though: in case a third-party module has already registered a function for that signal (<tt class="docutils literal">SIGTERM</tt> or whatever), your new function will <strong>overwrite</strong> the old one:</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">signal</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">old</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
@@ -236,7 +285,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 <h2>The code<a class="headerlink" href="#the-code" title="Permalink to this headline">¶</a></h2>
 <div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Function / decorator which tries very hard to register a function to</span>
-<span class="sd">be executed at importerer exit.</span>
+<span class="sd">be executed at interpreter exit.</span>
 
 <span class="sd">Author: Giampaolo Rodola&#39;</span>
 <span class="sd">License: MIT</span>
@@ -397,7 +446,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 </div>
 <div class="section" id="proposal-for-stdlib-inclusion">
 <h2>Proposal for stdlib inclusion<a class="headerlink" href="#proposal-for-stdlib-inclusion" title="Permalink to this headline">¶</a></h2>
-<p>The fact that atexit module <a class="reference external" href="http://stackoverflow.com/a/2546397/376587">does not handle signals</a> and that <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> overwrites previously registered handlers is unfortunate. It is also <a class="reference external" href="http://ambracode.com/index/show/92669">confusing</a> because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the times you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. To me this suggests there could be space for something like <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038431.html">atexit.register_w_signals</a>.</p>
+<p>The fact that atexit module <a class="reference external" href="http://stackoverflow.com/a/2546397/376587">does not handle signals</a> and that <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> overwrites previously registered handlers is unfortunate. It is also <a class="reference external" href="http://ambracode.com/index/show/92669">confusing</a> because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the time you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. To me this suggests there could be space for something like <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038431.html">atexit.register_w_signals</a>.</p>
 </div>
 <div class="section" id="external-discussions">
 <h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>
@@ -413,7 +462,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
     <li><article class="hentry">
         <header>
             <h1><a href="https://gmpy.dev/blog/2015/psutil-openbsd-support" rel="bookmark"
-                   title="Permalink to psutil OpenBSD support">psutil OpenBSD support</a></h1>
+                   title="Permalink to OpenBSD support">OpenBSD support</a></h1>
         </header>
         <div class="entry-content">
 <footer class="post-info">
@@ -426,38 +475,41 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/bsd">bsd</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/bsd">bsd</a>,        <a href="https://gmpy.dev/tags/new-platform">new-platform</a>,        <a href="https://gmpy.dev/tags/community">community</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>OK, this is a big one: starting from version 3.3.0 (released just now) <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> will officially support OpenBSD platforms. This was contributed by <a class="reference external" href="https://github.com/landryb">Landry Breuil</a> (thanks dude!) and myself in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/615">PR-615</a>. The interesting parts of the code changes are this and this.</p>
+</footer><!-- /.post-info -->            <p>Starting from version 3.3.0 (released just now) <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> officially supports OpenBSD. This was contributed by <a class="reference external" href="https://github.com/landryb">Landry Breuil</a> and myself in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/615">PR-615</a>.</p>
 <div class="section" id="differences-with-freebsd">
 <h2>Differences with FreeBSD<a class="headerlink" href="#differences-with-freebsd" title="Permalink to this headline">¶</a></h2>
-<p>As expected, OpenBSD implementation is very similar to FreeBSD's (which was already in place), which is why I decided to merge most of it in a single C file (<a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-3.3.0/psutil/_psutil_bsd.c">_psutil_bsd.c</a>) and use 2 separate C files for when the two implementations differed too much: <a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-3.3.0/psutil/arch/bsd/freebsd.c">freebsd.c</a> and <a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-3.3.0/psutil/arch/bsd/openbsd.c">openbsd.c</a>. In terms of functionality here are the differences with FreeBSD. Unless specified, these differences are due to the kernel which does not provide the information natively (meaning we can't do anything about it).</p>
+<p>As expected, the OpenBSD implementation is very similar to FreeBSD's, so I merged most of it into a single C file (<a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-3.3.0/psutil/_psutil_bsd.c">_psutil_bsd.c</a>), with 2 separate files (<a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-3.3.0/psutil/arch/bsd/freebsd.c">freebsd.c</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-3.3.0/psutil/arch/bsd/openbsd.c">openbsd.c</a>) for the parts that differ. Here are the functional differences with FreeBSD:</p>
 <ul class="simple">
-<li><tt class="docutils literal">Process.memory_maps()</tt> is not implemented. The kernel provides the necessary pieces but I didn't do this yet (hopefully later).</li>
-<li><tt class="docutils literal">Process.num_ctx_switches()</tt>'s involuntary field is always 0. The <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fc1e59d08c968898c2ede425a621b62ccf44681c/psutil/_psutil_bsd.c#L335">kinfo_proc</a> syscall provides this info, but it is always set to 0.</li>
+<li><tt class="docutils literal">Process.memory_maps()</tt> is not implemented. The kernel provides the necessary pieces but I haven't done this yet (hopefully later).</li>
+<li><tt class="docutils literal">Process.num_ctx_switches()</tt>'s <tt class="docutils literal">involuntary</tt> field is always 0. <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fc1e59d08c968898c2ede425a621b62ccf44681c/psutil/_psutil_bsd.c#L335">kinfo_proc</a> provides this info but it is always set to 0.</li>
 <li><tt class="docutils literal">Process.cpu_affinity()</tt> (get and set) is not supported.</li>
 <li><tt class="docutils literal">Process.exe()</tt> is determined by inspecting the command line, so it may not always be available (returns <tt class="docutils literal">None</tt>).</li>
-<li><tt class="docutils literal">psutil.swap_memory()</tt> sin and sout (swap in and swap out) values are not available and hence are always set to 0.</li>
-<li><tt class="docutils literal">psutil.cpu_count(logical=False)</tt> always returns None.</li>
+<li><tt class="docutils literal">psutil.swap_memory()</tt> <tt class="docutils literal">sin</tt> and <tt class="docutils literal">sout</tt> (swap in and swap out) values are not available, and are therefore always set to 0.</li>
+<li><tt class="docutils literal">psutil.cpu_count(logical=False)</tt> always returns <tt class="docutils literal">None</tt>.</li>
 </ul>
-<p>Similarly to FreeBSD, the OpenBSD implementation of <cite>Process.open_files()</cite> is also problematic as it is not able to return file paths (FreeBSD can sometimes). Other than these differences the functionalities are all there and pretty much the same, so overall I'm pretty satisfied with the result.</p>
+<p>As with FreeBSD, <tt class="docutils literal">Process.open_files()</tt> can't return file paths (FreeBSD can sometimes). Otherwise everything is there and I'm satisfied with the result.</p>
 </div>
 <div class="section" id="considerations-about-bsd-platforms">
 <h2>Considerations about BSD platforms<a class="headerlink" href="#considerations-about-bsd-platforms" title="Permalink to this headline">¶</a></h2>
-<p>psutil has been supporting FreeBSD basically since the beginning (year 2009). At the time it made sense to support FreeBSD instead of other BSD variants because it is the <a class="reference external" href="https://en.wikipedia.org/wiki/Comparison_of_BSD_operating_systems#Popularity">most popular</a>, followed by OpenBSD and NetBSD. Compared to FreeBSD, OpenBSD appears to be more &quot;minimal&quot; both in terms of facilities provided by the kernel and the number of system administration tools available. One thing which I appreciate a lot about FreeBSD is that the source code of all CLI tools installed on the system is available under /usr/src, which was a big help for implementing all psutil APIs. OpenBSD source code is <a class="reference external" href="https://github.com/openbsd/src">also available</a> but it uses CVS and I am not sure it includes the source code for all CLI tools. There are still two more BSD variants for which it may be worth adding support for: NetBSD and DragonflyBSD (in this order). About a year ago some guy provided a <a class="reference external" href="https://github.com/giampaolo/psutil/issues/429">patch</a> for adding basic NetBSD support so it is likely that will happen sooner or later.</p>
+<p>psutil has supported FreeBSD since the beginning (year 2009). At the time, it made sense to prefer it as the preferred BSD variant as it's the <a class="reference external" href="https://en.wikipedia.org/wiki/Comparison_of_BSD_operating_systems#Popularity">most popular</a>.</p>
+<p>Compared to FreeBSD, OpenBSD appears to be more &quot;minimal&quot;, both in terms of kernel facilities and the number of CLI tools available. One thing I particularly appreciate about FreeBSD is that the source code for all CLI tools is available under <tt class="docutils literal">/usr/src</tt>, which was a big help when implementing psutil APIs.</p>
+<p>OpenBSD source code is <a class="reference external" href="https://github.com/openbsd/src">also available</a>, but it uses CVS and I am not sure it includes the source code for all CLI tools.</p>
+<p>There are still two more BSD variants worth supporting: NetBSD and DragonFlyBSD (in this order). About a year ago, someone provided a <a class="reference external" href="https://github.com/giampaolo/psutil/issues/429">patch</a> adding basic NetBSD support, so that will likely happen sooner or later.</p>
 </div>
 <div class="section" id="other-enhancements-available-in-this-release">
 <h2>Other enhancements available in this release<a class="headerlink" href="#other-enhancements-available-in-this-release" title="Permalink to this headline">¶</a></h2>
-<p>The only other enhancement is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/558">issue #558</a>, which allows specifying a different location of /proc filesystem on Linux.</p>
+<p>The only other enhancement is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/558">#558</a>, which allows specifying a different location for the <tt class="docutils literal">/proc</tt> filesystem on Linux.</p>
 </div>
-<div class="section" id="external-discussions">
-<h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="discussion">
+<h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/3u8wm3/openbsd_support_for_psutil_330/">Reddit</a></li>
-<li><a class="reference external" href="https://news.ycombinator.com/item?id=10628726">Hacker news</a></li>
+<li><a class="reference external" href="https://news.ycombinator.com/item?id=10628726">Hacker News</a></li>
 </ul>
 </div>
 
@@ -466,8 +518,8 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
     </article></li>
     <li><article class="hentry">
         <header>
-            <h1><a href="https://gmpy.dev/blog/2015/psutil-30-aka-how-i-reimplemented-ifconfig-in-python" rel="bookmark"
-                   title="Permalink to psutil 3.0, aka how I reimplemented ifconfig in Python">psutil 3.0, aka how I reimplemented ifconfig in Python</a></h1>
+            <h1><a href="https://gmpy.dev/blog/2015/psutil-30-reimplement-ifconfig-in-python" rel="bookmark"
+                   title="Permalink to Reimplementing ifconfig in Python">Reimplementing ifconfig in Python</a></h1>
         </header>
         <div class="entry-content">
 <footer class="post-info">
@@ -480,341 +532,85 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/travel">travel</a>,        <a href="https://gmpy.dev/tags/personal">personal</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/personal">personal</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>Here we are. It's been a long time since my last blog post and my last <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally had the chance to meet my friend <a class="reference external" href="http://jayloden.com/software.htm">Jay Loden</a> in person. <a class="reference external" href="/images/me-with-jay.jpg">Jay and I</a> originally started working on psutil together <a class="reference external" href="https://groups.google.com/forum/#!topic/psutil-dev/fj8DQ3lGFH4">7 years ago</a>.</p>
+</footer><!-- /.post-info -->            <p>Here we are. It's been a long time since my last blog post and my last <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally had the chance to meet my friend <a class="reference external" href="http://jayloden.com/software.htm">Jay Loden</a> in person. We originally started working on psutil together <a class="reference external" href="https://groups.google.com/forum/#!topic/psutil-dev/fj8DQ3lGFH4">7 years ago</a>.</p>
 <div>
     <a href="/images/me-with-jay.jpg">
     <img src="/images/me-with-jay.jpg" style="width:750px; height:500px" />
     </a>
-</div><p>Back then I didn't know any C (and I still am a terrible C developer), so he's been crucial to developing the initial psutil skeleton, including OSX and Windows support. I'm back home now (but not for long ;-)), so I finally have some time to write this blog post and tell you about the new psutil release. Let's see what happened.</p>
+</div><p>Back then I didn't know any C (and I'm still a terrible C developer), so he was crucial in developing the initial psutil skeleton, including macOS and Windows support. Needless to say that this release builds on that work.</p>
 <div class="section" id="net-if-addrs">
 <h2>net_if_addrs()<a class="headerlink" href="#net-if-addrs" title="Permalink to this headline">¶</a></h2>
-<p>In a few words, we're now able to list network interface addresses similarly to the &quot;ifconfig&quot; command on UNIX:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pprint</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_if_addrs</span><span class="p">())</span>
-<span class="p">{</span><span class="s1">&#39;ethernet0&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">snic</span><span class="p">(</span><span class="n">family</span><span class="o">=&lt;</span><span class="n">AddressFamily</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">:</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">,</span>
-                    <span class="n">address</span><span class="o">=</span><span class="s1">&#39;10.0.0.4&#39;</span><span class="p">,</span>
-                    <span class="n">netmask</span><span class="o">=</span><span class="s1">&#39;255.0.0.0&#39;</span><span class="p">,</span>
-                    <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;10.255.255.255&#39;</span><span class="p">),</span>
-               <span class="n">snic</span><span class="p">(</span><span class="n">family</span><span class="o">=&lt;</span><span class="n">AddressFamily</span><span class="o">.</span><span class="n">AF_PACKET</span><span class="p">:</span> <span class="mi">17</span><span class="o">&gt;</span><span class="p">,</span>
-                    <span class="n">address</span><span class="o">=</span><span class="s1">&#39;9c:eb:e8:0b:05:1f&#39;</span><span class="p">,</span>
-                    <span class="n">netmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;ff:ff:ff:ff:ff:ff&#39;</span><span class="p">)],</span>
- <span class="s1">&#39;localhost&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">snic</span><span class="p">(</span><span class="n">family</span><span class="o">=&lt;</span><span class="n">AddressFamily</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">:</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">,</span>
-                    <span class="n">address</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
-                    <span class="n">netmask</span><span class="o">=</span><span class="s1">&#39;255.0.0.0&#39;</span><span class="p">,</span>
-                    <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">),</span>
-               <span class="n">snic</span><span class="p">(</span><span class="n">family</span><span class="o">=&lt;</span><span class="n">AddressFamily</span><span class="o">.</span><span class="n">AF_PACKET</span><span class="p">:</span> <span class="mi">17</span><span class="o">&gt;</span><span class="p">,</span>
-                    <span class="n">address</span><span class="o">=</span><span class="s1">&#39;00:00:00:00:00:00&#39;</span><span class="p">,</span>
-                    <span class="n">netmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">broadcast</span><span class="o">=</span><span class="s1">&#39;00:00:00:00:00:00&#39;</span><span class="p">)]}</span>
+<p>We're now able to list network interface addresses similarly to the <tt class="docutils literal">ifconfig</tt> command on UNIX:</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_if_addrs</span><span class="p">())</span>
+<span class="go">{&#39;ethernet0&#39;: [snic(family=&lt;AddressFamily.AF_INET: 2&gt;,</span>
+<span class="go">                    address=&#39;10.0.0.4&#39;,</span>
+<span class="go">                    netmask=&#39;255.0.0.0&#39;,</span>
+<span class="go">                    broadcast=&#39;10.255.255.255&#39;),</span>
+<span class="go">               snic(family=&lt;AddressFamily.AF_PACKET: 17&gt;,</span>
+<span class="go">                    address=&#39;9c:eb:e8:0b:05:1f&#39;,</span>
+<span class="go">                    netmask=None,</span>
+<span class="go">                    broadcast=&#39;ff:ff:ff:ff:ff:ff&#39;)],</span>
+<span class="go"> &#39;localhost&#39;: [snic(family=&lt;AddressFamily.AF_INET: 2&gt;,</span>
+<span class="go">                    address=&#39;127.0.0.1&#39;,</span>
+<span class="go">                    netmask=&#39;255.0.0.0&#39;,</span>
+<span class="go">                    broadcast=&#39;127.0.0.1&#39;),</span>
+<span class="go">               snic(family=&lt;AddressFamily.AF_PACKET: 17&gt;,</span>
+<span class="go">                    address=&#39;00:00:00:00:00:00&#39;,</span>
+<span class="go">                    netmask=None,</span>
+<span class="go">                    broadcast=&#39;00:00:00:00:00:00&#39;)]}</span>
 </pre></div>
-<p>This is limited to <cite>AF_INET</cite> (IPv4), <cite>AF_INET6</cite> (IPv6) and <cite>AF_LINK</cite> (Ethernet) address families. If you want something more powerful (e.g. <cite>AF_BLUETOOTH</cite>) you can take a look at the <a class="reference external" href="https://pypi.python.org/pypi/netifaces/">netifaces</a> extension. And here's the code which does these tricks on POSIX and Windows:</p>
+<p>This is limited to <tt class="docutils literal">AF_INET</tt> (IPv4), <tt class="docutils literal">AF_INET6</tt> (IPv6) and <tt class="docutils literal">AF_LINK</tt> (Ethernet) address families. If you want something more powerful (e.g. <tt class="docutils literal">AF_BLUETOOTH</tt>) you can take a look at the <a class="reference external" href="https://pypi.python.org/pypi/netifaces/">netifaces</a> extension. If you want to see how this is implemented, here's the code for POSIX and Windows:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L151">POSIX</a></li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L2907">Windows</a></li>
 </ul>
-<p>Also, here's some <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_if_addrs">doc</a>.</p>
 </div>
 <div class="section" id="net-if-stats">
 <h2>net_if_stats()<a class="headerlink" href="#net-if-stats" title="Permalink to this headline">¶</a></h2>
-<p>This will return a bunch of information about network interface cards:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pprint</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_if_stats</span><span class="p">())</span>
-<span class="p">{</span><span class="s1">&#39;ethernet0&#39;</span><span class="p">:</span> <span class="n">snicstats</span><span class="p">(</span><span class="n">isup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                        <span class="n">duplex</span><span class="o">=&lt;</span><span class="n">NicDuplex</span><span class="o">.</span><span class="n">NIC_DUPLEX_FULL</span><span class="p">:</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">,</span>
-                        <span class="n">speed</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-                        <span class="n">mtu</span><span class="o">=</span><span class="mi">1500</span><span class="p">),</span>
- <span class="s1">&#39;localhost&#39;</span><span class="p">:</span> <span class="n">snicstats</span><span class="p">(</span><span class="n">isup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                        <span class="n">duplex</span><span class="o">=&lt;</span><span class="n">NicDuplex</span><span class="o">.</span><span class="n">NIC_DUPLEX_UNKNOWN</span><span class="p">:</span> <span class="mi">0</span><span class="o">&gt;</span><span class="p">,</span>
-                        <span class="n">speed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                        <span class="n">mtu</span><span class="o">=</span><span class="mi">65536</span><span class="p">)}</span>
+<p>This new function returns information about network interface cards:</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_if_stats</span><span class="p">())</span>
+<span class="go">{&#39;ethernet0&#39;: snicstats(isup=True,</span>
+<span class="go">                        duplex=&lt;NicDuplex.NIC_DUPLEX_FULL: 2&gt;,</span>
+<span class="go">                        speed=100,</span>
+<span class="go">                        mtu=1500),</span>
+<span class="go"> &#39;localhost&#39;: snicstats(isup=True,</span>
+<span class="go">                        duplex=&lt;NicDuplex.NIC_DUPLEX_UNKNOWN: 0&gt;,</span>
+<span class="go">                        speed=0,</span>
+<span class="go">                        mtu=65536)}</span>
 </pre></div>
-<p>Again, here's the code for each platform:</p>
+<p>The implementation on each platform:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L3057">Windows</a></li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_linux.c#L474">Linux</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L229">OSX &amp; FreeBSD</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L229">macOS &amp; FreeBSD</a></li>
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_sunos.c#L1153">SunOS</a></li>
 </ul>
-<p>...and the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_if_stats">doc</a>.</p>
 </div>
-<div class="section" id="enums">
-<h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://docs.python.org/3/library/enum.html">Enums</a> are a nice new feature introduced in Python 3.4. Very briefly (or at least, this is what I appreciate the most about them), they help you write an API with human-readable constants. If you use Python 2 you'll see something like this:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">IOPRIO_CLASS_IDLE</span>
-<span class="mi">3</span>
-</pre></div>
-<p>On Python 3.4 you'll see a more informative result:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">IOPRIO_CLASS_IDLE</span>
-<span class="o">&lt;</span><span class="n">IOPriority</span><span class="o">.</span><span class="n">IOPRIO_CLASS_IDLE</span><span class="p">:</span> <span class="mi">3</span><span class="o">&gt;</span>
-</pre></div>
-<p>They are backward compatible, meaning if you're sending serialized data produced with psutil through the network you can safely use comparison operators and so on. The psutil APIs returning enums (on Python &gt;=3.4) are:</p>
-<ul class="simple">
-<li><cite>psutil.net_connections()</cite> (the address families)</li>
-<li><cite>psutil.Process.connections()</cite> (same as above)</li>
-<li><cite>psutil.net_if_stats()</cite> (all <tt class="docutils literal">NIC_DUPLEX_*</tt> constants)</li>
-<li><cite>psutil.Process.nice()</cite> on Windows (for all the <tt class="docutils literal">*_PRIORITY_CLASS</tt> constants)</li>
-<li><cite>psutil.Process.ionice()</cite> on Linux (for all the <tt class="docutils literal">IOPRIO_CLASS_*</tt> constants)</li>
-</ul>
-<p>All the other existing constants remained plain strings (<tt class="docutils literal">STATUS_*</tt>) or integers (<tt class="docutils literal">CONN_*</tt>).</p>
-</div>
-<div class="section" id="zombie-processes">
-<h2>Zombie processes<a class="headerlink" href="#zombie-processes" title="Permalink to this headline">¶</a></h2>
-<p>This is a big one. The full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/428">here</a> but basically the support for <a class="reference external" href="http://askubuntu.com/a/48625">zombie processes</a> on UNIX was <a class="reference external" href="https://github.com/giampaolo/psutil/issues/428">broken</a> (except on Linux, and Windows doesn't have zombie processes). Up until psutil 2.X we could instantiate a zombie process:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">pid</span> <span class="o">=</span> <span class="n">create_zombie</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
-</pre></div>
-<p>...but every time we queried it we got a <cite>NoSuchProcess</cite> exception:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
-  <span class="n">File</span> <span class="s2">&quot;psutil/__init__.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">374</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_init</span>
-    <span class="k">raise</span> <span class="n">NoSuchProcess</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
-<span class="n">psutil</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">:</span> <span class="n">no</span> <span class="n">process</span> <span class="n">found</span> <span class="k">with</span> <span class="n">pid</span> <span class="mi">123</span>
-</pre></div>
-<p>That was misleading though because the PID technically still existed:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">pid_exists</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">)</span>
-<span class="kc">True</span>
-</pre></div>
-<p>Furthermore, depending on what platform you were on, certain process stats could still be queried (instead of raising <cite>NoSuchProcess</cite>):</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cmdline</span><span class="p">()</span>
-<span class="p">[</span><span class="s1">&#39;python&#39;</span><span class="p">]</span>
-</pre></div>
-<p>Also <cite>process_iter()</cite> did not return zombie processes at all. This was probably the worst aspect because being able to identify them is an important use case, as they signal an issue with a process: if a parent process spawns a child, terminates it (via <cite>kill()</cite>), but doesn't <cite>wait()</cite> for it, it will create a zombie. Long story short, the way this changed in psutil 3.0 is that:</p>
-<ul class="simple">
-<li>we now have a new <cite>ZombieProcess</cite> exception, raised every time we're not able to query a process because it's a zombie</li>
-<li>it is raised instead of <cite>NoSuchProcess</cite> (which was incorrect and misleading)</li>
-<li>it is still backward compatible (meaning you won't have to change your old code) because it inherits from <cite>NoSuchProcess</cite></li>
-<li><cite>process_iter()</cite> finally works, meaning you can safely identify zombie processes like this:</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="n">zombies</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span><span class="p">()</span> <span class="o">==</span> <span class="n">psutil</span><span class="o">.</span><span class="n">STATUS_ZOMBIE</span><span class="p">:</span>
-            <span class="n">zombies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-    <span class="k">except</span> <span class="n">NoSuchProcess</span><span class="p">:</span>
-        <span class="k">pass</span>
-</pre></div>
+<div class="section" id="also-in-3-0">
+<h2>Also in 3.0<a class="headerlink" href="#also-in-3-0" title="Permalink to this headline">¶</a></h2>
+<p>Beyond the network-interface APIs, psutil 3.0 ships a few other notable changes.</p>
+<p>Several integer/string constants (<tt class="docutils literal">IOPRIO_CLASS_*</tt>, <tt class="docutils literal">NIC_DUPLEX_*</tt>, <tt class="docutils literal">*_PRIORITY_CLASS</tt>) now return <tt class="docutils literal">enum</tt> values on Python 3.4+.</p>
+<p>Support for zombie processes on UNIX was broken. Covered in a <a class="reference external" href="zombie-processes">separate post</a>.</p>
 </div>
 <div class="section" id="removal-of-deprecated-apis">
 <h2>Removal of deprecated APIs<a class="headerlink" href="#removal-of-deprecated-apis" title="Permalink to this headline">¶</a></h2>
-<p>This is another big one, probably the biggest. In a previous blog post I already talked about deprecated APIs. What I did back then (January 2014) was to rename and officially deprecate different APIs and provide aliases for them so that people wouldn't yell at me because I broke their existing code. The most interesting deprecation was certainly the one affecting module constants and the hack which was used in order to provide &quot;module properties&quot;. With this new release I decided to get rid of all those aliases. I'm sure this will cause problems but hey! This is a new major release, right? =). Plus the amount of crap which was removed is impressive (see the <a class="reference external" href="https://github.com/giampaolo/psutil/commit/ab211934af0acf99091e4cd534fc5bbe7fd3b233">commit</a>). Here's the old aliases which are now gone for good (or bad, depending on how much headache they will cause you):</p>
-</div>
-<div class="section" id="removed-module-functions-and-constants">
-<h2>Removed module functions and constants<a class="headerlink" href="#removed-module-functions-and-constants" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="48%" />
-<col width="52%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Already deprecated name</th>
-<th class="head">New name</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td><tt class="docutils literal">psutil.BOOT_TIME()</tt></td>
-<td><tt class="docutils literal">psutil.boot_time()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.NUM_CPUS()</tt></td>
-<td><tt class="docutils literal">psutil.cpu_count()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.TOTAL_PHYMEM()</tt></td>
-<td><tt class="docutils literal"><span class="pre">psutil.virtual_memory().total</span></tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.avail_phymem()</tt></td>
-<td><tt class="docutils literal"><span class="pre">psutil.virtual_memory().free</span></tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.avail_virtmem()</tt></td>
-<td><tt class="docutils literal"><span class="pre">psutil.swap_memory().free</span></tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.cached_phymem()</tt></td>
-<td><tt class="docutils literal"><span class="pre">psutil.virtual_memory().cached</span></tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.get_pid_list()</tt></td>
-<td><tt class="docutils literal">psutil.pids()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.get_process_list()</tt></td>
-<td>&nbsp;</td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.get_users()</tt></td>
-<td><tt class="docutils literal">psutil.users()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.network_io_counters()</tt></td>
-<td><tt class="docutils literal">psutil.net_io_counters()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.phymem_buffers()</tt></td>
-<td><tt class="docutils literal"><span class="pre">psutil.virtual_memory().buffers</span></tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.phymem_usage()</tt></td>
-<td><tt class="docutils literal">psutil.virtual_memory()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.total_virtmem()</tt></td>
-<td><tt class="docutils literal"><span class="pre">psutil.swap_memory().total</span></tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.used_virtmem()</tt></td>
-<td><tt class="docutils literal"><span class="pre">psutil.swap_memory().used</span></tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.used_phymem()</tt></td>
-<td><tt class="docutils literal"><span class="pre">psutil.virtual_memory().used</span></tt></td>
-</tr>
-<tr><td><tt class="docutils literal">psutil.virtmem_usage()</tt></td>
-<td><tt class="docutils literal">psutil.swap_memory()</tt></td>
-</tr>
-</tbody>
-</table>
-<p>Process methods (assuming <cite>p = psutil.Process()</cite>):</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="46%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Already deprecated name</th>
-<th class="head">New name</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td><tt class="docutils literal">p.get_children()</tt></td>
-<td><tt class="docutils literal">p.children()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_connections()</tt></td>
-<td><tt class="docutils literal">p.connections()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_cpu_affinity()</tt></td>
-<td><tt class="docutils literal">p.cpu_affinity()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_cpu_percent()</tt></td>
-<td><tt class="docutils literal">p.cpu_percent()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_cpu_times()</tt></td>
-<td><tt class="docutils literal">p.cpu_times()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_io_counters()</tt></td>
-<td><tt class="docutils literal">p.io_counters()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_ionice()</tt></td>
-<td><tt class="docutils literal">p.ionice()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_memory_info()</tt></td>
-<td><tt class="docutils literal">p.memory_info()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_ext_memory_info()</tt></td>
-<td><tt class="docutils literal">p.memory_info_ex()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_memory_maps()</tt></td>
-<td><tt class="docutils literal">p.memory_maps()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_memory_percent()</tt></td>
-<td><tt class="docutils literal">p.memory_percent()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_nice()</tt></td>
-<td><tt class="docutils literal">p.nice()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_num_ctx_switches()</tt></td>
-<td><tt class="docutils literal">p.num_ctx_switches()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_num_fds()</tt></td>
-<td><tt class="docutils literal">p.num_fds()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_num_threads()</tt></td>
-<td><tt class="docutils literal">p.num_threads()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_open_files()</tt></td>
-<td><tt class="docutils literal">p.open_files()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_rlimit()</tt></td>
-<td><tt class="docutils literal">p.rlimit()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.get_threads()</tt></td>
-<td><tt class="docutils literal">p.threads()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.getcwd()</tt></td>
-<td><tt class="docutils literal">p.cwd()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.set_cpu_affinity()</tt></td>
-<td><tt class="docutils literal">p.cpu_affinity()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.set_ionice()</tt></td>
-<td><tt class="docutils literal">p.ionice()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.set_nice()</tt></td>
-<td><tt class="docutils literal">p.nice()</tt></td>
-</tr>
-<tr><td><tt class="docutils literal">p.set_rlimit()</tt></td>
-<td><tt class="docutils literal">p.rlimit()</tt></td>
-</tr>
-</tbody>
-</table>
-<p>If your code suddenly breaks with AttributeError after you upgraded psutil, it means you were using one of those deprecated aliases. In that case, just take a look at the table above and rename stuff accordingly.</p>
-</div>
-<div class="section" id="bug-fixes">
-<h2>Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h2>
-<p>I fixed a lot of stuff (full list <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">here</a>), but here's the list of things which I think are worth mentioning:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/512">#512</a>: [FreeBSD] fix segfault in net_connections().</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/593">#593</a>: [FreeBSD] Process.memory_maps() segfaults.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/606">#606</a>: Process.parent() may swallow NoSuchProcess exceptions.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/614">#614</a>: [Linux]: cpu_count(logical=False) return the number of physical CPUs instead of physical cores.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/628">#628</a>: [Linux] Process.name() truncates process name in case it contains spaces or parentheses.</li>
-</ul>
-</div>
-<div class="section" id="ease-of-development">
-<h2>Ease of development<a class="headerlink" href="#ease-of-development" title="Permalink to this headline">¶</a></h2>
-<p>These are not enhancements you will directly benefit from, but I put some effort into making my life easier every time I work on psutil.</p>
-<ul class="simple">
-<li>I care about psutil code being fully <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8</a> compliant, so I added a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/v3.0.0/.git-pre-commit">pre-commit</a> Git hook which runs <a class="reference external" href="https://pypi.python.org/pypi/flake8">flake8</a> on every commit and rejects it if the coding style is not compliant. The way I install this is via <a class="reference external" href="https://github.com/giampaolo/psutil/blob/82da82a6bb94ed5c6faf9d762ef4ad0fec18f01b/Makefile#L108">make install-git-hooks</a>.</li>
-<li>I added a <tt class="docutils literal">make <span class="pre">install-dev-deps</span></tt> command which installs all deps and stuff which is useful for testing (<cite>ipdb</cite>, <cite>coverage</cite>, etc).</li>
-<li>A new <tt class="docutils literal">make coverage</tt> command which runs <a class="reference external" href="http://nedbatchelder.com/code/coverage/">coverage</a>. With this I discovered some parts of the code which weren't covered by tests and I fixed that.</li>
-<li>I started using <a class="reference external" href="https://github.com/giampaolo/psutil/blob/v3.0.0/tox.ini">tox</a> to easily test psutil against all supported Python versions (from 2.6 to 3.4) in one shot.</li>
-<li>I <a class="reference external" href="https://github.com/giampaolo/psutil/issues/629">reorganized tests</a> so that now they can be easily executed with py.test and nose (before, only unittest runner was fully supported).</li>
-</ul>
+<p>All aliases deprecated in the <a class="reference external" href="../2014/psutil-20-api-redesign">psutil 2.0 porting guide</a> (January 2014) are gone. For the full list see the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#id23">changelog</a>.</p>
 </div>
 <div class="section" id="final-words">
 <h2>Final words<a class="headerlink" href="#final-words" title="Permalink to this headline">¶</a></h2>
-<p>I must say I'm pretty satisfied with how psutil is going and the satisfaction I still get every time I work on it. Right now it gets almost <a class="reference external" href="https://pypi.python.org/pypi/psutil#downloads">800,000 downloads a month</a>, which is pretty great for a Python library. As of right now I consider psutil almost &quot;completed&quot; in terms of features, meaning I'm basically running out of ideas on what I should add next (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/v3.0.0/TODO">TODO</a>). From now on, future development will probably focus on adding support for more exotic platforms (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/562">OpenBSD</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">NetBSD</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/355">Android</a>). There have also been some discussions on the python-ideas mailing list about <a class="reference external" href="https://mail.python.org/pipermail//python-ideas/2014-October/029835.html">including psutil into Python stdlib</a> but, assuming it ever happens, it's still far away in the future as it would require a lot of time which I currently don't have. That should be all. I hope you will all enjoy this new release.</p>
+<p>I must say I'm pretty satisfied with how psutil is evolving and with the enjoyment I still get every time I work on it. It now gets almost <a class="reference external" href="https://pypi.python.org/pypi/psutil#downloads">800,000 downloads a month</a>, which is quite remarkable for a Python library.</p>
+<p>At this point, I consider psutil almost &quot;complete&quot; feature-wise, meaning I'm starting to run out of ideas for what to add next (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/v3.0.0/TODO">TODO</a>). Going forward, development will likely focus on supporting more exotic platforms (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/562">OpenBSD #562</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">NetBSD PR-557</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/355">Android #355</a>).</p>
+<p>There have also been discussions on the python-ideas mailing list about <a class="reference external" href="https://mail.python.org/pipermail//python-ideas/2014-October/029835.html">including psutil in the Python stdlib</a>, but even if that happens, it's still a long way off, as it would require a significant time investment that I currently don't have.</p>
 </div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2014/psutil-212-and-python-wheels" rel="bookmark"
-                   title="Permalink to psutil 2.1.2 and Python wheels">psutil 2.1.2 and Python wheels</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2014-09-21T00:00:00+02:00">
-        Created: 21 set 2014,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/wheels">wheels</a>,        <a href="https://gmpy.dev/tags/travel">travel</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate to the project. The main new &quot;feature&quot; of this release is that other than the exe files, Windows users can now also benefit from <a class="reference external" href="http://pythonwheels.com/">Python wheels</a> (full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/505">here</a>) which are available on PYPI. Frankly I don't know much about the new wheels packaging system but long story short is that Windows users can now install psutil via pip and therefore also include it as a dependency in requirements.txt. Other than this 2.1.2 can basically be considered a bug-fix release, including some important fixes amongst which:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/506">#506</a>: restored Python 2.4 compatibility</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/340">#340</a>: <cite>Process.get_open_files()</cite> no longer hangs on Windows (this was a very old and high-priority issue)</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/501">#501</a>: <cite>disk_io_counters()</cite> may return negative values on Windows</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/504">#504</a>: (Linux) couldn't build RPM packages via setup.py</li>
-</ul>
-<p>The list of all fixes can be found <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">here</a>. For the next release I plan to drop support for Python 2.4 and 2.5 and hopefully add network interfaces information similarly to <a class="reference external" href="https://github.com/giampaolo/psutil/issues/376">ifconfig</a>.</p>
 
         </div>
     </article></li>

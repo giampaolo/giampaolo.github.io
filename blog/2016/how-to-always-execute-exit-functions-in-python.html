@@ -60,7 +60,7 @@
 
 <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
 </pre></div>
-<p>It must be noted that the same thing would happen if instead of <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> we used a &quot;finally&quot; clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. That has a drawback though: in case a third-party module has already registered a function for that signal (<tt class="docutils literal">SIGTERM</tt> or whatever), your new function will <strong>overwrite</strong> the old one:</p>
+<p>Note that the same thing happens if instead of <a class="reference external" href="https://docs.python.org/3/library/atexit.html#atexit.register">atexit.register()</a> we used a &quot;finally&quot; clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. That has a drawback though: in case a third-party module has already registered a function for that signal (<tt class="docutils literal">SIGTERM</tt> or whatever), your new function will <strong>overwrite</strong> the old one:</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">signal</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">old</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
@@ -83,7 +83,7 @@
 <h2>The code<a class="headerlink" href="#the-code" title="Permalink to this headline">¶</a></h2>
 <div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Function / decorator which tries very hard to register a function to</span>
-<span class="sd">be executed at importerer exit.</span>
+<span class="sd">be executed at interpreter exit.</span>
 
 <span class="sd">Author: Giampaolo Rodola&#39;</span>
 <span class="sd">License: MIT</span>
@@ -244,7 +244,7 @@
 </div>
 <div class="section" id="proposal-for-stdlib-inclusion">
 <h2>Proposal for stdlib inclusion<a class="headerlink" href="#proposal-for-stdlib-inclusion" title="Permalink to this headline">¶</a></h2>
-<p>The fact that atexit module <a class="reference external" href="http://stackoverflow.com/a/2546397/376587">does not handle signals</a> and that <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> overwrites previously registered handlers is unfortunate. It is also <a class="reference external" href="http://ambracode.com/index/show/92669">confusing</a> because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the times you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. To me this suggests there could be space for something like <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038431.html">atexit.register_w_signals</a>.</p>
+<p>The fact that atexit module <a class="reference external" href="http://stackoverflow.com/a/2546397/376587">does not handle signals</a> and that <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a> overwrites previously registered handlers is unfortunate. It is also <a class="reference external" href="http://ambracode.com/index/show/92669">confusing</a> because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the time you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal">signal.signal()</a>. To me this suggests there could be space for something like <a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2016-February/038431.html">atexit.register_w_signals</a>.</p>
 </div>
 <div class="section" id="external-discussions">
 <h2>External discussions<a class="headerlink" href="#external-discussions" title="Permalink to this headline">¶</a></h2>

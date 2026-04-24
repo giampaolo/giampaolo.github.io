@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<title>Giampaolo Rodola - tests</title>-->
+    <title>Giampaolo Rodola</title>
+    <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
+    <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
+    <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
+    <link rel="icon" type="image/x-icon" href="https://gmpy.dev/favicon.ico">
+</head>
+
+<body id="index" class="home">
+    <header id="banner" class="body">
+        <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+        <nav><ul>
+            <li><a href="/">Blog</a></li>
+            <li><a href="/archives">Archives</a></li>
+            <li><a href="/about">About</a></li>
+        </ul></nav>
+    </header><!-- /#banner -->
+
+<section id="content" class="body">
+    <h1 class="entry-title">Blog posts for tags/tests</h1>
+
+<!-- blog posts -->
+        <ol id="posts-list" class="hfeed" start="4">
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2025/speedup-pytest-startup" rel="bookmark"
+                   title="Permalink to Speeding up pytest startup">Speeding up pytest startup</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2025-04-04T00:00:00+02:00">
+        Created: 04 apr 2025,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/tests">tests</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <div class="section" id="preface-the-migration-to-pytest">
+<h2>Preface: the migration to pytest<a class="headerlink" href="#preface-the-migration-to-pytest" title="Permalink to this headline">¶</a></h2>
+<p>Last year, after 17 years of <tt class="docutils literal">unittest</tt>, I started adopting pytest in psutil (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/2446">#2446</a>). The two advantages I cared about most were plain <tt class="docutils literal">assert</tt> statements and <a class="reference external" href="https://pypi.org/project/pytest-xdist/">pytest-xdist</a>'s free parallelism. Tests still inherit from <tt class="docutils literal">unittest.TestCase</tt> and there's no <tt class="docutils literal">conftest.py</tt> or fixture use (rationale in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2456">PR-2456</a>).</p>
+<p>What I want to focus on here is one of pytest's most frustrating aspects: slow startup.</p>
+</div>
+<div class="section" id="pytest-invocation-is-slow">
+<h2>pytest invocation is slow<a class="headerlink" href="#pytest-invocation-is-slow" title="Permalink to this headline">¶</a></h2>
+<p>To measure pytest's startup time, let's run a very <a class="reference external" href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236">simple test</a> where execution time itself is negligible:</p>
+<div class="highlight"><pre><span></span>$ time python3 -m pytest psutil/tests/test_misc.py::TestMisc::test_version
+1 passed in 0.05s
+real    0m0,427s
+</pre></div>
+<p>Almost half a second, which is excessive for something I run repeatedly during development. For comparison, the same test under <tt class="docutils literal">unittest</tt>:</p>
+<div class="highlight"><pre><span></span>$ time python3 -m unittest psutil.tests.test_misc.TestMisc.test_version
+Ran 1 test in 0.000s
+real    0m0,204s
+</pre></div>
+<p>Roughly twice as fast. Why?</p>
+</div>
+<div class="section" id="where-is-time-being-spent">
+<h2>Where is time being spent?<a class="headerlink" href="#where-is-time-being-spent" title="Permalink to this headline">¶</a></h2>
+<p>A significant portion of pytest's overhead comes from import time, and there's not much one can do about it:</p>
+<div class="highlight"><pre><span></span>$ time python3 -c &quot;import pytest&quot;
+real    0m0,151s
+
+$ time python3 -c &quot;import unittest&quot;
+real    0m0,065s
+
+$ time python3 -c &quot;import psutil&quot;
+real    0m0,056s
+</pre></div>
+</div>
+<div class="section" id="disable-plugin-auto-loading">
+<h2>Disable plugin auto loading<a class="headerlink" href="#disable-plugin-auto-loading" title="Permalink to this headline">¶</a></h2>
+<p>After some research, I discovered that pytest automatically loads all plugins installed on the system, even if they aren't used. Here's how to list them (output is cut):</p>
+<div class="highlight"><pre><span></span>$ pytest --trace-config --collect-only
+...
+active plugins:
+    ...
+    setupplan           : ~/.local/lib/python3.12/site-packages/_pytest/setupplan.py
+    stepwise            : ~/.local/lib/python3.12/site-packages/_pytest/stepwise.py
+    warnings            : ~/.local/lib/python3.12/site-packages/_pytest/warnings.py
+    logging             : ~/.local/lib/python3.12/site-packages/_pytest/logging.py
+    reports             : ~/.local/lib/python3.12/site-packages/_pytest/reports.py
+    python_path         : ~/.local/lib/python3.12/site-packages/_pytest/python_path.py
+    unraisableexception : ~/.local/lib/python3.12/site-packages/_pytest/unraisableexception.py
+    threadexception     : ~/.local/lib/python3.12/site-packages/_pytest/threadexception.py
+    faulthandler        : ~/.local/lib/python3.12/site-packages/_pytest/faulthandler.py
+    instafail           : ~/.local/lib/python3.12/site-packages/pytest_instafail.py
+    anyio               : ~/.local/lib/python3.12/site-packages/anyio/pytest_plugin.py
+    pytest_cov          : ~/.local/lib/python3.12/site-packages/pytest_cov/plugin.py
+    subtests            : ~/.local/lib/python3.12/site-packages/pytest_subtests/plugin.py
+    xdist               : ~/.local/lib/python3.12/site-packages/xdist/plugin.py
+    xdist.looponfail    : ~/.local/lib/python3.12/site-packages/xdist/looponfail.py
+    ...
+</pre></div>
+<p>It turns out <tt class="docutils literal">PYTEST_DISABLE_PLUGIN_AUTOLOAD</tt> environment variable can be used to disable them. By running <tt class="docutils literal">PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest <span class="pre">--trace-config</span> <span class="pre">--collect-only</span></tt> again I can see that the following plugins disappeared:</p>
+<div class="highlight"><pre><span></span>anyio
+pytest_cov
+pytest_instafail
+pytest_subtests
+xdist
+xdist.looponfail
+</pre></div>
+<p>Now let's run the test again with <tt class="docutils literal">PYTEST_DISABLE_PLUGIN_AUTOLOAD</tt>:</p>
+<div class="highlight"><pre><span></span>$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest psutil/tests/test_misc.py::TestMisc::test_version
+1 passed in 0.05s
+real    0m0,285s
+</pre></div>
+<p>We went from 0.427s to 0.285s, a ~40% improvement. Not bad. We now need to selectively enable only the plugins we actually use, via <tt class="docutils literal"><span class="pre">-p</span></tt>. psutil uses <tt class="docutils literal"><span class="pre">pytest-instafail</span></tt> and <tt class="docutils literal"><span class="pre">pytest-subtests</span></tt> (we'll deal with <tt class="docutils literal"><span class="pre">pytest-xdist</span></tt> later):</p>
+<div class="highlight"><pre><span></span>$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests ...
+real    0m0,320s
+</pre></div>
+<p>Time went back up to 0.320s. Quite a slowdown, but still better than the original 0.427s. Adding <tt class="docutils literal"><span class="pre">pytest-xdist</span></tt>:</p>
+<div class="highlight"><pre><span></span>$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests -p xdist ...
+real    0m0,369s
+</pre></div>
+<p>0.369s. Not much, but still a pity to pay the price when NOT running tests in parallel.</p>
+</div>
+<div class="section" id="handling-pytest-xdist">
+<h2>Handling pytest-xdist<a class="headerlink" href="#handling-pytest-xdist" title="Permalink to this headline">¶</a></h2>
+<p>If we disable <tt class="docutils literal"><span class="pre">pytest-xdist</span></tt> psutil tests still run, but we get a warning:</p>
+<div class="highlight"><pre><span></span>psutil/tests/test_testutils.py:367
+  ~/svn/psutil/psutil/tests/test_testutils.py:367: PytestUnknownMarkWarning: Unknown pytest.mark.xdist_group - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.xdist_group(name=&quot;serial&quot;)
+</pre></div>
+<p>This warning appears for methods that are intended to run serially, those decorated with <tt class="docutils literal"><span class="pre">&#64;pytest.mark.xdist_group(name=&quot;serial&quot;)</span></tt>. However, since <tt class="docutils literal"><span class="pre">pytest-xdist</span></tt> is now disabled, the decorator no longer exists. To address this, I implemented the following solution in <tt class="docutils literal">psutil/tests/__init__.py</tt>:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span><span class="o">,</span><span class="w"> </span><span class="nn">functools</span>
+
+<span class="n">PYTEST_PARALLEL</span> <span class="o">=</span> <span class="s2">&quot;PYTEST_XDIST_WORKER&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span>  <span class="c1"># True if running parallel tests</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">PYTEST_PARALLEL</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fake_xdist_group</span><span class="p">(</span><span class="o">*</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="n">_kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mimics `@pytest.mark.xdist_group` decorator. No-op: it just</span>
+<span class="sd">        calls the test method or return the decorated class.&quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+            <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">inner</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">obj</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="k">else</span> <span class="n">inner</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span>
+
+    <span class="n">pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">xdist_group</span> <span class="o">=</span> <span class="n">fake_xdist_group</span>  <span class="c1"># monkey patch</span>
+</pre></div>
+<p>With this in place the warning disappears when running tests serially. To run tests in parallel, we'll manually enable <tt class="docutils literal">xdist</tt>:</p>
+<div class="highlight"><pre><span></span>$ python3 -m pytest -p xdist -n auto --dist loadgroup
+</pre></div>
+</div>
+<div class="section" id="optimizing-test-collection-time">
+<h2>Optimizing test collection time<a class="headerlink" href="#optimizing-test-collection-time" title="Permalink to this headline">¶</a></h2>
+<p>By default, pytest searches the entire directory for tests, adding unnecessary overhead. In <tt class="docutils literal">pyproject.toml</tt> you can tell pytest where test files are located, and only to consider <tt class="docutils literal"><span class="pre">test_*.py</span></tt> files:</p>
+<div class="highlight"><pre><span></span><span class="k">[tool.pytest.ini_options]</span>
+<span class="n">testpaths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;psutil/tests/&quot;</span><span class="p">]</span>
+<span class="n">python_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;test_*.py&quot;</span><span class="p">]</span>
+</pre></div>
+<p>Collection time dropped from 0.20s to 0.17s, another ~0.03s shaved off.</p>
+</div>
+<div class="section" id="putting-it-all-together">
+<h2>Putting it all together<a class="headerlink" href="#putting-it-all-together" title="Permalink to this headline">¶</a></h2>
+<p>With these small optimizations, I managed to reduce <tt class="docutils literal">pytest</tt> startup time by ~0.12 seconds, bringing it down from 0.42 seconds. While this improvement is insignificant for full test runs, it makes a noticeable difference (~28% faster) when repeatedly running individual tests from the command line, which is something I do frequently during development. Final result is visible in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2538">PR-2538</a>.</p>
+</div>
+<div class="section" id="other-links-which-may-be-useful">
+<h2>Other links which may be useful<a class="headerlink" href="#other-links-which-may-be-useful" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/zupo/awesome-pytest-speedup">https://github.com/zupo/awesome-pytest-speedup</a></li>
+<li><a class="reference external" href="https://projects.gentoo.org/python/guide/pytest.html">https://projects.gentoo.org/python/guide/pytest.html</a></li>
+</ul>
+</div>
+
+        </div>
+    </article></li>
+ <!-- /blog posts -->
+</section>
+
+    <!-- Footer -->
+    <section id="extras" class="body">
+
+        <div class="social">
+            <h2>Social</h2>
+            <ul>
+                <li><a href="https://github.com/giampaolo">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/grodola/">LinkedIn</a></li>
+                <li><a href="https://x.com/grodola">X</a></li>
+            </ul>
+        </div><!-- /.social -->
+
+        <div class="feeds">
+            <h2>Feeds</h2>
+            <ul>
+                <li><a href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate">atom</a></li>
+                <li><a href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate">rss</a></li>
+            </ul>
+        </div>
+    </div>
+    </section>
+    <!-- /Footer -->
+
+    <footer id="contentinfo" class="body">
+        <!--
+            <address id="about" class="vcard body">
+            Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+            </address>
+
+            <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        -->
+    </footer>
+
+    <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164357405-2', 'auto');
+    ga('send', 'pageview');
+    </script>
+</body>
+</html>

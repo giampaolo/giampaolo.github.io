@@ -1,91 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - performance</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.performance.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2025-04-04T00:00:00+02:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Speedup pytest startup</title><link href="https://gmpy.dev/blog/2025/speedup-pytest-startup" rel="alternate"></link><published>2025-04-04T00:00:00+02:00</published><updated>2025-04-04T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-04-04:/blog/2025/speedup-pytest-startup</id><summary type="html">&lt;h1&gt;Preface: the migration to pytest&lt;/h1&gt;
-&lt;p&gt;Last year, after 17 years since the inception of the project, I decided to
-start adopting pytest into psutil (see
-&lt;a href="https://github.com/giampaolo/psutil/issues/2446"&gt;psutil/#2446&lt;/a&gt;). The
-advantages over unittest are numerous, but the two I cared about most are:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Being able to use base &lt;code&gt;assert&lt;/code&gt; statements instead of …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;h1&gt;Preface: the migration to pytest&lt;/h1&gt;
-&lt;p&gt;Last year, after 17 years since the inception of the project, I decided to
-start adopting pytest into psutil (see
-&lt;a href="https://github.com/giampaolo/psutil/issues/2446"&gt;psutil/#2446&lt;/a&gt;). The
-advantages over unittest are numerous, but the two I cared about most are:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Being able to use base &lt;code&gt;assert&lt;/code&gt; statements instead of unittest's
-  &lt;code&gt;self.assert*()&lt;/code&gt; APIs.&lt;/li&gt;
-&lt;li&gt;The excellent &lt;a href="https://pypi.org/project/pytest-xdist/"&gt;pytest-xdist&lt;/a&gt;
-  extension, that lets you run tests in parallel, basically for free.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Beyond that, I don't rely on any pytest-specific features in the code, like
-&lt;a href="https://docs.pytest.org/en/6.2.x/fixture.html"&gt;fixtures&lt;/a&gt; or conftest.py. I
-still organize tests in classes, with each one inheriting from
-&lt;code&gt;unittest.TestCase&lt;/code&gt;. Why?&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;I like unittest's &lt;code&gt;self.addCleanup&lt;/code&gt; too much to give it up (see some
-  &lt;a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/__init__.py#L984-L1010"&gt;usages&lt;/a&gt;).
-  I find it superior to fixtures. Less magical and more explicit.&lt;/li&gt;
-&lt;li&gt;I want users to be able to test their psutil installation in production
-  environments where pytest might not be installed. To accommodate this, I
-  created a minimal "fake" pytest class that emulates essential features like
-  &lt;code&gt;pytest.raises&lt;/code&gt;, &lt;code&gt;@pytest.skip&lt;/code&gt; etc. (see
-  &lt;a href="https://github.com/giampaolo/psutil/pull/2456"&gt;PR-2456&lt;/a&gt;).&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;But that's a separate topic. What I want to focus on here is one of pytest's
-most frustrating aspects: slow startup times.&lt;/p&gt;
-&lt;h1&gt;pytest invocation is slow&lt;/h1&gt;
-&lt;p&gt;To measure pytest's startup time, let's run a very
-&lt;a href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236"&gt;simple test&lt;/a&gt;
-where execution time won't significantly affect the results:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
-================== test session starts ==================
-collected 1 item
-psutil/tests/test_misc.py::TestMisc::test_version PASSED
-=================== 1 passed in 0.05s ===================
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - performance</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.performance.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2026-01-28T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>From Python 3.3 to today: ending 15 years of subprocess polling</title><link href="https://gmpy.dev/blog/2026/event-driven-process-waiting" rel="alternate"></link><published>2026-01-28T00:00:00+01:00</published><updated>2026-01-28T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2026-01-28:/blog/2026/event-driven-process-waiting</id><summary type="html">&lt;p&gt;One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module has relied on a busy-loop polling approach since the &lt;em&gt;timeout&lt;/em&gt; parameter was added to &lt;tt class="docutils literal"&gt;subprocess.Popen.wait()&lt;/tt&gt; in Python 3.3, around 15 years ago (see …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module has relied on a busy-loop polling approach since the &lt;em&gt;timeout&lt;/em&gt; parameter was added to &lt;tt class="docutils literal"&gt;subprocess.Popen.wait()&lt;/tt&gt; in Python 3.3, around 15 years ago (see &lt;a class="reference external" href="https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077"&gt;source&lt;/a&gt;). And psutil's &lt;tt class="docutils literal"&gt;Process.wait()&lt;/tt&gt; method uses exactly the same technique (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160"&gt;source&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;The logic is straightforward: check whether the process has exited using non-blocking &lt;tt class="docutils literal"&gt;waitpid(WNOHANG)&lt;/tt&gt;, sleep briefly, check again, sleep a bit longer, and so on.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;time&lt;/span&gt;
 
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;wait_busy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;end&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;monotonic&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;
+    &lt;span class="n"&gt;interval&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.0001&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;monotonic&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;end&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;pid_done&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;waitpid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;WNOHANG&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;pid_done&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt;
+        &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;interval&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;interval&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;min&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;interval&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.04&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TimeoutError&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In this blog post I'll show how I finally addressed this long-standing inefficiency, first in psutil, and most excitingly, directly in CPython's standard library &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module.&lt;/p&gt;
+&lt;div class="section" id="the-problem-with-busy-polling"&gt;
+&lt;h2&gt;The problem with busy-polling&lt;a class="headerlink" href="#the-problem-with-busy-polling" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;CPU wake-ups: even with exponential backoff (starting at 0.1ms, capping at 40ms), the system constantly wakes up to check process status, wasting CPU cycles and draining batteries.&lt;/li&gt;
+&lt;li&gt;Latency: there's always a gap between when a process actually terminates and when you detect it.&lt;/li&gt;
+&lt;li&gt;Scalability: monitoring many processes simultaneously magnifies all of the above.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="event-driven-waiting"&gt;
+&lt;h2&gt;Event-driven waiting&lt;a class="headerlink" href="#event-driven-waiting" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;All POSIX systems provide at least one mechanism to be notified when a file descriptor becomes ready. These are &lt;a class="reference external" href="https://man7.org/linux/man-pages/man2/select.2.html"&gt;select()&lt;/a&gt;, &lt;a class="reference external" href="https://man7.org/linux/man-pages/man2/poll.2.html"&gt;poll()&lt;/a&gt;, &lt;a class="reference external" href="https://man7.org/linux/man-pages/man7/epoll.7.html"&gt;epoll()&lt;/a&gt; (Linux) and &lt;a class="reference external" href="https://man.freebsd.org/cgi/man.cgi?query=kqueue"&gt;kqueue()&lt;/a&gt; (BSD / macOS) system calls. Until recently, I believed they could only be used with file descriptors referencing sockets, pipes, etc., but it turns out they can also be used to wait for events on process PIDs!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="linux"&gt;
+&lt;h2&gt;Linux&lt;a class="headerlink" href="#linux" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;In 2019, Linux 5.3 introduced a new syscall, &lt;tt class="docutils literal"&gt;os.pidfd_open()&lt;/tt&gt;, which was added in Python 3.9. It returns a file descriptor referencing a process PID. The interesting thing is that &lt;tt class="docutils literal"&gt;pidfd_open()&lt;/tt&gt; can be used in conjunction with &lt;tt class="docutils literal"&gt;select()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;epoll()&lt;/tt&gt; to effectively wait until the process exits. E.g. by using &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;select&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;wait_pidfd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;pidfd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pidfd_open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;poller&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;poll&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;poller&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pidfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;POLLIN&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;# block until process exits or timeout occurs&lt;/span&gt;
+    &lt;span class="n"&gt;events&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;poller&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;poll&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;timeout&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;events&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TimeoutError&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This approach has zero busy-looping. The kernel wakes us up exactly when the process terminates or when the timeout expires if the PID is still alive.&lt;/p&gt;
+&lt;p&gt;I chose &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; over &lt;tt class="docutils literal"&gt;select()&lt;/tt&gt; because &lt;tt class="docutils literal"&gt;select()&lt;/tt&gt; has a historical file descriptor limit (&lt;tt class="docutils literal"&gt;FD_SETSIZE&lt;/tt&gt;), which typically caps it at 1024 file descriptors per-process (reminded me of &lt;a class="reference external" href="https://bugs.python.org/issue1685000"&gt;BPO-1685000&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;I chose &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; over &lt;tt class="docutils literal"&gt;epoll()&lt;/tt&gt; because it does not require creating an additional file descriptor. It also needs only a single syscall, which should make it a bit more efficient when monitoring a single FD rather than many.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="macos-and-bsd"&gt;
+&lt;h2&gt;macOS and BSD&lt;a class="headerlink" href="#macos-and-bsd" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;BSD-derived systems (including macOS) provide the &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt; syscall. It's conceptually similar to &lt;tt class="docutils literal"&gt;select()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;epoll()&lt;/tt&gt;, but more powerful (e.g. it can also handle regular files). &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt; can be passed a PID directly, and it will return once the PID disappears or the timeout expires:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;select&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;wait_kqueue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;kq&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;kqueue&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;kev&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;kevent&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nb"&gt;filter&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;KQ_FILTER_PROC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;flags&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;KQ_EV_ADD&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;KQ_EV_ONESHOT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;fflags&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;KQ_NOTE_EXIT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;# block until process exits or timeout occurs&lt;/span&gt;
+    &lt;span class="n"&gt;events&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;kq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;control&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;kev&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;events&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TimeoutError&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="windows"&gt;
+&lt;h2&gt;Windows&lt;a class="headerlink" href="#windows" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Windows does not busy-loop, both in psutil and &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module, thanks to &lt;tt class="docutils literal"&gt;WaitForSingleObject&lt;/tt&gt;. This means Windows has effectively had event-driven process waiting from the start. So nothing to do on that front.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="graceful-fallbacks"&gt;
+&lt;h2&gt;Graceful fallbacks&lt;a class="headerlink" href="#graceful-fallbacks" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Both &lt;tt class="docutils literal"&gt;pidfd_open()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt; can fail for different reasons. For example, with &lt;tt class="docutils literal"&gt;EMFILE&lt;/tt&gt; if the process runs out of file descriptors (usually 1024), or with &lt;tt class="docutils literal"&gt;EACCES&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;EPERM&lt;/tt&gt; if the syscall was explicitly blocked at the system level by the sysadmin (e.g. via SECCOMP). In all cases, psutil silently falls back to the traditional busy-loop polling approach rather than raising an exception.&lt;/p&gt;
+&lt;p&gt;This fast-path-with-fallback approach is similar in spirit to &lt;a class="reference external" href="https://bugs.python.org/issue33671"&gt;BPO-33671&lt;/a&gt;, where I sped up &lt;tt class="docutils literal"&gt;shutil.copyfile()&lt;/tt&gt; by using zero-copy system calls back in 2018. In there, more efficient &lt;tt class="docutils literal"&gt;os.sendfile()&lt;/tt&gt; is attempted first, and if it fails (e.g. on network filesystems) we fall back to the traditional &lt;tt class="docutils literal"&gt;read()&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;write()&lt;/tt&gt; approach to copy regular files.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="measurement"&gt;
+&lt;h2&gt;Measurement&lt;a class="headerlink" href="#measurement" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;As a simple experiment, here's a simple program which waits on itself for 10 seconds without terminating:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# test.py&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getpid&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TimeoutExpired&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We can measure the CPU context switching using &lt;tt class="docutils literal"&gt;/usr/bin/time &lt;span class="pre"&gt;-v&lt;/span&gt;&lt;/tt&gt;. Before the patch (the busy-loop):&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+$ /usr/bin/time -v python3 test.py 2&amp;gt;&amp;amp;1 | grep context
+    Voluntary context switches: 258
+    Involuntary context switches: 4
+&lt;/pre&gt;
+&lt;p&gt;After the patch (the event-driven approach):&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+$ /usr/bin/time -v python3 test.py 2&amp;gt;&amp;amp;1 | grep context
+    Voluntary context switches: 2
+    Involuntary context switches: 1
+&lt;/pre&gt;
+&lt;p&gt;This shows that instead of spinning in userspace, the process blocks in &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt;, and is woken up only when the kernel notifies it, resulting in just a few CPU context switches.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="sleeping-state"&gt;
+&lt;h2&gt;Sleeping state&lt;a class="headerlink" href="#sleeping-state" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;It's also interesting to note that waiting via &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; (or &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt;) puts the process into the exact same sleeping state as a plain &lt;tt class="docutils literal"&gt;time.sleep&lt;/tt&gt; call. From the kernel's perspective, both are interruptible sleeps: the process is de-scheduled, consumes zero CPU, and sits quietly in kernel space.&lt;/p&gt;
+&lt;p&gt;The &lt;tt class="docutils literal"&gt;&amp;quot;S+&amp;quot;&lt;/tt&gt; state shown below by &lt;tt class="docutils literal"&gt;ps&lt;/tt&gt; means that the process &amp;quot;sleeps in foreground&amp;quot;.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;time.sleep&lt;/tt&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="literal-block"&gt;
+$ (python3 -c 'import time; time.sleep(10)' &amp;amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;amp;&amp;amp; fg &amp;amp;&amp;gt;/dev/null
+    PID STAT COMMAND
+ 491573 S+   python3
+&lt;/pre&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;select.poll&lt;/tt&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="literal-block"&gt;
+$ (python3 -c 'import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)' &amp;amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;amp;&amp;amp; fg &amp;amp;&amp;gt;/dev/null
+    PID STAT COMMAND
+ 491748 S+   python3
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class="section" id="cpython-contribution"&gt;
+&lt;h2&gt;CPython contribution&lt;a class="headerlink" href="#cpython-contribution" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;After landing the psutil implementation (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/2706"&gt;PR-2706&lt;/a&gt;), I took the extra step and submitted a matching pull request for CPython &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module: &lt;a class="reference external" href="https://github.com/python/cpython/pull/144047"&gt;cpython/PR-144047&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I'm especially proud of this one: this is the &lt;strong&gt;third time&lt;/strong&gt; in psutil's 17+ year history that a feature developed in psutil made its way upstream into the Python standard library.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;The first was back in 2010, when &lt;tt class="docutils literal"&gt;Process.nice()&lt;/tt&gt; inspired &lt;tt class="docutils literal"&gt;os.getpriority()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;os.setpriority()&lt;/tt&gt;, see &lt;a class="reference external" href="https://bugs.python.org/issue10784"&gt;BPO-10784&lt;/a&gt;. Landed in Python 3.3.&lt;/li&gt;
+&lt;li&gt;The second was back in 2011, when &lt;tt class="docutils literal"&gt;psutil.disk_usage()&lt;/tt&gt; inspired &lt;tt class="docutils literal"&gt;shutil.disk_usage()&lt;/tt&gt;, see &lt;a class="reference external" href="https://mail.python.org/archives/list/python-ideas&amp;#64;python.org/thread/67A7ML2TJ7MBS3WOL6IZKLD2C3B3VCQG"&gt;python-ideas ML proposal&lt;/a&gt;. Landed in Python 3.3.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;Funny thing:&lt;/em&gt; 15 years ago, Python 3.3 added the &lt;em&gt;timeout&lt;/em&gt; parameter to &lt;tt class="docutils literal"&gt;subprocess.Popen.wait&lt;/tt&gt; (see &lt;a class="reference external" href="https://github.com/python/cpython/commit/31aa7dd1419"&gt;commit&lt;/a&gt;). That's probably where I took inspiration when I first added the &lt;em&gt;timeout&lt;/em&gt; parameter to psutil's &lt;tt class="docutils literal"&gt;Process.wait()&lt;/tt&gt; around the same time (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/commit/886710daf"&gt;commit&lt;/a&gt;). Now, 15 years later, I'm contributing back a similar improvement for that very same &lt;em&gt;timeout&lt;/em&gt; parameter. &lt;strong&gt;The circle is complete&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="links"&gt;
+&lt;h2&gt;Links&lt;a class="headerlink" href="#links" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Topics related to this:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2712"&gt;#2712&lt;/a&gt;: proposal to extend this to multiple PIDs (&lt;tt class="docutils literal"&gt;psutil.wait_procs()&lt;/tt&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2703"&gt;#2703&lt;/a&gt;: proposal for asynchronous &lt;tt class="docutils literal"&gt;Process.wait()&lt;/tt&gt; integration with &lt;tt class="docutils literal"&gt;asyncio&lt;/tt&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/python/cpython/issues/144211"&gt;cpython/#144211&lt;/a&gt;: proposal to extend the &lt;tt class="docutils literal"&gt;selectors&lt;/tt&gt; module to enable &lt;tt class="docutils literal"&gt;asyncio&lt;/tt&gt; optimization on BSD / macOS via &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="discussion"&gt;
+&lt;h2&gt;Discussion&lt;a class="headerlink" href="#discussion" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/1qpp42k/from_python_33_to_today_ending_15_years_of/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://news.ycombinator.com/item?id=46802061"&gt;Hacker News&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://medium.com/&amp;#64;g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86"&gt;Medium&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.linkedin.com/feed/update/urn:li:share:7422396026449391616/"&gt;Linkedin&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2026"></category><category term="psutil"></category><category term="python"></category><category term="python-core"></category><category term="performance"></category><category term="featured"></category></entry><entry><title>Speeding up pytest startup</title><link href="https://gmpy.dev/blog/2025/speedup-pytest-startup" rel="alternate"></link><published>2025-04-04T00:00:00+02:00</published><updated>2025-04-04T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-04-04:/blog/2025/speedup-pytest-startup</id><summary type="html">&lt;div class="section" id="preface-the-migration-to-pytest"&gt;
+&lt;h2&gt;Preface: the migration to pytest&lt;a class="headerlink" href="#preface-the-migration-to-pytest" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Last year, after 17 years of &lt;tt class="docutils literal"&gt;unittest&lt;/tt&gt;, I started adopting pytest in psutil (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2446"&gt;#2446&lt;/a&gt;). The two advantages I cared about most were plain &lt;tt class="docutils literal"&gt;assert&lt;/tt&gt; statements and &lt;a class="reference external" href="https://pypi.org/project/pytest-xdist/"&gt;pytest-xdist&lt;/a&gt;'s free parallelism. Tests still inherit from &lt;tt class="docutils literal"&gt;unittest.TestCase&lt;/tt&gt; and there's no &lt;tt class="docutils literal"&gt;conftest.py&lt;/tt&gt; or fixture use …&lt;/p&gt;&lt;/div&gt;</summary><content type="html">&lt;div class="section" id="preface-the-migration-to-pytest"&gt;
+&lt;h2&gt;Preface: the migration to pytest&lt;a class="headerlink" href="#preface-the-migration-to-pytest" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Last year, after 17 years of &lt;tt class="docutils literal"&gt;unittest&lt;/tt&gt;, I started adopting pytest in psutil (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2446"&gt;#2446&lt;/a&gt;). The two advantages I cared about most were plain &lt;tt class="docutils literal"&gt;assert&lt;/tt&gt; statements and &lt;a class="reference external" href="https://pypi.org/project/pytest-xdist/"&gt;pytest-xdist&lt;/a&gt;'s free parallelism. Tests still inherit from &lt;tt class="docutils literal"&gt;unittest.TestCase&lt;/tt&gt; and there's no &lt;tt class="docutils literal"&gt;conftest.py&lt;/tt&gt; or fixture use (rationale in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/2456"&gt;PR-2456&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;What I want to focus on here is one of pytest's most frustrating aspects: slow startup.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="pytest-invocation-is-slow"&gt;
+&lt;h2&gt;pytest invocation is slow&lt;a class="headerlink" href="#pytest-invocation-is-slow" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;To measure pytest's startup time, let's run a very &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/265fcf94a5da4260beb514653a2124915bf2a4f2/psutil/tests/test_misc.py#L232-L236"&gt;simple test&lt;/a&gt; where execution time itself is negligible:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ time python3 -m pytest psutil/tests/test_misc.py::TestMisc::test_version
+1 passed in 0.05s
 real    0m0,427s
-user    0m0,375s
-sys     0m0,051s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;0,427s. Almost half of a second. That's excessive for something I frequently
-execute during development. For comparison, running the same test with
-&lt;code&gt;unittest&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time python3 -m unittest psutil.tests.test_misc.TestMisc.test_version
-----------------------------------------------------------------------
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Almost half a second, which is excessive for something I run repeatedly during development. For comparison, the same test under &lt;tt class="docutils literal"&gt;unittest&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ time python3 -m unittest psutil.tests.test_misc.TestMisc.test_version
 Ran 1 test in 0.000s
-OK
-
 real    0m0,204s
-user    0m0,169s
-sys     0m0,035s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;0,204 secs. Meaning unittest is roughly twice as fast as pytest. But why?&lt;/p&gt;
-&lt;h1&gt;Where is time being spent?&lt;/h1&gt;
-&lt;p&gt;A significant portion of pytest's overhead comes from import time:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time python3 -c &amp;quot;import pytest&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Roughly twice as fast. Why?&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="where-is-time-being-spent"&gt;
+&lt;h2&gt;Where is time being spent?&lt;a class="headerlink" href="#where-is-time-being-spent" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;A significant portion of pytest's overhead comes from import time, and there's not much one can do about it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ time python3 -c &amp;quot;import pytest&amp;quot;
 real    0m0,151s
-user    0m0,135s
-sys     0m0,016s
 
 $ time python3 -c &amp;quot;import unittest&amp;quot;
 real    0m0,065s
-user    0m0,055s
-sys     0m0,010s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;There's nothing I can do about that. For the record, psutil import timing is:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time python3 -c &amp;quot;import psutil&amp;quot;
+$ time python3 -c &amp;quot;import psutil&amp;quot;
 real    0m0,056s
-user    0m0,050s
-sys     0m0,006s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h1&gt;Disable plugin auto loading&lt;/h1&gt;
-&lt;p&gt;After some research, I discovered that pytest automatically loads all plugins
-installed on the system, even if they aren't used. Here's how to list them
-(output is cut):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pytest --trace-config --collect-only
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="disable-plugin-auto-loading"&gt;
+&lt;h2&gt;Disable plugin auto loading&lt;a class="headerlink" href="#disable-plugin-auto-loading" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;After some research, I discovered that pytest automatically loads all plugins installed on the system, even if they aren't used. Here's how to list them (output is cut):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pytest --trace-config --collect-only
 ...
 active plugins:
     ...
@@ -105,74 +205,39 @@ active plugins:
     xdist               : ~/.local/lib/python3.12/site-packages/xdist/plugin.py
     xdist.looponfail    : ~/.local/lib/python3.12/site-packages/xdist/looponfail.py
     ...
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;It turns out &lt;code&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD&lt;/code&gt; environment variable can be used
-to disable them. By running
-&lt;code&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
---trace-config --collect-only&lt;/code&gt; again I
-can see that the following plugins disappeared:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;anyio
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;It turns out &lt;tt class="docutils literal"&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD&lt;/tt&gt; environment variable can be used to disable them. By running &lt;tt class="docutils literal"&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest &lt;span class="pre"&gt;--trace-config&lt;/span&gt; &lt;span class="pre"&gt;--collect-only&lt;/span&gt;&lt;/tt&gt; again I can see that the following plugins disappeared:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;anyio
 pytest_cov
 pytest_instafail
 pytest_subtests
 xdist
 xdist.looponfail
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Now let's run the test again by using &lt;code&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest --no-header psutil/tests/test_misc.py::TestMisc::test_version
-================== test session starts ==================
-collected 1 item
-psutil/tests/test_misc.py::TestMisc::test_version PASSED
-=================== 1 passed in 0.05s ===================
-
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now let's run the test again with &lt;tt class="docutils literal"&gt;PYTEST_DISABLE_PLUGIN_AUTOLOAD&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest psutil/tests/test_misc.py::TestMisc::test_version
+1 passed in 0.05s
 real    0m0,285s
-user    0m0,267s
-sys     0m0,040s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;We went from 0,427 secs to 0,285 secs, a ~40% improvement. Not bad. We now need
-to selectively enable only the plugins we actually use, via &lt;code&gt;-p&lt;/code&gt; CLI option.
-Plugins used by psutil are &lt;code&gt;pytest-instafail&lt;/code&gt; and &lt;code&gt;pytest-subtests&lt;/code&gt; (we'll
-think about &lt;code&gt;pytest-xdist&lt;/code&gt; later):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests --no-header psutil/tests/test_misc.py::TestMisc::test_version
-================= test session starts =================
-collected 1 item
-psutil/tests/test_misc.py::TestMisc::test_version PASSED
-================== 1 passed in 0.05s ==================
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We went from 0.427s to 0.285s, a ~40% improvement. Not bad. We now need to selectively enable only the plugins we actually use, via &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;-p&lt;/span&gt;&lt;/tt&gt;. psutil uses &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;pytest-instafail&lt;/span&gt;&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;pytest-subtests&lt;/span&gt;&lt;/tt&gt; (we'll deal with &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;pytest-xdist&lt;/span&gt;&lt;/tt&gt; later):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests ...
 real    0m0,320s
-user    0m0,283s
-sys     0m0,037s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Time went up again, from 0,285 secs to 0,320s. Quite a slowdown, but still
-better than the initial 0,427s. Now, let's add &lt;code&gt;pytest-xdist&lt;/code&gt; to the mix:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests -p xdist --no-header psutil/tests/test_misc.py::TestMisc::test_version
-=================== test session starts ===================
-collected 1 item
-psutil/tests/test_misc.py::TestMisc::test_version PASSED
-==================== 1 passed in 0.05s ====================
-
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Time went back up to 0.320s. Quite a slowdown, but still better than the original 0.427s. Adding &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;pytest-xdist&lt;/span&gt;&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ time PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p instafail -p subtests -p xdist ...
 real    0m0,369s
-user    0m0,286s
-sys     0m0,049s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;We now went from 0,320s to 0,369s. Not too much, but still it's a pity to pay
-the price when NOT running tests in parallel.&lt;/p&gt;
-&lt;h1&gt;Handling pytest-xdist&lt;/h1&gt;
-&lt;p&gt;If we disable &lt;code&gt;pytest-xdist&lt;/code&gt; psutil tests still run, but we get a warning:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;psutil/tests/test_testutils.py:367
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;0.369s. Not much, but still a pity to pay the price when NOT running tests in parallel.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="handling-pytest-xdist"&gt;
+&lt;h2&gt;Handling pytest-xdist&lt;a class="headerlink" href="#handling-pytest-xdist" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If we disable &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;pytest-xdist&lt;/span&gt;&lt;/tt&gt; psutil tests still run, but we get a warning:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;psutil/tests/test_testutils.py:367
   ~/svn/psutil/psutil/tests/test_testutils.py:367: PytestUnknownMarkWarning: Unknown pytest.mark.xdist_group - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     @pytest.mark.xdist_group(name=&amp;quot;serial&amp;quot;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;This warning appears for methods that are intended to run serially, those
-decorated with &lt;code&gt;@pytest.mark.xdist_group(name="serial")&lt;/code&gt;. However, since
-&lt;code&gt;pytest-xdist&lt;/code&gt; is now disabled, the decorator no longer exists. To address
-this, I implemented the following solution in &lt;code&gt;psutil/tests/__init__.py&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pytest&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;functools&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This warning appears for methods that are intended to run serially, those decorated with &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;&amp;#64;pytest.mark.xdist_group(name=&amp;quot;serial&amp;quot;)&lt;/span&gt;&lt;/tt&gt;. However, since &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;pytest-xdist&lt;/span&gt;&lt;/tt&gt; is now disabled, the decorator no longer exists. To address this, I implemented the following solution in &lt;tt class="docutils literal"&gt;psutil/tests/__init__.py&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pytest&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;functools&lt;/span&gt;
 
 &lt;span class="n"&gt;PYTEST_PARALLEL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;PYTEST_XDIST_WORKER&amp;quot;&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;  &lt;span class="c1"&gt;# True if running parallel tests&lt;/span&gt;
 
@@ -190,88 +255,118 @@ this, I implemented the following solution in &lt;code&gt;psutil/tests/__init__.
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;wrapper&lt;/span&gt;
 
     &lt;span class="n"&gt;pytest&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mark&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xdist_group&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fake_xdist_group&lt;/span&gt;  &lt;span class="c1"&gt;# monkey patch&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;With this in place the warning disappears when running tests serially. To run
-tests in parallel, we'll manually enable &lt;code&gt;xdist&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python3 -m pytest -p xdist -n auto --dist loadgroup
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h1&gt;Disable some default plugins&lt;/h1&gt;
-&lt;p&gt;pytests also loads quite a bunch of plugins by default (see output of
-&lt;code&gt;pytest
---trace-config --collect-only&lt;/code&gt;). I tried to disable some of them with:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pytest -p no:junitxml -p no:doctest -p no:nose -p no:pastebin
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;...but that didn't make much of a difference.&lt;/p&gt;
-&lt;h1&gt;Optimizing test collection time&lt;/h1&gt;
-&lt;p&gt;By default, pytest searches the entire directory for tests, adding unnecessary
-overhead. In &lt;code&gt;pyproject.toml&lt;/code&gt; you can tell pytest where test files are located,
-and only to consider &lt;code&gt;test_*.py&lt;/code&gt; files:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[tool.pytest.ini_options]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;With this in place the warning disappears when running tests serially. To run tests in parallel, we'll manually enable &lt;tt class="docutils literal"&gt;xdist&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python3 -m pytest -p xdist -n auto --dist loadgroup
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="optimizing-test-collection-time"&gt;
+&lt;h2&gt;Optimizing test collection time&lt;a class="headerlink" href="#optimizing-test-collection-time" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;By default, pytest searches the entire directory for tests, adding unnecessary overhead. In &lt;tt class="docutils literal"&gt;pyproject.toml&lt;/tt&gt; you can tell pytest where test files are located, and only to consider &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;test_*.py&lt;/span&gt;&lt;/tt&gt; files:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[tool.pytest.ini_options]&lt;/span&gt;
 &lt;span class="n"&gt;testpaths&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;psutil/tests/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;span class="n"&gt;python_files&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;test_*.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;With this I saved another 0.03 seconds. Before:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python3 -m pytest --collect-only
-...
-============ 685 tests collected in 0.20s =============
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;After:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python3 -m pytest --collect-only
-...
-============ 685 tests collected in 0.17s =============
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h1&gt;Putting it all together&lt;/h1&gt;
-&lt;p&gt;With these small optimizations, I managed to reduce &lt;code&gt;pytest&lt;/code&gt; startup time by
-~0.12 seconds, bringing it down from 0.42 seconds. While this improvement is
-insignificant for full test runs, it somewhat makes a noticeable difference
-(~28% faster) when repeatedly running individual tests from the command line,
-which is something I do frequently during development. Final result is visible
-in &lt;a href="https://github.com/giampaolo/psutil/pull/2538"&gt;PR-2538&lt;/a&gt;.&lt;/p&gt;
-&lt;h1&gt;Other links which may be useful&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://github.com/zupo/awesome-pytest-speedup"&gt;https://github.com/zupo/awesome-pytest-speedup&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://projects.gentoo.org/python/guide/pytest.html"&gt;https://projects.gentoo.org/python/guide/pytest.html&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="pytest"></category><category term="performance"></category></entry><entry><title>psutil 5.5.0 is twice as fast</title><link href="https://gmpy.dev/blog/2016/psutil-550-is-twice-as-fast" rel="alternate"></link><published>2016-11-06T00:00:00+01:00</published><updated>2016-11-06T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2016-11-06:/blog/2016/psutil-550-is-twice-as-fast</id><summary type="html">&lt;p&gt;OK, this is a big one. Starting from psutil 5.0.0 you can query multiple &lt;cite&gt;Process&lt;/cite&gt; information around twice as fast as with previous versions (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/799"&gt;original ticket&lt;/a&gt; and &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot"&gt;updated doc&lt;/a&gt;). It took me 7 months, 108 commits and a massive refactoring of psutil internals (here is the &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/937/files"&gt;big …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;OK, this is a big one. Starting from psutil 5.0.0 you can query multiple &lt;cite&gt;Process&lt;/cite&gt; information around twice as fast as with previous versions (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/799"&gt;original ticket&lt;/a&gt; and &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot"&gt;updated doc&lt;/a&gt;). It took me 7 months, 108 commits and a massive refactoring of psutil internals (here is the &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/937/files"&gt;big commit&lt;/a&gt;), and I can safely say this is one of the best improvements and long standing issues which have been addressed in a major psutil release. Here goes.&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Collection time dropped from 0.20s to 0.17s, another ~0.03s shaved off.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="putting-it-all-together"&gt;
+&lt;h2&gt;Putting it all together&lt;a class="headerlink" href="#putting-it-all-together" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;With these small optimizations, I managed to reduce &lt;tt class="docutils literal"&gt;pytest&lt;/tt&gt; startup time by ~0.12 seconds, bringing it down from 0.42 seconds. While this improvement is insignificant for full test runs, it makes a noticeable difference (~28% faster) when repeatedly running individual tests from the command line, which is something I do frequently during development. Final result is visible in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/2538"&gt;PR-2538&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="other-links-which-may-be-useful"&gt;
+&lt;h2&gt;Other links which may be useful&lt;a class="headerlink" href="#other-links-which-may-be-useful" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/zupo/awesome-pytest-speedup"&gt;https://github.com/zupo/awesome-pytest-speedup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://projects.gentoo.org/python/guide/pytest.html"&gt;https://projects.gentoo.org/python/guide/pytest.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="tests"></category><category term="performance"></category></entry><entry><title>Improved process_iter()</title><link href="https://gmpy.dev/blog/2017/improved-process_iter" rel="alternate"></link><published>2017-09-03T00:00:00+02:00</published><updated>2017-09-03T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2017-09-03:/blog/2017/improved-process_iter</id><summary type="html">&lt;p&gt;This is part of the psutil 5.3.0 release (see the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html"&gt;changelog&lt;/a&gt; for the full list of changes).&lt;/p&gt;
+&lt;div class="section" id="the-old-pattern"&gt;
+&lt;h2&gt;The old pattern&lt;a class="headerlink" href="#the-old-pattern" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Iterating over processes and collecting attributes requires more boilerplate than it should. A process returned by &lt;tt class="docutils literal"&gt;psutil.process_iter()&lt;/tt&gt; may disappear before you access it, or require elevated privileges …&lt;/p&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;This is part of the psutil 5.3.0 release (see the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html"&gt;changelog&lt;/a&gt; for the full list of changes).&lt;/p&gt;
+&lt;div class="section" id="the-old-pattern"&gt;
+&lt;h2&gt;The old pattern&lt;a class="headerlink" href="#the-old-pattern" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Iterating over processes and collecting attributes requires more boilerplate than it should. A process returned by &lt;tt class="docutils literal"&gt;psutil.process_iter()&lt;/tt&gt; may disappear before you access it, or require elevated privileges, so every lookup has to be guarded with a &lt;tt class="docutils literal"&gt;try / except&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;proc&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;process_iter&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;        &lt;span class="n"&gt;pinfo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;proc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as_dict&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;attrs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;pid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;NoSuchProcess&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;AccessDenied&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;        &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;        &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pinfo&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="gp"&gt;...&lt;/span&gt;
+&lt;span class="go"&gt;{&amp;#39;pid&amp;#39;: 1, &amp;#39;name&amp;#39;: &amp;#39;systemd&amp;#39;}&lt;/span&gt;
+&lt;span class="go"&gt;{&amp;#39;pid&amp;#39;: 2, &amp;#39;name&amp;#39;: &amp;#39;kthreadd&amp;#39;}&lt;/span&gt;
+&lt;span class="go"&gt;{&amp;#39;pid&amp;#39;: 3, &amp;#39;name&amp;#39;: &amp;#39;ksoftirqd/0&amp;#39;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This is not decorative. It's necessary to avoid the race condition.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-new-pattern"&gt;
+&lt;h2&gt;The new pattern&lt;a class="headerlink" href="#the-new-pattern" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;5.3.0 adds &lt;tt class="docutils literal"&gt;attrs&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;ad_value&lt;/tt&gt; parameters to &lt;tt class="docutils literal"&gt;psutil.process_iter()&lt;/tt&gt;. With these, the loop body becomes:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;proc&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;process_iter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;attrs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;pid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]):&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;proc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="gp"&gt;...&lt;/span&gt;
+&lt;span class="go"&gt;{&amp;#39;pid&amp;#39;: 1, &amp;#39;name&amp;#39;: &amp;#39;systemd&amp;#39;}&lt;/span&gt;
+&lt;span class="go"&gt;{&amp;#39;pid&amp;#39;: 2, &amp;#39;name&amp;#39;: &amp;#39;kthreadd&amp;#39;}&lt;/span&gt;
+&lt;span class="go"&gt;{&amp;#39;pid&amp;#39;: 3, &amp;#39;name&amp;#39;: &amp;#39;ksoftirqd/0&amp;#39;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Internally, &lt;tt class="docutils literal"&gt;process_iter()&lt;/tt&gt; attaches an &lt;tt class="docutils literal"&gt;info&lt;/tt&gt; dict to the &lt;tt class="docutils literal"&gt;Process&lt;/tt&gt; instance. The attributes are pre-fetched in one shot. Processes that disappear during iteration are silently skipped, and attributes that would raise &lt;tt class="docutils literal"&gt;AccessDenied&lt;/tt&gt; get assigned &lt;tt class="docutils literal"&gt;ad_value&lt;/tt&gt;, which defaults to &lt;tt class="docutils literal"&gt;None&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;process_iter&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;username&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;ad_value&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;N/A&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="performance"&gt;
+&lt;h2&gt;Performance&lt;a class="headerlink" href="#performance" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Beyond the syntactic win, the new syntax is also faster than calling individual methods in a loop. &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;process_iter(attrs=[...])&lt;/span&gt;&lt;/tt&gt; is equivalent to using &lt;tt class="docutils literal"&gt;Process.oneshot()&lt;/tt&gt; on each process (see &lt;a class="reference external" href="/blog/2016/psutil-550-is-twice-as-fast"&gt;Making psutil twice as fast&lt;/a&gt; for how that works): attributes that share a syscall or a &lt;tt class="docutils literal"&gt;/proc&lt;/tt&gt; file are fetched together instead of re-read on every method call, which is a lot faster.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="comprehensions"&gt;
+&lt;h2&gt;Comprehensions&lt;a class="headerlink" href="#comprehensions" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;With the exception boilerplate out of the way, comprehensions finally work cleanly. E.g. getting processes owned by the current user can be written as:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;getpass&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pprint&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;pprint&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;pp&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;pp&lt;/span&gt;&lt;span class="p"&gt;([(&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;process_iter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;attrs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;username&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;username&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;getpass&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getuser&lt;/span&gt;&lt;span class="p"&gt;()])&lt;/span&gt;
+&lt;span class="go"&gt;[(16832, &amp;#39;bash&amp;#39;),&lt;/span&gt;
+&lt;span class="go"&gt; (19772, &amp;#39;ssh&amp;#39;),&lt;/span&gt;
+&lt;span class="go"&gt; (20492, &amp;#39;python&amp;#39;)]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+</content><category term="2017"></category><category term="psutil"></category><category term="python"></category><category term="api-design"></category><category term="release"></category><category term="performance"></category><category term="new-api"></category></entry><entry><title>Making psutil twice as fast</title><link href="https://gmpy.dev/blog/2016/psutil-550-is-twice-as-fast" rel="alternate"></link><published>2016-11-06T00:00:00+01:00</published><updated>2016-11-06T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2016-11-06:/blog/2016/psutil-550-is-twice-as-fast</id><summary type="html">&lt;p&gt;Starting from psutil 5.0.0 you can query multiple &lt;tt class="docutils literal"&gt;Process&lt;/tt&gt; fields around twice as fast as before (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/799"&gt;#799&lt;/a&gt; and &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot"&gt;Process.oneshot() doc&lt;/a&gt;). It took 7 months, 108 commits, and a massive refactoring of psutil internals (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/937"&gt;PR-937&lt;/a&gt;), and I think it's one of the best improvements ever shipped in …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Starting from psutil 5.0.0 you can query multiple &lt;tt class="docutils literal"&gt;Process&lt;/tt&gt; fields around twice as fast as before (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/799"&gt;#799&lt;/a&gt; and &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot"&gt;Process.oneshot() doc&lt;/a&gt;). It took 7 months, 108 commits, and a massive refactoring of psutil internals (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/937"&gt;PR-937&lt;/a&gt;), and I think it's one of the best improvements ever shipped in a psutil release.&lt;/p&gt;
 &lt;div class="section" id="the-problem"&gt;
 &lt;h2&gt;The problem&lt;a class="headerlink" href="#the-problem" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Except for some cases, the way different process information is retrieved varies depending on the OS. Sometimes it requires reading a file in the /proc filesystem (Linux), some other times it requires using C (Windows, BSD, OSX, SunOS), but every time it's done differently. Psutil abstracts this complexity by providing a nice high-level interface so that you, say, call &lt;tt class="docutils literal"&gt;Process.name()&lt;/tt&gt; without worrying about what happens behind the curtains or on what OS you're on.&lt;/p&gt;
-&lt;p&gt;Internally, it is not rare that multiple process info (e.g. &lt;cite&gt;name()&lt;/cite&gt;, &lt;cite&gt;ppid()&lt;/cite&gt;, &lt;cite&gt;uids()&lt;/cite&gt;, &lt;cite&gt;create_time()&lt;/cite&gt;) may be fetched by using the same routine. For example, on Linux we read &lt;cite&gt;/proc/stat&lt;/cite&gt; to get the process name, terminal, CPU times, creation time, status and parent PID, but only one value is returned and the others are discarded. On Linux, the code below reads &lt;cite&gt;/proc/stat&lt;/cite&gt; 6 times:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_times&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ppid&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;terminal&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;p&gt;How process information is retrieved varies by OS. Sometimes it means reading a file in &lt;tt class="docutils literal"&gt;/proc&lt;/tt&gt; (Linux), other times calling C (Windows, BSD, macOS, SunOS), but it's always done differently. Psutil abstracts this away: you call &lt;tt class="docutils literal"&gt;Process.name()&lt;/tt&gt; without worrying about what happens under the hood or which OS you're on.&lt;/p&gt;
+&lt;p&gt;Internally, multiple pieces of process info (e.g. &lt;tt class="docutils literal"&gt;Process.name()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;Process.ppid()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;Process.uids()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;Process.create_time()&lt;/tt&gt;) are fetched by the same syscall. On Linux we read &lt;tt class="docutils literal"&gt;/proc/PID/stat&lt;/tt&gt; to get the process name, terminal, CPU times, creation time, status and parent PID, but only one value is returned: the others are discarded. On Linux this code reads &lt;tt class="docutils literal"&gt;/proc/PID/stat&lt;/tt&gt; 6 times:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_times&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ppid&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;terminal&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Another example is BSD. In order to get process name, memory, CPU times and other metrics, a single &lt;cite&gt;sysctl()&lt;/cite&gt; call is necessary, but again, because of how psutil used to work so far that same sysctl() call is executed every time (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/2fe3f456321ca1605aaa2b71a7193de59d93075c/psutil/_psutil_bsd.c#L242-L258"&gt;here&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/2fe3f456321ca1605aaa2b71a7193de59d93075c/psutil/_psutil_bsd.c#L261-L277"&gt;here&lt;/a&gt;, and so on), one piece of information is returned (say &lt;cite&gt;name()&lt;/cite&gt;) and the rest is discarded. Not anymore.&lt;/p&gt;
+&lt;p&gt;On BSD most process metrics can be fetched with a single &lt;tt class="docutils literal"&gt;sysctl()&lt;/tt&gt;, yet psutil was invoking it for each process method (e.g. see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/2fe3f456321ca1605aaa2b71a7193de59d93075c/psutil/_psutil_bsd.c#L242-L258"&gt;here&lt;/a&gt; and &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/2fe3f456321ca1605aaa2b71a7193de59d93075c/psutil/_psutil_bsd.c#L261-L277"&gt;here&lt;/a&gt;).&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="do-it-in-one-shot"&gt;
 &lt;h2&gt;Do it in one shot&lt;a class="headerlink" href="#do-it-in-one-shot" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;It appears clear how the approach described above is not efficient, also considering that applications similar to top, htop, ps or glances usually collect more than one info per-process.
-psutil 5.0.0 introduces a new &lt;cite&gt;oneshot()&lt;/cite&gt; context manager. When used, the internal routine is executed once (in the example below on name()) and the other values are cached. The subsequent calls sharing the same internal routine (read &lt;cite&gt;/proc/stat&lt;/cite&gt;, call &lt;cite&gt;sysctl()&lt;/cite&gt; or whatever) will return the cached value.
-With psutil 5.0.0 the code above can be rewritten like this, and on Linux it will run 2.4 times faster:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;oneshot&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-&lt;span class="o"&gt;...&lt;/span&gt;     &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;...&lt;/span&gt;     &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_times&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;...&lt;/span&gt;     &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;...&lt;/span&gt;     &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ppid&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;...&lt;/span&gt;     &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="o"&gt;...&lt;/span&gt;     &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;terminal&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;p&gt;It's clear that this approach is inefficient, especially in tools like top or htop, where process info is continuously fetched in a loop. psutil 5.0.0 introduces a new &lt;tt class="docutils literal"&gt;Process.oneshot()&lt;/tt&gt; context manager. Inside it, the internal routine runs once (in the example, on the first &lt;tt class="docutils literal"&gt;Process.name()&lt;/tt&gt; call) and the other values are cached. Subsequent calls sharing the same internal routine (read &lt;tt class="docutils literal"&gt;/proc/PID/stat&lt;/tt&gt;, call &lt;tt class="docutils literal"&gt;sysctl()&lt;/tt&gt; or whatever) return the cached value. The code above can now be rewritten like this, and on Linux it runs 2.4 times faster:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;oneshot&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_times&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ppid&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;terminal&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="implementation"&gt;
 &lt;h2&gt;Implementation&lt;a class="headerlink" href="#implementation" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;One great thing about psutil design is its abstraction. It is divided into 3 &amp;quot;layers&amp;quot;. The first layer is represented by the main &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/__init__.py#L340"&gt;Process class&lt;/a&gt; (python), which is what dictates the end-user high-level API. The second layer is the &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_pslinux.py#L1097"&gt;OS-specific Python module&lt;/a&gt; which is a thin wrapper on top of the OS-specific &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_linux.c"&gt;C extension module&lt;/a&gt; (third layer). Because this was organized this way (modularly) the refactoring was reasonably smooth. In order to do this I first refactored those C functions collecting multiple info and grouped them into a single function (e.g. see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_bsd.c#L198-L338"&gt;BSD implementation&lt;/a&gt;). Then I wrote a &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_common.py#L264-L314"&gt;decorator&lt;/a&gt; which enables the cache only when requested (when entering the context manager) and decorated the &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psbsd.py#L491"&gt;&amp;quot;grouped functions&amp;quot;&lt;/a&gt; with it. The whole thing is enabled on request by the highest-level &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/__init__.py#L458-L518"&gt;oneshot()&lt;/a&gt; context manager, which is the only thing which is exposed to the end user. Here's the decorator:&lt;/p&gt;
+&lt;p&gt;One great thing about psutil's design is its abstraction. It is divided into 3 &amp;quot;layers&amp;quot;. Layer 1 is represented by the main &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/__init__.py#L340"&gt;Process class&lt;/a&gt; (Python), which exposes the high-level API. Layer 2 is the &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_pslinux.py#L1097"&gt;OS-specific Python module&lt;/a&gt;, which is a thin wrapper on top of the OS-specific &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_linux.c"&gt;C extension module&lt;/a&gt; (layer 3).&lt;/p&gt;
+&lt;p&gt;Because the code was organized this way (modular), the refactoring was reasonably smooth. I first refactored those C functions that collect multiple pieces of info and grouped them into a single function (e.g. see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_bsd.c#L198-L338"&gt;BSD implementation&lt;/a&gt;). Then I wrote a &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_common.py#L264-L314"&gt;decorator&lt;/a&gt; that enables the cache only when requested (when entering the context manager), and decorated the &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psbsd.py#L491"&gt;&amp;quot;grouped functions&amp;quot;&lt;/a&gt; with it. The caching mechanism is controlled by the &lt;tt class="docutils literal"&gt;Process.oneshot()&lt;/tt&gt; context manager, which is the only thing exposed to the end user. Here's the decorator:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;memoize_when_activated&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;A memoize decorator which is disabled by default. It can be&lt;/span&gt;
 &lt;span class="sd"&gt;    activated and deactivated on request.&lt;/span&gt;
@@ -302,33 +397,35 @@ With psutil 5.0.0 the code above can be rewritten like this, and on Linux it wil
     &lt;span class="n"&gt;wrapper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cache_deactivate&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cache_deactivate&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;wrapper&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;In order to measure the various speedups I finally wrote a &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/scripts/internal/bench_oneshot.py"&gt;benchmark script&lt;/a&gt; (well, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/scripts/internal/bench_oneshot_2.py"&gt;two&lt;/a&gt; actually) and kept tuning until I was sure the various changes made psutil actually faster. The benchmark scripts calculate the speedup you can get if you call all the &amp;quot;grouped&amp;quot; methods together (best case scenario).&lt;/p&gt;
+&lt;p&gt;To measure the speedup I wrote a &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/scripts/internal/bench_oneshot.py"&gt;benchmark script&lt;/a&gt; (well, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/scripts/internal/bench_oneshot_2.py"&gt;two&lt;/a&gt; actually), and kept tuning until I was sure the change actually made psutil faster. The scripts report the speedup for calling all the &amp;quot;grouped&amp;quot; methods together (best-case scenario).&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="linux-2-56x-speedup"&gt;
 &lt;h2&gt;Linux: +2.56x speedup&lt;a class="headerlink" href="#linux-2-56x-speedup" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Linux process is the only pure-python implementation as (almost) all process info is gathered by reading files in the &lt;cite&gt;/proc&lt;/cite&gt; filesystem. &lt;cite&gt;/proc&lt;/cite&gt; files typically contain different information about the process and &lt;cite&gt;/proc/PID/stat&lt;/cite&gt; and &lt;cite&gt;/proc/PID/status&lt;/cite&gt; are the perfect examples. That's why on Linux we aggregate them in 3 groups. The relevant part of the Linux implementation can be seen &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_pslinux.py#L1108-L1153"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The Linux implementation is mostly Python, reading files in &lt;tt class="docutils literal"&gt;/proc&lt;/tt&gt;. These files typically expose multiple pieces of info per process; &lt;tt class="docutils literal"&gt;/proc/PID/stat&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;/proc/PID/status&lt;/tt&gt; are the perfect example. We aggregate them into three groups. See the relevant code &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_pslinux.py#L1108-L1153"&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="windows-from-1-9x-to-6-5x-speedup"&gt;
 &lt;h2&gt;Windows: from +1.9x to +6.5x speedup&lt;a class="headerlink" href="#windows-from-1-9x-to-6-5x-speedup" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Windows is an interesting one. In normal circumstances, if we're querying a process owned by our user, we group together only process' &lt;cite&gt;num_threads()&lt;/cite&gt;, &lt;cite&gt;num_ctx_switches()&lt;/cite&gt; and &lt;cite&gt;num_handles()&lt;/cite&gt;, getting a +1.9x speedup if we access those methods in one shot. Windows is particular though, because certain methods use a &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/304"&gt;dual implementation&lt;/a&gt;: a &amp;quot;fast method&amp;quot; is attempted first, but if the process is owned by another user it fails with AccessDenied. In that case psutil falls back on using a second &amp;quot;slower&amp;quot; method (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_pswindows.py#L681"&gt;here&lt;/a&gt; for example).
-The second method is slower because it &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/arch/windows/process_info.c#L790"&gt;iterates over all PIDs&lt;/a&gt; but unlike &amp;quot;plain&amp;quot; Windows APIs it can be used to &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_windows.c#L2789"&gt;get multiple info in one shot&lt;/a&gt;: num threads, context switches, handles, CPU times, create time and IO counters. That is why querying processes owned by other users results in an impressive +6.5 speedup.&lt;/p&gt;
+&lt;p&gt;Windows is an interesting one. For a process owned by our user, we group only &lt;tt class="docutils literal"&gt;Process.num_threads()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;Process.num_ctx_switches()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;Process.num_handles()&lt;/tt&gt;, for a +1.9x speedup if we access those methods in one shot.&lt;/p&gt;
+&lt;p&gt;Windows is special though, because certain methods have a dual implementation (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/304"&gt;#304&lt;/a&gt;): a &amp;quot;fast method&amp;quot; is tried first, but if the process is owned by another user it fails with &lt;tt class="docutils literal"&gt;AccessDenied&lt;/tt&gt;. psutil then falls back to a second, &amp;quot;slower&amp;quot; method (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_pswindows.py#L681"&gt;here&lt;/a&gt; for example).&lt;/p&gt;
+&lt;p&gt;It's slower because it &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/arch/windows/process_info.c#L790"&gt;iterates over all PIDs&lt;/a&gt;, but unlike the &amp;quot;plain&amp;quot; Windows APIs it can still &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_windows.c#L2789"&gt;retrieve multiple pieces of information in one shot&lt;/a&gt;: number of threads, context switches, handles, CPU times, create time, and I/O counters.&lt;/p&gt;
+&lt;p&gt;That's why querying processes owned by other users results in an impressive +6.5x speedup.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div class="section" id="osx-1-92x-speedup"&gt;
-&lt;h2&gt;OSX: +1.92x speedup&lt;a class="headerlink" href="#osx-1-92x-speedup" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;On OSX we can get 2 groups of information. With &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_osx.c#L129"&gt;sysctl()&lt;/a&gt; syscall we get process parent PID, uids, gids, terminal, create time, name. With &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_osx.c#L183"&gt;proc_info()&lt;/a&gt; syscall we get CPU times (for PIDs owned by another user), memory metrics and ctx switches. Not bad.&lt;/p&gt;
+&lt;div class="section" id="macos-1-92x-speedup"&gt;
+&lt;h2&gt;macOS: +1.92x speedup&lt;a class="headerlink" href="#macos-1-92x-speedup" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;On macOS we can get 2 groups of information. With &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_osx.c#L129"&gt;sysctl()&lt;/a&gt; we get process parent PID, uids, gids, terminal, create time, name. With &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_osx.c#L183"&gt;proc_info()&lt;/a&gt; we get CPU times (for PIDs owned by another user), memory metrics and ctx switches. Not bad.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="bsd-2-18x-speedup"&gt;
 &lt;h2&gt;BSD: +2.18x speedup&lt;a class="headerlink" href="#bsd-2-18x-speedup" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;BSD was an interesting one as we gather tons of process info just by calling &lt;cite&gt;sysctl()&lt;/cite&gt; (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_bsd.c#L199"&gt;implementation&lt;/a&gt;). In a single shot we get process name, ppid, status, uids, gids, IO counters, CPU and create times, terminal and ctx switches.&lt;/p&gt;
+&lt;p&gt;On BSD we gather tons of process info just by calling &lt;tt class="docutils literal"&gt;sysctl()&lt;/tt&gt; (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_bsd.c#L199"&gt;implementation&lt;/a&gt;): process name, ppid, status, uids, gids, IO counters, CPU and create times, terminal and ctx switches.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div class="section" id="sunos-1-37-speedup"&gt;
-&lt;h2&gt;SunOS: +1.37 speedup&lt;a class="headerlink" href="#sunos-1-37-speedup" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;SunOS implementation is similar to Linux implementation in that it reads files in the &lt;cite&gt;/proc&lt;/cite&gt; filesystem but differently from Linux this is done in C. Also in this case, we can group different metrics together (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_psutil_sunos.c#L83-L142"&gt;here&lt;/a&gt; and &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_psutil_sunos.c#L171-L189"&gt;here&lt;/a&gt;).&lt;/p&gt;
+&lt;div class="section" id="sunos-1-37x-speedup"&gt;
+&lt;h2&gt;SunOS: +1.37x speedup&lt;a class="headerlink" href="#sunos-1-37x-speedup" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;SunOS is like Linux (it reads files in &lt;tt class="docutils literal"&gt;/proc&lt;/tt&gt;), but the code is in C. Here too, we group different metrics together (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_psutil_sunos.c#L83-L142"&gt;here&lt;/a&gt; and &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_psutil_sunos.c#L171-L189"&gt;here&lt;/a&gt;).&lt;/p&gt;
 &lt;/div&gt;
-&lt;div class="section" id="external-links"&gt;
-&lt;h2&gt;External links&lt;a class="headerlink" href="#external-links" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="section" id="discussion"&gt;
+&lt;h2&gt;Discussion&lt;a class="headerlink" href="#discussion" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/5bhn4q/psutil_500_is_around_twice_as_fast/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="2016"></category><category term="psutil"></category><category term="performance"></category><category term="macos"></category><category term="bsd"></category><category term="sunos"></category><category term="python"></category></entry></feed>
+</content><category term="2016"></category><category term="psutil"></category><category term="python"></category><category term="performance"></category><category term="new-api"></category><category term="featured"></category><category term="release"></category></entry></feed>

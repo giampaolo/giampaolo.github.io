@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!--<title>psutil: drop Python 2.7 support</title>-->
+    <!--<title>Letting go of Python 2.7</title>-->
     <title>Giampaolo Rodola</title>
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
@@ -26,7 +26,7 @@
     <header>
       <h1 class="entry-title">
         <a href="https://gmpy.dev/blog/2025/psutil-drop-python-27-support" rel="bookmark"
-           title="Permalink to psutil: drop Python 2.7 support">psutil: drop Python 2.7 support</a></h1>
+           title="Permalink to Letting go of Python 2.7">Letting go of Python 2.7</a></h1>
     </header>
 
     <div class="entry-content">
@@ -40,117 +40,80 @@
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->      <p>About dropping Python 2.7 support in psutil, 3 years ago
-<a href="https://github.com/giampaolo/psutil/issues/2014#issuecomment-969263432">I stated</a>:</p>
+</footer><!-- /.post-info -->      <p>About dropping Python 2.7 support in psutil, 3 years ago I stated (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/2014">#2014</a>):</p>
 <blockquote>
-<p>Not a chance, for many years to come. [Python 2.7] currently represents 7-10%
-of total downloads, meaning around 70k / 100k downloads per day.</p>
-</blockquote>
-<p>Only 3 years later, and to my surprise, <strong>downloads for Python 2.7 dropped to
-0.36%</strong>! As such, as of psutil 7.0.0, I finally decided to drop support for
-Python 2.7!</p>
-<h2>The numbers</h2>
+Not a chance, for many years to come. [Python 2.7] currently
+represents 7-10% of total downloads, meaning around 70k / 100k
+downloads per day.</blockquote>
+<p>Only 3 years later, and to my surprise, <strong>downloads for Python 2.7 dropped to 0.36%</strong>! As such, as of psutil 7.0.0, I finally decided to drop support for Python 2.7!</p>
+<div class="section" id="the-numbers">
+<h2>The numbers<a class="headerlink" href="#the-numbers" title="Permalink to this headline">¶</a></h2>
 <p>These are downloads per month:</p>
-<div class="highlight"><pre><span></span><code><span class="o">$</span><span class="w"> </span><span class="n">pypinfo</span><span class="w"> </span><span class="o">--</span><span class="n">percent</span><span class="w"> </span><span class="n">psutil</span><span class="w"> </span><span class="n">pyversion</span>
-<span class="n">Served</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">cache</span><span class="p">:</span><span class="w"> </span><span class="n">False</span>
-<span class="n">Data</span><span class="w"> </span><span class="n">processed</span><span class="p">:</span><span class="w"> </span><span class="mf">4.65</span><span class="w"> </span><span class="n">GiB</span>
-<span class="n">Data</span><span class="w"> </span><span class="n">billed</span><span class="p">:</span><span class="w"> </span><span class="mf">4.65</span><span class="w"> </span><span class="n">GiB</span>
-<span class="n">Estimated</span><span class="w"> </span><span class="n">cost</span><span class="p">:</span><span class="w"> </span><span class="o">$</span><span class="mf">0.03</span>
+<div class="highlight"><pre><span></span>$ pypinfo --percent psutil pyversion
+Served from cache: False
+Data processed: 4.65 GiB
+Data billed: 4.65 GiB
+Estimated cost: $0.03
 
-<span class="o">|</span><span class="w"> </span><span class="n">python_version</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">percent</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">download_count</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="o">--------------</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">-------</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">--------------</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.10</span><span class="w">           </span><span class="o">|</span><span class="w">  </span><span class="mf">23.84</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">26</span><span class="p">,</span><span class="mi">354</span><span class="p">,</span><span class="mi">506</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.8</span><span class="w">            </span><span class="o">|</span><span class="w">  </span><span class="mf">18.87</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">20</span><span class="p">,</span><span class="mi">862</span><span class="p">,</span><span class="mi">015</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.7</span><span class="w">            </span><span class="o">|</span><span class="w">  </span><span class="mf">17.38</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">19</span><span class="p">,</span><span class="mi">217</span><span class="p">,</span><span class="mi">960</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.9</span><span class="w">            </span><span class="o">|</span><span class="w">  </span><span class="mf">17.00</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">18</span><span class="p">,</span><span class="mi">798</span><span class="p">,</span><span class="mi">843</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.11</span><span class="w">           </span><span class="o">|</span><span class="w">  </span><span class="mf">13.63</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">15</span><span class="p">,</span><span class="mi">066</span><span class="p">,</span><span class="mi">706</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.12</span><span class="w">           </span><span class="o">|</span><span class="w">   </span><span class="mf">7.01</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">      </span><span class="mi">7</span><span class="p">,</span><span class="mi">754</span><span class="p">,</span><span class="mi">751</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.13</span><span class="w">           </span><span class="o">|</span><span class="w">   </span><span class="mf">1.15</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">      </span><span class="mi">1</span><span class="p">,</span><span class="mi">267</span><span class="p">,</span><span class="mi">008</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.6</span><span class="w">            </span><span class="o">|</span><span class="w">   </span><span class="mf">0.73</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">        </span><span class="mi">803</span><span class="p">,</span><span class="mi">189</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">2.7</span><span class="w">            </span><span class="o">|</span><span class="w">   </span><span class="mf">0.36</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">        </span><span class="mi">402</span><span class="p">,</span><span class="mi">111</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="mf">3.5</span><span class="w">            </span><span class="o">|</span><span class="w">   </span><span class="mf">0.03</span><span class="o">%</span><span class="w"> </span><span class="o">|</span><span class="w">         </span><span class="mi">28</span><span class="p">,</span><span class="mi">656</span><span class="w"> </span><span class="o">|</span>
-<span class="o">|</span><span class="w"> </span><span class="n">Total</span><span class="w">          </span><span class="o">|</span><span class="w">         </span><span class="o">|</span><span class="w">    </span><span class="mi">110</span><span class="p">,</span><span class="mi">555</span><span class="p">,</span><span class="mi">745</span><span class="w"> </span><span class="o">|</span>
-</code></pre></div>
-
-<p>According to <a href="https://archive.is/wip/knzql">pypistats.org</a> Python 2.7 downloads
-represents the 0.28% of the total, around 15.000 downloads per day.</p>
-<h2>The pain</h2>
-<p>Maintaining 2.7 support in psutil had become increasingly difficult, but still
-possible. E.g. I could still run tests by using
-<a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">old PYPI backports</a>.
-GitHub Actions could still be
-<a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112">tweaked</a>
-to run tests and produce 2.7 wheels on Linux and macOS. Not on Windows though,
-for which I had to use a separate service (Appveyor). Still, the amount of
-hacks in psutil source code necessary to support Python 2.7 piled up over the
-years, and became quite big. Some disadvantages that come to mind:</p>
-<ul>
-<li>Having to maintain a Python compatibility layers like
-  <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py">psutil/_compat.py</a>.
-  This translated in extra extra code and extra imports.</li>
-<li>The C compatibility layer to differentiate between Python 2 and 3
-  (<code>#if
-  PY_MAJOR_VERSION &lt;= 3</code>, etc.).</li>
-<li>Dealing with the string vs. unicode differences, both in Python and in C.</li>
-<li>Inability to use modern language features, especially f-strings.</li>
-<li>Inability to freely use <code>enum</code>s, which created a difference on how CONSTANTS
-  were exposed in terms of API.</li>
-<li>Having to install a specific version of <code>pip</code> and other (outdated)
-  <a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">deps</a>.</li>
-<li>Relying on the third-party Appveyor CI service to run tests and produce 2.7
-  wheels.</li>
-<li>Running 4 extra CI jobs on every commit (Linux, macOS, Windows 32-bit,
-  Windows 64-bit) making the CI slower and more subject to failures (we have
-  quite a bit of flaky tests).</li>
-<li>The distribution of 7 wheels specific for Python 2.7. E.g. in the previous
-  release I had to upload:</li>
+| python_version | percent | download_count |
+| -------------- | ------- | -------------- |
+| 3.10           |  23.84% |     26,354,506 |
+| 3.8            |  18.87% |     20,862,015 |
+| 3.7            |  17.38% |     19,217,960 |
+| 3.9            |  17.00% |     18,798,843 |
+| 3.11           |  13.63% |     15,066,706 |
+| 3.12           |   7.01% |      7,754,751 |
+| 3.13           |   1.15% |      1,267,008 |
+| 3.6            |   0.73% |        803,189 |
+| 2.7            |   0.36% |        402,111 |
+| 3.5            |   0.03% |         28,656 |
+| Total          |         |    110,555,745 |
+</pre></div>
+<p>According to <a class="reference external" href="https://archive.is/wip/knzql">pypistats.org</a> Python 2.7 downloads represent 0.28% of the total, around 15,000 downloads per day.</p>
+</div>
+<div class="section" id="the-pain">
+<h2>The pain<a class="headerlink" href="#the-pain" title="Permalink to this headline">¶</a></h2>
+<p>Keeping 2.7 alive had become increasingly difficult, but still possible: tests ran via <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">old PyPI backports</a> and a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112">tweaked GitHub Actions workflow</a> on Linux and macOS, plus a separate third-party service (Appveyor) for Windows. But the workarounds in the source kept piling up:</p>
+<ul class="simple">
+<li>A Python compatibility layer (<a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py">psutil/_compat.py</a>) plus <tt class="docutils literal">#if PY_MAJOR_VERSION &lt;= 3</tt> branches in C, with constant str-vs-unicode juggling on both sides.</li>
+<li>No f-strings, and no free use of <tt class="docutils literal">enum</tt> for constants (which ended up with a different API shape than on Python 3).</li>
+<li>An outdated <tt class="docutils literal">pip</tt> and <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">outdated deps</a>.</li>
+<li>4 extra CI jobs per commit (Linux, macOS, Windows 32-bit and 64-bit), making the pipeline slower and flakier.</li>
+<li>7 wheels specific to Python 2.7 to ship on every release:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>psutil-6.1.1-cp27-cp27m-macosx_10_9_x86_64.whl
+<div class="highlight"><pre><span></span>psutil-6.1.1-cp27-cp27m-macosx_10_9_x86_64.whl
 psutil-6.1.1-cp27-none-win32.whl
 psutil-6.1.1-cp27-none-win_amd64.whl
 psutil-6.1.1-cp27-cp27m-manylinux2010_i686.whl
 psutil-6.1.1-cp27-cp27m-manylinux2010_x86_64.whl
 psutil-6.1.1-cp27-cp27mu-manylinux2010_i686.whl
 psutil-6.1.1-cp27-cp27mu-manylinux2010_x86_64.whl
-</code></pre></div>
-
-<h2>The removal</h2>
-<p>The removal was done in
-<a href="https://github.com/giampaolo/psutil/pull/2481">PR-2841</a>, which removed around
-1500 lines of code (nice!). <strong>It felt liberating</strong>. In doing so, in the doc I
-still made the promise that the 6.1.* serie will keep supporting Python 2.7
-and will receive <strong>critical bug-fixes only</strong> (no new features). It will be
-maintained in a specific
-<a href="https://github.com/giampaolo/psutil/tree/python2">python2 branch</a>. I
-explicitly kept the
-<a href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py">setup.py</a>
-script compatible with Python 2.7 in terms of syntax, so that, when the tarball
-is fetched from PYPI, it will emit an informative error message on
-<code>pip install
-psutil</code>. The user trying to install psutil on Python 2.7 will see:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip2<span class="w"> </span>install<span class="w"> </span>psutil
-As<span class="w"> </span>of<span class="w"> </span>version<span class="w"> </span><span class="m">7</span>.0.0<span class="w"> </span>psutil<span class="w"> </span>no<span class="w"> </span>longer<span class="w"> </span>supports<span class="w"> </span>Python<span class="w"> </span><span class="m">2</span>.7.
-Latest<span class="w"> </span>version<span class="w"> </span>supporting<span class="w"> </span>Python<span class="w"> </span><span class="m">2</span>.7<span class="w"> </span>is<span class="w"> </span>psutil<span class="w"> </span><span class="m">6</span>.1.X.
-Install<span class="w"> </span>it<span class="w"> </span>with:<span class="w"> </span><span class="s2">&quot;pip2 install psutil==6.1.*&quot;</span>.
-</code></pre></div>
-
-<p>As the informative message states, users that are still on Python 2.7 can still
-use psutil with:</p>
-<div class="highlight"><pre><span></span><code>pip2 install psutil==6.1.*
-</code></pre></div>
-
-<h2>Related tickets</h2>
-<ul>
-<li>2017-06: <a href="https://github.com/giampaolo/psutil/issues/1053">#1053</a></li>
-<li>2022-04: <a href="https://github.com/giampaolo/psutil/pull/2099">#2099</a></li>
-<li>2023-04: <a href="https://github.com/giampaolo/psutil/pull/2246">#2246</a></li>
-<li>2024-12: <a href="https://github.com/giampaolo/psutil/pull/2481">PR-635</a></li>
+</pre></div>
+</div>
+<div class="section" id="the-removal">
+<h2>The removal<a class="headerlink" href="#the-removal" title="Permalink to this headline">¶</a></h2>
+<p>The removal was done in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2481">PR-2481</a>, which dropped around 1500 lines of code (nice!). <strong>It felt liberating</strong>. In doing so, in the doc I still made the promise that the 6.1.* series will keep supporting Python 2.7 and will receive <strong>critical bug-fixes only</strong> (no new features). It will be maintained in a specific <a class="reference external" href="https://github.com/giampaolo/psutil/tree/python2">python2 branch</a>. I explicitly kept the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py">setup.py</a> script compatible with Python 2.7 in terms of syntax, so that, when the tarball is fetched from PyPI, it will emit an informative error message on <tt class="docutils literal">pip install psutil</tt>. The user trying to install psutil on Python 2.7 will see:</p>
+<div class="highlight"><pre><span></span>$ pip2 install psutil
+As of version 7.0.0 psutil no longer supports Python 2.7.
+Latest version supporting Python 2.7 is psutil 6.1.X.
+Install it with: &quot;pip2 install psutil==6.1.*&quot;.
+</pre></div>
+</div>
+<div class="section" id="related">
+<h2>Related<a class="headerlink" href="#related" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>2017-06: <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1053">#1053</a> (2.7 ticket)</li>
+<li>2022-04: <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2099">PR-2099</a> (drop 2.6)</li>
+<li>2023-04: <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2246">PR-2246</a> (drop 3.4 &amp; 3.5)</li>
+<li>2024-12: <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2481">PR-2481</a> (drop 2.7)</li>
 </ul>
+</div>
+
     </div><!-- /.entry-content -->
   </article>
 </section>

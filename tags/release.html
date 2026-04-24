@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<title>Giampaolo Rodola - release</title>-->
+    <title>Giampaolo Rodola</title>
+    <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
+    <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
+    <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
+    <link rel="icon" type="image/x-icon" href="https://gmpy.dev/favicon.ico">
+</head>
+
+<body id="index" class="home">
+    <header id="banner" class="body">
+        <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+        <nav><ul>
+            <li><a href="/">Blog</a></li>
+            <li><a href="/archives">Archives</a></li>
+            <li><a href="/about">About</a></li>
+        </ul></nav>
+    </header><!-- /#banner -->
+
+<section id="content" class="body">
+    <h1 class="entry-title">Blog posts for tags/release</h1>
+
+<!-- blog posts -->
+        <ol id="posts-list" class="hfeed" start="4">
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2025/psutil-drop-python-27-support" rel="bookmark"
+                   title="Permalink to Letting go of Python 2.7">Letting go of Python 2.7</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2025-02-13T00:00:00+01:00">
+        Created: 13 feb 2025,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>About dropping Python 2.7 support in psutil, 3 years ago I stated (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/2014">#2014</a>):</p>
+<blockquote>
+Not a chance, for many years to come. [Python 2.7] currently
+represents 7-10% of total downloads, meaning around 70k / 100k
+downloads per day.</blockquote>
+<p>Only 3 years later, and to my surprise, <strong>downloads for Python 2.7 dropped to 0.36%</strong>! As such, as of psutil 7.0.0, I finally decided to drop support for Python 2.7!</p>
+<div class="section" id="the-numbers">
+<h2>The numbers<a class="headerlink" href="#the-numbers" title="Permalink to this headline">¶</a></h2>
+<p>These are downloads per month:</p>
+<div class="highlight"><pre><span></span>$ pypinfo --percent psutil pyversion
+Served from cache: False
+Data processed: 4.65 GiB
+Data billed: 4.65 GiB
+Estimated cost: $0.03
+
+| python_version | percent | download_count |
+| -------------- | ------- | -------------- |
+| 3.10           |  23.84% |     26,354,506 |
+| 3.8            |  18.87% |     20,862,015 |
+| 3.7            |  17.38% |     19,217,960 |
+| 3.9            |  17.00% |     18,798,843 |
+| 3.11           |  13.63% |     15,066,706 |
+| 3.12           |   7.01% |      7,754,751 |
+| 3.13           |   1.15% |      1,267,008 |
+| 3.6            |   0.73% |        803,189 |
+| 2.7            |   0.36% |        402,111 |
+| 3.5            |   0.03% |         28,656 |
+| Total          |         |    110,555,745 |
+</pre></div>
+<p>According to <a class="reference external" href="https://archive.is/wip/knzql">pypistats.org</a> Python 2.7 downloads represent 0.28% of the total, around 15,000 downloads per day.</p>
+</div>
+<div class="section" id="the-pain">
+<h2>The pain<a class="headerlink" href="#the-pain" title="Permalink to this headline">¶</a></h2>
+<p>Keeping 2.7 alive had become increasingly difficult, but still possible: tests ran via <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">old PyPI backports</a> and a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112">tweaked GitHub Actions workflow</a> on Linux and macOS, plus a separate third-party service (Appveyor) for Windows. But the workarounds in the source kept piling up:</p>
+<ul class="simple">
+<li>A Python compatibility layer (<a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py">psutil/_compat.py</a>) plus <tt class="docutils literal">#if PY_MAJOR_VERSION &lt;= 3</tt> branches in C, with constant str-vs-unicode juggling on both sides.</li>
+<li>No f-strings, and no free use of <tt class="docutils literal">enum</tt> for constants (which ended up with a different API shape than on Python 3).</li>
+<li>An outdated <tt class="docutils literal">pip</tt> and <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85">outdated deps</a>.</li>
+<li>4 extra CI jobs per commit (Linux, macOS, Windows 32-bit and 64-bit), making the pipeline slower and flakier.</li>
+<li>7 wheels specific to Python 2.7 to ship on every release:</li>
+</ul>
+<div class="highlight"><pre><span></span>psutil-6.1.1-cp27-cp27m-macosx_10_9_x86_64.whl
+psutil-6.1.1-cp27-none-win32.whl
+psutil-6.1.1-cp27-none-win_amd64.whl
+psutil-6.1.1-cp27-cp27m-manylinux2010_i686.whl
+psutil-6.1.1-cp27-cp27m-manylinux2010_x86_64.whl
+psutil-6.1.1-cp27-cp27mu-manylinux2010_i686.whl
+psutil-6.1.1-cp27-cp27mu-manylinux2010_x86_64.whl
+</pre></div>
+</div>
+<div class="section" id="the-removal">
+<h2>The removal<a class="headerlink" href="#the-removal" title="Permalink to this headline">¶</a></h2>
+<p>The removal was done in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2481">PR-2481</a>, which dropped around 1500 lines of code (nice!). <strong>It felt liberating</strong>. In doing so, in the doc I still made the promise that the 6.1.* series will keep supporting Python 2.7 and will receive <strong>critical bug-fixes only</strong> (no new features). It will be maintained in a specific <a class="reference external" href="https://github.com/giampaolo/psutil/tree/python2">python2 branch</a>. I explicitly kept the <a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py">setup.py</a> script compatible with Python 2.7 in terms of syntax, so that, when the tarball is fetched from PyPI, it will emit an informative error message on <tt class="docutils literal">pip install psutil</tt>. The user trying to install psutil on Python 2.7 will see:</p>
+<div class="highlight"><pre><span></span>$ pip2 install psutil
+As of version 7.0.0 psutil no longer supports Python 2.7.
+Latest version supporting Python 2.7 is psutil 6.1.X.
+Install it with: &quot;pip2 install psutil==6.1.*&quot;.
+</pre></div>
+</div>
+<div class="section" id="related">
+<h2>Related<a class="headerlink" href="#related" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>2017-06: <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1053">#1053</a> (2.7 ticket)</li>
+<li>2022-04: <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2099">PR-2099</a> (drop 2.6)</li>
+<li>2023-04: <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2246">PR-2246</a> (drop 3.4 &amp; 3.5)</li>
+<li>2024-12: <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2481">PR-2481</a> (drop 2.7)</li>
+</ul>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2019/system-load-average-on-windows-in-python" rel="bookmark"
+                   title="Permalink to System load average on Windows in Python">System load average on Windows in Python</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2019-05-29T00:00:00+02:00">
+        Created: 29 mag 2019,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/windows">windows</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/personal">personal</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>psutil 5.6.2 is out. It implements an emulation of <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getloadavg">os.getloadavg()</a> on Windows, kindly contributed by <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1485">Ammar Askar</a>, who originally implemented it for <a class="reference external" href="https://github.com/python/cpython/pull/8357/files">CPython's test suite</a>.</p>
+<p>This idea has been floating around for quite a while. The first proposal dates back to <a class="reference external" href="https://github.com/giampaolo/psutil/issues/139">2010</a>, when psutil was still hosted on Google Code, and it popped up <a class="reference external" href="https://github.com/giampaolo/psutil/issues?utf8=%E2%9C%93&amp;q=getloadavg">multiple times</a> over the years. There's a bunch of info online mentioning the pieces you'd theoretically use (the so-called <tt class="docutils literal">System Processor Queue Length</tt>), but I couldn't find any real implementation. A quick search suggests there's real demand for this, but very few tools provide it natively (the only ones I could find are <a class="reference external" href="https://blog.sflow.com/2011/02/windows-load-average.html">sFlowTrend</a> and <a class="reference external" href="https://www.zabbix.com/forum/zabbix-help/50423-windows-cpu-load">Zabbix</a>). So I'm glad this finally landed in psutil / Python.</p>
+<div class="section" id="other-improvements-and-bugfixes-in-psutil-5-6-2">
+<h2>Other improvements and bugfixes in psutil 5.6.2<a class="headerlink" href="#other-improvements-and-bugfixes-in-psutil-5-6-2" title="Permalink to this headline">¶</a></h2>
+<p>The full list is in the <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">changelog</a>. A couple worth mentioning:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">#1476</a>: ability to set a process's high I/O priority on Windows.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1458">#1458</a>: colorized test output. Nobody will use this directly, but it's nice and I'm porting it to other projects I maintain (e.g. pyftpdlib). Good candidate for a small PyPI module that could also include the unittest extensions I've been re-implementing piece by piece:<ul>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1478">#1478</a>: re-running failed tests.</li>
+<li>display test timings / durations. This is something I'm also contributing to CPython: <a class="reference external" href="https://bugs.python.org/issue4080">BPO-4080</a> and <a class="reference external" href="https://github.com/python/cpython/pull/12271/files">PR-12271</a>.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="about-me">
+<h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
+<p>I'm currently in China (Shenzhen) for a mix of vacation and work, and I will likely take a break from Open Source for a while (about 2.5 months), during which I'll also go to the Philippines and Japan.</p>
+</div>
+<div class="section" id="external">
+<h2>External<a class="headerlink" href="#external" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/bhji0m/new_psutil_562_with_load_average_emulation_on/">Reddit</a></li>
+</ul>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2019/psutil-560-and-process-parents" rel="bookmark"
+                   title="Permalink to Announcing psutil 5.6.0">Announcing psutil 5.6.0</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2019-03-05T00:00:00+01:00">
+        Created: 05 mar 2019,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/windows">windows</a>,        <a href="https://gmpy.dev/tags/macos">macos</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>psutil 5.6.0 is out. Highlights: a new <tt class="docutils literal">Process.parents()</tt> method, several important Windows improvements, and the removal of <tt class="docutils literal">Process.memory_maps()</tt> on macOS.</p>
+<div class="section" id="process-parents">
+<h2>Process parents()<a class="headerlink" href="#process-parents" title="Permalink to this headline">¶</a></h2>
+<p>The new method returns the parents of a process as a list of <tt class="docutils literal">Process</tt> instances. If no parents are known, an empty list is returned.</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="mi">5312</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">()</span>
+<span class="go">[psutil.Process(pid=4699, name=&#39;bash&#39;, started=&#39;09:06:44&#39;),</span>
+<span class="go"> psutil.Process(pid=4689, name=&#39;gnome-terminal-server&#39;, started=&#39;09:06:44&#39;),</span>
+<span class="go"> psutil.Process(pid=1, name=&#39;systemd&#39;, started=&#39;05:56:55&#39;)]</span>
+</pre></div>
+<p>Nothing fundamentally new here, since this is a convenience wrapper around <tt class="docutils literal">Process.parent()</tt>, but it's still nice to have it built in. It pairs well with <tt class="docutils literal">Process.children()</tt> when working with process trees. The idea was proposed by Ghislain Le Meur.</p>
+</div>
+<div class="section" id="windows">
+<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
+<p>Certain Windows APIs that need to be dynamically loaded from DLLs are now loaded only once at startup, instead of on every function call. This makes some operations <strong>50% to 100% faster</strong>; see benchmarks in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1422">PR-1422</a>.</p>
+<p><tt class="docutils literal">Process.suspend()</tt> and <tt class="docutils literal">Process.resume()</tt> previously iterated over all process threads via <tt class="docutils literal">CreateToolhelp32Snapshot()</tt>, which was unorthodox and broke when the process had been suspended by Process Hacker. They now call the undocumented <tt class="docutils literal">NtSuspendProcess()</tt> / <tt class="docutils literal">NtResumeProcess()</tt> NT APIs, same as Process Hacker and Sysinternals tools. Discussed in <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1379">#1379</a>, implemented in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1435">PR-1435</a>.</p>
+<p><tt class="docutils literal">SE DEBUG</tt> is a privilege bit set on the Python process at startup so psutil can query processes owned by other users (Administrator, Local System), meaning fewer <tt class="docutils literal">AccessDenied</tt> exceptions for low-PID processes. The code setting it had presumably been broken for years and is now finally fixed in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1429">PR-1429</a>.</p>
+</div>
+<div class="section" id="removal-of-process-memory-maps-on-macos">
+<h2>Removal of Process.memory_maps() on macOS<a class="headerlink" href="#removal-of-process-memory-maps-on-macos" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal">Process.memory_maps()</tt> is gone on macOS (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/1291">#1291</a>). The underlying Apple API would randomly raise <tt class="docutils literal">EINVAL</tt> or segfault the host process, and no amount of reverse-engineering produced a safe fix. So I removed it. This is covered in a <a class="reference external" href="removing-processmemory_maps-on-macos">separate post</a>.</p>
+</div>
+<div class="section" id="improved-exceptions">
+<h2>Improved exceptions<a class="headerlink" href="#improved-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>One problem that affected psutil maintenance over the years was receiving bug reports whose tracebacks did not indicate which syscall had actually failed. This was especially painful on Windows, where a single routine may invoke multiple Windows APIs. Now the <tt class="docutils literal">OSError</tt> (or <tt class="docutils literal">WindowsError</tt>) exception includes the syscall from which the error originated. See <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1428">PR-1428</a>.</p>
+</div>
+<div class="section" id="other-changes">
+<h2>Other changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h2>
+<p>See the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html">changelog</a>.</p>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2019/removing-processmemory_maps-on-macos" rel="bookmark"
+                   title="Permalink to Removing Process.memory_maps() on macOS">Removing Process.memory_maps() on macOS</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2019-03-05T00:00:00+01:00">
+        Created: 05 mar 2019,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/macos">macos</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>This is part of the psutil 5.6.0 release (see the full <a class="reference external" href="psutil-560-and-process-parents">release notes</a>).</p>
+<p>As of 5.6.0, <tt class="docutils literal">Process.memory_maps()</tt> is no longer defined on macOS.</p>
+<div class="section" id="the-bug">
+<h2>The bug<a class="headerlink" href="#the-bug" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1291">#1291</a>: on macOS, <tt class="docutils literal">Process.memory_maps()</tt> would either raise <tt class="docutils literal">OSError: [Errno 22] Invalid argument</tt> or segfault the whole Python process! Both triggered from code as simple as <tt class="docutils literal"><span class="pre">psutil.Process().as_dict()</span></tt>, since <tt class="docutils literal">Process.as_dict()</tt> iterates every attribute, and <tt class="docutils literal">Process.memory_maps()</tt> is one of them.</p>
+<p>The root cause was inside Apple's undocumented <tt class="docutils literal">proc_regionfilename()</tt> syscall. On some memory regions it returns <tt class="docutils literal">EINVAL</tt>. On others it takes the process down. Which regions? Nobody figured out. Arnon Yaari (<a class="reference external" href="https://github.com/wiggin15">&#64;wiggin15</a>) did most of the investigation: he wrote a <a class="reference external" href="https://gist.github.com/wiggin15/0a4c51b5bc6c52e6e31e2234f88558ab">standalone C reproducer</a> and walked me through what he'd tried.</p>
+<p>In <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1436">PR-1436</a> I attempted a fix by reverse-engineering <tt class="docutils literal">vmmap(1)</tt> but it didn't work. The fundamental problem is that <tt class="docutils literal">vmmap</tt> is closed source and <tt class="docutils literal">proc_regionfilename</tt> is undocumented. Neither my virtualized macOS (10.11.6) nor Travis CI (10.12.1) could reproduce the bug, which reproduced reliably only on 10.14.3.</p>
+</div>
+<div class="section" id="why-remove-outright">
+<h2>Why remove outright<a class="headerlink" href="#why-remove-outright" title="Permalink to this headline">¶</a></h2>
+<p>While removing the C code I noticed that the macOS unit test had been disabled long ago, presumably by me after recurring flaky Travis runs. Meaning that the method had been broken on some macOS versions far longer than the 2018 bug report suggested.</p>
+<p>Deprecating for a cycle didn't help either: raising <tt class="docutils literal">AccessDenied</tt> breaks code that relied on a successful return, returning an empty list does the same silently, and leaving the method in place doesn't stop the segfault. Basically there was no sane solution, so since 5.6 is a major version I decided to just remove <tt class="docutils literal">Process.memory_maps()</tt> for good.</p>
+<p>On macOS it never supported other processes anyway. Calling it on any PID other than the current one (or its children) raised <tt class="docutils literal">AccessDenied</tt>, even as root.</p>
+<p>If someone finds a Mach API path that works, the method can return. Nobody has found one so far.</p>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2017/psutil-540-and-aix-support" rel="bookmark"
+                   title="Permalink to AIX support">AIX support</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2017-10-12T00:00:00+02:00">
+        Created: 12 ott 2017,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/new-platform">new-platform</a>,        <a href="https://gmpy.dev/tags/community">community</a>,        <a href="https://gmpy.dev/tags/personal">personal</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>After a long wait psutil finally supports a new exotic platform: AIX!</p>
+<p>Honestly I'm not sure how many AIX Python users are out there (probably not many), but here it is.</p>
+<p>For this we have to thank <a class="reference external" href="https://github.com/wiggin15">Arnon Yaari</a>, who started working on the port a couple of years ago (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/605">#605</a>). I was skeptical at first, because AIX is the only platform I can't virtualize and test on my laptop, so that made me a bit nervous. Arnon did a great job. The final <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1123">PR-1123</a> is huge: it required a considerable amount of work on his part, and a review of more than 140 messages exchanged between us over about a month, during which I was travelling through China.</p>
+<p>The end result is very good: almost all original unit tests pass, and code quality is awesome, which (I must say) is fairly unusual for an external contribution like this. Kudos to you, Arnon! ;-)</p>
+<div class="section" id="other-changes">
+<h2>Other changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h2>
+<p>Besides AIX support, release 5.4.0 also includes a couple of important bug fixes for <tt class="docutils literal">psutil.sensors_temperatures()</tt> and <tt class="docutils literal">psutil.sensors_fans()</tt> on Linux, and a fix for a bug on macOS that could cause a segmentation fault when using <tt class="docutils literal">Process.open_files()</tt>. The complete list of bug fixes is in the <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">changelog</a>.</p>
+</div>
+<div class="section" id="the-future">
+<h2>The future<a class="headerlink" href="#the-future" title="Permalink to this headline">¶</a></h2>
+<p>Looking ahead at other exotic, still-unsupported platforms, two contributions are worth mentioning: a (still incomplete) PR for Cygwin which looks promising (<a class="reference external" href="https://github.com/giampaolo/psutil/pull/998">PR-998</a>), and Mingw32 compiler support on Windows (<a class="reference external" href="https://github.com/giampaolo/psutil/pull/845">PR-845</a>).</p>
+<p>psutil is gradually reaching a point where adding new features is becoming rarer, so it's a good moment to welcome new platforms while the API is mature and stable.</p>
+<p>Future work along these lines could also include Android and (hopefully) iOS support. Now <em>that</em> would be really awesome to have.</p>
+<p>Stay tuned.</p>
+</div>
+<div class="section" id="discussion">
+<h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.reddit.com/r/Python/comments/75wsfu/psutil_540_with_aix_support_is_out/">Reddit</a></li>
+<li><a class="reference external" href="http://grodola.blogspot.com/2017/10/psutil-540-with-aix-support-is-out.html">Blogspot</a></li>
+</ul>
+</div>
+
+        </div>
+    </article></li>
+            </ol><!-- /#posts-list -->
+<nav class="paginator">
+    <span class="paginator-info">Page 1 of 4</span>
+        <a href="https://gmpy.dev/tags/release2.html" title="Next page">&rsaquo;</a>
+        <a href="https://gmpy.dev/tags/release4.html" title="Last page">&raquo;</a>
+</nav>
+ <!-- /blog posts -->
+</section>
+
+    <!-- Footer -->
+    <section id="extras" class="body">
+
+        <div class="social">
+            <h2>Social</h2>
+            <ul>
+                <li><a href="https://github.com/giampaolo">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/grodola/">LinkedIn</a></li>
+                <li><a href="https://x.com/grodola">X</a></li>
+            </ul>
+        </div><!-- /.social -->
+
+        <div class="feeds">
+            <h2>Feeds</h2>
+            <ul>
+                <li><a href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate">atom</a></li>
+                <li><a href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate">rss</a></li>
+            </ul>
+        </div>
+    </div>
+    </section>
+    <!-- /Footer -->
+
+    <footer id="contentinfo" class="body">
+        <!--
+            <address id="about" class="vcard body">
+            Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+            </address>
+
+            <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        -->
+    </footer>
+
+    <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164357405-2', 'auto');
+    ga('send', 'pageview');
+    </script>
+</body>
+</html>

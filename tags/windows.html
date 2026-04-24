@@ -43,27 +43,28 @@
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/windows">windows</a>,        <a href="https://gmpy.dev/tags/unittest">unittest</a>,        <a href="https://gmpy.dev/tags/travel">travel</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/windows">windows</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/personal">personal</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>New <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 5.6.2 release implements an emulation of <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getloadavg">os.getloadavg()</a> on Windows which was kindly <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1485">contributed by Ammar Askar</a> who originally implemented it for <a class="reference external" href="https://github.com/python/cpython/pull/8357/files">cPython's test suite</a>. This idea has been floating around for quite a while. The first proposal dates back to 2010 (code.google.com/archive/p/psutil/issues/139), when psutil was still hosted on Google Code, and it popped up <a class="reference external" href="https://github.com/giampaolo/psutil/issues?utf8=%E2%9C%93&amp;q=getloadavg">multiple times</a> throughout the years. There was/is a bunch of info on the internet mentioning the bits with which it's theoretically possible to do this (the so called <cite>System Processor Queue Length</cite>), but I couldn't find any real implementation. A <a class="reference external" href="https://www.google.com/search?client=ubuntu&amp;hs=2EI&amp;channel=fs&amp;ei=LafCXO2ZE8PKswX9kY-wAw&amp;q=windows+load+average&amp;oq=windows+load+average&amp;gs_l=psy-ab.3..0j0i22i30l7.12536.13873..14008...0.0..0.482.2591.4-6......0....1..gws-wiz.......0i71j0i131.37ys3SB25pE">Google search</a> tells there is quite some demand for this, but very few tools out there provide this natively (the only ones I could find are this <a class="reference external" href="https://blog.sflow.com/2011/02/windows-load-average.html">sFlowTrend</a> tool and <a class="reference external" href="https://www.zabbix.com/forum/zabbix-help/50423-windows-cpu-load">Zabbix</a>), so I'm very happy this finally landed in psutil / Python.</p>
+</footer><!-- /.post-info -->            <p>psutil 5.6.2 is out. It implements an emulation of <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getloadavg">os.getloadavg()</a> on Windows, kindly contributed by <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1485">Ammar Askar</a>, who originally implemented it for <a class="reference external" href="https://github.com/python/cpython/pull/8357/files">CPython's test suite</a>.</p>
+<p>This idea has been floating around for quite a while. The first proposal dates back to <a class="reference external" href="https://github.com/giampaolo/psutil/issues/139">2010</a>, when psutil was still hosted on Google Code, and it popped up <a class="reference external" href="https://github.com/giampaolo/psutil/issues?utf8=%E2%9C%93&amp;q=getloadavg">multiple times</a> over the years. There's a bunch of info online mentioning the pieces you'd theoretically use (the so-called <tt class="docutils literal">System Processor Queue Length</tt>), but I couldn't find any real implementation. A quick search suggests there's real demand for this, but very few tools provide it natively (the only ones I could find are <a class="reference external" href="https://blog.sflow.com/2011/02/windows-load-average.html">sFlowTrend</a> and <a class="reference external" href="https://www.zabbix.com/forum/zabbix-help/50423-windows-cpu-load">Zabbix</a>). So I'm glad this finally landed in psutil / Python.</p>
 <div class="section" id="other-improvements-and-bugfixes-in-psutil-5-6-2">
 <h2>Other improvements and bugfixes in psutil 5.6.2<a class="headerlink" href="#other-improvements-and-bugfixes-in-psutil-5-6-2" title="Permalink to this headline">¶</a></h2>
-<p>The full list is <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">here</a> but I would like to mention a couple:</p>
+<p>The full list is in the <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">changelog</a>. A couple worth mentioning:</p>
 <ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">1476</a>: the possibility to set process' high I/O priority on Windows</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">1458</a>: colorized test output. I admit nobody will use this directly but it's very cool and I'm porting it to a bunch of other projects I work on (e.g. pyftpdlib). Also, perhaps this could be a good candidate for a small module to put on PYPI which can also include some functionalities taken from pytest and which I'm gradually re-implementing in the unittest module amongst which:<ul>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1478">1478</a>: re-running failed tests</li>
-<li>display test timings/durations: this is something I'm contributing to cPython, see <a class="reference external" href="https://bugs.python.org/issue4080">BPO-4080</a> and <a class="reference external" href="https://github.com/python/cpython/pull/12271/files">PR-12271</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1476">#1476</a>: ability to set a process's high I/O priority on Windows.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1458">#1458</a>: colorized test output. Nobody will use this directly, but it's nice and I'm porting it to other projects I maintain (e.g. pyftpdlib). Good candidate for a small PyPI module that could also include the unittest extensions I've been re-implementing piece by piece:<ul>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1478">#1478</a>: re-running failed tests.</li>
+<li>display test timings / durations. This is something I'm also contributing to CPython: <a class="reference external" href="https://bugs.python.org/issue4080">BPO-4080</a> and <a class="reference external" href="https://github.com/python/cpython/pull/12271/files">PR-12271</a>.</li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="about-me">
 <h2>About me<a class="headerlink" href="#about-me" title="Permalink to this headline">¶</a></h2>
-<p>I'm currently in China (Shenzhen) for a mix of vacation and work, and I will likely take a break from Open Source for a while (likely 2.5 months, during which I will also go to the Philippines and Japan - I love Asia ;-)).</p>
+<p>I'm currently in China (Shenzhen) for a mix of vacation and work, and I will likely take a break from Open Source for a while (about 2.5 months), during which I'll also go to the Philippines and Japan.</p>
 </div>
 <div class="section" id="external">
 <h2>External<a class="headerlink" href="#external" title="Permalink to this headline">¶</a></h2>
@@ -77,8 +78,64 @@
     </article></li>
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2019/psutil-560-and-process-parents" rel="bookmark"
+                   title="Permalink to Announcing psutil 5.6.0">Announcing psutil 5.6.0</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2019-03-05T00:00:00+01:00">
+        Created: 05 mar 2019,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/windows">windows</a>,        <a href="https://gmpy.dev/tags/macos">macos</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>psutil 5.6.0 is out. Highlights: a new <tt class="docutils literal">Process.parents()</tt> method, several important Windows improvements, and the removal of <tt class="docutils literal">Process.memory_maps()</tt> on macOS.</p>
+<div class="section" id="process-parents">
+<h2>Process parents()<a class="headerlink" href="#process-parents" title="Permalink to this headline">¶</a></h2>
+<p>The new method returns the parents of a process as a list of <tt class="docutils literal">Process</tt> instances. If no parents are known, an empty list is returned.</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="mi">5312</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">()</span>
+<span class="go">[psutil.Process(pid=4699, name=&#39;bash&#39;, started=&#39;09:06:44&#39;),</span>
+<span class="go"> psutil.Process(pid=4689, name=&#39;gnome-terminal-server&#39;, started=&#39;09:06:44&#39;),</span>
+<span class="go"> psutil.Process(pid=1, name=&#39;systemd&#39;, started=&#39;05:56:55&#39;)]</span>
+</pre></div>
+<p>Nothing fundamentally new here, since this is a convenience wrapper around <tt class="docutils literal">Process.parent()</tt>, but it's still nice to have it built in. It pairs well with <tt class="docutils literal">Process.children()</tt> when working with process trees. The idea was proposed by Ghislain Le Meur.</p>
+</div>
+<div class="section" id="windows">
+<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
+<p>Certain Windows APIs that need to be dynamically loaded from DLLs are now loaded only once at startup, instead of on every function call. This makes some operations <strong>50% to 100% faster</strong>; see benchmarks in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1422">PR-1422</a>.</p>
+<p><tt class="docutils literal">Process.suspend()</tt> and <tt class="docutils literal">Process.resume()</tt> previously iterated over all process threads via <tt class="docutils literal">CreateToolhelp32Snapshot()</tt>, which was unorthodox and broke when the process had been suspended by Process Hacker. They now call the undocumented <tt class="docutils literal">NtSuspendProcess()</tt> / <tt class="docutils literal">NtResumeProcess()</tt> NT APIs, same as Process Hacker and Sysinternals tools. Discussed in <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1379">#1379</a>, implemented in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1435">PR-1435</a>.</p>
+<p><tt class="docutils literal">SE DEBUG</tt> is a privilege bit set on the Python process at startup so psutil can query processes owned by other users (Administrator, Local System), meaning fewer <tt class="docutils literal">AccessDenied</tt> exceptions for low-PID processes. The code setting it had presumably been broken for years and is now finally fixed in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1429">PR-1429</a>.</p>
+</div>
+<div class="section" id="removal-of-process-memory-maps-on-macos">
+<h2>Removal of Process.memory_maps() on macOS<a class="headerlink" href="#removal-of-process-memory-maps-on-macos" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal">Process.memory_maps()</tt> is gone on macOS (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/1291">#1291</a>). The underlying Apple API would randomly raise <tt class="docutils literal">EINVAL</tt> or segfault the host process, and no amount of reverse-engineering produced a safe fix. So I removed it. This is covered in a <a class="reference external" href="removing-processmemory_maps-on-macos">separate post</a>.</p>
+</div>
+<div class="section" id="improved-exceptions">
+<h2>Improved exceptions<a class="headerlink" href="#improved-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>One problem that affected psutil maintenance over the years was receiving bug reports whose tracebacks did not indicate which syscall had actually failed. This was especially painful on Windows, where a single routine may invoke multiple Windows APIs. Now the <tt class="docutils literal">OSError</tt> (or <tt class="docutils literal">WindowsError</tt>) exception includes the syscall from which the error originated. See <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1428">PR-1428</a>.</p>
+</div>
+<div class="section" id="other-changes">
+<h2>Other changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h2>
+<p>See the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html">changelog</a>.</p>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2016/psutil-420-windows-services-in-python" rel="bookmark"
-                   title="Permalink to psutil 4.2.0: Windows services in Python">psutil 4.2.0: Windows services in Python</a></h1>
+                   title="Permalink to Windows services support">Windows services support</a></h1>
         </header>
         <div class="entry-content">
 <footer class="post-info">
@@ -91,72 +148,72 @@
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/windows">windows</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/windows">windows</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>New <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> 4.2.0 is out. The main feature of this release is the support for Windows services:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">win_service_iter</span><span class="p">())</span>
-<span class="p">[</span><span class="o">&lt;</span><span class="n">WindowsService</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;AeLookupSvc&#39;</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;Application Experience&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">38850096</span><span class="o">&gt;</span><span class="p">,</span>
- <span class="o">&lt;</span><span class="n">WindowsService</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ALG&#39;</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;Application Layer Gateway Service&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">38850128</span><span class="o">&gt;</span><span class="p">,</span>
- <span class="o">&lt;</span><span class="n">WindowsService</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;APNMCP&#39;</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;Ask Update Service&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">38850160</span><span class="o">&gt;</span><span class="p">,</span>
- <span class="o">&lt;</span><span class="n">WindowsService</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;AppIDSvc&#39;</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;Application Identity&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">38850192</span><span class="o">&gt;</span><span class="p">,</span>
- <span class="o">...</span><span class="p">]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">win_service_get</span><span class="p">(</span><span class="s1">&#39;alg&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
-<span class="p">{</span><span class="s1">&#39;binpath&#39;</span><span class="p">:</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">Windows</span><span class="se">\\</span><span class="s1">System32</span><span class="se">\\</span><span class="s1">alg.exe&#39;</span><span class="p">,</span>
- <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Provides support for 3rd party protocol plug-ins for Internet Connection Sharing&#39;</span><span class="p">,</span>
- <span class="s1">&#39;display_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Application Layer Gateway Service&#39;</span><span class="p">,</span>
- <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;alg&#39;</span><span class="p">,</span>
- <span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
- <span class="s1">&#39;start_type&#39;</span><span class="p">:</span> <span class="s1">&#39;manual&#39;</span><span class="p">,</span>
- <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;stopped&#39;</span><span class="p">,</span>
- <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;NT AUTHORITY</span><span class="se">\\</span><span class="s1">LocalService&#39;</span><span class="p">}</span>
+</footer><!-- /.post-info -->            <p>New <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> 4.2.0 is out. The highlight of this release is the support for Windows services (executables that run at system startup, similar to UNIX init scripts):</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">win_service_iter</span><span class="p">())</span>
+<span class="go">[&lt;WindowsService(name=&#39;AeLookupSvc&#39;, display_name=&#39;Application Experience&#39;) at 38850096&gt;,</span>
+<span class="go"> &lt;WindowsService(name=&#39;ALG&#39;, display_name=&#39;Application Layer Gateway Service&#39;) at 38850128&gt;,</span>
+<span class="go"> &lt;WindowsService(name=&#39;APNMCP&#39;, display_name=&#39;Ask Update Service&#39;) at 38850160&gt;,</span>
+<span class="go"> &lt;WindowsService(name=&#39;AppIDSvc&#39;, display_name=&#39;Application Identity&#39;) at 38850192&gt;,</span>
+<span class="go"> ...]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">win_service_get</span><span class="p">(</span><span class="s1">&#39;alg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+<span class="go">{&#39;binpath&#39;: &#39;C:\\Windows\\System32\\alg.exe&#39;,</span>
+<span class="go"> &#39;description&#39;: &#39;Provides support for 3rd party protocol plug-ins for Internet Connection Sharing&#39;,</span>
+<span class="go"> &#39;display_name&#39;: &#39;Application Layer Gateway Service&#39;,</span>
+<span class="go"> &#39;name&#39;: &#39;alg&#39;,</span>
+<span class="go"> &#39;pid&#39;: None,</span>
+<span class="go"> &#39;start_type&#39;: &#39;manual&#39;,</span>
+<span class="go"> &#39;status&#39;: &#39;stopped&#39;,</span>
+<span class="go"> &#39;username&#39;: &#39;NT AUTHORITY\\LocalService&#39;}</span>
 </pre></div>
-<p>I did this mainly because I find pywin32 APIs too low level. Having something like this in psutil can be useful to discover and monitor services more easily. The code changes are <a class="reference external" href="https://github.com/giampaolo/psutil/pull/803/files">here</a> and here's the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#windows-services">doc</a>. The API for querying a service is similar to <tt class="docutils literal">psutil.Process</tt>. You can get a reference to a service object by using its name (which is unique for every service) and then use <tt class="docutils literal">name()</tt>, <tt class="docutils literal">status()</tt>, etc..:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">win_service_get</span><span class="p">(</span><span class="s1">&#39;alg&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
-<span class="s1">&#39;alg&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
-<span class="s1">&#39;stopped&#39;</span>
+<p>I decided to do this mainly because I find pywin32 APIs too low levelish. Having something like this in psutil can be useful to discover and monitor services more easily. The code was implemented in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/803">PR-803</a>. The API for querying a service is similar to <tt class="docutils literal">psutil.Process</tt>. You can get a reference to a service object by using its name (which is unique for every service) and then use methods like <tt class="docutils literal">WindowsService.name()</tt> and <tt class="docutils literal">WindowsService.status()</tt>:</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">win_service_get</span><span class="p">(</span><span class="s1">&#39;alg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+<span class="go">&#39;alg&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+<span class="go">&#39;stopped&#39;</span>
 </pre></div>
-<p>Initially I thought to expose and provide a complete set of APIs to handle all aspects of service handling including <tt class="docutils literal">start()</tt>, <tt class="docutils literal">stop()</tt>, <tt class="docutils literal">restart()</tt>, <tt class="docutils literal">install()</tt>, <tt class="docutils literal">uninstall()</tt> and <tt class="docutils literal">modify()</tt> but I soon realized that I would have ended up reimplementing what pywin32 already provides at the cost of overcrowding psutil API (see my reasoning <a class="reference external" href="https://github.com/giampaolo/psutil/blob/d28de253a2e6d7f368e5260d7a4ab14b285c5083/psutil/_pswindows.py#L426">here</a>). I think psutil should really be about monitoring, not about installing and modifying system stuff, especially something as critical as a Windows service.</p>
+<p>Initially I thought about providing a full set of APIs to handle all aspects of service management, including <tt class="docutils literal">start()</tt>, <tt class="docutils literal">stop()</tt>, <tt class="docutils literal">restart()</tt>, <tt class="docutils literal">install()</tt>, <tt class="docutils literal">uninstall()</tt> and <tt class="docutils literal">modify()</tt>. However, I soon realized I would have ended up reimplementing what pywin32 already provides, at the cost of overcrowding the psutil API (see my reasoning <a class="reference external" href="https://github.com/giampaolo/psutil/blob/d28de253a2e6d7f368e5260d7a4ab14b285c5083/psutil/_pswindows.py#L426">here</a>). I think psutil really focuses on monitoring, not on installing and modifying system components, especially something as critical as a Windows service.</p>
 <div class="section" id="considerations-about-windows-services">
 <h2>Considerations about Windows services<a class="headerlink" href="#considerations-about-windows-services" title="Permalink to this headline">¶</a></h2>
-<p>For those of you who are not familiar with Windows, a service is something, generally an executable (.exe), which runs at system startup and keeps running in the background. We can say they are the equivalent of a UNIX init script. All services are controlled by a &quot;manager&quot; which keeps track of their status and metadata (e.g. description, startup type) and with that you can start and stop them. It is interesting to note that since (most) services are bound to an executable (and hence a process) you can reference the process via its PID:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">win_service_get</span><span class="p">(</span><span class="s1">&#39;sshd&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span>
-<span class="o">&lt;</span><span class="n">WindowsService</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;sshd&#39;</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;Open SSH server&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">38853046</span><span class="o">&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">pid</span><span class="p">()</span>
-<span class="mi">1865</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="mi">1865</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span>
-<span class="o">&lt;</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">19547</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;sshd.exe&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">140461487781328</span><span class="o">&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">exe</span><span class="p">()</span>
-<span class="s1">&#39;C:\CygWin</span><span class="se">\b</span><span class="s1">in\sshd&#39;</span>
+<p>Typically, a Windows service is an executable (.exe) that runs at system startup and continues running in the background. It is roughly the equivalent of a UNIX init script. All services are controlled by a &quot;manager&quot;, which keeps track of their status and metadata (e.g. description, startup type). It is interesting to note that since (most) services are bound to an executable (and hence a process) you can reference them via their process PID:</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">win_service_get</span><span class="p">(</span><span class="s1">&#39;sshd&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span>
+<span class="go">&lt;WindowsService(name=&#39;sshd&#39;, display_name=&#39;Open SSH server&#39;) at 38853046&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">pid</span><span class="p">()</span>
+<span class="go">1865</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="mi">1865</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span>
+<span class="go">&lt;psutil.Process(pid=19547, name=&#39;sshd.exe&#39;) at 140461487781328&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">exe</span><span class="p">()</span>
+<span class="go">&#39;C:\CygWin\bin\sshd&#39;</span>
 </pre></div>
 </div>
 <div class="section" id="other-improvements">
 <h2>Other improvements<a class="headerlink" href="#other-improvements" title="Permalink to this headline">¶</a></h2>
 <p>psutil 4.2.0 comes with 2 other enhancements for Linux:</p>
 <ul class="simple">
-<li><tt class="docutils literal">psutil.virtual_memory()</tt> returns a new &quot;shared&quot; memory field. This is the same value reported by <tt class="docutils literal">free</tt> cmdline utility.</li>
-<li>I changed the way <tt class="docutils literal">/proc</tt> was parsed. Instead of reading <tt class="docutils literal"><span class="pre">/proc/{pid}/status</span></tt> line by line I used a regular expression. Here are the speedups:<ul>
-<li><tt class="docutils literal">Process.ppid()</tt> is 20% faster</li>
-<li><tt class="docutils literal">Process.status()</tt> is 28% faster</li>
-<li><tt class="docutils literal">Process.name()</tt> is 25% faster</li>
-<li><tt class="docutils literal">Process.num_threads()</tt> is 20% faster (on Python 3 only; on Python 2 it's a bit slower; I suppose <tt class="docutils literal">re</tt> module received some improvements)</li>
+<li><tt class="docutils literal">psutil.virtual_memory()</tt> returns a new <tt class="docutils literal">shared</tt> memory field. This is the same value reported by <tt class="docutils literal">free</tt> cmdline utility.</li>
+<li>I changed how <tt class="docutils literal">/proc</tt> was parsed. Instead of reading <tt class="docutils literal"><span class="pre">/proc/{pid}/status</span></tt> line by line I used a regular expression. Here's the speedups:<ul>
+<li><tt class="docutils literal">Process.ppid()</tt> ~20% faster.</li>
+<li><tt class="docutils literal">Process.status()</tt> ~28% faster.</li>
+<li><tt class="docutils literal">Process.name()</tt> ~25% faster.</li>
+<li><tt class="docutils literal">Process.num_threads()</tt> ~20% faster (on Python 3 only; on Python 2 it's a bit slower; I suppose the <tt class="docutils literal">re</tt> module received some improvements).</li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="section" id="external-links">
-<h2>External links<a class="headerlink" href="#external-links" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="discussion">
+<h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://www.reddit.com/r/Python/comments/4jf8tz/psutil_420_windows_services_and_python/">Reddit</a></li>
-<li><a class="reference external" href="https://news.ycombinator.com/item?id=11700002">Hacker news</a></li>
+<li><a class="reference external" href="https://news.ycombinator.com/item?id=11700002">Hacker News</a></li>
 </ul>
 </div>
 

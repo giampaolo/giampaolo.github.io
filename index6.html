@@ -28,6 +28,116 @@
         <ol id="posts-list" class="hfeed" start="4">
     <li><article class="hentry">
         <header>
+            <h1><a href="https://gmpy.dev/blog/2015/zombie-processes" rel="bookmark"
+                   title="Permalink to Proper zombie process handling">Proper zombie process handling</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2015-06-13T00:00:00+02:00">
+        Created: 13 giu 2015,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p>This is part of the psutil 3.0 release (see the full <a class="reference external" href="psutil-30-reimplement-ifconfig-in-python">release notes</a>).</p>
+<p>Except on Linux and Windows (which does not have them), support for <a class="reference external" href="http://askubuntu.com/a/48625">zombie processes</a> was broken. The full story is in <a class="reference external" href="https://github.com/giampaolo/psutil/issues/428">#428</a>.</p>
+<div class="section" id="the-problem">
+<h2>The problem<a class="headerlink" href="#the-problem" title="Permalink to this headline">¶</a></h2>
+<p>Say you create a zombie process and instantiate a <tt class="docutils literal">Process</tt> for it:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_zombie</span><span class="p">():</span>
+    <span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fork</span><span class="p">()</span>  <span class="c1"># the zombie</span>
+    <span class="k">if</span> <span class="n">pid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">_exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># child exits immediately</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>  <span class="c1"># parent does NOT call wait()</span>
+
+<span class="n">pid</span> <span class="o">=</span> <span class="n">create_zombie</span><span class="p">()</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
+</pre></div>
+<p>Up until psutil 2.X, every time you tried to query it you'd get a <tt class="docutils literal">NoSuchProcess</tt> exception:</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+  File <span class="nb">&quot;psutil/__init__.py&quot;</span>, line <span class="m">374</span>, in <span class="n">_init</span>
+<span class="w">    </span><span class="k">raise</span> <span class="n">NoSuchProcess</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+<span class="gr">psutil.NoSuchProcess</span>: <span class="n">no process found with pid 123</span>
+</pre></div>
+<p>This was misleading, because the PID technically still existed:</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">psutil</span><span class="o">.</span><span class="n">pid_exists</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+<p>Depending on the platform, some process information could still be retrieved:</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">cmdline</span><span class="p">()</span>
+<span class="go">[&#39;python&#39;]</span>
+</pre></div>
+<p>Worst of all, <tt class="docutils literal">psutil.process_iter()</tt> didn't return zombies at all. That was a real problem, because identifying them is a legitimate use case: a zombie usually indicates a bug where a parent process spawns a child, kills it, but never calls <tt class="docutils literal">wait()</tt> to reap it.</p>
+</div>
+<div class="section" id="what-changed">
+<h2>What changed<a class="headerlink" href="#what-changed" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>A new <tt class="docutils literal">ZombieProcess</tt> exception is raised whenever a process cannot be queried because it is a zombie.</li>
+<li>It replaces <tt class="docutils literal">NoSuchProcess</tt>, which was incorrect and misleading.</li>
+<li><tt class="docutils literal">ZombieProcess</tt> inherits from <tt class="docutils literal">NoSuchProcess</tt>, so existing code keeps working.</li>
+<li><tt class="docutils literal">psutil.process_iter()</tt> now correctly includes zombie processes, so you can reliably identify them:</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+
+<span class="n">zombies</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span><span class="p">()</span> <span class="o">==</span> <span class="n">psutil</span><span class="o">.</span><span class="n">STATUS_ZOMBIE</span><span class="p">:</span>
+            <span class="n">zombies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">psutil</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">:</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
+            <h1><a href="https://gmpy.dev/blog/2014/windows-wheels-available-in-psutil-212" rel="bookmark"
+                   title="Permalink to Windows wheels available in psutil 2.1.2">Windows wheels available in psutil 2.1.2</a></h1>
+        </header>
+        <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2014-09-21T00:00:00+02:00">
+        Created: 21 set 2014,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/wheels">wheels</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/personal">personal</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate to the project. The main new &quot;feature&quot; of this release is that other than the exe files, Windows users can now also benefit from <a class="reference external" href="http://pythonwheels.com/">Python wheels</a> (full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/505">here</a>) which are available on PYPI. Frankly I don't know much about the new wheels packaging system but long story short is that Windows users can now install psutil via pip and therefore also include it as a dependency in requirements.txt. Other than this 2.1.2 can basically be considered a bug-fix release, including some important fixes amongst which:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/506">#506</a>: restored Python 2.4 compatibility</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/340">#340</a>: <cite>Process.get_open_files()</cite> no longer hangs on Windows (this was a very old and high-priority issue)</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/501">#501</a>: <cite>disk_io_counters()</cite> may return negative values on Windows</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/504">#504</a>: (Linux) couldn't build RPM packages via setup.py</li>
+</ul>
+<p>The list of all fixes can be found <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">here</a>. For the next release I plan to drop support for Python 2.4 and 2.5 and hopefully add network interfaces information similarly to <a class="reference external" href="https://github.com/giampaolo/psutil/issues/376">ifconfig</a>.</p>
+
+        </div>
+            <div class="blogposts-separator"></div>
+    </article></li>
+    <li><article class="hentry">
+        <header>
             <h1><a href="https://gmpy.dev/blog/2014/python-and-sendfile" rel="bookmark"
                    title="Permalink to Python and sendfile">Python and sendfile</a></h1>
         </header>
@@ -50,11 +160,11 @@
 </footer><!-- /.post-info -->            <p><a class="reference external" href="http://linux.die.net/man/2/sendfile">sendfile(2)</a> is a UNIX system call which provides a &quot;zero-copy&quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, <cite>sendfile(2)</cite> is more efficient than the combination of <cite>file.read()</cite> and <cite>socket.send()</cite>, which requires transferring data to and from user space. This copying of the data twice imposes some performance and resource penalties which the <cite>sendfile(2)</cite> syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of <a class="reference external" href="http://linux.die.net/man/2/read">read(2)</a> / <a class="reference external" href="http://linux.die.net/man/2/write">write(2)</a> system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how <cite>sendfile(2)</cite> works is available <a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/">here</a>, but long story short is that sending a file with <cite>sendfile()</cite> is usually <a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark">twice as fast</a> as using plain <a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send">socket.send()</a>. Typical applications which can benefit from using <cite>sendfile()</cite> are FTP and HTTP servers.</p>
 <div class="section" id="socket-sendfile">
 <h2>socket.sendfile()<a class="headerlink" href="#socket-sendfile" title="Permalink to this headline">¶</a></h2>
-<p>I recently contributed a patch for Python's socket module which adds a high-level <a class="reference external" href="https://docs.python.org/3.5/library/socket.html#socket.socket.sendfile">socket.sendfile()</a> method (see full discussion at <a class="reference external" href="http://bugs.python.org/issue17552">BPO-17552</a>). <cite>socket.sendfile()</cite> will transmit a file until EOF is reached by attempting to use <a class="reference external" href="https://docs.python.org/3/library/os.html#os.sendfile">os.sendfile()</a>, if available, else it falls back on using plain <cite>socket.send()</cite>. Internally, it takes care of handling socket timeouts and provides two optional parameters to move the file offset or to send only a limited amount of bytes. I came up with this idea because getting all of that right is a bit tricky, so a generic wrapper seemed to be convenient to have. <cite>socket.sendfile()</cite> will make its appearance in Python 3.5.</p>
+<p>I recently contributed a patch for Python's socket module which adds a high-level <a class="reference external" href="https://docs.python.org/3.5/library/socket.html#socket.socket.sendfile">socket.sendfile()</a> method (see full discussion at <a class="reference external" href="http://bugs.python.org/issue17552">BPO-17552</a>). <cite>socket.sendfile()</cite> will transmit a file until EOF is reached by attempting to use <a class="reference external" href="https://docs.python.org/3/library/os.html#os.sendfile">os.sendfile()</a>, if available, else it falls back on using plain <cite>socket.send()</cite>. Internally, it takes care of handling socket timeouts and provides two optional parameters to move the file offset or to send only a limited amount of bytes. I came up with this idea because getting all of that right is a bit tricky, so a generic wrapper seemed useful. <cite>socket.sendfile()</cite> will make its appearance in Python 3.5.</p>
 </div>
 <div class="section" id="sendfile-and-python">
 <h2>sendfile and Python<a class="headerlink" href="#sendfile-and-python" title="Permalink to this headline">¶</a></h2>
-<p><cite>sendfile(2)</cite> made its first appearance into the Python stdlib kind of late: Python 3.3. It was contributed by Ross Lagerwall and me in <a class="reference external" href="http://bugs.python.org/issue10882">BPO-10882</a>. Since the patch didn't make it into python 2.X and I wanted to use sendfile() in pyftpdlib (code.google.com/p/pyftpdlib/issues/detail?id=152), I later decided to release it as a stand alone module working with older (2.5+) Python versions (see <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> project). Starting with version 3.5, Python will hopefully start using <cite>sendfile()</cite> more extensively, in detail:</p>
+<p><cite>sendfile(2)</cite> made its first appearance into the Python stdlib kind of late: Python 3.3. It was contributed by Ross Lagerwall and me in <a class="reference external" href="http://bugs.python.org/issue10882">BPO-10882</a>. Since the patch didn't make it into Python 2.X and I wanted to use sendfile() in pyftpdlib (code.google.com/p/pyftpdlib/issues/detail?id=152), I later decided to release it as a stand alone module working with older (2.5+) Python versions (see <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a> project). Starting with version 3.5, Python will hopefully start using <cite>sendfile()</cite> more extensively, in detail:</p>
 <ul class="simple">
 <li><a class="reference external" href="http://bugs.python.org/issue13564">BPO-13563: ftplib</a></li>
 <li><a class="reference external" href="http://bugs.python.org/issue13559">BPO-13559: httplib</a></li>
@@ -309,15 +419,15 @@
 <li>Travis integration: there's this totally awesome free continuous integration service called <a class="reference external" href="https://travis-ci.org/giampaolo/psutil">Travis</a> which given a configuration file <a class="reference external" href="https://github.com/giampaolo/psutil/blob/master/.travis.yml">like this</a> will automatically run tests on multiple python versions every time a commit is pushed. They recently added <a class="reference external" href="http://blog.travis-ci.com/2014-05-13-multi-os-feature-available/">OSX support</a> and <a class="reference external" href="https://github.com/travis-ci/travis-ci/issues/216">Windows support</a> is on the way. This way I will finally be able to quickly test psutil on Linux, OSX and Windows without using virtualized systems except for FreeBSD and Solaris! To me this is like the ultimate Christmas gift and I couldn't ask for any better. Note: as of today Travis only works with github.</li>
 <li>forks and pull requests: honestly I'm not a big fan of them (yet?), probably because I'm used to the python-dev development workflow consisting of uploading patches on the bug tracker and reviewing them (see <a class="reference external" href="http://bugs.python.org/issue17552">this</a> for example). Nevertheless to my understanding most people use pull requests in order to contribute to open source projects so basically this is a service I'm glad to offer to my users who hopefully will be able to contribute back more easily. GC has a cloning system (code.google.com/p/psutil/source/clones) but isn't anywhere near github's and I'm not even sure how it works (never cared).</li>
 <li>the &quot;social&quot; side of github including the fact that you can &quot;star&quot; developers and receive notifications about their activity was another big incentive for migrating. The <a class="reference external" href="https://github.com/giampaolo">personal landing page</a> collecting all your contributions to different projects is absolutely cool. GC had something similar but they stupidly removed it (code.google.com/p/support/issues/detail?id=24324) all of a sudden and never reintroduced it. <a class="reference external" href="https://groups.google.com/forum/#!topic/google-code-hosting/0XbdStxE_uw">A lot of people were angry</a> but again, they didn't care. Actually this was the feature I appreciated the most about GC after the bug tracker and that is when I seriously started thinking about flipping off GC for good.</li>
-<li>the enormous user base: the fact that github is the most used code hosting platform out there will hopefully help me and my projects have a little more visibility. Also, in many job interviews I've been asked what my github profile was, so it seems github also became an active part in getting jobs.</li>
-<li><a class="reference external" href="https://gist.github.com/">gists</a>: gists are &quot;a simple way to share code snippets and pastes with others. All gists are Git repositories, so they are automatically versioned, forkable and usable from Git&quot;. Seriously, they are beautiful. In order to share <a class="reference external" href="https://code.activestate.com/recipes/users/4178764/">my code snippets</a> I've always used Active State but I think I will eventually migrate them as well in order to have everything in one place.</li>
+<li>the enormous user base: the fact that github is the most used code hosting platform out there will hopefully help me and my projects have a little more visibility. Also, in many job interviews I've been asked what my github profile was, so it seems github also became a factor in getting jobs.</li>
+<li><a class="reference external" href="https://gist.github.com/">gists</a>: gists are &quot;a simple way to share code snippets and pastes with others. All gists are Git repositories, so they are automatically versioned, forkable and usable from Git&quot;. Seriously, they are beautiful. In order to share <a class="reference external" href="https://code.activestate.com/recipes/users/4178764/">my code snippets</a> I've always used ActiveState but I think I will eventually migrate them as well in order to have everything in one place.</li>
 <li>the fact that if you mention an issue number as part of your commit message that specific issue will automatically be updated. As I said GC bug tracker is superior in basically any aspect but since I always took care of updating issues by mentioning the specific cset which fixed them (see for example code.google.com/p/psutil/issues/detail?id=463), having this little extra feature will save me some time.</li>
 <li>SSH keys: using Mercurial on GC means using password based authentication. Incredibly they still do not support SSH key based auth. Simply &quot;git push&quot;ing without entering any password when I'm not on my laptop is nice, and of course, it is also much more secure.</li>
 </ul>
 </div>
 <div class="section" id="migration">
 <h2>Migration<a class="headerlink" href="#migration" title="Permalink to this headline">¶</a></h2>
-<p>For those of you who are interested in knowing how I did it, here goes: as for moving the issues from GC bug tracker to github's I used <a class="reference external" href="https://github.com/arthur-debert/google-code-issues-migrator">this tool</a>. I managed to preserve the issue IDs but unfortunately not the real owners nor the real issue dates, which kind of sucks. As for migrating the code from mercurial to git I just used <a class="reference external" href="http://stackoverflow.com/a/16037861/376587">this</a>. The Mercurial -&gt; GIT transition was perfect and I also managed to preserve the original Mercurial named branches and tags, which for me was crucial. In conclusion, psutil is a 5 years, medium sized project with hundreds of issues: the transition in this case is definitely possible but not painless so if you plan on migrating, the sooner you do it the better.</p>
+<p>For those of you who are interested in knowing how I did it, here goes: as for moving the issues from GC bug tracker to github's I used <a class="reference external" href="https://github.com/arthur-debert/google-code-issues-migrator">this tool</a>. I managed to preserve the issue IDs but unfortunately not the real owners nor the real issue dates, which kind of sucks. As for migrating the code from mercurial to git I just used <a class="reference external" href="http://stackoverflow.com/a/16037861/376587">this</a>. The Mercurial -&gt; GIT transition was perfect and I also managed to preserve the original Mercurial named branches and tags, which for me was crucial. In conclusion, psutil is a five-year-old, medium-sized project with hundreds of issues: the transition in this case is definitely possible but not painless so if you plan on migrating, the sooner you do it the better.</p>
 </div>
 
         </div>
@@ -326,7 +436,7 @@
     <li><article class="hentry">
         <header>
             <h1><a href="https://gmpy.dev/blog/2014/psutil-20" rel="bookmark"
-                   title="Permalink to psutil 2.0">psutil 2.0</a></h1>
+                   title="Permalink to Announcing psutil 2.0">Announcing psutil 2.0</a></h1>
         </header>
         <div class="entry-content">
 <footer class="post-info">
@@ -339,461 +449,57 @@
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->            <p>The time has finally come: <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0 is out! This is a release which took me a considerable amount of effort and careful thinking during the past 4 months as I went through a major <strong>rewrite and reorganization</strong> of both python and C extension modules. To get a sense of how much has changed you can compare the differences with the old 1.2.1 version by running &quot;hg diff -r release-1.2.1:release-2.0.0&quot; which will produce more than <strong>22,000 lines</strong> of output! In those 22k lines I tried to nail down all the quirks the project had accumulated since its start 4 years ago and the resulting code base is now cleaner than ever, more manageable and fully compliant with PEP-7 and PEP-8 guidelines.
-There were some difficult decisions because many of the changes I introduced are not backward compatible so I was concerned with the pain this may cause existing users. I kind of still am, but I'm sure the transition will be well perceived in the long run as it will result in more manageable user code. OK, enough with the preface and let's see what changed.</p>
+</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0 is out. This is a major rewrite and reorganization of both the Python and C extension modules. It costed me four months of work and more than <strong>22,000 lines</strong> (the diff against old 1.2.1). Many of the changes are not backward compatible; I'm sure this will cause some pain, but I think it's for the better and needed to be done.</p>
 <div class="section" id="api-changes">
 <h2>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h2>
-<p>I already wrote a detailed <a class="reference external" href="psutil-20-api-redesign">blog post</a> about what changed so I recommend you to use that as the official reference on how to port your code.</p>
+<p>I already wrote a detailed <a class="reference external" href="psutil-20-api-redesign">blog post</a> about this, so use that as the official reference on how to port your code.</p>
 </div>
 <div class="section" id="rst-documentation">
 <h2>RST documentation<a class="headerlink" href="#rst-documentation" title="Permalink to this headline">¶</a></h2>
-<p>I've never been happy with the old doc hosted on Google Code. The markup language provided by Google is pretty limited, plus it's not put under revision control. New doc is more detailed, it uses reStructuredText as the markup language, it lives in the same code repository as psutil's and it is hosted on the excellent readthedocs web site: <a class="reference external" href="http://psutil.readthedocs.org/">http://psutil.readthedocs.org/</a></p>
+<p>I've never been happy with the old doc hosted on Google Code. The markup language provided by Google is pretty limited, plus it's not under revision control. The new doc is more detailed, uses reStructuredText as the markup language, lives in the same code repository as psutil, and is hosted on the excellent Read the Docs: <a class="reference external" href="http://psutil.readthedocs.org/">http://psutil.readthedocs.org/</a></p>
 </div>
 <div class="section" id="physical-cpus-count">
 <h2>Physical CPUs count<a class="headerlink" href="#physical-cpus-count" title="Permalink to this headline">¶</a></h2>
-<p>You're now able to distinguish between logical and physical CPUs:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
-<span class="mi">4</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># physical cores only</span>
-<span class="mi">2</span>
+<p>You're now able to distinguish between logical and physical CPUs. The full story is in <a class="reference external" href="https://github.com/giampaolo/psutil/issues/427">#427</a>.</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
+<span class="go">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># physical cores only</span>
+<span class="go">2</span>
 </pre></div>
-<p>Full story is in issue 427 (code.google.com/p/psutil/issues/detail?id=427).</p>
 </div>
 <div class="section" id="process-instances-are-hashable">
 <h2>Process instances are hashable<a class="headerlink" href="#process-instances-are-hashable" title="Permalink to this headline">¶</a></h2>
-<p>Basically this means process instances can now be checked for equality and can be used with set()s:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p1</span> <span class="o">==</span> <span class="n">p2</span>
-<span class="kc">True</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">set</span><span class="p">((</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">))</span>
-<span class="nb">set</span><span class="p">([</span><span class="o">&lt;</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">8217</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">)</span> <span class="n">at</span> <span class="mi">140007043550608</span><span class="o">&gt;</span><span class="p">])</span>
+<p><tt class="docutils literal">psutil.Process</tt> instances can now be compared for equality and used in sets and dicts. The most useful application is diffing process snapshots:</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">before</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ... some time passes ...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">after</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_procs</span> <span class="o">=</span> <span class="n">after</span> <span class="o">-</span> <span class="n">before</span>  <span class="c1"># processes spawned in between</span>
 </pre></div>
-<p>Full story is in issue 452 (code.google.com/p/psutil/issues/detail?id=452).</p>
+<p>Equality is not just PID-based. It also includes the process creation time, so a <tt class="docutils literal">Process</tt> whose PID got reused by the kernel won't be mistaken for the original. The full story is in <a class="reference external" href="https://github.com/giampaolo/psutil/issues/452">#452</a>.</p>
 </div>
 <div class="section" id="speedups">
 <h2>Speedups<a class="headerlink" href="#speedups" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>#477 (code.google.com/p/psutil/issues/detail?id=477): process <cite>cpu_percent()</cite> is about 30% faster.</li>
-<li>#478 (code.google.com/p/psutil/issues/detail?id=478): (Linux) almost all APIs are about 30% faster on Python 3.X.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/477">#477</a>: <tt class="docutils literal">Process.cpu_percent()</tt> is about 30% faster.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/478">#478</a>: (Linux) almost all APIs are about 30% faster on Python 3.X.</li>
 </ul>
 </div>
 <div class="section" id="other-improvements-and-bugfixes">
 <h2>Other improvements and bugfixes<a class="headerlink" href="#other-improvements-and-bugfixes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>#424 (code.google.com/p/psutil/issues/detail?id=424): Windows installers for Python 3.X 64-bit</li>
-<li>#447 (code.google.com/p/psutil/issues/detail?id=447): <cite>psutil.wait_procs()</cite> timeout parameter is now optional.</li>
-<li>#459 (code.google.com/p/psutil/issues/detail?id=459): a Makefile is now available for running tests and other repetitive tasks (also on Windows)</li>
-<li>#463 (code.google.com/p/psutil/issues/detail?id=463): timeout parameter of <tt class="docutils literal">cpu_percent*</tt> functions defaults to 0.0 because it was a common trap to introduce slowdowns.</li>
-<li>#340 (code.google.com/p/psutil/issues/detail?id=340): (Windows) process <cite>open_files()</cite> no longer hangs.</li>
-<li>#448 (code.google.com/p/psutil/issues/detail?id=448): (Windows) fixed a memory leak affecting <cite>children()</cite> and <cite>ppid()</cite> methods.</li>
-<li>#461 (code.google.com/p/psutil/issues/detail?id=461): namedtuples are now pickle-able.</li>
-<li>#474 (code.google.com/p/psutil/issues/detail?id=474): (Windows) <cite>Process.cpu_percent()</cite> is no longer capped at 100%</li>
-</ul>
-<p>OK, that's all folks. I hope you will enjoy this new version and report your feedback.</p>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2014/reimplementing-netstat-in-python" rel="bookmark"
-                   title="Permalink to Reimplementing netstat in Python">Reimplementing netstat in Python</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2014-03-10T00:00:00+01:00">
-        Created: 10 mar 2014,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/network">network</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.0 is out and with it I finally managed to implement something I've been wanting to have for a long time: netstat-like functionalities (see ticket code.google.com/p/psutil/issues/detail?id=387). Similarly to <cite>&quot;netstat -antp&quot;</cite> on UNIX you can now list system-wide connections in pure python and also determine <strong>what process (PID) is using a particular connection</strong>:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_connections</span><span class="p">())</span>
-<span class="p">[</span><span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">587</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">6379</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.1.1&#39;</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;10.0.3.1&#39;</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">631</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="mi">3389</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">34785</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="mi">3591</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">56359</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;LISTEN&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="mi">3591</span><span class="p">),</span>
- <span class="n">sconn</span><span class="p">(</span><span class="n">fd</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">laddr</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;::&#39;</span><span class="p">,</span> <span class="mi">56720</span><span class="p">),</span> <span class="n">raddr</span><span class="o">=</span><span class="p">(),</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="kc">None</span><span class="p">)]</span>
-<span class="o">&gt;&gt;&gt;</span>
-</pre></div>
-<p>This is yet another functionality which can be used for monitoring purposes. For example, say you want to make sure your HTTP server is running on port 80; you can do something like this:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">check_listening_port</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if the given TCP port is busy and in LISTEN mode.&quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">conn</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">net_connections</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;tcp&#39;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">conn</span><span class="o">.</span><span class="n">laddr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">port</span> <span class="ow">and</span> <span class="n">conn</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">psutil</span><span class="o">.</span><span class="n">CONN_LISTEN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="kc">False</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">check_listening_port</span><span class="p">(</span><span class="mi">80</span><span class="p">))</span>
-</pre></div>
-<div class="section" id="netstat-in-pure-python">
-<h2>Netstat in pure python<a class="headerlink" href="#netstat-in-pure-python" title="Permalink to this headline">¶</a></h2>
-<p>Here it is, in 65 lines of code: <a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-2.1.0/scripts/netstat.py">netstat.py</a>. Pretty neat right? ;-)</p>
-</div>
-<div class="section" id="implementation-s">
-<h2>Implementation(s)<a class="headerlink" href="#implementation-s" title="Permalink to this headline">¶</a></h2>
-<p>As always, each platform required its own, different, implementation. Luckily for some platforms (OSX, Windows) I was able to reuse and customize some code from the existing <cite>Process.connections()</cite> implementation which was already in place. For those of you who are interested in knowing how this was done here's the source code references:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/_pslinux.py#L741">Linux</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/arch/windows/socks.c">Windows</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/arch/freebsd/sys_socks.c">FreeBSD</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/_psutil_sunos.c#L1115">Solaris</a></li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/6242f7411b882d525e5d267de4bcda1079934ea2/psutil/_psutil_osx.c#L1072">OSX</a></li>
-</ul>
-<p>Hopefully this will help whoever needs to do this in another language. The only platform where this is sort of clunky is OSX, which does not expose anything to list all system-wide sockets in a single shot, so you're forced to query each process. That means you'll need root privileges otherwise you'll get an access denied error. For what it's worth, I took a look at <cite>lsof</cite> and it has the same limitation and netstat runs with SUID. Well, I guess this is it. I'll leave you with <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.net_connections">some docs</a>. For the next one I'm planning on working on a couple of other network-related functionalities: &quot;ifconfig&quot; (code.google.com/p/psutil/issues/detail?id=376) and NIC speeds (code.google.com/p/psutil/issues/detail?id=250). But that's for another time...</p>
-</div>
-
-        </div>
-            <div class="blogposts-separator"></div>
-    </article></li>
-    <li><article class="hentry">
-        <header>
-            <h1><a href="https://gmpy.dev/blog/2014/psutil-20-api-redesign" rel="bookmark"
-                   title="Permalink to psutil 2.0 API redesign">psutil 2.0 API redesign</a></h1>
-        </header>
-        <div class="entry-content">
-<footer class="post-info">
-        <a class="published" title="2014-01-11T00:00:00+01:00">
-        Created: 11 gen 2014,
-        </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
-
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
-</footer><!-- /.post-info -->            <p>This, my second blog post, is going to be about <a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing psutil 2.0 is still under development and the intent of this blog post is to serve as an official reference which describes how you should port your existing code base. In doing so I will also explain why I decided to make these changes. Although many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten but I think this is for the better and it needed to be done, hopefully for the first and last time. OK, here we go now.</p>
-<div class="section" id="module-constants-turned-into-functions">
-<h2>Module constants turned into functions<a class="headerlink" href="#module-constants-turned-into-functions" title="Permalink to this headline">¶</a></h2>
-<p><strong>What changed</strong></p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="42%" />
-<col width="58%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Old name</th>
-<th class="head">Replacement</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>psutil.BOOT_TIME</td>
-<td>psutil.boot_time()</td>
-</tr>
-<tr><td>psutil.NUM_CPUS</td>
-<td>psutil.cpu_count()</td>
-</tr>
-<tr><td>psutil.TOTAL_PHYMEM</td>
-<td>psutil.virtual_memory().total</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Why I did it</strong></p>
-<p>I already talked about this more extensively in this <a class="reference external" href="../2013/making-constants-part-of-your-api-is-evil">blog post</a>. In short: other than introducing unnecessary slowdowns, calculating a module level constant at import time is dangerous because in case of error the whole app will crash. Also, the represented values may be subject to change (think about the system clock) but the constant cannot be updated.
-Thanks to this hack accessing the old constants still works and produces a DeprecationWarning.</p>
-</div>
-<div class="section" id="module-functions-renamings">
-<h2>Module functions renamings<a class="headerlink" href="#module-functions-renamings" title="Permalink to this headline">¶</a></h2>
-<p><strong>What changed</strong></p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="44%" />
-<col width="56%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Old name</th>
-<th class="head">Replacement</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>psutil.get_boot_time()</td>
-<td>psutil.boot_time()</td>
-</tr>
-<tr><td>psutil.get_pid_list()</td>
-<td>psutil.pids()</td>
-</tr>
-<tr><td>psutil.get_users()</td>
-<td>psutil.users()</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Why I did it</strong></p>
-<p>They were the only module level functions having a <tt class="docutils literal">get_</tt> prefix. All others do not.</p>
-</div>
-<div class="section" id="process-class-methods-renamings">
-<h2>Process class' methods renamings<a class="headerlink" href="#process-class-methods-renamings" title="Permalink to this headline">¶</a></h2>
-<p>All methods lost their <tt class="docutils literal">get_</tt> and <tt class="docutils literal">set_</tt> prefixes. A single method can now be used for both getting and setting (if a value is passed). Assuming p = psutil.Process():</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="46%" />
-<col width="54%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Old name</th>
-<th class="head">Replacement</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>p.get_children()</td>
-<td>p.children()</td>
-</tr>
-<tr><td>p.get_connections()</td>
-<td>p.connections()</td>
-</tr>
-<tr><td>p.get_cpu_affinity()</td>
-<td>p.cpu_affinity()</td>
-</tr>
-<tr><td>p.get_cpu_percent()</td>
-<td>p.cpu_percent()</td>
-</tr>
-<tr><td>p.get_cpu_times()</td>
-<td>p.cpu_times()</td>
-</tr>
-<tr><td>p.get_io_counters()</td>
-<td>p.io_counters()</td>
-</tr>
-<tr><td>p.get_ionice()</td>
-<td>p.ionice()</td>
-</tr>
-<tr><td>p.get_memory_info()</td>
-<td>p.memory_info()</td>
-</tr>
-<tr><td>p.get_ext_memory_info()</td>
-<td>p.memory_info_ex()</td>
-</tr>
-<tr><td>p.get_memory_maps()</td>
-<td>p.memory_maps()</td>
-</tr>
-<tr><td>p.get_memory_percent()</td>
-<td>p.memory_percent()</td>
-</tr>
-<tr><td>p.get_nice()</td>
-<td>p.nice()</td>
-</tr>
-<tr><td>p.get_num_ctx_switches()</td>
-<td>p.num_ctx_switches()</td>
-</tr>
-<tr><td>p.get_num_fds()</td>
-<td>p.num_fds()</td>
-</tr>
-<tr><td>p.get_num_threads()</td>
-<td>p.num_threads()</td>
-</tr>
-<tr><td>p.get_open_files()</td>
-<td>p.open_files()</td>
-</tr>
-<tr><td>p.get_rlimit()</td>
-<td>p.rlimit()</td>
-</tr>
-<tr><td>p.get_threads()</td>
-<td>p.threads()</td>
-</tr>
-<tr><td>p.getcwd()</td>
-<td>p.cwd()</td>
-</tr>
-</tbody>
-</table>
-<p>...as for <cite>set_*</cite> methods:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="44%" />
-<col width="56%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Old name</th>
-<th class="head">Replacement</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>p.set_cpu_affinity()</td>
-<td>p.cpu_affinity(cpus)</td>
-</tr>
-<tr><td>p.set_ionice()</td>
-<td>p.ionice(ioclass, value=None)</td>
-</tr>
-<tr><td>p.set_nice()</td>
-<td>p.nice(value)</td>
-</tr>
-<tr><td>p.set_rlimit()</td>
-<td>p.rlimit(resource, limits=None)</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Why I did it</strong></p>
-<p>I wanted to be consistent with system-wide module level functions which have no <tt class="docutils literal">get_</tt> prefix. After I got rid of <tt class="docutils literal">get_</tt> prefixes removing also <tt class="docutils literal">set_</tt> seemed natural and helped diminish the number of methods.</p>
-</div>
-<div class="section" id="process-properties-are-now-methods">
-<h2>Process properties are now methods<a class="headerlink" href="#process-properties-are-now-methods" title="Permalink to this headline">¶</a></h2>
-<p><strong>What changed</strong></p>
-<p>Assuming p = psutil.Process():</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="44%" />
-<col width="56%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Old name</th>
-<th class="head">Replacement</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>p.cmdline</td>
-<td>p.cmdline()</td>
-</tr>
-<tr><td>p.create_time</td>
-<td>p.create_time()</td>
-</tr>
-<tr><td>p.exe</td>
-<td>p.exe()</td>
-</tr>
-<tr><td>p.gids</td>
-<td>p.gids()</td>
-</tr>
-<tr><td>p.name</td>
-<td>p.name()</td>
-</tr>
-<tr><td>p.parent</td>
-<td>p.parent()</td>
-</tr>
-<tr><td>p.ppid</td>
-<td>p.ppid()</td>
-</tr>
-<tr><td>p.status</td>
-<td>p.status()</td>
-</tr>
-<tr><td>p.uids</td>
-<td>p.uids()</td>
-</tr>
-<tr><td>p.username</td>
-<td>p.username()</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Why I did it</strong></p>
-<p>Different reasons:</p>
-<ul class="simple">
-<li>Having a mixed API which uses both properties and methods for no particular reason is confusing and messy as you don't know whether to use &quot;()&quot; or not (see code.google.com/p/psutil/source/browse/test/test_psutil.py?name=release-0.7.0#1716).</li>
-<li>It is usually expected from a property to not perform many computations internally whereas psutil actually invokes a function every time it is accessed. This has two drawbacks:
-* you may get an exception just by accessing the property (e.g. &quot;p.name&quot; may raise NoSuchProcess or AccessDenied)
-* you may erroneously think properties are cached but this is true only for name, exe, and create_time.</li>
-</ul>
-</div>
-<div class="section" id="cpu-percent-intervals">
-<h2>CPU percent intervals<a class="headerlink" href="#cpu-percent-intervals" title="Permalink to this headline">¶</a></h2>
-<p><strong>What changed</strong></p>
-<p>The timeout parameter of <tt class="docutils literal">cpu_percent*</tt> functions now defaults to 0.0 instead of 0.1. The functions affected are:</p>
-<ul class="simple">
-<li>psutil.Process.cpu_percent()</li>
-<li>psutil.cpu_percent()</li>
-<li>psutil.cpu_times_percent()</li>
-</ul>
-<p><strong>Why I did it</strong></p>
-<p>I originally set 0.1 as the default timeout because in order to get a meaningful percent value you need to wait some time.
-Having an API which &quot;sleeps&quot; by default is risky though, because it's easy to forget it does so. That is particularly problematic when calling <cite>cpu_percent()</cite> for all processes: it's very easy to forget about specifying <cite>timeout=0</cite> resulting in dramatic slowdowns which are hard to spot. For example, this code snippet might take different seconds to complete depending on the number of active processes:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="c1"># this will be slow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
-<span class="o">...</span>    <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">())</span>
-</pre></div>
-</div>
-<div class="section" id="migration-strategy">
-<h2>Migration strategy<a class="headerlink" href="#migration-strategy" title="Permalink to this headline">¶</a></h2>
-<p>Except for Process properties (<cite>name</cite>, <cite>exe</cite>, <cite>cmdline</cite>, etc.) all the old APIs are still available as aliases pointing to the newer names and raising DeprecationWarning. psutil will be very clear on what you should use instead of the deprecated API as long as you start the interpreter with the &quot;-Wd&quot; option. This will enable deprecation warnings which were <a class="reference external" href="http://bugs.python.org/issue7319">silenced in Python 2.7</a> (IMHO, from a developer standpoint this was a bad decision).</p>
-<pre class="literal-block">
-giampaolo&#64;ubuntu:/tmp$ python -Wd
-Python 2.7.3 (default, Sep 26 2013, 20:03:06)
-[GCC 4.6.3] on linux2
-Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
-&gt;&gt;&gt; import psutil
-&gt;&gt;&gt; psutil.get_pid_list()
-__main__:1: DeprecationWarning: psutil.get_pid_list is deprecated; use psutil.pids() instead
-[1, 2, 3, 6, 7, 13, ...]
-&gt;&gt;&gt;
-&gt;&gt;&gt;
-&gt;&gt;&gt; p = psutil.Process()
-&gt;&gt;&gt; p.get_cpu_times()
-__main__:1: DeprecationWarning: get_cpu_times() is deprecated; use cpu_times() instead
-pcputimes(user=0.08, system=0.03)
-&gt;&gt;&gt;
-</pre>
-<p>If you have a solid test suite you can run tests and fix the warnings one by one.
-As for the Process properties which were turned into methods it's more difficult because whereas psutil 1.2.1 returns the actual value, psutil 2.0.0 will return the bound method:</p>
-<div class="highlight"><pre><span></span># psutil 1.2.1
-&gt;&gt;&gt; psutil.Process().name
-&#39;python&#39;
-&gt;&gt;&gt;
-
-# psutil 2.0.0
-&gt;&gt;&gt; psutil.Process().name
-&lt;bound method Process.name of psutil.Process(pid=19816, name=&#39;python&#39;) at 139845631328144&gt;
-&gt;&gt;&gt;
-</pre></div>
-<p>What I would recommend if you want to drop support for 1.2.1 is to grep for <cite>&quot;.name&quot;</cite>, <cite>&quot;.exe&quot;</cite> etc. and just replace them with <cite>&quot;.exe()&quot;</cite> and <cite>&quot;.name()&quot;</cite> one by one.
-If on the other hand you want to write code which works with both versions I see two possibilities:</p>
-<ul class="simple">
-<li>#1 check version info, like this:</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">PSUTIL2</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">name</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">()</span> <span class="k">if</span> <span class="n">PSUTIL2</span> <span class="k">else</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">exe</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">exe</span><span class="p">()</span> <span class="k">if</span> <span class="n">PSUTIL2</span> <span class="k">else</span> <span class="n">p</span><span class="o">.</span><span class="n">exe</span>
-</pre></div>
-<ul class="simple">
-<li>#2 get rid of all <cite>&quot;.name&quot;</cite>, <cite>&quot;.exe&quot;</cite> occurrences you have in your code and use <cite>as_dict()</cite> instead:</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pinfo</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;exe&quot;</span><span class="p">])</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pinfo</span>
-<span class="p">{</span><span class="s1">&#39;exe&#39;</span><span class="p">:</span> <span class="s1">&#39;/usr/bin/python2.7&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">name</span> <span class="o">=</span> <span class="n">pinfo</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">exe</span> <span class="o">=</span> <span class="n">pinfo</span><span class="p">[</span><span class="s1">&#39;exe&#39;</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="section" id="new-features-introduced-in-2-0-0">
-<h2>New features introduced in 2.0.0<a class="headerlink" href="#new-features-introduced-in-2-0-0" title="Permalink to this headline">¶</a></h2>
-<p>Ok, enough with the bad news. =) psutil 2.0.0 is not only about code breakage. I also had the chance to integrate a bunch of interesting features.</p>
-<ul class="simple">
-<li>#427 (code.google.com/p/psutil/issues/detail?id=427): you're now able to distinguish between the number of logical and physical CPUs:</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># logical</span>
-<span class="mi">4</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># physical cores only</span>
-<span class="mi">2</span>
-</pre></div>
-<ul class="simple">
-<li>#452 (code.google.com/p/psutil/issues/detail?id=452): process classes are now hashable and can be checked for equality. That means you can use <cite>Process</cite> objects with sets (finally!).</li>
-<li>#447 (code.google.com/p/psutil/issues/detail?id=447): <cite>psutil.wait_procs()</cite> &quot;timeout&quot; parameter is now optional</li>
-<li>#461 (code.google.com/p/psutil/issues/detail?id=461): functions returning namedtuples are now pickle-able</li>
-<li>#459 (code.google.com/p/psutil/issues/detail?id=459): a Makefile is now available to automate repetitive tasks such as build, install, running tests etc. There's also a make.bat for Windows.</li>
-<li>introduced <cite>unittest2</cite> module as a requirement for running tests</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/424">#424</a>: published Windows installers for Python 3.X 64-bit.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/447">#447</a>: the <tt class="docutils literal">psutil.wait_procs()</tt> <tt class="docutils literal">timeout</tt> parameter is now optional.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/459">#459</a>: a <a class="reference external" href="https://github.com/giampaolo/psutil/blob/v2.0.0/Makefile">Makefile</a> is now available for running tests and other repetitive tasks (also on Windows).</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/463">#463</a>: the <tt class="docutils literal">timeout</tt> parameter of <tt class="docutils literal">cpu_percent*</tt> functions defaults to 0.0, because the previous default was a common source of slowdowns.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/340">#340</a>: (Windows) <tt class="docutils literal">Process.open_files()</tt> no longer hangs.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/448">#448</a>: (Windows) fixed a memory leak affecting <tt class="docutils literal">Process.children()</tt> and <tt class="docutils literal">Process.ppid()</tt>.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/461">#461</a>: namedtuples are now pickle-able.</li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/474">#474</a>: (Windows) <tt class="docutils literal">Process.cpu_percent()</tt> is no longer capped at 100%.</li>
 </ul>
 </div>
 

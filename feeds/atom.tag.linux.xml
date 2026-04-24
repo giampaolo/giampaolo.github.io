@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - linux</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.linux.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2017-02-01T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>Sensors: temperatures, battery, CPU frequency</title><link href="https://gmpy.dev/blog/2017/psutil-510-sensors-temperatures-battery-and-cpu-frequency" rel="alternate"></link><published>2017-02-01T00:00:00+01:00</published><updated>2017-02-01T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2017-02-01:/blog/2017/psutil-510-sensors-temperatures-battery-and-cpu-frequency</id><summary type="html">&lt;p&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 5.1.0 is out. This release introduces new APIs to retrieve hardware temperatures, battery status, and CPU frequency information.&lt;/p&gt;
+&lt;div class="section" id="temperatures"&gt;
+&lt;h2&gt;Temperatures&lt;a class="headerlink" href="#temperatures" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can now retrieve hardware temperatures (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/962"&gt;PR-962&lt;/a&gt;). This is currently available on Linux only.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;On Windows it's hard to do in a hardware-agnostic way. I ran into 3 …&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/"&gt;psutil&lt;/a&gt; 5.1.0 is out. This release introduces new APIs to retrieve hardware temperatures, battery status, and CPU frequency information.&lt;/p&gt;
+&lt;div class="section" id="temperatures"&gt;
+&lt;h2&gt;Temperatures&lt;a class="headerlink" href="#temperatures" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can now retrieve hardware temperatures (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/962"&gt;PR-962&lt;/a&gt;). This is currently available on Linux only.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;On Windows it's hard to do in a hardware-agnostic way. I ran into 3 WMI-based approaches, none of which worked with my hardware, so I gave up.&lt;/li&gt;
+&lt;li&gt;On macOS it seems relatively easy, but my virtualized macOS box doesn't support sensors, so I gave up for lack of hardware. If someone wants to give it a try, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/371"&gt;be my guest&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sensors_temperatures&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="go"&gt;{&amp;#39;acpitz&amp;#39;: [shwtemp(label=&amp;#39;&amp;#39;, current=47.0, high=103.0, critical=103.0)],&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;asus&amp;#39;: [shwtemp(label=&amp;#39;&amp;#39;, current=47.0, high=None, critical=None)],&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;coretemp&amp;#39;: [shwtemp(label=&amp;#39;Physical id 0&amp;#39;, current=52.0, high=100.0, critical=100.0),&lt;/span&gt;
+&lt;span class="go"&gt;              shwtemp(label=&amp;#39;Core 0&amp;#39;, current=45.0, high=100.0, critical=100.0),&lt;/span&gt;
+&lt;span class="go"&gt;              shwtemp(label=&amp;#39;Core 1&amp;#39;, current=52.0, high=100.0, critical=100.0),&lt;/span&gt;
+&lt;span class="go"&gt;              shwtemp(label=&amp;#39;Core 2&amp;#39;, current=45.0, high=100.0, critical=100.0),&lt;/span&gt;
+&lt;span class="go"&gt;              shwtemp(label=&amp;#39;Core 3&amp;#39;, current=47.0, high=100.0, critical=100.0)]}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="battery-status"&gt;
+&lt;h2&gt;Battery status&lt;a class="headerlink" href="#battery-status" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Battery status information is now available on Linux, Windows and FreeBSD (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/963"&gt;PR-963&lt;/a&gt;).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;secs2hours&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;secs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;mm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ss&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;divmod&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;secs&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;60&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;hh&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;divmod&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;60&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;%d&lt;/span&gt;&lt;span class="s2"&gt;:&lt;/span&gt;&lt;span class="si"&gt;%02d&lt;/span&gt;&lt;span class="s2"&gt;:&lt;/span&gt;&lt;span class="si"&gt;%02d&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;hh&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ss&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="gp"&gt;...&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;battery&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sensors_battery&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;battery&lt;/span&gt;
+&lt;span class="go"&gt;sbattery(percent=93, secsleft=16628, power_plugged=False)&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;charge = &lt;/span&gt;&lt;span class="si"&gt;%s%%&lt;/span&gt;&lt;span class="s2"&gt;, time left = &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;battery&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;percent&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;secs2hours&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;battery&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;secsleft&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;span class="go"&gt;charge = 93%, time left = 4:37:08&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="cpu-frequency"&gt;
+&lt;h2&gt;CPU frequency&lt;a class="headerlink" href="#cpu-frequency" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Available on Linux, Windows and macOS (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/952"&gt;PR-952&lt;/a&gt;). Only Linux reports the real-time value (always changing); other platforms return the nominal &amp;quot;fixed&amp;quot; value.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_freq&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="go"&gt;scpufreq(current=931.42925, min=800.0, max=3500.0)&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_freq&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;percpu&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="go"&gt;[scpufreq(current=2394.945, min=800.0, max=3500.0),&lt;/span&gt;
+&lt;span class="go"&gt; scpufreq(current=2236.812, min=800.0, max=3500.0),&lt;/span&gt;
+&lt;span class="go"&gt; scpufreq(current=1703.609, min=800.0, max=3500.0),&lt;/span&gt;
+&lt;span class="go"&gt; scpufreq(current=1754.289, min=800.0, max=3500.0)]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-cpu-a-process-is-on"&gt;
+&lt;h2&gt;What CPU a process is on&lt;a class="headerlink" href="#what-cpu-a-process-is-on" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Tells you which CPU a process is currently running on, somewhat related to &lt;tt class="docutils literal"&gt;Process.cpu_affinity()&lt;/tt&gt; (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/954"&gt;PR-954&lt;/a&gt;). It's interesting for visualizing how the OS scheduler keeps evenly reassigning processes across CPUs (see the &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-5.1.0/scripts/cpu_distribution.py"&gt;cpu_distribution.py&lt;/a&gt; script).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="cpu-affinity"&gt;
+&lt;h2&gt;CPU affinity&lt;a class="headerlink" href="#cpu-affinity" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;A new shorthand is available to set affinity against all eligible CPUs:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_affinity&lt;/span&gt;&lt;span class="p"&gt;([])&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This was added because on Linux (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/956"&gt;#956&lt;/a&gt;) it is not always possible to set affinity against all CPUs directly. It is equivalent to:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_affinity&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_count&lt;/span&gt;&lt;span class="p"&gt;())))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="other-bug-fixes"&gt;
+&lt;h2&gt;Other bug fixes&lt;a class="headerlink" href="#other-bug-fixes" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;See the full list in the &lt;a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="2017"></category><category term="psutil"></category><category term="python"></category><category term="new-api"></category><category term="release"></category><category term="linux"></category></entry><entry><title>Improved Linux memory metrics</title><link href="https://gmpy.dev/blog/2016/psutil-440-improved-linux-memory-metrics" rel="alternate"></link><published>2016-10-23T00:00:00+02:00</published><updated>2016-10-23T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2016-10-23:/blog/2016/psutil-440-improved-linux-memory-metrics</id><summary type="html">&lt;p&gt;OK, another psutil release. The headline of 4.4.0 is more accurate memory metrics on Linux, plus a pile of macOS fixes I'd been sitting on for years.&lt;/p&gt;
+&lt;div class="section" id="linux-virtual-memory"&gt;
+&lt;h2&gt;Linux virtual memory&lt;a class="headerlink" href="#linux-virtual-memory" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;People had been complaining for a while that &lt;tt class="docutils literal"&gt;virtual_memory()&lt;/tt&gt; didn't match what &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; reported on Linux (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/862"&gt;#862&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/685"&gt;#685 …&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;OK, another psutil release. The headline of 4.4.0 is more accurate memory metrics on Linux, plus a pile of macOS fixes I'd been sitting on for years.&lt;/p&gt;
+&lt;div class="section" id="linux-virtual-memory"&gt;
+&lt;h2&gt;Linux virtual memory&lt;a class="headerlink" href="#linux-virtual-memory" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;People had been complaining for a while that &lt;tt class="docutils literal"&gt;virtual_memory()&lt;/tt&gt; didn't match what &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; reported on Linux (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/862"&gt;#862&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/685"&gt;#685&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/538"&gt;#538&lt;/a&gt;). I finally dug into it (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/887"&gt;#887&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/890"&gt;PR-890&lt;/a&gt;) and, funny enough, it turns out &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; itself was doing it wrong until &lt;a class="reference external" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773"&gt;about two years ago&lt;/a&gt;, when somebody got tired of everyone guessing and moved the calculation into the kernel.&lt;/p&gt;
+&lt;p&gt;Starting with Linux 3.14, &lt;tt class="docutils literal"&gt;/proc/meminfo&lt;/tt&gt; has a &lt;tt class="docutils literal"&gt;MemAvailable&lt;/tt&gt; column. That's what psutil now uses, and the &lt;tt class="docutils literal"&gt;available&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;used&lt;/tt&gt; fields match &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; exactly. On older kernels (&amp;lt; 3.14) psutil falls back to the &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L291"&gt;same formula&lt;/a&gt; that kernel commit introduced.&lt;/p&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;free&lt;/tt&gt;'s source code also inspired a fix that prevents available memory from overflowing total memory on &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L435"&gt;LXC containers&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="macos-fixes"&gt;
+&lt;h2&gt;macOS fixes&lt;a class="headerlink" href="#macos-fixes" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;For years I did psutil's macOS development on an old 10.5 install emulated via VirtualBox, running iDeneb (a hacked macOS). I finally got access to a more recent version (El Capitan) via VirtualBox + Vagrant, and could address a pile of long-standing bugs:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/514"&gt;#514&lt;/a&gt;: &lt;tt class="docutils literal"&gt;Process.memory_maps()&lt;/tt&gt; segfault (critical).&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/783"&gt;#783&lt;/a&gt;: &lt;tt class="docutils literal"&gt;Process.status()&lt;/tt&gt; could return &lt;tt class="docutils literal"&gt;&amp;quot;running&amp;quot;&lt;/tt&gt; for zombie processes.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/908"&gt;#908&lt;/a&gt;: several methods could mask the real error for high-privileged PIDs, raising &lt;tt class="docutils literal"&gt;NoSuchProcess&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;AccessDenied&lt;/tt&gt; instead of &lt;tt class="docutils literal"&gt;OSError&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;RuntimeError&lt;/tt&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/909"&gt;#909&lt;/a&gt;: &lt;tt class="docutils literal"&gt;Process.open_files()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;Process.connections()&lt;/tt&gt; could raise &lt;tt class="docutils literal"&gt;OSError&lt;/tt&gt; with no exception set when the process was gone.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/916"&gt;#916&lt;/a&gt;: fixed many compilation warnings.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="nic-netmask-on-windows"&gt;
+&lt;h2&gt;NIC netmask on Windows&lt;a class="headerlink" href="#nic-netmask-on-windows" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Small but nice: &lt;tt class="docutils literal"&gt;net_if_addrs()&lt;/tt&gt; on Windows now returns the netmask too.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="improved-procinfo-py"&gt;
+&lt;h2&gt;Improved procinfo.py&lt;a class="headerlink" href="#improved-procinfo-py" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-4.4.0/scripts/procinfo.py"&gt;scripts/procinfo.py&lt;/a&gt; is my kitchen-sink demo script. I taught it a bunch of new tricks, so it now dumps pretty much everything psutil knows about a process:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python scripts/procinfo.py
+pid           4600
+name          chrome
+parent        4554 (bash)
+exe           /opt/google/chrome/chrome
+cwd           /home/giampaolo
+cmdline       /opt/google/chrome/chrome
+started       2016-09-19 11:12
+cpu-tspent    27:27.68
+cpu-times     user=8914.32, system=3530.59,
+              children_user=1.46, children_system=1.31
+cpu-affinity  [0, 1, 2, 3, 4, 5, 6, 7]
+memory        rss=520.5M, vms=1.9G, shared=132.6M, text=95.0M, lib=0B,
+              data=816.5M, dirty=0B
+memory %      3.26
+user          giampaolo
+uids          real=1000, effective=1000, saved=1000
+terminal      /dev/pts/2
+status        sleeping
+nice          0
+ionice        class=IOPriority.IOPRIO_CLASS_NONE, value=0
+num-threads   47
+num-fds       379
+I/O           read_count=96.6M, write_count=80.7M,
+              read_bytes=293.2M, write_bytes=24.5G
+ctx-switches  voluntary=30426463, involuntary=460108
+children      PID    NAME
+              4605   cat
+              4606   cat
+              4609   chrome
+              4669   chrome
+open-files    PATH
+              /opt/google/chrome/icudtl.dat
+              /opt/google/chrome/snapshot_blob.bin
+              /opt/google/chrome/natives_blob.bin
+              /opt/google/chrome/chrome_100_percent.pak
+              [...]
+connections   PROTO LOCAL ADDR            REMOTE ADDR               STATUS
+              UDP   10.0.0.3:3693         *:*                       NONE
+              TCP   10.0.0.3:55102        172.217.22.14:443         ESTABLISHED
+              UDP   10.0.0.3:35172        *:*                       NONE
+              TCP   10.0.0.3:32922        172.217.16.163:443        ESTABLISHED
+              UDP   :::5353               *:*                       NONE
+              UDP   10.0.0.3:59925        *:*                       NONE
+threads       TID              USER          SYSTEM
+              11795             0.7            1.35
+              11796            0.68            1.37
+              15887            0.74            0.03
+              19055            0.77            0.01
+              [...]
+              total=47
+res-limits    RLIMIT                     SOFT       HARD
+              virtualmem             infinity   infinity
+              coredumpsize                  0   infinity
+              cputime                infinity   infinity
+              datasize               infinity   infinity
+              filesize               infinity   infinity
+              locks                  infinity   infinity
+              memlock                   65536      65536
+              msgqueue                 819200     819200
+              nice                          0          0
+              openfiles                  8192      65536
+              maxprocesses              63304      63304
+              rss                    infinity   infinity
+              realtimeprio                  0          0
+              rtimesched             infinity   infinity
+              sigspending               63304      63304
+              stack                   8388608   infinity
+mem-maps      RSS      PATH
+              381.4M   [anon]
+              62.8M    /opt/google/chrome/chrome
+              15.8M    /home/giampaolo/.config/google-chrome/Default/History
+              6.6M     /home/giampaolo/.config/google-chrome/Default/Favicons
+              [...]
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="other-changes"&gt;
+&lt;h2&gt;Other changes&lt;a class="headerlink" href="#other-changes" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The full list is in the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="2016"></category><category term="psutil"></category><category term="python"></category><category term="memory"></category><category term="linux"></category><category term="release"></category></entry><entry><title>Real process memory and environ in Python</title><link href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python" rel="alternate"></link><published>2016-02-17T00:00:00+01:00</published><updated>2016-02-17T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2016-02-17:/blog/2016/real-process-memory-and-environ-in-python</id><summary type="html">&lt;p&gt;psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll get straight to the point and describe what's new.&lt;/p&gt;
+&lt;div class="section" id="real-process-memory-info"&gt;
+&lt;h2&gt;&amp;quot;Real&amp;quot; process memory info&lt;a class="headerlink" href="#real-process-memory-info" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Determining how much memory a process &lt;strong&gt;really&lt;/strong&gt; uses is not an easy matter (see &lt;a class="reference external" href="https://lwn.net/Articles/230975/"&gt;this&lt;/a&gt; and &lt;a class="reference external" href="http://bmaurer.blogspot.it/2006/03/memory-usage-with-smaps.html"&gt;this&lt;/a&gt;). RSS (Resident Set Size), which …&lt;/p&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll get straight to the point and describe what's new.&lt;/p&gt;
+&lt;div class="section" id="real-process-memory-info"&gt;
+&lt;h2&gt;&amp;quot;Real&amp;quot; process memory info&lt;a class="headerlink" href="#real-process-memory-info" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Determining how much memory a process &lt;strong&gt;really&lt;/strong&gt; uses is not an easy matter (see &lt;a class="reference external" href="https://lwn.net/Articles/230975/"&gt;this&lt;/a&gt; and &lt;a class="reference external" href="http://bmaurer.blogspot.it/2006/03/memory-usage-with-smaps.html"&gt;this&lt;/a&gt;). RSS (Resident Set Size), which most people rely on, is misleading because it includes both memory unique to the process and memory shared with others. What's more interesting for profiling is the memory that would be freed if the process were terminated &lt;strong&gt;right now&lt;/strong&gt;. In the Linux world this is called USS (Unique Set Size), the major feature introduced in psutil 4.0.0 (not only for Linux but also for Windows and macOS).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="uss-memory"&gt;
+&lt;h2&gt;USS memory&lt;a class="headerlink" href="#uss-memory" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The USS (Unique Set Size) is the memory unique to a process, that would be freed if the process were terminated right now. On Linux it can be determined by parsing the &amp;quot;private&amp;quot; blocks in &lt;tt class="docutils literal"&gt;/proc/PID/smaps&lt;/tt&gt;. The Firefox team pushed this further and got it working on &lt;a class="reference external" href="https://dxr.mozilla.org/mozilla-central/rev/aa90f482e16db77cdb7dea84564ea1cbd8f7f6b3/xpcom/base/nsMemoryReporterManager.cpp"&gt;macOS and Windows&lt;/a&gt; too.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;memory_full_info&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="go"&gt;pfullmem(rss=101990, vms=521888, shared=38804, text=28200, lib=0, data=59672, dirty=0, uss=81623, pss=91788, swap=0)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="pss-and-swap"&gt;
+&lt;h2&gt;PSS and swap&lt;a class="headerlink" href="#pss-and-swap" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;On Linux there are two additional metrics that can also be determined via &lt;tt class="docutils literal"&gt;/proc/PID/smaps&lt;/tt&gt;: PSS and swap.&lt;/p&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;pss&lt;/tt&gt;, aka &amp;quot;Proportional Set Size&amp;quot;, represents the amount of memory shared with other processes, accounted so that the amount is divided evenly between the processes that share it. I.e. if a process has 10 MBs all to itself (USS) and 10 MBs shared with another process, its PSS will be 15 MBs.&lt;/p&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;swap&lt;/tt&gt; is simply the amount of memory that has been swapped out to disk. With &lt;tt class="docutils literal"&gt;Process.memory_full_info()&lt;/tt&gt; it is possible to implement a tool like &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/release-4.0.0/scripts/procsmem.py"&gt;procsmem.py&lt;/a&gt;, similar to &lt;a class="reference external" href="https://www.selenic.com/smem/"&gt;smem&lt;/a&gt; on Linux, which provides a list of processes sorted by &lt;tt class="docutils literal"&gt;uss&lt;/tt&gt;. It's interesting to see how &lt;tt class="docutils literal"&gt;rss&lt;/tt&gt; differs from &lt;tt class="docutils literal"&gt;uss&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~/svn/psutil$ ./scripts/procsmem.py
+PID     User    Cmdline                            USS     PSS    Swap     RSS
+==============================================================================
+...
+3986    giampao /usr/bin/python3 /usr/bin/indi   15.3M   16.6M      0B   25.6M
+3906    giampao /usr/lib/ibus/ibus-ui-gtk3       17.6M   18.1M      0B   26.7M
+3991    giampao python /usr/bin/hp-systray -x    19.0M   23.3M      0B   40.7M
+3830    giampao /usr/bin/ibus-daemon --daemoni   19.0M   19.0M      0B   21.4M
+20529   giampao /opt/sublime_text/plugin_host    19.9M   20.1M      0B   22.0M
+3990    giampao nautilus -n                      20.6M   29.9M      0B   50.2M
+3898    giampao /usr/lib/unity/unity-panel-ser   27.1M   27.9M      0B   37.7M
+4176    giampao /usr/lib/evolution/evolution-c   35.7M   36.2M      0B   41.5M
+20712   giampao /usr/bin/python -B /home/giamp   45.6M   45.9M      0B   49.4M
+3880    giampao /usr/lib/x86_64-linux-gnu/hud/   51.6M   52.7M      0B   61.3M
+20513   giampao /opt/sublime_text/sublime_text   65.8M   73.0M      0B   87.9M
+3976    giampao compiz                          115.0M  117.0M      0B  130.9M
+32486   giampao skype                           145.1M  147.5M      0B  149.6M
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="implementation"&gt;
+&lt;h2&gt;Implementation&lt;a class="headerlink" href="#implementation" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;To get these values (&lt;tt class="docutils literal"&gt;uss&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;pss&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;swap&lt;/tt&gt;) we need to walk the whole process address space. This usually requires higher privileges and is considerably slower than &lt;tt class="docutils literal"&gt;Process.memory_info()&lt;/tt&gt;, which is probably why tools like &lt;tt class="docutils literal"&gt;ps&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;top&lt;/tt&gt; show RSS/VMS instead of USS. A big thanks goes to the Mozilla team for figuring this out on Windows and macOS, and to &lt;a class="reference external" href="https://github.com/EricRahm"&gt;Eric Rahm&lt;/a&gt; who put the psutil PRs together (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/744"&gt;PR-744&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/745"&gt;PR-745&lt;/a&gt; and &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/746"&gt;PR-746&lt;/a&gt;). If you don't use Python and want to port the code to another language, here are the interesting parts:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/42b34049cf96e845b6423db91f991849a2f87578/psutil/_pslinux.py#L1026"&gt;Linux&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_psutil_osx.c#L568"&gt;macOS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_psutil_windows.c#L811"&gt;Windows&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="memory-type-percent"&gt;
+&lt;h2&gt;Memory type percent&lt;a class="headerlink" href="#memory-type-percent" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;After reorganizing the process memory APIs (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/744"&gt;PR-744&lt;/a&gt;), I added a new &lt;tt class="docutils literal"&gt;memtype&lt;/tt&gt; parameter to &lt;tt class="docutils literal"&gt;Process.memory_percent()&lt;/tt&gt;. You can now compare a specific memory type (not only RSS) against the total physical memory. E.g.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;memory_percent&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;memtype&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;pss&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="go"&gt;0.06877466326787016&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="process-environ"&gt;
+&lt;h2&gt;Process environ&lt;a class="headerlink" href="#process-environ" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The second biggest improvement in psutil 4.0.0 is the ability to read a process's environment variables. This opens up interesting possibilities for process recognition and monitoring. For instance, you can start a process with a custom environment variable, then iterate over all processes to find the one of interest:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;process_iter&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;env&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Error&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;pass&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;MYAPP&amp;#39;&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;env&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="o"&gt;...&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Process environ was a long-standing issue (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/52"&gt;#52&lt;/a&gt;, from 2009) that I gave up on because the Windows implementation only worked for the current process. &lt;a class="reference external" href="https://github.com/fbenkstein"&gt;Frank Benkstein&lt;/a&gt; solved that (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/747"&gt;PR-747&lt;/a&gt;), and it now works on Linux, Windows and macOS for all processes (you may still hit &lt;tt class="docutils literal"&gt;AccessDenied&lt;/tt&gt; for processes owned by another user):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pprint&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;pprint&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;pp&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;pp&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;span class="go"&gt;{...&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;CLUTTER_IM_MODULE&amp;#39;: &amp;#39;xim&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;COLORTERM&amp;#39;: &amp;#39;gnome-terminal&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;COMPIZ_BIN_PATH&amp;#39;: &amp;#39;/usr/bin/&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;HOME&amp;#39;: &amp;#39;/home/giampaolo&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;PWD&amp;#39;: &amp;#39;/home/giampaolo/svn/psutil&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt;  }&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Note that the resulting dict usually doesn't reflect changes made after the process started (e.g. &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;os.environ['MYAPP']&lt;/span&gt; = '1'&lt;/tt&gt;). Again, for anyone porting this to other languages, here are the interesting parts:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/_pslinux.py#L928"&gt;Linux&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/50fd31a4eaca3e24905b96d587fd08bcf313fc6b/psutil/arch/osx/process_info.c#L241"&gt;macOS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/747"&gt;Windows&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="extended-disk-io-stats"&gt;
+&lt;h2&gt;Extended disk IO stats&lt;a class="headerlink" href="#extended-disk-io-stats" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;psutil.disk_io_counters()&lt;/tt&gt; now reports additional metrics on Linux and FreeBSD:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;busy_time&lt;/tt&gt;: the time spent doing actual I/Os (in milliseconds).&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;read_merged_count&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;write_merged_count&lt;/tt&gt; (Linux only): the number of merged reads and writes (see the &lt;a class="reference external" href="https://www.kernel.org/doc/Documentation/iostats.txt"&gt;iostats&lt;/a&gt; doc).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These give a better picture of actual disk utilization (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/756"&gt;#756&lt;/a&gt;), similar to the &lt;tt class="docutils literal"&gt;iostat&lt;/tt&gt; command on Linux.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="os-constants"&gt;
+&lt;h2&gt;OS constants&lt;a class="headerlink" href="#os-constants" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Given the growing number of platform-specific metrics, I added a set of constants to tell which platform you're on: &lt;tt class="docutils literal"&gt;psutil.LINUX&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;psutil.WINDOWS&lt;/tt&gt;, etc.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="other-fixes"&gt;
+&lt;h2&gt;Other fixes&lt;a class="headerlink" href="#other-fixes" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The complete list of changes is available in the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#id22"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="porting-code"&gt;
+&lt;h2&gt;Porting code&lt;a class="headerlink" href="#porting-code" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Since 4.0.0 is a major version, I took the chance to (lightly) change / break some APIs.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;Process.memory_info()&lt;/tt&gt; no longer returns just an (&lt;tt class="docutils literal"&gt;rss&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;vms&lt;/tt&gt;) namedtuple. It returns a variable-length namedtuple that varies by platform (&lt;tt class="docutils literal"&gt;rss&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;vms&lt;/tt&gt; are always present, even on Windows). Essentially the same result as the old &lt;tt class="docutils literal"&gt;Process.memory_info_ex()&lt;/tt&gt;. This shouldn't break your code unless you were doing &lt;tt class="docutils literal"&gt;rss, vms = p.memory_info()&lt;/tt&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;Process.memory_info_ex()&lt;/tt&gt; is deprecated. It still works as an alias for &lt;tt class="docutils literal"&gt;Process.memory_info()&lt;/tt&gt;, issuing a &lt;tt class="docutils literal"&gt;DeprecationWarning&lt;/tt&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;psutil.disk_io_counters()&lt;/tt&gt; on NetBSD and OpenBSD no longer returns &lt;tt class="docutils literal"&gt;write_count&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;read_count&lt;/tt&gt; because the kernel doesn't provide them (we were returning the busy time instead). Should be a small issue given NetBSD and OpenBSD support is very recent.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="discussion"&gt;
+&lt;h2&gt;Discussion&lt;a class="headerlink" href="#discussion" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/469p2c/psutil_400_real_process_memory_info_and_process/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://news.ycombinator.com/item?id=11119298"&gt;Hacker News&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2016"></category><category term="psutil"></category><category term="python"></category><category term="memory"></category><category term="new-api"></category><category term="compatibility"></category><category term="release"></category><category term="community"></category><category term="linux"></category></entry></feed>

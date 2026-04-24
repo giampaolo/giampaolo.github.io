@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<title>Removing Process.memory_maps() on macOS</title>-->
+    <title>Giampaolo Rodola</title>
+    <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
+    <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
+    <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
+    <link rel="icon" type="image/x-icon" href="https://gmpy.dev/favicon.ico">
+</head>
+
+<body id="index" class="home">
+    <header id="banner" class="body">
+        <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+        <nav><ul>
+            <li><a href="/">Blog</a></li>
+            <li><a href="/archives">Archives</a></li>
+            <li><a href="/about">About</a></li>
+        </ul></nav>
+    </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://gmpy.dev/blog/2019/removing-processmemory_maps-on-macos" rel="bookmark"
+           title="Permalink to Removing Process.memory_maps() on macOS">Removing Process.memory_maps() on macOS</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2019-03-05T00:00:00+01:00">
+        Created: 05 mar 2019,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/macos">macos</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->      <p>This is part of the psutil 5.6.0 release (see the full <a class="reference external" href="psutil-560-and-process-parents">release notes</a>).</p>
+<p>As of 5.6.0, <tt class="docutils literal">Process.memory_maps()</tt> is no longer defined on macOS.</p>
+<div class="section" id="the-bug">
+<h2>The bug<a class="headerlink" href="#the-bug" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1291">#1291</a>: on macOS, <tt class="docutils literal">Process.memory_maps()</tt> would either raise <tt class="docutils literal">OSError: [Errno 22] Invalid argument</tt> or segfault the whole Python process! Both triggered from code as simple as <tt class="docutils literal"><span class="pre">psutil.Process().as_dict()</span></tt>, since <tt class="docutils literal">Process.as_dict()</tt> iterates every attribute, and <tt class="docutils literal">Process.memory_maps()</tt> is one of them.</p>
+<p>The root cause was inside Apple's undocumented <tt class="docutils literal">proc_regionfilename()</tt> syscall. On some memory regions it returns <tt class="docutils literal">EINVAL</tt>. On others it takes the process down. Which regions? Nobody figured out. Arnon Yaari (<a class="reference external" href="https://github.com/wiggin15">&#64;wiggin15</a>) did most of the investigation: he wrote a <a class="reference external" href="https://gist.github.com/wiggin15/0a4c51b5bc6c52e6e31e2234f88558ab">standalone C reproducer</a> and walked me through what he'd tried.</p>
+<p>In <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1436">PR-1436</a> I attempted a fix by reverse-engineering <tt class="docutils literal">vmmap(1)</tt> but it didn't work. The fundamental problem is that <tt class="docutils literal">vmmap</tt> is closed source and <tt class="docutils literal">proc_regionfilename</tt> is undocumented. Neither my virtualized macOS (10.11.6) nor Travis CI (10.12.1) could reproduce the bug, which reproduced reliably only on 10.14.3.</p>
+</div>
+<div class="section" id="why-remove-outright">
+<h2>Why remove outright<a class="headerlink" href="#why-remove-outright" title="Permalink to this headline">¶</a></h2>
+<p>While removing the C code I noticed that the macOS unit test had been disabled long ago, presumably by me after recurring flaky Travis runs. Meaning that the method had been broken on some macOS versions far longer than the 2018 bug report suggested.</p>
+<p>Deprecating for a cycle didn't help either: raising <tt class="docutils literal">AccessDenied</tt> breaks code that relied on a successful return, returning an empty list does the same silently, and leaving the method in place doesn't stop the segfault. Basically there was no sane solution, so since 5.6 is a major version I decided to just remove <tt class="docutils literal">Process.memory_maps()</tt> for good.</p>
+<p>On macOS it never supported other processes anyway. Calling it on any PID other than the current one (or its children) raised <tt class="docutils literal">AccessDenied</tt>, even as root.</p>
+<p>If someone finds a Mach API path that works, the method can return. Nobody has found one so far.</p>
+</div>
+
+    </div><!-- /.entry-content -->
+  </article>
+</section>
+
+    <!-- Footer -->
+    <section id="extras" class="body">
+
+        <div class="social">
+            <h2>Social</h2>
+            <ul>
+                <li><a href="https://github.com/giampaolo">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/grodola/">LinkedIn</a></li>
+                <li><a href="https://x.com/grodola">X</a></li>
+            </ul>
+        </div><!-- /.social -->
+
+        <div class="feeds">
+            <h2>Feeds</h2>
+            <ul>
+                <li><a href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate">atom</a></li>
+                <li><a href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate">rss</a></li>
+            </ul>
+        </div>
+    </div>
+    </section>
+    <!-- /Footer -->
+
+    <footer id="contentinfo" class="body">
+        <!--
+            <address id="about" class="vcard body">
+            Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+            </address>
+
+            <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        -->
+    </footer>
+
+    <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164357405-2', 'auto');
+    ga('send', 'pageview');
+    </script>
+</body>
+</html>

@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Giampaolo Rodola - featured</title><link href="https://gmpy.dev/" rel="alternate"></link><link href="https://gmpy.dev/feeds/atom.tag.featured.xml" rel="self"></link><id>https://gmpy.dev/</id><updated>2026-01-28T00:00:00+01:00</updated><subtitle>Python enthusiast, core developer, psutil author</subtitle><entry><title>From Python 3.3 to today: ending 15 years of subprocess polling</title><link href="https://gmpy.dev/blog/2026/event-driven-process-waiting" rel="alternate"></link><published>2026-01-28T00:00:00+01:00</published><updated>2026-01-28T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2026-01-28:/blog/2026/event-driven-process-waiting</id><summary type="html">&lt;p&gt;One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module has relied on a busy-loop polling approach since the &lt;em&gt;timeout&lt;/em&gt; parameter was added to &lt;tt class="docutils literal"&gt;subprocess.Popen.wait()&lt;/tt&gt; in Python 3.3, around 15 years ago (see …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module has relied on a busy-loop polling approach since the &lt;em&gt;timeout&lt;/em&gt; parameter was added to &lt;tt class="docutils literal"&gt;subprocess.Popen.wait()&lt;/tt&gt; in Python 3.3, around 15 years ago (see &lt;a class="reference external" href="https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077"&gt;source&lt;/a&gt;). And psutil's &lt;tt class="docutils literal"&gt;Process.wait()&lt;/tt&gt; method uses exactly the same technique (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160"&gt;source&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;The logic is straightforward: check whether the process has exited using non-blocking &lt;tt class="docutils literal"&gt;waitpid(WNOHANG)&lt;/tt&gt;, sleep briefly, check again, sleep a bit longer, and so on.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;time&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;wait_busy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;end&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;monotonic&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;
+    &lt;span class="n"&gt;interval&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.0001&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;monotonic&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;end&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;pid_done&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;waitpid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;WNOHANG&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;pid_done&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt;
+        &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;interval&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;interval&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;min&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;interval&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.04&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TimeoutError&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In this blog post I'll show how I finally addressed this long-standing inefficiency, first in psutil, and most excitingly, directly in CPython's standard library &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module.&lt;/p&gt;
+&lt;div class="section" id="the-problem-with-busy-polling"&gt;
+&lt;h2&gt;The problem with busy-polling&lt;a class="headerlink" href="#the-problem-with-busy-polling" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;CPU wake-ups: even with exponential backoff (starting at 0.1ms, capping at 40ms), the system constantly wakes up to check process status, wasting CPU cycles and draining batteries.&lt;/li&gt;
+&lt;li&gt;Latency: there's always a gap between when a process actually terminates and when you detect it.&lt;/li&gt;
+&lt;li&gt;Scalability: monitoring many processes simultaneously magnifies all of the above.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="event-driven-waiting"&gt;
+&lt;h2&gt;Event-driven waiting&lt;a class="headerlink" href="#event-driven-waiting" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;All POSIX systems provide at least one mechanism to be notified when a file descriptor becomes ready. These are &lt;a class="reference external" href="https://man7.org/linux/man-pages/man2/select.2.html"&gt;select()&lt;/a&gt;, &lt;a class="reference external" href="https://man7.org/linux/man-pages/man2/poll.2.html"&gt;poll()&lt;/a&gt;, &lt;a class="reference external" href="https://man7.org/linux/man-pages/man7/epoll.7.html"&gt;epoll()&lt;/a&gt; (Linux) and &lt;a class="reference external" href="https://man.freebsd.org/cgi/man.cgi?query=kqueue"&gt;kqueue()&lt;/a&gt; (BSD / macOS) system calls. Until recently, I believed they could only be used with file descriptors referencing sockets, pipes, etc., but it turns out they can also be used to wait for events on process PIDs!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="linux"&gt;
+&lt;h2&gt;Linux&lt;a class="headerlink" href="#linux" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;In 2019, Linux 5.3 introduced a new syscall, &lt;tt class="docutils literal"&gt;os.pidfd_open()&lt;/tt&gt;, which was added in Python 3.9. It returns a file descriptor referencing a process PID. The interesting thing is that &lt;tt class="docutils literal"&gt;pidfd_open()&lt;/tt&gt; can be used in conjunction with &lt;tt class="docutils literal"&gt;select()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;epoll()&lt;/tt&gt; to effectively wait until the process exits. E.g. by using &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;select&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;wait_pidfd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;pidfd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pidfd_open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;poller&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;poll&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;poller&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pidfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;POLLIN&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;# block until process exits or timeout occurs&lt;/span&gt;
+    &lt;span class="n"&gt;events&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;poller&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;poll&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;timeout&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;events&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TimeoutError&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This approach has zero busy-looping. The kernel wakes us up exactly when the process terminates or when the timeout expires if the PID is still alive.&lt;/p&gt;
+&lt;p&gt;I chose &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; over &lt;tt class="docutils literal"&gt;select()&lt;/tt&gt; because &lt;tt class="docutils literal"&gt;select()&lt;/tt&gt; has a historical file descriptor limit (&lt;tt class="docutils literal"&gt;FD_SETSIZE&lt;/tt&gt;), which typically caps it at 1024 file descriptors per-process (reminded me of &lt;a class="reference external" href="https://bugs.python.org/issue1685000"&gt;BPO-1685000&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;I chose &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; over &lt;tt class="docutils literal"&gt;epoll()&lt;/tt&gt; because it does not require creating an additional file descriptor. It also needs only a single syscall, which should make it a bit more efficient when monitoring a single FD rather than many.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="macos-and-bsd"&gt;
+&lt;h2&gt;macOS and BSD&lt;a class="headerlink" href="#macos-and-bsd" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;BSD-derived systems (including macOS) provide the &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt; syscall. It's conceptually similar to &lt;tt class="docutils literal"&gt;select()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;epoll()&lt;/tt&gt;, but more powerful (e.g. it can also handle regular files). &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt; can be passed a PID directly, and it will return once the PID disappears or the timeout expires:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;select&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;wait_kqueue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;kq&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;kqueue&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;kev&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;kevent&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nb"&gt;filter&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;KQ_FILTER_PROC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;flags&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;KQ_EV_ADD&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;KQ_EV_ONESHOT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;fflags&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;KQ_NOTE_EXIT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;# block until process exits or timeout occurs&lt;/span&gt;
+    &lt;span class="n"&gt;events&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;kq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;control&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;kev&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;events&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TimeoutError&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="windows"&gt;
+&lt;h2&gt;Windows&lt;a class="headerlink" href="#windows" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Windows does not busy-loop, both in psutil and &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module, thanks to &lt;tt class="docutils literal"&gt;WaitForSingleObject&lt;/tt&gt;. This means Windows has effectively had event-driven process waiting from the start. So nothing to do on that front.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="graceful-fallbacks"&gt;
+&lt;h2&gt;Graceful fallbacks&lt;a class="headerlink" href="#graceful-fallbacks" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Both &lt;tt class="docutils literal"&gt;pidfd_open()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt; can fail for different reasons. For example, with &lt;tt class="docutils literal"&gt;EMFILE&lt;/tt&gt; if the process runs out of file descriptors (usually 1024), or with &lt;tt class="docutils literal"&gt;EACCES&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;EPERM&lt;/tt&gt; if the syscall was explicitly blocked at the system level by the sysadmin (e.g. via SECCOMP). In all cases, psutil silently falls back to the traditional busy-loop polling approach rather than raising an exception.&lt;/p&gt;
+&lt;p&gt;This fast-path-with-fallback approach is similar in spirit to &lt;a class="reference external" href="https://bugs.python.org/issue33671"&gt;BPO-33671&lt;/a&gt;, where I sped up &lt;tt class="docutils literal"&gt;shutil.copyfile()&lt;/tt&gt; by using zero-copy system calls back in 2018. In there, more efficient &lt;tt class="docutils literal"&gt;os.sendfile()&lt;/tt&gt; is attempted first, and if it fails (e.g. on network filesystems) we fall back to the traditional &lt;tt class="docutils literal"&gt;read()&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;write()&lt;/tt&gt; approach to copy regular files.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="measurement"&gt;
+&lt;h2&gt;Measurement&lt;a class="headerlink" href="#measurement" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;As a simple experiment, here's a simple program which waits on itself for 10 seconds without terminating:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# test.py&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getpid&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TimeoutExpired&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We can measure the CPU context switching using &lt;tt class="docutils literal"&gt;/usr/bin/time &lt;span class="pre"&gt;-v&lt;/span&gt;&lt;/tt&gt;. Before the patch (the busy-loop):&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+$ /usr/bin/time -v python3 test.py 2&amp;gt;&amp;amp;1 | grep context
+    Voluntary context switches: 258
+    Involuntary context switches: 4
+&lt;/pre&gt;
+&lt;p&gt;After the patch (the event-driven approach):&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+$ /usr/bin/time -v python3 test.py 2&amp;gt;&amp;amp;1 | grep context
+    Voluntary context switches: 2
+    Involuntary context switches: 1
+&lt;/pre&gt;
+&lt;p&gt;This shows that instead of spinning in userspace, the process blocks in &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt;, and is woken up only when the kernel notifies it, resulting in just a few CPU context switches.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="sleeping-state"&gt;
+&lt;h2&gt;Sleeping state&lt;a class="headerlink" href="#sleeping-state" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;It's also interesting to note that waiting via &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; (or &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt;) puts the process into the exact same sleeping state as a plain &lt;tt class="docutils literal"&gt;time.sleep&lt;/tt&gt; call. From the kernel's perspective, both are interruptible sleeps: the process is de-scheduled, consumes zero CPU, and sits quietly in kernel space.&lt;/p&gt;
+&lt;p&gt;The &lt;tt class="docutils literal"&gt;&amp;quot;S+&amp;quot;&lt;/tt&gt; state shown below by &lt;tt class="docutils literal"&gt;ps&lt;/tt&gt; means that the process &amp;quot;sleeps in foreground&amp;quot;.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;time.sleep&lt;/tt&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="literal-block"&gt;
+$ (python3 -c 'import time; time.sleep(10)' &amp;amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;amp;&amp;amp; fg &amp;amp;&amp;gt;/dev/null
+    PID STAT COMMAND
+ 491573 S+   python3
+&lt;/pre&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;select.poll&lt;/tt&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="literal-block"&gt;
+$ (python3 -c 'import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)' &amp;amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;amp;&amp;amp; fg &amp;amp;&amp;gt;/dev/null
+    PID STAT COMMAND
+ 491748 S+   python3
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class="section" id="cpython-contribution"&gt;
+&lt;h2&gt;CPython contribution&lt;a class="headerlink" href="#cpython-contribution" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;After landing the psutil implementation (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/2706"&gt;PR-2706&lt;/a&gt;), I took the extra step and submitted a matching pull request for CPython &lt;tt class="docutils literal"&gt;subprocess&lt;/tt&gt; module: &lt;a class="reference external" href="https://github.com/python/cpython/pull/144047"&gt;cpython/PR-144047&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I'm especially proud of this one: this is the &lt;strong&gt;third time&lt;/strong&gt; in psutil's 17+ year history that a feature developed in psutil made its way upstream into the Python standard library.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;The first was back in 2010, when &lt;tt class="docutils literal"&gt;Process.nice()&lt;/tt&gt; inspired &lt;tt class="docutils literal"&gt;os.getpriority()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;os.setpriority()&lt;/tt&gt;, see &lt;a class="reference external" href="https://bugs.python.org/issue10784"&gt;BPO-10784&lt;/a&gt;. Landed in Python 3.3.&lt;/li&gt;
+&lt;li&gt;The second was back in 2011, when &lt;tt class="docutils literal"&gt;psutil.disk_usage()&lt;/tt&gt; inspired &lt;tt class="docutils literal"&gt;shutil.disk_usage()&lt;/tt&gt;, see &lt;a class="reference external" href="https://mail.python.org/archives/list/python-ideas&amp;#64;python.org/thread/67A7ML2TJ7MBS3WOL6IZKLD2C3B3VCQG"&gt;python-ideas ML proposal&lt;/a&gt;. Landed in Python 3.3.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;Funny thing:&lt;/em&gt; 15 years ago, Python 3.3 added the &lt;em&gt;timeout&lt;/em&gt; parameter to &lt;tt class="docutils literal"&gt;subprocess.Popen.wait&lt;/tt&gt; (see &lt;a class="reference external" href="https://github.com/python/cpython/commit/31aa7dd1419"&gt;commit&lt;/a&gt;). That's probably where I took inspiration when I first added the &lt;em&gt;timeout&lt;/em&gt; parameter to psutil's &lt;tt class="docutils literal"&gt;Process.wait()&lt;/tt&gt; around the same time (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/commit/886710daf"&gt;commit&lt;/a&gt;). Now, 15 years later, I'm contributing back a similar improvement for that very same &lt;em&gt;timeout&lt;/em&gt; parameter. &lt;strong&gt;The circle is complete&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="links"&gt;
+&lt;h2&gt;Links&lt;a class="headerlink" href="#links" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Topics related to this:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2712"&gt;#2712&lt;/a&gt;: proposal to extend this to multiple PIDs (&lt;tt class="docutils literal"&gt;psutil.wait_procs()&lt;/tt&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2703"&gt;#2703&lt;/a&gt;: proposal for asynchronous &lt;tt class="docutils literal"&gt;Process.wait()&lt;/tt&gt; integration with &lt;tt class="docutils literal"&gt;asyncio&lt;/tt&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/python/cpython/issues/144211"&gt;cpython/#144211&lt;/a&gt;: proposal to extend the &lt;tt class="docutils literal"&gt;selectors&lt;/tt&gt; module to enable &lt;tt class="docutils literal"&gt;asyncio&lt;/tt&gt; optimization on BSD / macOS via &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="discussion"&gt;
+&lt;h2&gt;Discussion&lt;a class="headerlink" href="#discussion" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/1qpp42k/from_python_33_to_today_ending_15_years_of/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://news.ycombinator.com/item?id=46802061"&gt;Hacker News&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://medium.com/&amp;#64;g.rodola/from-python-3-3-to-today-ending-15-years-of-subprocess-polling-e8a83ba17c86"&gt;Medium&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.linkedin.com/feed/update/urn:li:share:7422396026449391616/"&gt;Linkedin&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2026"></category><category term="psutil"></category><category term="python"></category><category term="python-core"></category><category term="performance"></category><category term="featured"></category></entry><entry><title>Detecting memory leaks in C extensions with psutil and psleak</title><link href="https://gmpy.dev/blog/2025/psutil-heap-introspection-apis" rel="alternate"></link><published>2025-12-23T00:00:00+01:00</published><updated>2025-12-23T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-12-23:/blog/2025/psutil-heap-introspection-apis</id><summary type="html">&lt;p&gt;Memory leaks in Python are usually straightforward to diagnose. Just look at RSS, track Python object counts, follow reference graphs, etc. But leaks inside C extension modules are another story. Traditional memory metrics such as RSS and VMS fail to reveal them because Python's memory allocator (&lt;a class="reference external" href="https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator"&gt;pymalloc&lt;/a&gt;) sits above the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Memory leaks in Python are usually straightforward to diagnose. Just look at RSS, track Python object counts, follow reference graphs, etc. But leaks inside C extension modules are another story. Traditional memory metrics such as RSS and VMS fail to reveal them because Python's memory allocator (&lt;a class="reference external" href="https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator"&gt;pymalloc&lt;/a&gt;) sits above the platform's native heap. If something in an extension calls &lt;tt class="docutils literal"&gt;malloc()&lt;/tt&gt; without a corresponding &lt;tt class="docutils literal"&gt;free()&lt;/tt&gt;, that memory often won't show up in RSS / VMS. You have a leak, and you don't know.&lt;/p&gt;
+&lt;p&gt;psutil 7.2.0 introduces two new APIs for &lt;strong&gt;C heap introspection&lt;/strong&gt;, designed specifically to catch these kinds of native leaks. They give you a window directly into the underlying platform allocator (e.g. glibc's malloc), letting you track how much memory the C layer actually allocates. If your RSS is flat but your C heap usage climbs, you now have a way to see it.&lt;/p&gt;
+&lt;div class="section" id="why-native-heap-introspection-matters"&gt;
+&lt;h2&gt;Why native heap introspection matters&lt;a class="headerlink" href="#why-native-heap-introspection-matters" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Many Python projects rely on C extensions: psutil, NumPy, pandas, PIL, lxml, psycopg, PyTorch, custom in-house modules, etc. And even CPython itself, which implements many of its standard library modules in C. If any of these components mishandle memory at the C level, you get a leak that doesn't show up in:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Python reference counts (&lt;tt class="docutils literal"&gt;sys.getrefcount&lt;/tt&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;tracemalloc&lt;/tt&gt; module.&lt;/li&gt;
+&lt;li&gt;Python's &lt;tt class="docutils literal"&gt;gc&lt;/tt&gt; stats.&lt;/li&gt;
+&lt;li&gt;RSS, VMS or USS due to allocator caching, especially for small objects. This can happen, for example, when you forget to &lt;tt class="docutils literal"&gt;Py_DECREF&lt;/tt&gt; a Python object.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;psutil's new functions let you query the allocator (e.g. glibc) directly, returning low-level metrics from the platform's native heap.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="heap-info-direct-allocator-statistics"&gt;
+&lt;h2&gt;heap_info(): direct allocator statistics&lt;a class="headerlink" href="#heap-info-direct-allocator-statistics" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;psutil.heap_info()&lt;/tt&gt; exposes the following metrics:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;heap_used&lt;/tt&gt;: total number of bytes currently allocated via &lt;tt class="docutils literal"&gt;malloc()&lt;/tt&gt; (small allocations).&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;mmap_used&lt;/tt&gt;: total number of bytes currently allocated via &lt;tt class="docutils literal"&gt;mmap()&lt;/tt&gt; or via large &lt;tt class="docutils literal"&gt;malloc()&lt;/tt&gt; allocations.&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;heap_count&lt;/tt&gt;: (Windows only) number of private heaps created via &lt;tt class="docutils literal"&gt;HeapCreate()&lt;/tt&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_info&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="go"&gt;pheap(heap_used=5177792, mmap_used=819200)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Reference for what contributes to each field:&lt;/p&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="33%" /&gt;
+&lt;col width="33%" /&gt;
+&lt;col width="33%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;Platform&lt;/th&gt;
+&lt;th class="head"&gt;Allocation type&lt;/th&gt;
+&lt;th class="head"&gt;Field affected&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;UNIX / Windows&lt;/td&gt;
+&lt;td&gt;small &lt;tt class="docutils literal"&gt;malloc()&lt;/tt&gt; ≤128 KB without &lt;tt class="docutils literal"&gt;free()&lt;/tt&gt;&lt;/td&gt;
+&lt;td&gt;&lt;tt class="docutils literal"&gt;heap_used&lt;/tt&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;UNIX / Windows&lt;/td&gt;
+&lt;td&gt;large &lt;tt class="docutils literal"&gt;malloc()&lt;/tt&gt; &amp;gt;128 KB without &lt;tt class="docutils literal"&gt;free()&lt;/tt&gt;, or &lt;tt class="docutils literal"&gt;mmap()&lt;/tt&gt; without &lt;tt class="docutils literal"&gt;munmap()&lt;/tt&gt; (UNIX)&lt;/td&gt;
+&lt;td&gt;&lt;tt class="docutils literal"&gt;mmap_used&lt;/tt&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Windows&lt;/td&gt;
+&lt;td&gt;&lt;tt class="docutils literal"&gt;HeapAlloc()&lt;/tt&gt; without &lt;tt class="docutils literal"&gt;HeapFree()&lt;/tt&gt;&lt;/td&gt;
+&lt;td&gt;&lt;tt class="docutils literal"&gt;heap_used&lt;/tt&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Windows&lt;/td&gt;
+&lt;td&gt;&lt;tt class="docutils literal"&gt;VirtualAlloc()&lt;/tt&gt; without &lt;tt class="docutils literal"&gt;VirtualFree()&lt;/tt&gt;&lt;/td&gt;
+&lt;td&gt;&lt;tt class="docutils literal"&gt;mmap_used&lt;/tt&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Windows&lt;/td&gt;
+&lt;td&gt;&lt;tt class="docutils literal"&gt;HeapCreate()&lt;/tt&gt; without &lt;tt class="docutils literal"&gt;HeapDestroy()&lt;/tt&gt;&lt;/td&gt;
+&lt;td&gt;&lt;tt class="docutils literal"&gt;heap_count&lt;/tt&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class="section" id="heap-trim-returning-unused-heap-memory"&gt;
+&lt;h2&gt;heap_trim(): returning unused heap memory&lt;a class="headerlink" href="#heap-trim-returning-unused-heap-memory" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;psutil.heap_trim()&lt;/tt&gt; provides a cross-platform way to request that the underlying allocator free any unused memory it's holding in the heap (typically small &lt;tt class="docutils literal"&gt;malloc()&lt;/tt&gt; allocations).&lt;/p&gt;
+&lt;p&gt;In practice, modern allocators rarely comply, so this is not a general-purpose memory-reduction tool and won't meaningfully shrink RSS in real programs. Its primary value is in leak detection tools. Calling &lt;tt class="docutils literal"&gt;psutil.heap_trim()&lt;/tt&gt; before taking measurements helps reduce allocator noise, giving you a cleaner baseline so that changes in &lt;tt class="docutils literal"&gt;heap_used&lt;/tt&gt; come from the code you're testing, not from internal allocator caching or fragmentation.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="real-world-use-finding-a-c-extension-leak"&gt;
+&lt;h2&gt;Real-world use: finding a C extension leak&lt;a class="headerlink" href="#real-world-use-finding-a-c-extension-leak" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The workflow is simple:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Take a baseline snapshot of the heap.&lt;/li&gt;
+&lt;li&gt;Call the C extension hundreds of times.&lt;/li&gt;
+&lt;li&gt;Take another snapshot.&lt;/li&gt;
+&lt;li&gt;Compare.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+
+&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_trim&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;  &lt;span class="c1"&gt;# reduce noise&lt;/span&gt;
+
+&lt;span class="n"&gt;before&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_info&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;my_cext_function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;after&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_info&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;delta heap_used =&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;after&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_used&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;before&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;heap_used&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;delta mmap_used =&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;after&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mmap_used&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;before&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mmap_used&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If &lt;tt class="docutils literal"&gt;heap_used&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;mmap_used&lt;/tt&gt; values increase consistently, you've found a native leak.&lt;/p&gt;
+&lt;p&gt;To reduce false positives, repeat the test multiple times, increasing the number of calls on each retry. This approach helps distinguish real leaks from random noise or transient allocations.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="a-new-tool-psleak"&gt;
+&lt;h2&gt;A new tool: psleak&lt;a class="headerlink" href="#a-new-tool-psleak" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The strategy described above is exactly what I implemented in a new PyPI package, which I called &lt;a class="reference external" href="https://github.com/giampaolo/psleak"&gt;psleak&lt;/a&gt;. It runs the target function repeatedly, trims the allocator before each run, and tracks differences across retries. Memory that grows consistently after several runs is flagged as a leak.&lt;/p&gt;
+&lt;p&gt;A minimal test suite looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psleak&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;MemoryLeakTestCase&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;TestLeaks&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MemoryLeakTestCase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;test_fun&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;some_c_function&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If the function leaks memory, the test will fail with a descriptive exception:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;psleak.MemoryLeakError: memory kept increasing after 10 runs
+Run # 1: heap=+388160  | uss=+356352  | rss=+327680  | (calls= 200, avg/call=+1940)
+Run # 2: heap=+584848  | uss=+614400  | rss=+491520  | (calls= 300, avg/call=+1949)
+Run # 3: heap=+778320  | uss=+782336  | rss=+819200  | (calls= 400, avg/call=+1945)
+Run # 4: heap=+970512  | uss=+1032192 | rss=+1146880 | (calls= 500, avg/call=+1941)
+Run # 5: heap=+1169024 | uss=+1171456 | rss=+1146880 | (calls= 600, avg/call=+1948)
+Run # 6: heap=+1357360 | uss=+1413120 | rss=+1310720 | (calls= 700, avg/call=+1939)
+Run # 7: heap=+1552336 | uss=+1634304 | rss=+1638400 | (calls= 800, avg/call=+1940)
+Run # 8: heap=+1752032 | uss=+1781760 | rss=+1802240 | (calls= 900, avg/call=+1946)
+Run # 9: heap=+1945056 | uss=+2031616 | rss=+2129920 | (calls=1000, avg/call=+1945)
+Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+1946)
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Psleak is now part of the psutil test suite. All psutil APIs are tested (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/1a946cfe738045cecf031222cd5078da21946af4/tests/test_memleaks.py"&gt;test_memleaks.py&lt;/a&gt;), making it a de facto &lt;strong&gt;regression-testing tool&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;It's worth noting that without inspecting heap metrics, missing calls in the C code such as &lt;tt class="docutils literal"&gt;Py_CLEAR&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;Py_DECREF&lt;/tt&gt; often go unnoticed, because they don't affect RSS, VMS, and USS. I confirmed this by commenting them out. Monitoring the heap is therefore essential to reliably detect memory leaks in Python C extensions.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="under-the-hood"&gt;
+&lt;h2&gt;Under the hood&lt;a class="headerlink" href="#under-the-hood" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;For those interested in seeing how I did this in terms of code:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/linux/heap.c"&gt;Linux&lt;/a&gt;: uses glibc's &lt;a class="reference external" href="https://man7.org/linux/man-pages/man3/mallinfo.3.html"&gt;mallinfo2()&lt;/a&gt; to report &lt;tt class="docutils literal"&gt;uordblks&lt;/tt&gt; (heap allocations) and &lt;tt class="docutils literal"&gt;hblkhd&lt;/tt&gt; (mmap-backed blocks).&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/windows/heap.c"&gt;Windows&lt;/a&gt;: enumerates heaps and aggregates &lt;tt class="docutils literal"&gt;HeapAlloc&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;VirtualAlloc&lt;/tt&gt; usage.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/osx/heap.c"&gt;macOS&lt;/a&gt;: uses malloc zone statistics.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/d40164f1/psutil/arch/bsd/heap.c"&gt;BSD&lt;/a&gt;: uses jemalloc's arena and stats interfaces.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="references"&gt;
+&lt;h2&gt;References&lt;a class="headerlink" href="#references" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psleak"&gt;psleak&lt;/a&gt;, the new memory leak testing framework.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/2692"&gt;PR-2692&lt;/a&gt;, the implementation.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/1275"&gt;#1275&lt;/a&gt;, the original proposal from 8 years earlier.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="discussion"&gt;
+&lt;h2&gt;Discussion&lt;a class="headerlink" href="#discussion" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/1puqgfg/detect_memory_leaks_of_c_extensions_with_psutil/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://news.ycombinator.com/item?id=46376608"&gt;Hacker News&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://medium.com/&amp;#64;g.rodola/detect-memory-leaks-of-c-extensions-with-psutil-and-psleak-a0521ba6315f"&gt;Medium&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="memory"></category><category term="c"></category><category term="new-api"></category><category term="featured"></category></entry><entry><title>Letting go of Python 2.7</title><link href="https://gmpy.dev/blog/2025/psutil-drop-python-27-support" rel="alternate"></link><published>2025-02-13T00:00:00+01:00</published><updated>2025-02-13T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2025-02-13:/blog/2025/psutil-drop-python-27-support</id><summary type="html">&lt;p&gt;About dropping Python 2.7 support in psutil, 3 years ago I stated (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2014"&gt;#2014&lt;/a&gt;):&lt;/p&gt;
+&lt;blockquote&gt;
+Not a chance, for many years to come. [Python 2.7] currently
+represents 7-10% of total downloads, meaning around 70k / 100k
+downloads per day.&lt;/blockquote&gt;
+&lt;p&gt;Only 3 years later, and to my surprise, &lt;strong&gt;downloads for Python 2 …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;About dropping Python 2.7 support in psutil, 3 years ago I stated (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/2014"&gt;#2014&lt;/a&gt;):&lt;/p&gt;
+&lt;blockquote&gt;
+Not a chance, for many years to come. [Python 2.7] currently
+represents 7-10% of total downloads, meaning around 70k / 100k
+downloads per day.&lt;/blockquote&gt;
+&lt;p&gt;Only 3 years later, and to my surprise, &lt;strong&gt;downloads for Python 2.7 dropped to 0.36%&lt;/strong&gt;! As such, as of psutil 7.0.0, I finally decided to drop support for Python 2.7!&lt;/p&gt;
+&lt;div class="section" id="the-numbers"&gt;
+&lt;h2&gt;The numbers&lt;a class="headerlink" href="#the-numbers" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;These are downloads per month:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pypinfo --percent psutil pyversion
+Served from cache: False
+Data processed: 4.65 GiB
+Data billed: 4.65 GiB
+Estimated cost: $0.03
+
+| python_version | percent | download_count |
+| -------------- | ------- | -------------- |
+| 3.10           |  23.84% |     26,354,506 |
+| 3.8            |  18.87% |     20,862,015 |
+| 3.7            |  17.38% |     19,217,960 |
+| 3.9            |  17.00% |     18,798,843 |
+| 3.11           |  13.63% |     15,066,706 |
+| 3.12           |   7.01% |      7,754,751 |
+| 3.13           |   1.15% |      1,267,008 |
+| 3.6            |   0.73% |        803,189 |
+| 2.7            |   0.36% |        402,111 |
+| 3.5            |   0.03% |         28,656 |
+| Total          |         |    110,555,745 |
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;According to &lt;a class="reference external" href="https://archive.is/wip/knzql"&gt;pypistats.org&lt;/a&gt; Python 2.7 downloads represent 0.28% of the total, around 15,000 downloads per day.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-pain"&gt;
+&lt;h2&gt;The pain&lt;a class="headerlink" href="#the-pain" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Keeping 2.7 alive had become increasingly difficult, but still possible: tests ran via &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85"&gt;old PyPI backports&lt;/a&gt; and a &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/.github/workflows/build.yml#L77-L112"&gt;tweaked GitHub Actions workflow&lt;/a&gt; on Linux and macOS, plus a separate third-party service (Appveyor) for Windows. But the workarounds in the source kept piling up:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;A Python compatibility layer (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/psutil/_compat.py"&gt;psutil/_compat.py&lt;/a&gt;) plus &lt;tt class="docutils literal"&gt;#if PY_MAJOR_VERSION &amp;lt;= 3&lt;/tt&gt; branches in C, with constant str-vs-unicode juggling on both sides.&lt;/li&gt;
+&lt;li&gt;No f-strings, and no free use of &lt;tt class="docutils literal"&gt;enum&lt;/tt&gt; for constants (which ended up with a different API shape than on Python 3).&lt;/li&gt;
+&lt;li&gt;An outdated &lt;tt class="docutils literal"&gt;pip&lt;/tt&gt; and &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py#L76-L85"&gt;outdated deps&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;4 extra CI jobs per commit (Linux, macOS, Windows 32-bit and 64-bit), making the pipeline slower and flakier.&lt;/li&gt;
+&lt;li&gt;7 wheels specific to Python 2.7 to ship on every release:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;psutil-6.1.1-cp27-cp27m-macosx_10_9_x86_64.whl
+psutil-6.1.1-cp27-none-win32.whl
+psutil-6.1.1-cp27-none-win_amd64.whl
+psutil-6.1.1-cp27-cp27m-manylinux2010_i686.whl
+psutil-6.1.1-cp27-cp27m-manylinux2010_x86_64.whl
+psutil-6.1.1-cp27-cp27mu-manylinux2010_i686.whl
+psutil-6.1.1-cp27-cp27mu-manylinux2010_x86_64.whl
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-removal"&gt;
+&lt;h2&gt;The removal&lt;a class="headerlink" href="#the-removal" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The removal was done in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/2481"&gt;PR-2481&lt;/a&gt;, which dropped around 1500 lines of code (nice!). &lt;strong&gt;It felt liberating&lt;/strong&gt;. In doing so, in the doc I still made the promise that the 6.1.* series will keep supporting Python 2.7 and will receive &lt;strong&gt;critical bug-fixes only&lt;/strong&gt; (no new features). It will be maintained in a specific &lt;a class="reference external" href="https://github.com/giampaolo/psutil/tree/python2"&gt;python2 branch&lt;/a&gt;. I explicitly kept the &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/fbb6d9ce98f930d3d101b7df5a4f4d0f1d2b35a3/setup.py"&gt;setup.py&lt;/a&gt; script compatible with Python 2.7 in terms of syntax, so that, when the tarball is fetched from PyPI, it will emit an informative error message on &lt;tt class="docutils literal"&gt;pip install psutil&lt;/tt&gt;. The user trying to install psutil on Python 2.7 will see:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pip2 install psutil
+As of version 7.0.0 psutil no longer supports Python 2.7.
+Latest version supporting Python 2.7 is psutil 6.1.X.
+Install it with: &amp;quot;pip2 install psutil==6.1.*&amp;quot;.
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="related"&gt;
+&lt;h2&gt;Related&lt;a class="headerlink" href="#related" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;2017-06: &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/1053"&gt;#1053&lt;/a&gt; (2.7 ticket)&lt;/li&gt;
+&lt;li&gt;2022-04: &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/2099"&gt;PR-2099&lt;/a&gt; (drop 2.6)&lt;/li&gt;
+&lt;li&gt;2023-04: &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/2246"&gt;PR-2246&lt;/a&gt; (drop 3.4 &amp;amp; 3.5)&lt;/li&gt;
+&lt;li&gt;2024-12: &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/2481"&gt;PR-2481&lt;/a&gt; (drop 2.7)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2025"></category><category term="psutil"></category><category term="python"></category><category term="compatibility"></category><category term="release"></category><category term="featured"></category></entry><entry><title>Making psutil twice as fast</title><link href="https://gmpy.dev/blog/2016/psutil-550-is-twice-as-fast" rel="alternate"></link><published>2016-11-06T00:00:00+01:00</published><updated>2016-11-06T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2016-11-06:/blog/2016/psutil-550-is-twice-as-fast</id><summary type="html">&lt;p&gt;Starting from psutil 5.0.0 you can query multiple &lt;tt class="docutils literal"&gt;Process&lt;/tt&gt; fields around twice as fast as before (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/799"&gt;#799&lt;/a&gt; and &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot"&gt;Process.oneshot() doc&lt;/a&gt;). It took 7 months, 108 commits, and a massive refactoring of psutil internals (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/937"&gt;PR-937&lt;/a&gt;), and I think it's one of the best improvements ever shipped in …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Starting from psutil 5.0.0 you can query multiple &lt;tt class="docutils literal"&gt;Process&lt;/tt&gt; fields around twice as fast as before (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/799"&gt;#799&lt;/a&gt; and &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot"&gt;Process.oneshot() doc&lt;/a&gt;). It took 7 months, 108 commits, and a massive refactoring of psutil internals (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/937"&gt;PR-937&lt;/a&gt;), and I think it's one of the best improvements ever shipped in a psutil release.&lt;/p&gt;
+&lt;div class="section" id="the-problem"&gt;
+&lt;h2&gt;The problem&lt;a class="headerlink" href="#the-problem" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;How process information is retrieved varies by OS. Sometimes it means reading a file in &lt;tt class="docutils literal"&gt;/proc&lt;/tt&gt; (Linux), other times calling C (Windows, BSD, macOS, SunOS), but it's always done differently. Psutil abstracts this away: you call &lt;tt class="docutils literal"&gt;Process.name()&lt;/tt&gt; without worrying about what happens under the hood or which OS you're on.&lt;/p&gt;
+&lt;p&gt;Internally, multiple pieces of process info (e.g. &lt;tt class="docutils literal"&gt;Process.name()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;Process.ppid()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;Process.uids()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;Process.create_time()&lt;/tt&gt;) are fetched by the same syscall. On Linux we read &lt;tt class="docutils literal"&gt;/proc/PID/stat&lt;/tt&gt; to get the process name, terminal, CPU times, creation time, status and parent PID, but only one value is returned: the others are discarded. On Linux this code reads &lt;tt class="docutils literal"&gt;/proc/PID/stat&lt;/tt&gt; 6 times:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_times&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ppid&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;terminal&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;On BSD most process metrics can be fetched with a single &lt;tt class="docutils literal"&gt;sysctl()&lt;/tt&gt;, yet psutil was invoking it for each process method (e.g. see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/2fe3f456321ca1605aaa2b71a7193de59d93075c/psutil/_psutil_bsd.c#L242-L258"&gt;here&lt;/a&gt; and &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/2fe3f456321ca1605aaa2b71a7193de59d93075c/psutil/_psutil_bsd.c#L261-L277"&gt;here&lt;/a&gt;).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="do-it-in-one-shot"&gt;
+&lt;h2&gt;Do it in one shot&lt;a class="headerlink" href="#do-it-in-one-shot" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;It's clear that this approach is inefficient, especially in tools like top or htop, where process info is continuously fetched in a loop. psutil 5.0.0 introduces a new &lt;tt class="docutils literal"&gt;Process.oneshot()&lt;/tt&gt; context manager. Inside it, the internal routine runs once (in the example, on the first &lt;tt class="docutils literal"&gt;Process.name()&lt;/tt&gt; call) and the other values are cached. Subsequent calls sharing the same internal routine (read &lt;tt class="docutils literal"&gt;/proc/PID/stat&lt;/tt&gt;, call &lt;tt class="docutils literal"&gt;sysctl()&lt;/tt&gt; or whatever) return the cached value. The code above can now be rewritten like this, and on Linux it runs 2.4 times faster:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;oneshot&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cpu_times&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ppid&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="gp"&gt;... &lt;/span&gt;    &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;terminal&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="implementation"&gt;
+&lt;h2&gt;Implementation&lt;a class="headerlink" href="#implementation" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;One great thing about psutil's design is its abstraction. It is divided into 3 &amp;quot;layers&amp;quot;. Layer 1 is represented by the main &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/__init__.py#L340"&gt;Process class&lt;/a&gt; (Python), which exposes the high-level API. Layer 2 is the &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_pslinux.py#L1097"&gt;OS-specific Python module&lt;/a&gt;, which is a thin wrapper on top of the OS-specific &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_linux.c"&gt;C extension module&lt;/a&gt; (layer 3).&lt;/p&gt;
+&lt;p&gt;Because the code was organized this way (modular), the refactoring was reasonably smooth. I first refactored those C functions that collect multiple pieces of info and grouped them into a single function (e.g. see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psutil_bsd.c#L198-L338"&gt;BSD implementation&lt;/a&gt;). Then I wrote a &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_common.py#L264-L314"&gt;decorator&lt;/a&gt; that enables the cache only when requested (when entering the context manager), and decorated the &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/88ea5e0b2cc15c37fdeb3e38857f6dab6fd87d12/psutil/_psbsd.py#L491"&gt;&amp;quot;grouped functions&amp;quot;&lt;/a&gt; with it. The caching mechanism is controlled by the &lt;tt class="docutils literal"&gt;Process.oneshot()&lt;/tt&gt; context manager, which is the only thing exposed to the end user. Here's the decorator:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;memoize_when_activated&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;A memoize decorator which is disabled by default. It can be&lt;/span&gt;
+&lt;span class="sd"&gt;    activated and deactivated on request.&lt;/span&gt;
+&lt;span class="sd"&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="nd"&gt;@functools&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wraps&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;wrapper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;wrapper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cache_activated&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;ret&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cache&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+            &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;KeyError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;ret&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cache&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fun&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;ret&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;cache_activate&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Activate cache.&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+        &lt;span class="n"&gt;wrapper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cache_activated&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;cache_deactivate&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Deactivate and clear cache.&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+        &lt;span class="n"&gt;wrapper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cache_activated&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;False&lt;/span&gt;
+        &lt;span class="n"&gt;cache&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;clear&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="n"&gt;cache&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+    &lt;span class="n"&gt;wrapper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cache_activated&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;False&lt;/span&gt;
+    &lt;span class="n"&gt;wrapper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cache_activate&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cache_activate&lt;/span&gt;
+    &lt;span class="n"&gt;wrapper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cache_deactivate&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cache_deactivate&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;wrapper&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;To measure the speedup I wrote a &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/scripts/internal/bench_oneshot.py"&gt;benchmark script&lt;/a&gt; (well, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/scripts/internal/bench_oneshot_2.py"&gt;two&lt;/a&gt; actually), and kept tuning until I was sure the change actually made psutil faster. The scripts report the speedup for calling all the &amp;quot;grouped&amp;quot; methods together (best-case scenario).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="linux-2-56x-speedup"&gt;
+&lt;h2&gt;Linux: +2.56x speedup&lt;a class="headerlink" href="#linux-2-56x-speedup" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The Linux implementation is mostly Python, reading files in &lt;tt class="docutils literal"&gt;/proc&lt;/tt&gt;. These files typically expose multiple pieces of info per process; &lt;tt class="docutils literal"&gt;/proc/PID/stat&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;/proc/PID/status&lt;/tt&gt; are the perfect example. We aggregate them into three groups. See the relevant code &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_pslinux.py#L1108-L1153"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="windows-from-1-9x-to-6-5x-speedup"&gt;
+&lt;h2&gt;Windows: from +1.9x to +6.5x speedup&lt;a class="headerlink" href="#windows-from-1-9x-to-6-5x-speedup" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Windows is an interesting one. For a process owned by our user, we group only &lt;tt class="docutils literal"&gt;Process.num_threads()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;Process.num_ctx_switches()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;Process.num_handles()&lt;/tt&gt;, for a +1.9x speedup if we access those methods in one shot.&lt;/p&gt;
+&lt;p&gt;Windows is special though, because certain methods have a dual implementation (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/304"&gt;#304&lt;/a&gt;): a &amp;quot;fast method&amp;quot; is tried first, but if the process is owned by another user it fails with &lt;tt class="docutils literal"&gt;AccessDenied&lt;/tt&gt;. psutil then falls back to a second, &amp;quot;slower&amp;quot; method (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_pswindows.py#L681"&gt;here&lt;/a&gt; for example).&lt;/p&gt;
+&lt;p&gt;It's slower because it &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/arch/windows/process_info.c#L790"&gt;iterates over all PIDs&lt;/a&gt;, but unlike the &amp;quot;plain&amp;quot; Windows APIs it can still &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_windows.c#L2789"&gt;retrieve multiple pieces of information in one shot&lt;/a&gt;: number of threads, context switches, handles, CPU times, create time, and I/O counters.&lt;/p&gt;
+&lt;p&gt;That's why querying processes owned by other users results in an impressive +6.5x speedup.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="macos-1-92x-speedup"&gt;
+&lt;h2&gt;macOS: +1.92x speedup&lt;a class="headerlink" href="#macos-1-92x-speedup" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;On macOS we can get 2 groups of information. With &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_osx.c#L129"&gt;sysctl()&lt;/a&gt; we get process parent PID, uids, gids, terminal, create time, name. With &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_osx.c#L183"&gt;proc_info()&lt;/a&gt; we get CPU times (for PIDs owned by another user), memory metrics and ctx switches. Not bad.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="bsd-2-18x-speedup"&gt;
+&lt;h2&gt;BSD: +2.18x speedup&lt;a class="headerlink" href="#bsd-2-18x-speedup" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;On BSD we gather tons of process info just by calling &lt;tt class="docutils literal"&gt;sysctl()&lt;/tt&gt; (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/0ccd1373c6e7a189e095df5c436568fb1e8b4d14/psutil/_psutil_bsd.c#L199"&gt;implementation&lt;/a&gt;): process name, ppid, status, uids, gids, IO counters, CPU and create times, terminal and ctx switches.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="sunos-1-37x-speedup"&gt;
+&lt;h2&gt;SunOS: +1.37x speedup&lt;a class="headerlink" href="#sunos-1-37x-speedup" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;SunOS is like Linux (it reads files in &lt;tt class="docutils literal"&gt;/proc&lt;/tt&gt;), but the code is in C. Here too, we group different metrics together (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_psutil_sunos.c#L83-L142"&gt;here&lt;/a&gt; and &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/b5582380ac70ca8c180344d9b22aacdff73b1e0b/psutil/_psutil_sunos.c#L171-L189"&gt;here&lt;/a&gt;).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="discussion"&gt;
+&lt;h2&gt;Discussion&lt;a class="headerlink" href="#discussion" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.reddit.com/r/Python/comments/5bhn4q/psutil_500_is_around_twice_as_fast/"&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="2016"></category><category term="psutil"></category><category term="python"></category><category term="performance"></category><category term="new-api"></category><category term="featured"></category><category term="release"></category></entry><entry><title>Reimplementing ifconfig in Python</title><link href="https://gmpy.dev/blog/2015/psutil-30-reimplement-ifconfig-in-python" rel="alternate"></link><published>2015-06-13T00:00:00+02:00</published><updated>2015-06-13T00:00:00+02:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2015-06-13:/blog/2015/psutil-30-reimplement-ifconfig-in-python</id><summary type="html">&lt;p&gt;Here we are. It's been a long time since my last blog post and my last &lt;a class="reference external" href="https://github.com/giampaolo/psutil"&gt;psutil&lt;/a&gt; release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Here we are. It's been a long time since my last blog post and my last &lt;a class="reference external" href="https://github.com/giampaolo/psutil"&gt;psutil&lt;/a&gt; release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally had the chance to meet my friend &lt;a class="reference external" href="http://jayloden.com/software.htm"&gt;Jay Loden&lt;/a&gt; in person. We originally started working on psutil together &lt;a class="reference external" href="https://groups.google.com/forum/#!topic/psutil-dev/fj8DQ3lGFH4"&gt;7 years ago&lt;/a&gt;.&lt;/p&gt;
+&lt;div&gt;
+    &lt;a href="/images/me-with-jay.jpg"&gt;
+    &lt;img src="/images/me-with-jay.jpg" style="width:750px; height:500px" /&gt;
+    &lt;/a&gt;
+&lt;/div&gt;&lt;p&gt;Back then I didn't know any C (and I'm still a terrible C developer), so he was crucial in developing the initial psutil skeleton, including macOS and Windows support. Needless to say that this release builds on that work.&lt;/p&gt;
+&lt;div class="section" id="net-if-addrs"&gt;
+&lt;h2&gt;net_if_addrs()&lt;a class="headerlink" href="#net-if-addrs" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;We're now able to list network interface addresses similarly to the &lt;tt class="docutils literal"&gt;ifconfig&lt;/tt&gt; command on UNIX:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pprint&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;pprint&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;pprint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;net_if_addrs&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;span class="go"&gt;{&amp;#39;ethernet0&amp;#39;: [snic(family=&amp;lt;AddressFamily.AF_INET: 2&amp;gt;,&lt;/span&gt;
+&lt;span class="go"&gt;                    address=&amp;#39;10.0.0.4&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt;                    netmask=&amp;#39;255.0.0.0&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt;                    broadcast=&amp;#39;10.255.255.255&amp;#39;),&lt;/span&gt;
+&lt;span class="go"&gt;               snic(family=&amp;lt;AddressFamily.AF_PACKET: 17&amp;gt;,&lt;/span&gt;
+&lt;span class="go"&gt;                    address=&amp;#39;9c:eb:e8:0b:05:1f&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt;                    netmask=None,&lt;/span&gt;
+&lt;span class="go"&gt;                    broadcast=&amp;#39;ff:ff:ff:ff:ff:ff&amp;#39;)],&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;localhost&amp;#39;: [snic(family=&amp;lt;AddressFamily.AF_INET: 2&amp;gt;,&lt;/span&gt;
+&lt;span class="go"&gt;                    address=&amp;#39;127.0.0.1&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt;                    netmask=&amp;#39;255.0.0.0&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt;                    broadcast=&amp;#39;127.0.0.1&amp;#39;),&lt;/span&gt;
+&lt;span class="go"&gt;               snic(family=&amp;lt;AddressFamily.AF_PACKET: 17&amp;gt;,&lt;/span&gt;
+&lt;span class="go"&gt;                    address=&amp;#39;00:00:00:00:00:00&amp;#39;,&lt;/span&gt;
+&lt;span class="go"&gt;                    netmask=None,&lt;/span&gt;
+&lt;span class="go"&gt;                    broadcast=&amp;#39;00:00:00:00:00:00&amp;#39;)]}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This is limited to &lt;tt class="docutils literal"&gt;AF_INET&lt;/tt&gt; (IPv4), &lt;tt class="docutils literal"&gt;AF_INET6&lt;/tt&gt; (IPv6) and &lt;tt class="docutils literal"&gt;AF_LINK&lt;/tt&gt; (Ethernet) address families. If you want something more powerful (e.g. &lt;tt class="docutils literal"&gt;AF_BLUETOOTH&lt;/tt&gt;) you can take a look at the &lt;a class="reference external" href="https://pypi.python.org/pypi/netifaces/"&gt;netifaces&lt;/a&gt; extension. If you want to see how this is implemented, here's the code for POSIX and Windows:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L151"&gt;POSIX&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L2907"&gt;Windows&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="net-if-stats"&gt;
+&lt;h2&gt;net_if_stats()&lt;a class="headerlink" href="#net-if-stats" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;This new function returns information about network interface cards:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;psutil&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pprint&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;pprint&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;pprint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;psutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;net_if_stats&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;span class="go"&gt;{&amp;#39;ethernet0&amp;#39;: snicstats(isup=True,&lt;/span&gt;
+&lt;span class="go"&gt;                        duplex=&amp;lt;NicDuplex.NIC_DUPLEX_FULL: 2&amp;gt;,&lt;/span&gt;
+&lt;span class="go"&gt;                        speed=100,&lt;/span&gt;
+&lt;span class="go"&gt;                        mtu=1500),&lt;/span&gt;
+&lt;span class="go"&gt; &amp;#39;localhost&amp;#39;: snicstats(isup=True,&lt;/span&gt;
+&lt;span class="go"&gt;                        duplex=&amp;lt;NicDuplex.NIC_DUPLEX_UNKNOWN: 0&amp;gt;,&lt;/span&gt;
+&lt;span class="go"&gt;                        speed=0,&lt;/span&gt;
+&lt;span class="go"&gt;                        mtu=65536)}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The implementation on each platform:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L3057"&gt;Windows&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_linux.c#L474"&gt;Linux&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L229"&gt;macOS &amp;amp; FreeBSD&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_sunos.c#L1153"&gt;SunOS&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="also-in-3-0"&gt;
+&lt;h2&gt;Also in 3.0&lt;a class="headerlink" href="#also-in-3-0" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Beyond the network-interface APIs, psutil 3.0 ships a few other notable changes.&lt;/p&gt;
+&lt;p&gt;Several integer/string constants (&lt;tt class="docutils literal"&gt;IOPRIO_CLASS_*&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;NIC_DUPLEX_*&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;*_PRIORITY_CLASS&lt;/tt&gt;) now return &lt;tt class="docutils literal"&gt;enum&lt;/tt&gt; values on Python 3.4+.&lt;/p&gt;
+&lt;p&gt;Support for zombie processes on UNIX was broken. Covered in a &lt;a class="reference external" href="zombie-processes"&gt;separate post&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="removal-of-deprecated-apis"&gt;
+&lt;h2&gt;Removal of deprecated APIs&lt;a class="headerlink" href="#removal-of-deprecated-apis" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;All aliases deprecated in the &lt;a class="reference external" href="../2014/psutil-20-api-redesign"&gt;psutil 2.0 porting guide&lt;/a&gt; (January 2014) are gone. For the full list see the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#id23"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="final-words"&gt;
+&lt;h2&gt;Final words&lt;a class="headerlink" href="#final-words" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;I must say I'm pretty satisfied with how psutil is evolving and with the enjoyment I still get every time I work on it. It now gets almost &lt;a class="reference external" href="https://pypi.python.org/pypi/psutil#downloads"&gt;800,000 downloads a month&lt;/a&gt;, which is quite remarkable for a Python library.&lt;/p&gt;
+&lt;p&gt;At this point, I consider psutil almost &amp;quot;complete&amp;quot; feature-wise, meaning I'm starting to run out of ideas for what to add next (see &lt;a class="reference external" href="https://github.com/giampaolo/psutil/blob/v3.0.0/TODO"&gt;TODO&lt;/a&gt;). Going forward, development will likely focus on supporting more exotic platforms (&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/562"&gt;OpenBSD #562&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/557"&gt;NetBSD PR-557&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/355"&gt;Android #355&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;There have also been discussions on the python-ideas mailing list about &lt;a class="reference external" href="https://mail.python.org/pipermail//python-ideas/2014-October/029835.html"&gt;including psutil in the Python stdlib&lt;/a&gt;, but even if that happens, it's still a long way off, as it would require a significant time investment that I currently don't have.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="2015"></category><category term="psutil"></category><category term="python"></category><category term="personal"></category><category term="new-api"></category><category term="compatibility"></category><category term="featured"></category><category term="release"></category></entry></feed>

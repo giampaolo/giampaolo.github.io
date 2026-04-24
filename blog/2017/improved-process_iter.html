@@ -40,59 +40,59 @@
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/process_iter">process_iter</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->      <p>This is part of the <a class="reference external" href="/blog/2017/psutil-530.html">psutil 5.3.0 release</a> (see the <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">changelog</a> for the full list of changes).</p>
+</footer><!-- /.post-info -->      <p>This is part of the psutil 5.3.0 release (see the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html">changelog</a> for the full list of changes).</p>
 <div class="section" id="the-old-pattern">
 <h2>The old pattern<a class="headerlink" href="#the-old-pattern" title="Permalink to this headline">¶</a></h2>
-<p>Iterating over processes and collecting attributes requires more boilerplate than it should. A process returned by <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.process_iter">process_iter()</a> may disappear before you access it, or require elevated privileges, so every lookup has to be guarded with a <tt class="docutils literal">try / except</tt>:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
-<span class="o">...</span>     <span class="k">try</span><span class="p">:</span>
-<span class="o">...</span>         <span class="n">pinfo</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">])</span>
-<span class="o">...</span>     <span class="k">except</span> <span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">,</span> <span class="n">psutil</span><span class="o">.</span><span class="n">AccessDenied</span><span class="p">):</span>
-<span class="o">...</span>         <span class="k">pass</span>
-<span class="o">...</span>     <span class="k">else</span><span class="p">:</span>
-<span class="o">...</span>         <span class="nb">print</span><span class="p">(</span><span class="n">pinfo</span><span class="p">)</span>
-<span class="o">...</span>
-<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;systemd&#39;</span><span class="p">}</span>
-<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;kthreadd&#39;</span><span class="p">}</span>
-<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ksoftirqd/0&#39;</span><span class="p">}</span>
+<p>Iterating over processes and collecting attributes requires more boilerplate than it should. A process returned by <tt class="docutils literal">psutil.process_iter()</tt> may disappear before you access it, or require elevated privileges, so every lookup has to be guarded with a <tt class="docutils literal">try / except</tt>:</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="n">pinfo</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="k">except</span> <span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">,</span> <span class="n">psutil</span><span class="o">.</span><span class="n">AccessDenied</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">pass</span>
+<span class="gp">... </span>    <span class="k">else</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="n">pinfo</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">{&#39;pid&#39;: 1, &#39;name&#39;: &#39;systemd&#39;}</span>
+<span class="go">{&#39;pid&#39;: 2, &#39;name&#39;: &#39;kthreadd&#39;}</span>
+<span class="go">{&#39;pid&#39;: 3, &#39;name&#39;: &#39;ksoftirqd/0&#39;}</span>
 </pre></div>
 <p>This is not decorative. It's necessary to avoid the race condition.</p>
 </div>
 <div class="section" id="the-new-pattern">
 <h2>The new pattern<a class="headerlink" href="#the-new-pattern" title="Permalink to this headline">¶</a></h2>
-<p>5.3.0 adds <tt class="docutils literal">attrs</tt> and <tt class="docutils literal">ad_value</tt> parameters to <tt class="docutils literal">process_iter()</tt>. With these, the loop body becomes:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">]):</span>
-<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">info</span><span class="p">)</span>
-<span class="o">...</span>
-<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;systemd&#39;</span><span class="p">}</span>
-<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;kthreadd&#39;</span><span class="p">}</span>
-<span class="p">{</span><span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ksoftirqd/0&#39;</span><span class="p">}</span>
+<p>5.3.0 adds <tt class="docutils literal">attrs</tt> and <tt class="docutils literal">ad_value</tt> parameters to <tt class="docutils literal">psutil.process_iter()</tt>. With these, the loop body becomes:</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">]):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">info</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">{&#39;pid&#39;: 1, &#39;name&#39;: &#39;systemd&#39;}</span>
+<span class="go">{&#39;pid&#39;: 2, &#39;name&#39;: &#39;kthreadd&#39;}</span>
+<span class="go">{&#39;pid&#39;: 3, &#39;name&#39;: &#39;ksoftirqd/0&#39;}</span>
 </pre></div>
-<p>Internally, <tt class="docutils literal">process_iter()</tt> attach an <tt class="docutils literal">info</tt> dict to the <tt class="docutils literal">Process</tt> instance. The attributes are pre-fetched in one shot. Processes that disappear during iteration are silently skipped, and attributes that would raise <tt class="docutils literal">AccessDenied</tt> gets assigned <tt class="docutils literal">ad_value</tt>, which defaults to <tt class="docutils literal">None</tt>:</p>
+<p>Internally, <tt class="docutils literal">process_iter()</tt> attaches an <tt class="docutils literal">info</tt> dict to the <tt class="docutils literal">Process</tt> instance. The attributes are pre-fetched in one shot. Processes that disappear during iteration are silently skipped, and attributes that would raise <tt class="docutils literal">AccessDenied</tt> get assigned <tt class="docutils literal">ad_value</tt>, which defaults to <tt class="docutils literal">None</tt>:</p>
 <div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">([</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">],</span> <span class="n">ad_value</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="n">p</span><span class="o">.</span><span class="n">username</span><span class="p">())</span>
 </pre></div>
 </div>
 <div class="section" id="performance">
 <h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
-<p>Beyond the syntactic win, the new syntax is also faster than calling individual methods in a loop. <tt class="docutils literal"><span class="pre">process_iter(attrs=[...])</span></tt> is equivalent to using <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot">Process.oneshot()</a> on each process (see <a class="reference external" href="/blog/2016/psutil-550-is-twice-as-fast.html">One shot, twice as fast</a> for how that works): attributes that share a syscall or a <tt class="docutils literal">/proc</tt> file are fetched together instead of re-read on every method call, which is a lot faster.</p>
+<p>Beyond the syntactic win, the new syntax is also faster than calling individual methods in a loop. <tt class="docutils literal"><span class="pre">process_iter(attrs=[...])</span></tt> is equivalent to using <tt class="docutils literal">Process.oneshot()</tt> on each process (see <a class="reference external" href="/blog/2016/psutil-550-is-twice-as-fast">Making psutil twice as fast</a> for how that works): attributes that share a syscall or a <tt class="docutils literal">/proc</tt> file are fetched together instead of re-read on every method call, which is a lot faster.</p>
 </div>
 <div class="section" id="comprehensions">
 <h2>Comprehensions<a class="headerlink" href="#comprehensions" title="Permalink to this headline">¶</a></h2>
 <p>With the exception boilerplate out of the way, comprehensions finally work cleanly. E.g. getting processes owned by the current user can be written as:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">getpass</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">pp</span><span class="p">([(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getuser</span><span class="p">()])</span>
-<span class="p">[(</span><span class="mi">16832</span><span class="p">,</span> <span class="s1">&#39;bash&#39;</span><span class="p">),</span>
- <span class="p">(</span><span class="mi">19772</span><span class="p">,</span> <span class="s1">&#39;ssh&#39;</span><span class="p">),</span>
- <span class="p">(</span><span class="mi">20492</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">)]</span>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">getpass</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pp</span><span class="p">([(</span><span class="n">p</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getuser</span><span class="p">()])</span>
+<span class="go">[(16832, &#39;bash&#39;),</span>
+<span class="go"> (19772, &#39;ssh&#39;),</span>
+<span class="go"> (20492, &#39;python&#39;)]</span>
 </pre></div>
 </div>
 

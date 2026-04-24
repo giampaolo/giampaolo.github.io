@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<title>Reimplementing ifconfig in Python</title>-->
+    <title>Giampaolo Rodola</title>
+    <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
+    <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
+    <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
+    <link rel="icon" type="image/x-icon" href="https://gmpy.dev/favicon.ico">
+</head>
+
+<body id="index" class="home">
+    <header id="banner" class="body">
+        <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+        <nav><ul>
+            <li><a href="/">Blog</a></li>
+            <li><a href="/archives">Archives</a></li>
+            <li><a href="/about">About</a></li>
+        </ul></nav>
+    </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://gmpy.dev/blog/2015/psutil-30-reimplement-ifconfig-in-python" rel="bookmark"
+           title="Permalink to Reimplementing ifconfig in Python">Reimplementing ifconfig in Python</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <a class="published" title="2015-06-13T00:00:00+02:00">
+        Created: 13 giu 2015,
+        </a>
+<!--
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
+        </address>
+-->
+    <a>Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/personal">personal</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
+
+<!--
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+-->
+</footer><!-- /.post-info -->      <p>Here we are. It's been a long time since my last blog post and my last <a class="reference external" href="https://github.com/giampaolo/psutil">psutil</a> release. The reason? I've been travelling! I mean... a lot. I've spent 3 months in Berlin, 3 weeks in Japan and 2 months in New York City. While I was there I finally had the chance to meet my friend <a class="reference external" href="http://jayloden.com/software.htm">Jay Loden</a> in person. We originally started working on psutil together <a class="reference external" href="https://groups.google.com/forum/#!topic/psutil-dev/fj8DQ3lGFH4">7 years ago</a>.</p>
+<div>
+    <a href="/images/me-with-jay.jpg">
+    <img src="/images/me-with-jay.jpg" style="width:750px; height:500px" />
+    </a>
+</div><p>Back then I didn't know any C (and I'm still a terrible C developer), so he was crucial in developing the initial psutil skeleton, including macOS and Windows support. Needless to say that this release builds on that work.</p>
+<div class="section" id="net-if-addrs">
+<h2>net_if_addrs()<a class="headerlink" href="#net-if-addrs" title="Permalink to this headline">¶</a></h2>
+<p>We're now able to list network interface addresses similarly to the <tt class="docutils literal">ifconfig</tt> command on UNIX:</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_if_addrs</span><span class="p">())</span>
+<span class="go">{&#39;ethernet0&#39;: [snic(family=&lt;AddressFamily.AF_INET: 2&gt;,</span>
+<span class="go">                    address=&#39;10.0.0.4&#39;,</span>
+<span class="go">                    netmask=&#39;255.0.0.0&#39;,</span>
+<span class="go">                    broadcast=&#39;10.255.255.255&#39;),</span>
+<span class="go">               snic(family=&lt;AddressFamily.AF_PACKET: 17&gt;,</span>
+<span class="go">                    address=&#39;9c:eb:e8:0b:05:1f&#39;,</span>
+<span class="go">                    netmask=None,</span>
+<span class="go">                    broadcast=&#39;ff:ff:ff:ff:ff:ff&#39;)],</span>
+<span class="go"> &#39;localhost&#39;: [snic(family=&lt;AddressFamily.AF_INET: 2&gt;,</span>
+<span class="go">                    address=&#39;127.0.0.1&#39;,</span>
+<span class="go">                    netmask=&#39;255.0.0.0&#39;,</span>
+<span class="go">                    broadcast=&#39;127.0.0.1&#39;),</span>
+<span class="go">               snic(family=&lt;AddressFamily.AF_PACKET: 17&gt;,</span>
+<span class="go">                    address=&#39;00:00:00:00:00:00&#39;,</span>
+<span class="go">                    netmask=None,</span>
+<span class="go">                    broadcast=&#39;00:00:00:00:00:00&#39;)]}</span>
+</pre></div>
+<p>This is limited to <tt class="docutils literal">AF_INET</tt> (IPv4), <tt class="docutils literal">AF_INET6</tt> (IPv6) and <tt class="docutils literal">AF_LINK</tt> (Ethernet) address families. If you want something more powerful (e.g. <tt class="docutils literal">AF_BLUETOOTH</tt>) you can take a look at the <a class="reference external" href="https://pypi.python.org/pypi/netifaces/">netifaces</a> extension. If you want to see how this is implemented, here's the code for POSIX and Windows:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L151">POSIX</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L2907">Windows</a></li>
+</ul>
+</div>
+<div class="section" id="net-if-stats">
+<h2>net_if_stats()<a class="headerlink" href="#net-if-stats" title="Permalink to this headline">¶</a></h2>
+<p>This new function returns information about network interface cards:</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">net_if_stats</span><span class="p">())</span>
+<span class="go">{&#39;ethernet0&#39;: snicstats(isup=True,</span>
+<span class="go">                        duplex=&lt;NicDuplex.NIC_DUPLEX_FULL: 2&gt;,</span>
+<span class="go">                        speed=100,</span>
+<span class="go">                        mtu=1500),</span>
+<span class="go"> &#39;localhost&#39;: snicstats(isup=True,</span>
+<span class="go">                        duplex=&lt;NicDuplex.NIC_DUPLEX_UNKNOWN: 0&gt;,</span>
+<span class="go">                        speed=0,</span>
+<span class="go">                        mtu=65536)}</span>
+</pre></div>
+<p>The implementation on each platform:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_windows.c#L3057">Windows</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_linux.c#L474">Linux</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_posix.c#L229">macOS &amp; FreeBSD</a></li>
+<li><a class="reference external" href="https://github.com/giampaolo/psutil/blob/39161251010503d6b087807c473f4fb648dfcbce/psutil/_psutil_sunos.c#L1153">SunOS</a></li>
+</ul>
+</div>
+<div class="section" id="also-in-3-0">
+<h2>Also in 3.0<a class="headerlink" href="#also-in-3-0" title="Permalink to this headline">¶</a></h2>
+<p>Beyond the network-interface APIs, psutil 3.0 ships a few other notable changes.</p>
+<p>Several integer/string constants (<tt class="docutils literal">IOPRIO_CLASS_*</tt>, <tt class="docutils literal">NIC_DUPLEX_*</tt>, <tt class="docutils literal">*_PRIORITY_CLASS</tt>) now return <tt class="docutils literal">enum</tt> values on Python 3.4+.</p>
+<p>Support for zombie processes on UNIX was broken. Covered in a <a class="reference external" href="zombie-processes">separate post</a>.</p>
+</div>
+<div class="section" id="removal-of-deprecated-apis">
+<h2>Removal of deprecated APIs<a class="headerlink" href="#removal-of-deprecated-apis" title="Permalink to this headline">¶</a></h2>
+<p>All aliases deprecated in the <a class="reference external" href="../2014/psutil-20-api-redesign">psutil 2.0 porting guide</a> (January 2014) are gone. For the full list see the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#id23">changelog</a>.</p>
+</div>
+<div class="section" id="final-words">
+<h2>Final words<a class="headerlink" href="#final-words" title="Permalink to this headline">¶</a></h2>
+<p>I must say I'm pretty satisfied with how psutil is evolving and with the enjoyment I still get every time I work on it. It now gets almost <a class="reference external" href="https://pypi.python.org/pypi/psutil#downloads">800,000 downloads a month</a>, which is quite remarkable for a Python library.</p>
+<p>At this point, I consider psutil almost &quot;complete&quot; feature-wise, meaning I'm starting to run out of ideas for what to add next (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/v3.0.0/TODO">TODO</a>). Going forward, development will likely focus on supporting more exotic platforms (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/562">OpenBSD #562</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/pull/557">NetBSD PR-557</a>, <a class="reference external" href="https://github.com/giampaolo/psutil/issues/355">Android #355</a>).</p>
+<p>There have also been discussions on the python-ideas mailing list about <a class="reference external" href="https://mail.python.org/pipermail//python-ideas/2014-October/029835.html">including psutil in the Python stdlib</a>, but even if that happens, it's still a long way off, as it would require a significant time investment that I currently don't have.</p>
+</div>
+
+    </div><!-- /.entry-content -->
+  </article>
+</section>
+
+    <!-- Footer -->
+    <section id="extras" class="body">
+
+        <div class="social">
+            <h2>Social</h2>
+            <ul>
+                <li><a href="https://github.com/giampaolo">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/grodola/">LinkedIn</a></li>
+                <li><a href="https://x.com/grodola">X</a></li>
+            </ul>
+        </div><!-- /.social -->
+
+        <div class="feeds">
+            <h2>Feeds</h2>
+            <ul>
+                <li><a href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate">atom</a></li>
+                <li><a href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate">rss</a></li>
+            </ul>
+        </div>
+    </div>
+    </section>
+    <!-- /Footer -->
+
+    <footer id="contentinfo" class="body">
+        <!--
+            <address id="about" class="vcard body">
+            Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+            </address>
+
+            <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        -->
+    </footer>
+
+    <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164357405-2', 'auto');
+    ga('send', 'pageview');
+    </script>
+</body>
+</html>

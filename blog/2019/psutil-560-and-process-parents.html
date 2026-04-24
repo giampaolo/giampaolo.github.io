@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!--<title>psutil 5.6.0 and process parents</title>-->
+    <!--<title>Announcing psutil 5.6.0</title>-->
     <title>Giampaolo Rodola</title>
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
@@ -26,7 +26,7 @@
     <header>
       <h1 class="entry-title">
         <a href="https://gmpy.dev/blog/2019/psutil-560-and-process-parents" rel="bookmark"
-           title="Permalink to psutil 5.6.0 and process parents">psutil 5.6.0 and process parents</a></h1>
+           title="Permalink to Announcing psutil 5.6.0">Announcing psutil 5.6.0</a></h1>
     </header>
 
     <div class="entry-content">
@@ -40,49 +40,41 @@
         </address>
 -->
     <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>    </a>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/windows">windows</a>,        <a href="https://gmpy.dev/tags/macos">macos</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
 
 <!--
 <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 -->
-</footer><!-- /.post-info -->      <p>Hello world =)</p>
-<p>It has been a long time since my last blog post (over 1 year and a half). During this time I moved between Italy, Prague and Shenzhen (China), and also contributed a couple of nice patches for Python I want to blog about when Python 3.8 is out: zero-copy for <a class="reference external" href="https://bugs.python.org/issue33671">shutil.copy()</a> functions and <a class="reference external" href="https://github.com/python/cpython/pull/11784">socket.create_server()</a> utility function. But let's move on and talk about what this blog post is about: the next major psutil version.</p>
+</footer><!-- /.post-info -->      <p>psutil 5.6.0 is out. Highlights: a new <tt class="docutils literal">Process.parents()</tt> method, several important Windows improvements, and the removal of <tt class="docutils literal">Process.memory_maps()</tt> on macOS.</p>
 <div class="section" id="process-parents">
 <h2>Process parents()<a class="headerlink" href="#process-parents" title="Permalink to this headline">¶</a></h2>
-<p>From the doc: return the parents of this process as a list of Process instances. If no parents are known, return an empty list.</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="mi">5312</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">()</span>
-<span class="p">[</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">4699</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;bash&#39;</span><span class="p">,</span> <span class="n">started</span><span class="o">=</span><span class="s1">&#39;09:06:44&#39;</span><span class="p">),</span>
- <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">4689</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;gnome-terminal-server&#39;</span><span class="p">,</span> <span class="n">started</span><span class="o">=</span><span class="s1">&#39;0:06:44&#39;</span><span class="p">),</span>
- <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;systemd&#39;</span><span class="p">,</span> <span class="n">started</span><span class="o">=</span><span class="s1">&#39;05:56:55&#39;</span><span class="p">)]</span>
+<p>The new method returns the parents of a process as a list of <tt class="docutils literal">Process</tt> instances. If no parents are known, an empty list is returned.</p>
+<div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="mi">5312</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">()</span>
+<span class="go">[psutil.Process(pid=4699, name=&#39;bash&#39;, started=&#39;09:06:44&#39;),</span>
+<span class="go"> psutil.Process(pid=4689, name=&#39;gnome-terminal-server&#39;, started=&#39;09:06:44&#39;),</span>
+<span class="go"> psutil.Process(pid=1, name=&#39;systemd&#39;, started=&#39;05:56:55&#39;)]</span>
 </pre></div>
-<p>Nothing really new here, as it's a convenience method based on the existing <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.parent">parent()</a> method, but still it's something nice to have implemented as a builtin and which can be used to work with process trees in conjunction with the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.children">children()</a> method. The idea was proposed by Ghislain Le Meur.</p>
+<p>Nothing fundamentally new here, since this is a convenience wrapper around <tt class="docutils literal">Process.parent()</tt>, but it's still nice to have it built in. It pairs well with <tt class="docutils literal">Process.children()</tt> when working with process trees. The idea was proposed by Ghislain Le Meur.</p>
 </div>
 <div class="section" id="windows">
 <h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
-<p>A bunch of interesting improvements occurred on Windows.</p>
-<p>The first one is that certain Windows APIs requiring to be dynamically loaded from DLL libraries are now loaded only once on startup (instead of on every function call), significantly speeding up different functions and methods. This is described and implemented in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1422">#1422</a> which also provides benchmarks.</p>
-<p>Another one is Process' <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.suspend">suspend()</a> and <a class="reference external" href="https://psutil.readthedocs.io/en/latest/#psutil.Process.resume">resume()</a> methods. Before, they were using <cite>CreateToolhelp32Snapshot()</cite> to iterate over all process' threads which was somewhat unorthodox and didn't work if the process was suspended via Process Hacker. Now it relies on undocumented <cite>NtSuspendProcess</cite> and <cite>NtResumeProcess</cite> APIs, which is the same approach used by ProcessHacker and other famous Sysinternals tools. The change was proposed and discussed in issue <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1379">#1379</a> and implemented in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1435">#1435</a>. I think I will later propose the addition of suspend() and resume() methods in the subprocess module in Python.</p>
-<p>The last nice improvement about Windows is about <cite>SE DEBUG</cite> mode. <cite>SE DEBUG</cite> mode can be seen as a &quot;bit&quot; which you can set on the Python process on startup so that we have more chances of querying processes owned by other users, including many owned by Administrator and Local System. Practically speaking this means we will get fewer <cite>AccessDenied</cite> exceptions for low PID processes. It turns out the code doing this has been broken presumably for years, and never set <cite>SE DEBUG</cite>. This is fixed now and the change was made in PR <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1429">#1429</a>.</p>
+<p>Certain Windows APIs that need to be dynamically loaded from DLLs are now loaded only once at startup, instead of on every function call. This makes some operations <strong>50% to 100% faster</strong>; see benchmarks in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1422">PR-1422</a>.</p>
+<p><tt class="docutils literal">Process.suspend()</tt> and <tt class="docutils literal">Process.resume()</tt> previously iterated over all process threads via <tt class="docutils literal">CreateToolhelp32Snapshot()</tt>, which was unorthodox and broke when the process had been suspended by Process Hacker. They now call the undocumented <tt class="docutils literal">NtSuspendProcess()</tt> / <tt class="docutils literal">NtResumeProcess()</tt> NT APIs, same as Process Hacker and Sysinternals tools. Discussed in <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1379">#1379</a>, implemented in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1435">PR-1435</a>.</p>
+<p><tt class="docutils literal">SE DEBUG</tt> is a privilege bit set on the Python process at startup so psutil can query processes owned by other users (Administrator, Local System), meaning fewer <tt class="docutils literal">AccessDenied</tt> exceptions for low-PID processes. The code setting it had presumably been broken for years and is now finally fixed in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1429">PR-1429</a>.</p>
 </div>
-<div class="section" id="removal-of-process-memory-maps-on-osx">
-<h2>Removal of Process.memory_maps() on OSX<a class="headerlink" href="#removal-of-process-memory-maps-on-osx" title="Permalink to this headline">¶</a></h2>
-<p>This was somewhat <a class="reference external" href="https://github.com/giampaolo/psutil/issues/1291">controversial</a>. The history about <cite>memory_maps()</cite> on OSX is a painful one. It was based on an undocumented and probably broken Apple API called <cite>proc_regionfilename()</cite> which made <cite>memory_maps()</cite> either randomly raise <cite>EINVAL</cite> or result in segfault! Also, <cite>memory_maps()</cite> could only be used for the current process, limiting its usefulness to <cite>os.getpid()</cite> only. For any other process it raised <cite>AccessDenied</cite>. This has been a known problem for a long time but sometime over the last few years I got tired of seeing random test failures on Travis that I couldn't reproduce locally, so I commented out the unit-test and forgot about it until last week, when I realized the real impact this has on production code. I tried looking for a solution once again, spending quite some time looking for public source code which managed to do this right, with no luck. The only tool I'm aware of which does this right is vmmap from Apple, but it's closed source. After careful thinking, since no solution was found, I decided to just remove <cite>memory_maps()</cite> from OSX. This is not something I took lightly, but considering the alternative is getting a segfault I decided to sacrifice backward compatibility (hence the major version bump).</p>
+<div class="section" id="removal-of-process-memory-maps-on-macos">
+<h2>Removal of Process.memory_maps() on macOS<a class="headerlink" href="#removal-of-process-memory-maps-on-macos" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal">Process.memory_maps()</tt> is gone on macOS (<a class="reference external" href="https://github.com/giampaolo/psutil/issues/1291">#1291</a>). The underlying Apple API would randomly raise <tt class="docutils literal">EINVAL</tt> or segfault the host process, and no amount of reverse-engineering produced a safe fix. So I removed it. This is covered in a <a class="reference external" href="removing-processmemory_maps-on-macos">separate post</a>.</p>
 </div>
 <div class="section" id="improved-exceptions">
 <h2>Improved exceptions<a class="headerlink" href="#improved-exceptions" title="Permalink to this headline">¶</a></h2>
-<p>One problem which afflicted psutil maintenance over the years was receiving bug reports including tracebacks which didn't provide any information on what syscall failed exactly. This was especially painful on Windows where a single routine can invoke different Windows APIs. Now the <cite>OSError</cite> (or <cite>WindowsError</cite>) exception will include the syscall from which the error originated, see <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1428">PR-#1428</a>.</p>
+<p>One problem that affected psutil maintenance over the years was receiving bug reports whose tracebacks did not indicate which syscall had actually failed. This was especially painful on Windows, where a single routine may invoke multiple Windows APIs. Now the <tt class="docutils literal">OSError</tt> (or <tt class="docutils literal">WindowsError</tt>) exception includes the syscall from which the error originated. See <a class="reference external" href="https://github.com/giampaolo/psutil/pull/1428">PR-1428</a>.</p>
 </div>
-<div class="section" id="other-important-bugfixes">
-<h2>Other important bugfixes<a class="headerlink" href="#other-important-bugfixes" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1353">#1353</a>: <cite>process_iter()</cite> is now thread safe</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1411">#1411</a>: [BSD] segfault could occur on Process instantiation</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1427">#1427</a>: [OSX] Process <cite>cmdline()</cite> and <cite>environ()</cite> may erroneously raise <cite>OSError</cite> on failed <cite>malloc()</cite>.</li>
-<li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/1447">#1447</a>: original exception wasn't turned into <cite>NoSuchProcess</cite> / <cite>AccessDenied</cite> exceptions when using <cite>Process.oneshot()</cite> ctx manager.</li>
-</ul>
-<p>A full list of enhancements and bug fixes is available <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">here</a>.</p>
+<div class="section" id="other-changes">
+<h2>Other changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h2>
+<p>See the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html">changelog</a>.</p>
 </div>
 
     </div><!-- /.entry-content -->
