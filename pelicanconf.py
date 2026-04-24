@@ -43,6 +43,7 @@ SOCIAL = (
 MENUITEMS = (
     ("Blog", "/"),
     ("Archives", "/archives"),
+    ("Donate", "https://psutil.readthedocs.io/latest/funding.html"),
     ("About", "/about"),
 )
 
