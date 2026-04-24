@@ -102,9 +102,5 @@ fix-all:  ## Run all code fixers.
 # Misc
 # ===================================================================
 
-install-git-hook:  ## Install GIT pre-commit hook.
-	ln -sf ../../scripts/internal/git_pre_commit.py .git/hooks/pre-commit
-	chmod +x .git/hooks/pre-commit
-
 help: ## Display callable targets.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'

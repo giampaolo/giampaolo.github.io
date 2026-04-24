@@ -19,9 +19,8 @@
 body {
     background: #eaecef;
     color: #000305;
-    font-size: 18px; /* Base font size: 14px */
-    font-family: 'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+    font-size: 18px;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
     line-height: 1.429;
     margin: 0;
     padding: 0;
@@ -282,35 +281,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	}
 
 /*
-	Featured
-*****************/
-#featured {
-	background: #fff;
-	margin-bottom: 2em;
-	overflow: hidden;
-	padding: 20px;
-	width: 860px;
-
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-}
-
-#featured figure {
-	border: 2px solid #eee;
-	float: right;
-	margin: 0.786em 2em 0 5em;
-	width: 248px;
-}
-#featured figure img {display: block; float: right;}
-
-#featured h2 {color: #2980B9; font-size: 1.714em; margin-bottom: 0.333em;}
-#featured h3 {font-size: 1.429em; margin-bottom: .5em;}
-
-#featured h3 a:link, #featured h3 a:visited {color: #000305; text-decoration: none;}
-#featured h3 a:hover, #featured h3 a:active {color: #fff;}
-
-/*
 	Body
 *****************/
 #content {
@@ -402,61 +372,15 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 }
 
 		/* Icons */
-		.social a[href*='about.me'] {background-image: url('../images/icons/aboutme.png');}
-		.social a[href*='bitbucket.org'] {background-image: url('../images/icons/bitbucket.png');}
-		.social a[href*='delicious.com'] {background-image: url('../images/icons/delicious.png');}
-		.social a[href*='digg.com'] {background-image: url('../images/icons/digg.png');}
-		.social a[href*='facebook.com'] {background-image: url('../images/icons/facebook.png');}
-		.social a[href*='gitorious.org'] {background-image: url('../images/icons/gitorious.png');}
-		.social a[href*='github.com'],
-		.social a[href*='git.io'] {
+		.social a[href*='github.com'] {
 			background-image: url('../images/icons/github.png');
 			background-size: 16px 16px;
 		}
-		.social a[href*='gittip.com'] {background-image: url('../images/icons/gittip.png');}
-		.social a[href*='plus.google.com'] {background-image: url('../images/icons/google-plus.png');}
-		.social a[href*='groups.google.com'] {background-image: url('../images/icons/google-groups.png');}
-		.social a[href*='news.ycombinator.com'],
-		.social a[href*='hackernewsers.com'] {background-image: url('../images/icons/hackernews.png');}
-		.social a[href*='last.fm'], .social a[href*='lastfm.'] {background-image: url('../images/icons/lastfm.png');}
 		.social a[href*='linkedin.com'] {background-image: url('../images/icons/linkedin.png');}
-		.social a[href*='reddit.com'] {background-image: url('../images/icons/reddit.png');}
-		.social a[type$='atom+xml'], .social a[type$='rss+xml'] {background-image: url('../images/icons/rss.png');}
-		.social a[href*='slideshare.net'] {background-image: url('../images/icons/slideshare.png');}
-		.social a[href*='speakerdeck.com'] {background-image: url('../images/icons/speakerdeck.png');}
-		.social a[href*='stackoverflow.com'] {background-image: url('../images/icons/stackoverflow.png');}
-		.social a[href*='twitter.com'],
 		.social a[href*='x.com'] {
 			background-image: url('../images/icons/x.svg');
 			background-size: 16px 16px;
 		}
-		.social a[href*='vimeo.com'] {background-image: url('../images/icons/vimeo.png');}
-		.social a[href*='youtube.com'] {background-image: url('../images/icons/youtube.png');}
-
-/*
-	About
-*****************/
-#about {
-	background: #fff;
-	font-style: normal;
-	margin-bottom: 2em;
-	overflow: hidden;
-	padding: 20px;
-	text-align: left;
-	width: 860px;
-
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-}
-
-#about .primary {float: left; width: 165px;}
-#about .primary strong {color: #C64350; display: block; font-size: 1.286em;}
-#about .photo {float: left; margin: 5px 20px;}
-
-#about .url:link, #about .url:visited {text-decoration: none;}
-
-#about .bio {float: right; width: 500px;}
 
 /*
 	Footer
@@ -491,58 +415,6 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 		padding-right: 15px;
 		position: relative;
 	}
-
-	/* About the Author */
-	#about-author {
-		background: #f9f9f9;
-		clear: both;
-		font-style: normal;
-		margin: 2em 0;
-		padding: 10px 20px 15px 20px;
-
-		border-radius: 5px;
-		-moz-border-radius: 5px;
-		-webkit-border-radius: 5px;
-	}
-
-	#about-author strong {
-		color: #C64350;
-		clear: both;
-		display: block;
-		font-size: 1.429em;
-	}
-
-	#about-author .photo {border: 1px solid #ddd; float: left; margin: 5px 1em 0 0;}
-
-	/* Comments */
-	#comments-list {list-style: none; margin: 0 1em;}
-	#comments-list blockquote {
-		background: #f8f8f8;
-		clear: both;
-		font-style: normal;
-		margin: 0;
-		padding: 15px 20px;
-
-		border-radius: 5px;
-		-moz-border-radius: 5px;
-		-webkit-border-radius: 5px;
-	}
-	#comments-list footer {color: #888; padding: .5em 1em 0 0; text-align: right;}
-
-	#comments-list li:nth-child(2n) blockquote {background: #F5f5f5;}
-
-	/* Add a Comment */
-	#add-comment label {clear: left; float: left; text-align: left; width: 150px;}
-	#add-comment input[type='text'],
-	#add-comment input[type='email'],
-	#add-comment input[type='url'] {float: left; width: 200px;}
-
-	#add-comment textarea {float: left; height: 150px; width: 495px;}
-
-	#add-comment p.req {clear: both; margin: 0 .5em 1em 0; text-align: right;}
-
-	#add-comment input[type='submit'] {float: right; margin: 0 .5em; height: 34px;}
-	#add-comment * {margin-bottom: .5em;}
 
 .entry-content {
 	padding-bottom:20px;
