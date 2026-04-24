@@ -42,8 +42,6 @@ SOCIAL = (
 
 # --- menu
 
-DISPLAY_CATEGORIES_ON_MENU = False
-DISPLAY_PAGES_ON_MENU = False
 MENUITEMS = (
     ("Blog", "/"),
     ("Archives", "/archives"),
@@ -75,7 +73,28 @@ TAG_URL = "tags/{slug}"
 # --- plugins
 
 PLUGIN_PATHS = ["plugins"]
+# headerid is for RST; Markdown posts use the `toc` extension below.
 PLUGINS = ["headerid"]
+
+MARKDOWN = {
+    "extensions": [
+        "markdown.extensions.codehilite",
+        "markdown.extensions.extra",
+        "markdown.extensions.meta",
+        "markdown.extensions.toc",
+    ],
+    "extension_configs": {
+        "markdown.extensions.codehilite": {"css_class": "highlight"},
+        "markdown.extensions.extra": {},
+        "markdown.extensions.meta": {},
+        "markdown.extensions.toc": {
+            "permalink": "¶",  # matches headerid.py output for RST
+            "permalink_class": "headerlink",
+            "permalink_title": "Permalink to this headline",
+        },
+    },
+    "output_format": "html5",
+}
 
 # ---paths
 
