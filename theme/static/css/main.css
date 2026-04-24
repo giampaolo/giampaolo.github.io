@@ -250,8 +250,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 		width: 900px;
 
 		border-radius: 5px;
-		-moz-border-radius: 5px;
-		-webkit-border-radius: 5px;
 	}
 
 	#banner nav ul {list-style: none; margin: 0 auto; width: 900px;}
@@ -273,12 +271,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 
 	#banner nav li:first-child a {
 		border-top-left-radius: 5px;
-		-moz-border-radius-topleft: 5px;
-		-webkit-border-top-left-radius: 5px;
-
 		border-bottom-left-radius: 5px;
-		-moz-border-radius-bottomleft: 5px;
-		-webkit-border-bottom-left-radius: 5px;
 	}
 
 /*
@@ -292,8 +285,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	width: 860px;
 
 	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
 }
 
 /*

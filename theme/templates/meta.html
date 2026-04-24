@@ -1,4 +1,5 @@
 {% macro og_tags(title, description, url, og_type='website', date=None, modified=None, tags=[]) %}
+<link rel="canonical" href="{{ url }}">
 <meta name="description" content="{{ description }}">
 <meta property="og:site_name" content="{{ SITENAME }}">
 <meta property="og:title" content="{{ title }}">

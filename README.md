@@ -4,6 +4,10 @@ branch is
 `master` branch is never touched and only stores the auto-generated HTML
 content based off of `gh-pages` branch.
 
+Note: `content/extra/htaccess` is Apache-only and applies to
+<https://gmpy.dev/>. GitHub Pages ignores it; the `.github.io` mirror
+relies on Pelican's own URL layout.
+
 # Setup
 
 - Install python deps:
