@@ -1,31 +1,41 @@
-psutil 4.4.0: improved Linux memory metrics
-###########################################
+Improved Linux memory metrics
+#############################
 
 :date: 2016-10-23
 :tags: psutil, python, memory, linux, release
+:slug: psutil-440-improved-linux-memory-metrics
 
-OK, here's another `psutil <https://github.com/giampaolo/psutil>`__ release. Main highlights of this release are more accurate memory metrics on Linux and different OSX fixes. Here goes.
+OK, another psutil release. The headline of 4.4.0 is more accurate memory metrics on Linux, plus a pile of macOS fixes I'd been sitting on for years.
 
 Linux virtual memory
 --------------------
 
-This new release sets a milestone regarding ``virtual_memory()`` metrics on Linux which are now calculated way `more precisely <https://github.com/giampaolo/psutil/issues/887>`__ (see `commit <https://github.com/giampaolo/psutil/pull/890/files>`__). Over the years different people complained that the numbers reported by `virtual_memory()` were not accurate or did not match the ones reported by the `free` command line utility exactly (see `#862 <https://github.com/giampaolo/psutil/issues/862>`__, `#685 <https://github.com/giampaolo/psutil/issues/685>`__, `#538 <https://github.com/giampaolo/psutil/issues/538>`__). As such I investigated how "available memory" is calculated on Linux and indeed psutil was doing it wrong. It turns out "free" cmdline itself, and many other similar tools, also did it wrong up until `2 years ago <https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773>`__ when somebody finally decided to accurately calculate the available system memory straight into the Linux kernel and expose this info to user-level applications. Starting with Linux kernel 3.14, a new `"MemAvailable"` column was added to `/proc/meminfo` and this is how psutil now determines available memory. Because of this, both "available" and "used" memory fields returned by virtual_memory() precisely match the `free` command line utility. As for older kernels (< 3.14), psutil tries to determine this value by using the `same algorithm <https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L291>`__ which was used in the original `Linux kernel commit <https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773>`__. Free cmdline utility source code also inspired an additional fix which prevents available memory from overflowing total memory on `LXC containers <https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L435>`__.
+People had been complaining for a while that ``virtual_memory()`` didn't match what ``free`` reported on Linux (`#862 <https://github.com/giampaolo/psutil/issues/862>`__, `#685 <https://github.com/giampaolo/psutil/issues/685>`__, `#538 <https://github.com/giampaolo/psutil/issues/538>`__). I finally dug into it (`#887 <https://github.com/giampaolo/psutil/issues/887>`__, `PR-890 <https://github.com/giampaolo/psutil/pull/890>`__) and, funny enough, it turns out ``free`` itself was doing it wrong until `about two years ago <https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773>`__, when somebody got tired of everyone guessing and moved the calculation into the kernel.
 
-OSX fixes
----------
+Starting with Linux 3.14, ``/proc/meminfo`` has a ``MemAvailable`` column. That's what psutil now uses, and the ``available`` / ``used`` fields match ``free`` exactly. On older kernels (< 3.14) psutil falls back to the `same formula <https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L291>`__ that kernel commit introduced.
 
-For many years I did psutil's OSX development on a very old 10.5 install, which I emulated via VirtualBox. The OS itself was a hacked version of OSX, called iDeneb. After many years I finally managed to get access to a more recent version of OSX (El Capitan) thanks to VirtualBox + Vagrant. With this I finally had the chance to address many long-standing OSX bugs. Here's the list:
+``free``'s source code also inspired a fix that prevents available memory from overflowing total memory on `LXC containers <https://github.com/giampaolo/psutil/blob/a5beb29488fe75c858d30a00044cbd29d3ed3d8b/psutil/_pslinux.py#L435>`__.
 
-* `514 <https://github.com/giampaolo/psutil/issues/514>`__: fix ``Process.memory_maps()`` segfault (critical!).
-* `783 <https://github.com/giampaolo/psutil/issues/783>`__: ``Process.status()`` may erroneously return "running" for zombie processes.
-* `908 <https://github.com/giampaolo/psutil/issues/908>`__: different process methods could erroneously mask the real error for high-privileged PIDs and raise NoSuchProcess and ``AccessDenied`` instead of ``OSError`` and ``RuntimeError``.
-* `909 <https://github.com/giampaolo/psutil/issues/909>`__: ``Process.open_files()`` and ``Process.connections()`` methods may raise ``OSError`` with no exception set if process is gone.
-* `916 <https://github.com/giampaolo/psutil/issues/916>`__: fix many compilation warnings.
+macOS fixes
+-----------
 
-Improved procinfo.py script
----------------------------
+For years I did psutil's macOS development on an old 10.5 install emulated via VirtualBox, running iDeneb (a hacked macOS). I finally got access to a more recent version (El Capitan) via VirtualBox + Vagrant, and could address a pile of long-standing bugs:
 
-`procinfo.py <https://github.com/giampaolo/psutil/blob/release-4.4.0/scripts/procinfo.py>`__ is a script which shows psutil capabilities regarding obtaining different info about processes. I improved it so that now it reports a lot more info. Here's a sample output:
+* `#514 <https://github.com/giampaolo/psutil/issues/514>`__: ``Process.memory_maps()`` segfault (critical).
+* `#783 <https://github.com/giampaolo/psutil/issues/783>`__: ``Process.status()`` could return ``"running"`` for zombie processes.
+* `#908 <https://github.com/giampaolo/psutil/issues/908>`__: several methods could mask the real error for high-privileged PIDs, raising ``NoSuchProcess`` / ``AccessDenied`` instead of ``OSError`` / ``RuntimeError``.
+* `#909 <https://github.com/giampaolo/psutil/issues/909>`__: ``Process.open_files()`` and ``Process.connections()`` could raise ``OSError`` with no exception set when the process was gone.
+* `#916 <https://github.com/giampaolo/psutil/issues/916>`__: fixed many compilation warnings.
+
+NIC netmask on Windows
+----------------------
+
+Small but nice: ``net_if_addrs()`` on Windows now returns the netmask too.
+
+Improved procinfo.py
+--------------------
+
+`scripts/procinfo.py <https://github.com/giampaolo/psutil/blob/release-4.4.0/scripts/procinfo.py>`__ is my kitchen-sink demo script. I taught it a bunch of new tricks, so it now dumps pretty much everything psutil knows about a process:
 
 .. code-block:: none
 
@@ -45,7 +55,6 @@ Improved procinfo.py script
                   data=816.5M, dirty=0B
     memory %      3.26
     user          giampaolo
-    uids          real=1000, effective=1000, saved=1000
     uids          real=1000, effective=1000, saved=1000
     terminal      /dev/pts/2
     status        sleeping
@@ -105,12 +114,7 @@ Improved procinfo.py script
                   6.6M     /home/giampaolo/.config/google-chrome/Default/Favicons
                   [...]
 
-NIC netmask on Windows
-----------------------
+Other changes
+-------------
 
-``net_if_addrs()`` on Windows is now able to return the netmask.
-
-Other improvements and bug fixes
---------------------------------
-
-Just take a look at the `HISTORY <https://psutil.readthedocs.io/latest/changelog.html>`__ file.
+The full list is in the `changelog <https://psutil.readthedocs.io/en/latest/changelog.html>`__.
