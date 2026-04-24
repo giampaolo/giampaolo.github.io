@@ -8,15 +8,12 @@
 
     {% import 'meta.html' as meta with context %}
     {% block meta %}
-    {{ meta.og_tags(SITENAME, SITESUBTITLE, SITEURL) }}
+    {{ meta.og_tags(SITENAME, SITESUBTITLE, SITEURL + '/') }}
     {% endblock meta %}
 
     <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/{{ CSS_FILE }}" />
     {% if FEED_ALL_ATOM %}
     <link href="{{ FEED_DOMAIN }}/{% if FEED_ALL_ATOM_URL %}{{ FEED_ALL_ATOM_URL }}{% else %}{{ FEED_ALL_ATOM }}{% endif %}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} Atom Feed" />
-    {% endif %}
-    {% if FEED_ALL_RSS %}
-    <link href="{{ FEED_DOMAIN }}/{% if FEED_ALL_RSS_URL %}{{ FEED_ALL_RSS_URL }}{% else %}{{ FEED_ALL_RSS }}{% endif %}" type="application/rss+xml" rel="alternate" title="{{ SITENAME }} RSS Feed" />
     {% endif %}
     {% block extra_head %}{% endblock extra_head %}
     <link rel="icon" type="image/x-icon" href="{{ SITEURL }}/favicon.ico">
@@ -27,7 +24,7 @@
         <h1><a href="{{ SITEURL }}/">{{ SITENAME }} {% if SITESUBTITLE %}<strong>{{ SITESUBTITLE }}</strong>{% endif %}</a></h1>
         <nav><ul>
         {% for title, link in MENUITEMS %}
-            <li><a href="{{ link }}">{{ title }}</a></li>
+            <li><a href="{{ SITEURL }}{{ link }}">{{ title }}</a></li>
         {% endfor %}
         </ul></nav>
     </header><!-- /#banner -->
@@ -58,20 +55,14 @@
         </div><!-- /.social -->
     {% endif %}
 
-    {% if FEED_ALL_ATOM or FEED_ALL_RSS %}
+    {% if FEED_ALL_ATOM %}
         <div class="feeds">
-            <h2>Feeds</h2>
+            <h2>Feed</h2>
             <ul>
-            {% if FEED_ALL_ATOM %}
                 <li><a href="{{ FEED_DOMAIN }}/{% if FEED_ALL_ATOM_URL %}{{ FEED_ALL_ATOM_URL }}{% else %}{{ FEED_ALL_ATOM }}{% endif %}" type="application/atom+xml" rel="alternate">atom</a></li>
-            {% endif %}
-            {% if FEED_ALL_RSS %}
-                <li><a href="{{ FEED_DOMAIN }}/{% if FEED_ALL_RSS_URL %}{{ FEED_ALL_RSS_URL }}{% else %}{{ FEED_ALL_RSS }}{% endif %}" type="application/rss+xml" rel="alternate">rss</a></li>
             </ul>
-            {% endif %}
         </div>
     {% endif %}
-    </div>
     </section>
     <!-- /Footer -->
 
