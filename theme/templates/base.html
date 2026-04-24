@@ -8,7 +8,7 @@
 
     {% import 'meta.html' as meta with context %}
     {% block meta %}
-    {{ meta.og_tags(SITENAME, SITESUBTITLE, SITEURL) }}
+    {{ meta.og_tags(SITENAME, SITESUBTITLE, SITEURL + '/') }}
     {% endblock meta %}
 
     <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/{{ CSS_FILE }}" />
@@ -63,7 +63,6 @@
             </ul>
         </div>
     {% endif %}
-    </div>
     </section>
     <!-- /Footer -->
 
