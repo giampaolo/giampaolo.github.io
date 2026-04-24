@@ -66,6 +66,18 @@
     </section>
     <!-- /Footer -->
 
+<!-- Open all external links in a new tab -->
+<script>
+    for (const a of document.querySelectorAll('a[href]')) {
+        try {
+            const u = new URL(a.href, location.href);
+            if (/^https?:$/.test(u.protocol) && u.host !== location.host) {
+                a.target = '_blank';
+                a.rel = (a.rel ? a.rel + ' ' : '') + 'noopener noreferrer';
+            }
+        } catch (e) {}
+    }
+</script>
 {% include 'analytics.html' %}
 </body>
 </html>
