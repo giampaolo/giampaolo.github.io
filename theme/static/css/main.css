@@ -124,9 +124,7 @@ dd {margin-left: 1.5em;}
 .highlight,
 .highlight pre {
     border-radius: 6px;
-    overflow: hidden;
-    white-space: pre-wrap;
-    word-break: break-all;
+    overflow: auto;
     padding: 8px;
 }
 
@@ -329,8 +327,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	text-decoration: underline;
 }
 
-#extras .feeds a[type$='atom+xml'],
-#extras .feeds a[type$='rss+xml'] {
+#extras .feeds a[type$='atom+xml'] {
 	background-image: url('../images/icons/rss.svg');
 	background-repeat: no-repeat;
 	background-position: 0 50%;

@@ -16,14 +16,12 @@ LOCALE = ("en_US.UTF-8", "en_US.utf8", "en_US", "C.UTF-8")
 # Old UA-164357405-2 was Universal Analytics; sunset by Google in 2023.
 GOOGLE_ANALYTICS = ""
 
-# --- atom / rss feeds (http://127.0.0.1:8000/feeds)
+# --- atom feeds (http://127.0.0.1:8000/feeds)
 # Planet python uses:
 # https://gmpy.dev/feeds/atom.tag.python.xml
 
 FEED_ALL_ATOM = "feeds/atom.all.xml"
-FEED_ALL_RSS = "feeds/rss.all.xml"
 TAG_FEED_ATOM = "feeds/atom.tag.{slug}.xml"
-TAG_FEED_RSS = "feeds/rss.tag.{slug}.xml"
 
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None

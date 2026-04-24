@@ -114,7 +114,7 @@ As a simple experiment, here's a simple program which waits on itself for 10 sec
 
 We can measure the CPU context switching using ``/usr/bin/time -v``. Before the patch (the busy-loop):
 
-::
+.. code-block:: none
 
    $ /usr/bin/time -v python3 test.py 2>&1 | grep context
        Voluntary context switches: 258
@@ -122,7 +122,7 @@ We can measure the CPU context switching using ``/usr/bin/time -v``. Before the 
 
 After the patch (the event-driven approach):
 
-::
+.. code-block:: none
 
    $ /usr/bin/time -v python3 test.py 2>&1 | grep context
        Voluntary context switches: 2
@@ -139,7 +139,7 @@ The ``"S+"`` state shown below by ``ps`` means that the process "sleeps in foreg
 
 - ``time.sleep``:
 
-::
+.. code-block:: none
 
    $ (python3 -c 'import time; time.sleep(10)' & pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) && fg &>/dev/null
        PID STAT COMMAND
@@ -147,7 +147,7 @@ The ``"S+"`` state shown below by ``ps`` means that the process "sleeps in foreg
 
 - ``select.poll``:
 
-::
+.. code-block:: none
 
    $ (python3 -c 'import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)' & pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) && fg &>/dev/null
        PID STAT COMMAND
