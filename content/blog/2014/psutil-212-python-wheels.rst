@@ -1,5 +1,5 @@
-psutil 2.1.2 and Python wheels
-##############################
+Windows wheels available in psutil 2.1.2
+########################################
 
 :date: 2014-09-21
 :tags: psutil, wheels, travel, python

@@ -32,9 +32,9 @@ TRANSLATION_FEED_RSS = None
 # --- social widget
 
 SOCIAL = (
-    ("github", "https://github.com/giampaolo"),
-    ("linkedin", "https://www.linkedin.com/in/grodola/"),
-    ("x", "https://x.com/grodola"),
+    ("GitHub", "https://github.com/giampaolo"),
+    ("LinkedIn", "https://www.linkedin.com/in/grodola/"),
+    ("X", "https://x.com/grodola"),
 )
 
 # --- menu

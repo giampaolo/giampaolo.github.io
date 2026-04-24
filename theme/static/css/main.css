@@ -328,73 +328,78 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 /*
 	Extras
 *****************/
-#extras {margin: 0 auto 3em auto; overflow: hidden;}
+#extras {
+	margin: 2em auto 3em auto;
+	padding: 1.5em 0 0 0;
+	border-top: 1px solid #d0d7de;
+	font-size: 15px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2em 3em;
+	align-items: flex-start;
+	overflow: visible;
+}
 
-#extras ul {list-style: none; margin: 0;}
+#extras > div {
+	color: #57606a;
+	float: none;
+	width: auto;
+}
+
+#extras ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: .25em 1.25em;
+}
+
+#extras ul li {
+	margin: 0;
+	width: auto;
+}
+
 #extras h2 {
-	color: #2980B9;
-	font-size: 1.429em;
-	margin-bottom: .25em;
+	color: #57606a;
+	font-size: .8em;
+	font-weight: 600;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	margin: 0 0 .75em 0;
+	padding: 0;
+	border-bottom: none;
 }
 
-#extras a:link, #extras a:visited {
-	color: #444;
-	display: block;
-	border-bottom: 1px solid #F4E3E3;
-	padding: .3em .25em;
+#extras a,
+#extras a:link,
+#extras a:visited {
+	color: #24292f;
+	display: inline-block;
+	border-bottom: none;
+	padding: .15em 0;
+	text-decoration: none;
 }
 
-	#extras {
-		width:860px;
-		padding-left:50px;
-		margin-top:-20px;
-		font-size:15px;
-	}
+#extras a:hover {
+	color: #0969da;
+	text-decoration: underline;
+}
 
-	#extras div {
-		color: #444;
-		float:left;
-		width: 200px;
-	}
+#extras .feeds a[type$='atom+xml'],
+#extras .feeds a[type$='rss+xml'] {
+	background-image: url('../images/icons/rss.svg');
+	background-repeat: no-repeat;
+	background-position: 0 50%;
+	background-size: 16px 16px;
+	padding-left: 22px;
+}
 
-	/* Blogroll */
-	#extras .blogroll {
-	}
-
-	#extras .blogroll li {
-		margin: 0 20px 0 0;
-	}
-
-	/* Social */
-	#extras .social {
-	}
-
-	/* Feeds */
-	#extras .feeds {
-	}
-
-	#extras .feeds li {
-		width: 185px;
-	}
-
-	#extras .feeds a {
-		padding-left: 25px;
-	}
-
-	.feeds a[type$='atom+xml'], .feeds a[type$='rss+xml'] {
-		background-image: url('../images/icons/rss.png');
-		background-repeat: no-repeat;
-		background-position: 3px 6px;
-	}
-
-
-	/* --- */
-
-	#extras div[class='social'] a {
-		background-repeat: no-repeat;
-		background-position: 3px 6px;
-		padding-left: 25px;
-	}
+#extras div[class='social'] a {
+	background-repeat: no-repeat;
+	background-position: 0 50%;
+	padding-left: 22px;
+}
 
 		/* Icons */
 		.social a[href*='about.me'] {background-image: url('../images/icons/aboutme.png');}

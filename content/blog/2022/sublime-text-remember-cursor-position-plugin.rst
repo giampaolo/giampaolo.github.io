@@ -22,7 +22,7 @@ by writing my first ST plugin, which I paste below.
 
 What it does is this:
 
-* every time a file is closed, save the cursor position (x and y axis) to a JSON file
+* every time a file is closed, save the cursor position (x and y axes) to a JSON file
 * if that same file is re-opened, restore the cursor at that position
 
 What's neat about ST plugins is that they are just Python files which you can

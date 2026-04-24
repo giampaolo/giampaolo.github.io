@@ -4,7 +4,7 @@ Announcing psutil 5.3.0
 :date: 2017-09-03
 :tags: psutil, travel, python
 
-`psutil <https://github.com/giampaolo/psutil/>`__ 5.3.0 is finally out. This release is a major one, as it includes tons of improvements and bugfixes, probably like no other previous release. It is interesting to notice how huge the `diff <https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket>`__ between 5.2.2 and 5.3.0 is. This is due to the fact that I've been travelling quite a lot this year, so I kept postponing it. It may sound weird but I consider publishing a new release and writing a blog post about it more stressful than working on the release itself. =). Anyway, here goes.
+`psutil <https://github.com/giampaolo/psutil/>`__ 5.3.0 is finally out. This release is a major one, bigger than any release before it in terms of improvements and bugfixes. It is interesting to notice how huge the `diff <https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket>`__ between 5.2.2 and 5.3.0 is. This is because I've been travelling quite a lot this year, so I kept postponing it. It may sound weird but I consider publishing a new release and writing a blog post about it more stressful than working on the release itself. =). Anyway, here goes.
 
 Full Unicode support
 --------------------
@@ -19,7 +19,7 @@ Improved process_iter()
 Automatic overflow handling of numbers
 --------------------------------------
 
-On very busy or long-lived systems, numbers returned by `disk_io_counters() <https://psutil.readthedocs.io/en/latest/#psutil.disk_io_counters>`__ and `net_io_counters() <https://psutil.readthedocs.io/en/latest/#psutil.net_io_counters>`__ functions may wrap (restart from zero). Up to version 5.2.x you had to take this into account, while now this is automatically handled by psutil (see: `#802 <https://github.com/giampaolo/psutil/issues/802>`__). If a "counter" restarts from 0 psutil will add the value from the previous call for you so that numbers will never decrease. This is crucial for applications monitoring disk or network I/O in real time. Old behavior can be resumed by passing `nowrap=True` argument.
+On very busy or long-lived systems, numbers returned by `disk_io_counters() <https://psutil.readthedocs.io/en/latest/#psutil.disk_io_counters>`__ and `net_io_counters() <https://psutil.readthedocs.io/en/latest/#psutil.net_io_counters>`__ functions may wrap (restart from zero). Up to version 5.2.x you had to take this into account, while now this is automatically handled by psutil (see: `#802 <https://github.com/giampaolo/psutil/issues/802>`__). If a "counter" restarts from 0 psutil will add the value from the previous call for you so that numbers will never decrease. This is crucial for applications monitoring disk or network I/O in real time. Old behavior can be resumed by passing the `nowrap=True` argument.
 
 SunOS Process environ()
 -----------------------

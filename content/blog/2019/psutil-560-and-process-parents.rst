@@ -1,58 +1,48 @@
-
-psutil 5.6.0 and process parents
-################################
+Announcing psutil 5.6.0
+#######################
 
 :date: 2019-03-05
-:tags: psutil, python
+:tags: psutil, python, windows, macos
+:slug: psutil-560-and-process-parents
 
-Hello world =)
-
-It has been a long time since my last blog post (over 1 year and a half). During this time I moved between Italy, Prague and Shenzhen (China), and also contributed a couple of nice patches for Python I want to blog about when Python 3.8 is out: zero-copy for `shutil.copy() <https://bugs.python.org/issue33671>`__ functions and `socket.create_server() <https://github.com/python/cpython/pull/11784>`__ utility function. But let's move on and talk about what this blog post is about: the next major psutil version.
+psutil 5.6.0 is out. Highlights: a new ``Process.parents()`` method, several important Windows improvements, and the removal of ``Process.memory_maps()`` on macOS.
 
 Process parents()
 -----------------
 
-From the doc: return the parents of this process as a list of Process instances. If no parents are known, return an empty list.
+The new method returns the parents of a process as a list of ``Process`` instances. If no parents are known, an empty list is returned.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> import psutil
     >>> p = psutil.Process(5312)
     >>> p.parents()
     [psutil.Process(pid=4699, name='bash', started='09:06:44'),
-     psutil.Process(pid=4689, name='gnome-terminal-server', started='0:06:44'),
+     psutil.Process(pid=4689, name='gnome-terminal-server', started='09:06:44'),
      psutil.Process(pid=1, name='systemd', started='05:56:55')]
 
-Nothing really new here, as it's a convenience method based on the existing `parent() <https://psutil.readthedocs.io/en/latest/#psutil.Process.parent>`__ method, but still it's something nice to have implemented as a builtin and which can be used to work with process trees in conjunction with the `children() <https://psutil.readthedocs.io/en/latest/#psutil.Process.children>`__ method. The idea was proposed by Ghislain Le Meur.
+Nothing fundamentally new here, since this is a convenience wrapper around ``Process.parent()``, but it's still nice to have it built in. It pairs well with ``Process.children()`` when working with process trees. The idea was proposed by Ghislain Le Meur.
 
 Windows
 -------
 
-A bunch of interesting improvements occurred on Windows.
+Certain Windows APIs that need to be dynamically loaded from DLLs are now loaded only once at startup, instead of on every function call. This makes some operations **50% to 100% faster**; see benchmarks in `PR-1422 <https://github.com/giampaolo/psutil/pull/1422>`__.
 
-The first one is that certain Windows APIs requiring to be dynamically loaded from DLL libraries are now loaded only once on startup (instead of on every function call), significantly speeding up different functions and methods. This is described and implemented in PR `#1422 <https://github.com/giampaolo/psutil/pull/1422>`__ which also provides benchmarks.
+``Process.suspend()`` and ``Process.resume()`` previously iterated over all process threads via ``CreateToolhelp32Snapshot()``, which was unorthodox and broke when the process had been suspended by Process Hacker. They now call the undocumented ``NtSuspendProcess()`` / ``NtResumeProcess()`` NT APIs, same as Process Hacker and Sysinternals tools. Discussed in `#1379 <https://github.com/giampaolo/psutil/issues/1379>`__, implemented in `PR-1435 <https://github.com/giampaolo/psutil/pull/1435>`__.
 
-Another one is Process' `suspend() <https://psutil.readthedocs.io/en/latest/#psutil.Process.suspend>`__ and `resume() <https://psutil.readthedocs.io/en/latest/#psutil.Process.resume>`__ methods. Before, they were using `CreateToolhelp32Snapshot()` to iterate over all process' threads which was somewhat unorthodox and didn't work if the process was suspended via Process Hacker. Now it relies on undocumented `NtSuspendProcess` and `NtResumeProcess` APIs, which is the same approach used by ProcessHacker and other famous Sysinternals tools. The change was proposed and discussed in issue `#1379 <https://github.com/giampaolo/psutil/issues/1379>`__ and implemented in PR `#1435 <https://github.com/giampaolo/psutil/pull/1435>`__. I think I will later propose the addition of suspend() and resume() methods in the subprocess module in Python.
+``SE DEBUG`` is a privilege bit set on the Python process at startup so psutil can query processes owned by other users (Administrator, Local System), meaning fewer ``AccessDenied`` exceptions for low-PID processes. The code setting it had presumably been broken for years and is now finally fixed in `PR-1429 <https://github.com/giampaolo/psutil/pull/1429>`__.
 
-The last nice improvement about Windows is about `SE DEBUG` mode. `SE DEBUG` mode can be seen as a "bit" which you can set on the Python process on startup so that we have more chances of querying processes owned by other users, including many owned by Administrator and Local System. Practically speaking this means we will get fewer `AccessDenied` exceptions for low PID processes. It turns out the code doing this has been broken presumably for years, and never set `SE DEBUG`. This is fixed now and the change was made in PR `#1429 <https://github.com/giampaolo/psutil/pull/1429>`__.
+Removal of Process.memory_maps() on macOS
+-----------------------------------------
 
-Removal of Process.memory_maps() on OSX
----------------------------------------
-
-This was somewhat `controversial <https://github.com/giampaolo/psutil/issues/1291>`__. The history about `memory_maps()` on OSX is a painful one. It was based on an undocumented and probably broken Apple API called `proc_regionfilename()` which made `memory_maps()` either randomly raise `EINVAL` or result in segfault! Also, `memory_maps()` could only be used for the current process, limiting its usefulness to `os.getpid()` only. For any other process it raised `AccessDenied`. This has been a known problem for a long time but sometime over the last few years I got tired of seeing random test failures on Travis that I couldn't reproduce locally, so I commented out the unit-test and forgot about it until last week, when I realized the real impact this has on production code. I tried looking for a solution once again, spending quite some time looking for public source code which managed to do this right, with no luck. The only tool I'm aware of which does this right is vmmap from Apple, but it's closed source. After careful thinking, since no solution was found, I decided to just remove `memory_maps()` from OSX. This is not something I took lightly, but considering the alternative is getting a segfault I decided to sacrifice backward compatibility (hence the major version bump).
+``Process.memory_maps()`` is gone on macOS (`#1291 <https://github.com/giampaolo/psutil/issues/1291>`__). The underlying Apple API would randomly raise ``EINVAL`` or segfault the host process, and no amount of reverse-engineering produced a safe fix. So I removed it. This is covered in a `separate post <removing-processmemory_maps-on-macos>`_.
 
 Improved exceptions
 -------------------
 
-One problem which afflicted psutil maintenance over the years was receiving bug reports including tracebacks which didn't provide any information on what syscall failed exactly. This was especially painful on Windows where a single routine can invoke different Windows APIs. Now the `OSError` (or `WindowsError`) exception will include the syscall from which the error originated, see `PR-#1428 <https://github.com/giampaolo/psutil/pull/1428>`__.
+One problem that affected psutil maintenance over the years was receiving bug reports whose tracebacks did not indicate which syscall had actually failed. This was especially painful on Windows, where a single routine may invoke multiple Windows APIs. Now the ``OSError`` (or ``WindowsError``) exception includes the syscall from which the error originated. See `PR-1428 <https://github.com/giampaolo/psutil/pull/1428>`__.
 
-Other important bugfixes
-------------------------
+Other changes
+-------------
 
-* `#1353 <https://github.com/giampaolo/psutil/issues/1353>`__: `process_iter()` is now thread safe
-* `#1411 <https://github.com/giampaolo/psutil/issues/1411>`__: [BSD] segfault could occur on Process instantiation
-* `#1427 <https://github.com/giampaolo/psutil/issues/1427>`__: [OSX] Process `cmdline()` and `environ()` may erroneously raise `OSError` on failed `malloc()`.
-* `#1447 <https://github.com/giampaolo/psutil/issues/1447>`__: original exception wasn't turned into `NoSuchProcess` / `AccessDenied` exceptions when using `Process.oneshot()` ctx manager.
-
-A full list of enhancements and bug fixes is available `here <https://psutil.readthedocs.io/latest/changelog.html>`__.
-
+See the `changelog <https://psutil.readthedocs.io/en/latest/changelog.html>`__.

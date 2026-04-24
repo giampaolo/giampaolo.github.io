@@ -1,12 +1,13 @@
-psutil 4.2.0: Windows services in Python
-########################################
+Windows services support
+########################
 
 :date: 2016-05-15
 :tags: psutil, windows, python
+:slug: psutil-420-windows-services-in-python
 
-New `psutil <https://github.com/giampaolo/psutil>`__ 4.2.0 is out. The main feature of this release is the support for Windows services:
+New `psutil <https://github.com/giampaolo/psutil>`__ 4.2.0 is out. The highlight of this release is the support for Windows services (executables that run at system startup, similar to UNIX init scripts):
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> import psutil
     >>> list(psutil.win_service_iter())
@@ -26,9 +27,9 @@ New `psutil <https://github.com/giampaolo/psutil>`__ 4.2.0 is out. The main feat
      'status': 'stopped',
      'username': 'NT AUTHORITY\\LocalService'}
 
-I did this mainly because I find pywin32 APIs too low level. Having something like this in psutil can be useful to discover and monitor services more easily. The code changes are `here <https://github.com/giampaolo/psutil/pull/803/files>`__ and here's the `doc <https://psutil.readthedocs.io/en/latest/#windows-services>`__. The API for querying a service is similar to ``psutil.Process``. You can get a reference to a service object by using its name (which is unique for every service) and then use ``name()``, ``status()``, etc..:
+I decided to do this mainly because I find pywin32 APIs too low levelish. Having something like this in psutil can be useful to discover and monitor services more easily. The code was implemented in `PR-803 <https://github.com/giampaolo/psutil/pull/803>`__. The API for querying a service is similar to ``psutil.Process``. You can get a reference to a service object by using its name (which is unique for every service) and then use methods like ``WindowsService.name()`` and ``WindowsService.status()``:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> s = psutil.win_service_get('alg')
     >>> s.name()
@@ -36,14 +37,14 @@ I did this mainly because I find pywin32 APIs too low level. Having something li
     >>> s.status()
     'stopped'
 
-Initially I thought to expose and provide a complete set of APIs to handle all aspects of service handling including ``start()``, ``stop()``, ``restart()``, ``install()``, ``uninstall()`` and ``modify()`` but I soon realized that I would have ended up reimplementing what pywin32 already provides at the cost of overcrowding psutil API (see my reasoning `here <https://github.com/giampaolo/psutil/blob/d28de253a2e6d7f368e5260d7a4ab14b285c5083/psutil/_pswindows.py#L426>`__). I think psutil should really be about monitoring, not about installing and modifying system stuff, especially something as critical as a Windows service.
+Initially I thought about providing a full set of APIs to handle all aspects of service management, including ``start()``, ``stop()``, ``restart()``, ``install()``, ``uninstall()`` and ``modify()``. However, I soon realized I would have ended up reimplementing what pywin32 already provides, at the cost of overcrowding the psutil API (see my reasoning `here <https://github.com/giampaolo/psutil/blob/d28de253a2e6d7f368e5260d7a4ab14b285c5083/psutil/_pswindows.py#L426>`__). I think psutil really focuses on monitoring, not on installing and modifying system components, especially something as critical as a Windows service.
 
 Considerations about Windows services
 -------------------------------------
 
-For those of you who are not familiar with Windows, a service is something, generally an executable (.exe), which runs at system startup and keeps running in the background. We can say they are the equivalent of a UNIX init script. All services are controlled by a "manager" which keeps track of their status and metadata (e.g. description, startup type) and with that you can start and stop them. It is interesting to note that since (most) services are bound to an executable (and hence a process) you can reference the process via its PID:
+Typically, a Windows service is an executable (.exe) that runs at system startup and continues running in the background. It is roughly the equivalent of a UNIX init script. All services are controlled by a "manager", which keeps track of their status and metadata (e.g. description, startup type). It is interesting to note that since (most) services are bound to an executable (and hence a process) you can reference them via their process PID:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> s = psutil.win_service_get('sshd')
     >>> s
@@ -61,20 +62,19 @@ Other improvements
 
 psutil 4.2.0 comes with 2 other enhancements for Linux:
 
-* ``psutil.virtual_memory()`` returns a new "shared" memory field. This is the same value reported by ``free`` cmdline utility.
-* I changed the way ``/proc`` was parsed. Instead of reading ``/proc/{pid}/status`` line by line I used a regular expression. Here are the speedups:
+* ``psutil.virtual_memory()`` returns a new ``shared`` memory field. This is the same value reported by ``free`` cmdline utility.
+* I changed how ``/proc`` was parsed. Instead of reading ``/proc/{pid}/status`` line by line I used a regular expression. Here's the speedups:
 
-  * ``Process.ppid()`` is 20% faster
+  * ``Process.ppid()`` ~20% faster.
 
-  * ``Process.status()`` is 28% faster
+  * ``Process.status()`` ~28% faster.
 
-  * ``Process.name()`` is 25% faster
+  * ``Process.name()`` ~25% faster.
 
-  * ``Process.num_threads()`` is 20% faster (on Python 3 only; on Python 2 it's a bit slower; I suppose ``re`` module received some improvements)
+  * ``Process.num_threads()`` ~20% faster (on Python 3 only; on Python 2 it's a bit slower; I suppose the ``re`` module received some improvements).
 
-External links
---------------
+Discussion
+----------
 
 * `Reddit <https://www.reddit.com/r/Python/comments/4jf8tz/psutil_420_windows_services_and_python/>`__
-* `Hacker news <https://news.ycombinator.com/item?id=11700002>`__
-
+* `Hacker News <https://news.ycombinator.com/item?id=11700002>`__

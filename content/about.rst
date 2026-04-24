@@ -10,7 +10,7 @@ About
         <br />
     </div>
 
-My name is Giampaolo Rodola. I'm a passionate Python developer who loves writing open source libraries for fun. I'm mostly known for being the author of `psutil`_. I am also a senior consultant and freelancer. Below is a list of my contribution to the world.
+My name is Giampaolo Rodola. I'm a passionate Python developer who loves writing open source libraries for fun. I'm mostly known for being the author of `psutil`_. I am also a senior consultant and freelancer. Below is a list of my contributions to the world.
 
 Talks
 -----
@@ -48,7 +48,7 @@ Projects
 
 * `psleak`_: test framework to detect memory and resource leaks in Python C extensions.  *(2025 - now)*
 
-* `pysendfile`_: a binding to `sendfile(2)` syscall which lets you send a file twice as fast as with a common socket. *(2011)*
+* `pysendfile`_: a binding to the `sendfile(2)` syscall which lets you send a file twice as fast as with a common socket. *(2011 - deprecated)*
 
 python-dev contributions
 ------------------------
@@ -113,23 +113,23 @@ Here's the ones I like the most:
 * `shutil.disk_usage() <http://code.activestate.com/recipes/577972-disk-usage/?in=user-4178764>`__ (backport of `BPO-12442 <http://bugs.python.org/issue12442>`__)
 * `Recognize connection errors <https://gist.github.com/giampaolo/905b38a5ea9d5179eb0138e2f37a01a8>`__
 * `Wait for PID <http://code.activestate.com/recipes/578022-wait-for-pid-and-check-for-pid-existance-posix/?in=user-4178764>`__
-* `bytes-to-human corverter <http://code.activestate.com/recipes/578019-bytes-to-human-human-to-bytes-converter/?in=user-4178764>`__
+* `bytes-to-human converter <http://code.activestate.com/recipes/578019-bytes-to-human-human-to-bytes-converter/?in=user-4178764>`__
 
 Abandoned projects
 ------------------
 
-These are from when I started moving my first steps with Python in 2005. Listed here mainly for historical / nostalgic reasons.
+These are from when I started taking my first steps with Python in 2005. Listed here mainly for historical / nostalgic reasons.
 
 * `soicmp`_: a remote shell using ICMP protocol instead of TCP. *(2005 - 2006)*
 * `pypk`_: a port knocker based on `libpcap`. *(2005 - 2006)*
-* pftpd: this is the ancestor of `pyftpdlib`_ (web site is lost), a thread-based FTP server. *(2005 - 2006)*
+* pftpd: this is the ancestor of `pyftpdlib`_ (website is lost), a thread-based FTP server. *(2005 - 2006)*
 
 Contacts
 --------
 
 * `GitHub <http://github.com/giampaolo>`__
-* `Twitter <https://twitter.com/grodola>`__
-* `Linkedin <https://www.linkedin.com/in/grodola/>`__
+* `X <https://x.com/grodola>`__
+* `LinkedIn <https://www.linkedin.com/in/grodola/>`__
 * `Medium <https://medium.com/@g.rodola>`__
 * Email: `g.rodola@gmail.com <g.rodola@gmail.com>`__ (`PGP public key
   </static/pgp.txt>`__, `keybase.io <https://keybase.io/grodola>`__)
