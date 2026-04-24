@@ -11,7 +11,9 @@ THEME = "theme"
 PATH = "content"
 TIMEZONE = "Europe/Rome"
 DEFAULT_LANG = "en"
-GOOGLE_ANALYTICS = "UA-164357405-2"
+# GA4 measurement ID (format: "G-XXXXXXXXXX"). Leave empty to disable.
+# Old UA-164357405-2 was Universal Analytics; sunset by Google in 2023.
+GOOGLE_ANALYTICS = ""
 
 # --- atom / rss feeds (http://127.0.0.1:8000/feeds)
 # Planet python uses:
