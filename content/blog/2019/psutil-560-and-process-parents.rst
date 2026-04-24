@@ -45,4 +45,4 @@ One problem that affected psutil maintenance over the years was receiving bug re
 Other changes
 -------------
 
-See the `changelog <https://psutil.readthedocs.io/en/latest/changelog.html>`__.
+See the `changelog <https://psutil.readthedocs.io/latest/changelog.html>`__.

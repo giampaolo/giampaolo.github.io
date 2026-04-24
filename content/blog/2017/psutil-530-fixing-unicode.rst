@@ -63,4 +63,4 @@ The notes below apply to *any* method returning a string such as ``Process.exe()
 
       >>> unicode(proc.exe(), sys.getdefaultencoding(), errors="replace")
 
-The full journey was implemented in `PR-1052 <https://github.com/giampaolo/psutil/pull/1052>`__, and shipped in 5.3.0 (see the `changelog <https://psutil.readthedocs.io/en/latest/changelog.html>`__).
+The full journey was implemented in `PR-1052 <https://github.com/giampaolo/psutil/pull/1052>`__, and shipped in 5.3.0 (see the `changelog <https://psutil.readthedocs.io/latest/changelog.html>`__).

@@ -5,7 +5,7 @@ Improved process_iter()
 :tags: psutil, python, api-design, release, performance, new-api
 :slug: improved-process_iter
 
-This is part of the psutil 5.3.0 release (see the `changelog <https://psutil.readthedocs.io/en/latest/changelog.html>`__ for the full list of changes).
+This is part of the psutil 5.3.0 release (see the `changelog <https://psutil.readthedocs.io/latest/changelog.html>`__ for the full list of changes).
 
 The old pattern
 ---------------

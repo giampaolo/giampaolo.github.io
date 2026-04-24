@@ -27,7 +27,7 @@ Besides NetBSD support, this release has a couple of interesting enhancements:
 * `#708 <https://github.com/giampaolo/psutil/issues/708>`__: [Linux] ``psutil.net_connections()`` and ``Process.connections()`` can be up to 3x faster when there are many connections.
 * `#718 <https://github.com/giampaolo/psutil/issues/718>`__: ``psutil.process_iter()`` is now thread safe.
 
-You can read the rest in the `changelog <https://psutil.readthedocs.io/en/latest/#id23>`__, as usual.
+You can read the rest in the `changelog <https://psutil.readthedocs.io/latest/#id23>`__, as usual.
 
 Move to Prague
 --------------

@@ -117,4 +117,4 @@ Improved procinfo.py
 Other changes
 -------------
 
-The full list is in the `changelog <https://psutil.readthedocs.io/en/latest/changelog.html>`__.
+The full list is in the `changelog <https://psutil.readthedocs.io/latest/changelog.html>`__.

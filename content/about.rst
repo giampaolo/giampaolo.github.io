@@ -20,7 +20,7 @@ Talks
 Interviews
 ----------
 
-* `2017, Pydev of the week <https://www.blog.pythonlibrary.org/2017/10/09/pydev-of-the-week-giampaolo-rodola/>`_
+* `2017, PyDev of the Week <https://www.blog.pythonlibrary.org/2017/10/09/pydev-of-the-week-giampaolo-rodola/>`_
 
 
 Projects
@@ -161,6 +161,6 @@ Contacts
 .. _`signal`: https://docs.python.org/3/library/signal.html
 .. _`socket.create_server`: https://docs.python.org/3/library/socket.html#socket.create_server
 .. _`socket.sendfile`: https://docs.python.org/3/library/socket.html#socket.socket.sendfile
-.. _`soicmp`: http://soicmp.sourceforge.net/
+.. _`soicmp`: https://soicmp.sourceforge.net/
 .. _`subprocess`: https://docs.python.org/3/library/subprocess.html
 .. _`unittest`: https://docs.python.org/3/library/unittest.html

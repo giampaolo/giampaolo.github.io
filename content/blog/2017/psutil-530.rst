@@ -14,17 +14,17 @@ String-returning APIs (``Process.exe()``, ``Process.cwd()``, ``Process.username(
 Improved process_iter()
 -----------------------
 
-`process_iter() <https://psutil.readthedocs.io/en/latest/#psutil.process_iter>`__ now accepts ``attrs`` and ``ad_value`` parameters, letting you pre-fetch process attributes in one shot and skip the ``try/except NoSuchProcess`` boilerplate, see `detailed separate blog post </blog/2017/psutil-530-improved-process-iter.html>`__.
+`process_iter() <https://psutil.readthedocs.io/latest/#psutil.process_iter>`__ now accepts ``attrs`` and ``ad_value`` parameters, letting you pre-fetch process attributes in one shot and skip the ``try/except NoSuchProcess`` boilerplate, see `detailed separate blog post </blog/2017/psutil-530-improved-process-iter.html>`__.
 
 Automatic overflow handling of numbers
 --------------------------------------
 
-On very busy or long-lived systems, numbers returned by `disk_io_counters() <https://psutil.readthedocs.io/en/latest/#psutil.disk_io_counters>`__ and `net_io_counters() <https://psutil.readthedocs.io/en/latest/#psutil.net_io_counters>`__ functions may wrap (restart from zero). Up to version 5.2.x you had to take this into account, while now this is automatically handled by psutil (see: `#802 <https://github.com/giampaolo/psutil/issues/802>`__). If a "counter" restarts from 0 psutil will add the value from the previous call for you so that numbers will never decrease. This is crucial for applications monitoring disk or network I/O in real time. Old behavior can be resumed by passing the `nowrap=True` argument.
+On very busy or long-lived systems, numbers returned by `disk_io_counters() <https://psutil.readthedocs.io/latest/#psutil.disk_io_counters>`__ and `net_io_counters() <https://psutil.readthedocs.io/latest/#psutil.net_io_counters>`__ functions may wrap (restart from zero). Up to version 5.2.x you had to take this into account, while now this is automatically handled by psutil (see: `#802 <https://github.com/giampaolo/psutil/issues/802>`__). If a "counter" restarts from 0 psutil will add the value from the previous call for you so that numbers will never decrease. This is crucial for applications monitoring disk or network I/O in real time. Old behavior can be resumed by passing the `nowrap=True` argument.
 
 SunOS Process environ()
 -----------------------
 
-`Process.environ() <https://psutil.readthedocs.io/en/latest/#psutil.Process.environ>`__ is now available also on SunOS (see `#1091 <https://github.com/giampaolo/psutil/pull/1091>`__).
+`Process.environ() <https://psutil.readthedocs.io/latest/#psutil.Process.environ>`__ is now available also on SunOS (see `#1091 <https://github.com/giampaolo/psutil/pull/1091>`__).
 
 Other improvements and bug fixes
 --------------------------------
@@ -32,7 +32,7 @@ Other improvements and bug fixes
 Amongst others, here are a couple of important bug fixes I'd like to mention:
 
 * `#1044 <https://github.com/giampaolo/psutil/pull/1044>`__: on OSX different `Process` methods could incorrectly raise `AccessDenied` for zombie processes. This was due to the poor proc_pidpath OSX API.
-* `#1094 <https://github.com/giampaolo/psutil/pull/1094>`__: on Windows, `pid_exists()` may lie due to the poor `OpenProcess` Windows API which can return a handle even when a process PID no longer exists. This had repercussions for many Process methods such as `cmdline() <https://psutil.readthedocs.io/en/latest/#psutil.Process.cmdline>`__, `environ() <https://psutil.readthedocs.io/en/latest/#psutil.Process.environ>`__, `cwd() <https://psutil.readthedocs.io/en/latest/#psutil.Process.cwd>`__, `connections() <https://psutil.readthedocs.io/en/latest/#psutil.Process.connections>`__ and others which could have unpredictable behaviors such as returning empty data or erroneously raising `NoSuchProcess` exceptions. For the same reason (broken `OpenProcess` API), processes could unexpectedly stick around after using `terminate() <https://psutil.readthedocs.io/en/latest/#psutil.Process.terminate>`__ and `wait() <https://psutil.readthedocs.io/en/latest/#psutil.Process.wait>`__.
+* `#1094 <https://github.com/giampaolo/psutil/pull/1094>`__: on Windows, `pid_exists()` may lie due to the poor `OpenProcess` Windows API which can return a handle even when a process PID no longer exists. This had repercussions for many Process methods such as `cmdline() <https://psutil.readthedocs.io/latest/#psutil.Process.cmdline>`__, `environ() <https://psutil.readthedocs.io/latest/#psutil.Process.environ>`__, `cwd() <https://psutil.readthedocs.io/latest/#psutil.Process.cwd>`__, `connections() <https://psutil.readthedocs.io/latest/#psutil.Process.connections>`__ and others which could have unpredictable behaviors such as returning empty data or erroneously raising `NoSuchProcess` exceptions. For the same reason (broken `OpenProcess` API), processes could unexpectedly stick around after using `terminate() <https://psutil.readthedocs.io/latest/#psutil.Process.terminate>`__ and `wait() <https://psutil.readthedocs.io/latest/#psutil.Process.wait>`__.
 
 BSD systems also received some love (NetBSD and OpenBSD in particular). Different memory leaks were fixed and functions returning connected sockets were partially rewritten. The full list of enhancements and bug fixes can be seen `here <https://psutil.readthedocs.io/latest/changelog.html>`__.
 

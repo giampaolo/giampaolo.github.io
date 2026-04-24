@@ -87,7 +87,7 @@ Support for zombie processes on UNIX was broken. Covered in a `separate post <zo
 Removal of deprecated APIs
 --------------------------
 
-All aliases deprecated in the `psutil 2.0 porting guide <../2014/psutil-20-api-redesign>`_ (January 2014) are gone. For the full list see the `changelog <https://psutil.readthedocs.io/en/latest/#id23>`__.
+All aliases deprecated in the `psutil 2.0 porting guide <../2014/psutil-20-api-redesign>`_ (January 2014) are gone. For the full list see the `changelog <https://psutil.readthedocs.io/latest/#id23>`__.
 
 Final words
 -----------
