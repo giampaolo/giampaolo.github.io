@@ -2,7 +2,7 @@ Proper zombie process handling
 ##############################
 
 :date: 2015-06-13
-:tags: psutil, python, api-design
+:tags: psutil, python, api-design, compatibility
 :slug: zombie-processes
 
 This is part of the psutil 3.0 release (see the full `release notes <psutil-30-reimplement-ifconfig-in-python>`_).

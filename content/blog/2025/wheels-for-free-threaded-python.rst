@@ -2,7 +2,7 @@ Wheels for free-threaded Python now available
 #############################################
 
 :date: 2025-10-25
-:tags: psutil, python, wheels, community
+:tags: psutil, python, wheels, community, python-core
 :slug: wheels-for-free-threaded-python-now-available-in-psutil
 
 With the release of psutil 7.1.2, wheels for free-threaded Python are now available. This milestone was achieved largely through a community effort, as several internal refactorings to the C code were required to make it possible (see `#2565 <https://github.com/giampaolo/psutil/issues/2565>`__). Many of these changes were contributed by `Lysandros Nikolaou <https://github.com/lysnikolaou>`__. Thanks to him for the effort and for bearing with me in code reviews! ;-)

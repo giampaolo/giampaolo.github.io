@@ -2,7 +2,7 @@ Letting go of Python 2.7
 ########################
 
 :date: 2025-02-13
-:tags: psutil, python, compatibility
+:tags: psutil, python, compatibility, release, featured
 :slug: psutil-drop-python-27-support
 
 About dropping Python 2.7 support in psutil, 3 years ago I stated (`#2014 <https://github.com/giampaolo/psutil/issues/2014>`__):

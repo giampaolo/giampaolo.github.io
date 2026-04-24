@@ -2,7 +2,7 @@ Porting your code to psutil 2.0
 ###############################
 
 :date: 2014-01-11
-:tags: psutil, api-design, python
+:tags: psutil, python, api-design, compatibility
 :slug: psutil-20-api-redesign
 
 This blog post is going to be about `psutil <https://github.com/giampaolo/psutil/>`__ 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing, psutil 2.0 is still under development, and the intent of this blog post is to serve as an official reference that describes how you should port your existing code base. In doing so, I will also explain why I decided to make these changes. Even though many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten, but I think this is for the better and it needed to be done, hopefully for the first and last time.

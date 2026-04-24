@@ -2,7 +2,7 @@ Windows services support
 ########################
 
 :date: 2016-05-15
-:tags: psutil, windows, python
+:tags: psutil, python, windows, new-api, release
 :slug: psutil-420-windows-services-in-python
 
 New `psutil <https://github.com/giampaolo/psutil>`__ 4.2.0 is out. The highlight of this release is the support for Windows services (executables that run at system startup, similar to UNIX init scripts):

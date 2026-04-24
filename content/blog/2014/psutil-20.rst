@@ -2,7 +2,7 @@ Announcing psutil 2.0
 #####################
 
 :date: 2014-03-10
-:tags: psutil, python, api-design
+:tags: psutil, python, api-design, compatibility, release
 :slug: psutil-20
 
 `psutil <https://github.com/giampaolo/psutil/>`__ 2.0 is out. This is a major rewrite and reorganization of both the Python and C extension modules. It costed me four months of work and more than **22,000 lines** (the diff against old 1.2.1). Many of the changes are not backward compatible; I'm sure this will cause some pain, but I think it's for the better and needed to be done.

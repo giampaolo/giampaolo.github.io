@@ -2,7 +2,7 @@ Announcing psutil 5.3.0
 #######################
 
 :date: 2017-09-03
-:tags: psutil, travel, python
+:tags: psutil, python, release, personal
 
 `psutil <https://github.com/giampaolo/psutil/>`__ 5.3.0 is finally out. This release is a major one, bigger than any release before it in terms of improvements and bugfixes. It is interesting to notice how huge the `diff <https://github.com/giampaolo/psutil/compare/release-5.2.2...release-5.3.0#files_bucket>`__ between 5.2.2 and 5.3.0 is. This is because I've been travelling quite a lot this year, so I kept postponing it. It may sound weird but I consider publishing a new release and writing a blog post about it more stressful than working on the release itself. =). Anyway, here goes.
 

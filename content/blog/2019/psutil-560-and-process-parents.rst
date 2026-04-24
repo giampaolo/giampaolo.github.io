@@ -2,7 +2,7 @@ Announcing psutil 5.6.0
 #######################
 
 :date: 2019-03-05
-:tags: psutil, python, windows, macos
+:tags: psutil, python, windows, macos, new-api, compatibility, release
 :slug: psutil-560-and-process-parents
 
 psutil 5.6.0 is out. Highlights: a new ``Process.parents()`` method, several important Windows improvements, and the removal of ``Process.memory_maps()`` on macOS.

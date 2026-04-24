@@ -2,7 +2,7 @@ Making psutil twice as fast
 ###########################
 
 :date: 2016-11-06
-:tags: psutil, performance, macos, bsd, sunos, python
+:tags: psutil, python, performance, new-api, featured, release
 :slug: psutil-550-is-twice-as-fast
 
 Starting from psutil 5.0.0 you can query multiple ``Process`` fields around twice as fast as before (see `#799 <https://github.com/giampaolo/psutil/issues/799>`__ and `Process.oneshot() doc <https://psutil.readthedocs.io/en/latest/#psutil.Process.oneshot>`__). It took 7 months, 108 commits, and a massive refactoring of psutil internals (`PR-937 <https://github.com/giampaolo/psutil/pull/937>`__), and I think it's one of the best improvements ever shipped in a psutil release.

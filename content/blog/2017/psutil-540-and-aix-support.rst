@@ -2,7 +2,7 @@ AIX support
 ###########
 
 :date: 2017-10-12
-:tags: psutil, aix, python
+:tags: psutil, python, new-platform, community, personal, release
 :slug: psutil-540-and-aix-support
 
 After a long wait psutil finally supports a new exotic platform: AIX!

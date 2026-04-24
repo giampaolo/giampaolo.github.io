@@ -2,7 +2,7 @@ Speeding up pytest startup
 ##########################
 
 :date: 2025-04-04
-:tags: psutil, python, pytest, performance
+:tags: psutil, python, tests, performance
 :slug: speedup-pytest-startup
 
 Preface: the migration to pytest

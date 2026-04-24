@@ -2,7 +2,7 @@ Removing Process.memory_maps() on macOS
 #######################################
 
 :date: 2019-03-05
-:tags: psutil, python, macos, api-design
+:tags: psutil, python, macos, api-design, compatibility, release
 :slug: removing-processmemory_maps-on-macos
 
 This is part of the psutil 5.6.0 release (see the full `release notes <psutil-560-and-process-parents>`_).

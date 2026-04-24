@@ -2,7 +2,7 @@ Fixing Unicode across Python 2 and 3
 ####################################
 
 :date: 2017-09-03
-:tags: psutil, python, unicode, api-design
+:tags: psutil, python, api-design, compatibility, python-core
 :slug: fixing-unicode-in-psutil-across-python-2-and-3
 
 This one took a while. Adding proper Unicode support to `psutil <https://github.com/giampaolo/psutil/>`__ took four months of auditing, design decisions, and rewriting nearly every API that returned a string. The full journey is documented in `#1040 <https://github.com/giampaolo/psutil/issues/1040>`__, and what follows is a summary.

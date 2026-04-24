@@ -2,7 +2,7 @@ Real process memory and environ in Python
 #########################################
 
 :date: 2016-02-17
-:tags: psutil, memory, python
+:tags: psutil, python, memory, new-api, compatibility, release, community, linux
 :slug: real-process-memory-and-environ-in-python
 
 psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll get straight to the point and describe what's new.

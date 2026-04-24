@@ -2,7 +2,7 @@ Sensors: temperatures, battery, CPU frequency
 #############################################
 
 :date: 2017-02-01
-:tags: psutil, python, linux
+:tags: psutil, python, new-api, release, linux
 :slug: psutil-510-sensors-temperatures-battery-and-cpu-frequency
 
 `psutil <https://github.com/giampaolo/psutil/>`__ 5.1.0 is out. This release introduces new APIs to retrieve hardware temperatures, battery status, and CPU frequency information.

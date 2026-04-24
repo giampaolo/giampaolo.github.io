@@ -2,7 +2,7 @@ System load average on Windows in Python
 ########################################
 
 :date: 2019-05-29
-:tags: psutil, windows, python, unittest, travel
+:tags: psutil, python, windows, new-api, release, personal
 :slug: system-load-average-on-windows-in-python
 
 psutil 5.6.2 is out. It implements an emulation of `os.getloadavg() <https://docs.python.org/3/library/os.html#os.getloadavg>`__ on Windows, kindly contributed by `Ammar Askar <https://github.com/giampaolo/psutil/pull/1485>`__, who originally implemented it for `CPython's test suite <https://github.com/python/cpython/pull/8357/files>`__.

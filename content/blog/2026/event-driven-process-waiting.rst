@@ -2,7 +2,7 @@ From Python 3.3 to today: ending 15 years of subprocess polling
 ###############################################################
 
 :date: 2026-01-28
-:tags: psutil, python, python-core, async, performance
+:tags: psutil, python, python-core, performance, featured
 :slug: event-driven-process-waiting
 
 One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's ``subprocess`` module has relied on a busy-loop polling approach since the *timeout* parameter was added to ``subprocess.Popen.wait()`` in Python 3.3, around 15 years ago (see `source <https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077>`__). And psutil's ``Process.wait()`` method uses exactly the same technique (see `source <https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160>`__).
