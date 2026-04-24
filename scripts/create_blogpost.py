@@ -18,14 +18,6 @@ cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
 proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 """
 
-RST_TEMPLATE = """\
-title
-#####
-:date: {}
-:tags: psutil, python
-
-"""
-
 
 def main():
     now = datetime.datetime.now()

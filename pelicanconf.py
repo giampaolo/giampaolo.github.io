@@ -91,8 +91,11 @@ EXTRA_PATH_METADATA = {
     "extra/favicon.ico": {"path": "favicon.ico"},
     "extra/htaccess": {"path": ".htaccess"},
     "extra/CNAME": {"path": "CNAME"},
+    "extra/robots.txt": {"path": "robots.txt"},
 }
-DIRECT_TEMPLATES = ["index", "tags", "categories", "archives"]
+DIRECT_TEMPLATES = ["index", "tags", "categories", "archives", "sitemap"]
+TEMPLATE_EXTENSIONS = [".html", ".xml"]
+SITEMAP_SAVE_AS = "sitemap.xml"
 
 # --- others
 

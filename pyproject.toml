@@ -1,5 +1,5 @@
 [tool.black]
-target-version = ["py37"]
+target-version = ["py311"]
 line-length = 79
 # https://black.readthedocs.io/en/stable/the_black_code_style/future_style.html
 preview = true
@@ -7,7 +7,7 @@ enable-unstable-feature = ["hug_parens_with_braces_and_square_brackets", "string
 
 [tool.ruff]
 # https://beta.ruff.rs/docs/settings/
-target-version = "py37"
+target-version = "py311"
 line-length = 79
 
 [tool.rstcheck]

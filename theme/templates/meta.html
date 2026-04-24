@@ -1,0 +1,13 @@
+{% macro og_tags(title, description, url, og_type='website', date=None, modified=None, tags=[]) %}
+<meta name="description" content="{{ description }}">
+<meta property="og:site_name" content="{{ SITENAME }}">
+<meta property="og:title" content="{{ title }}">
+<meta property="og:description" content="{{ description }}">
+<meta property="og:type" content="{{ og_type }}">
+<meta property="og:url" content="{{ url }}">
+{% if date %}<meta property="article:published_time" content="{{ date.isoformat() }}">{% endif %}
+{% if modified %}<meta property="article:modified_time" content="{{ modified.isoformat() }}">{% endif %}
+{% for tag in tags %}<meta property="article:tag" content="{{ tag }}">
+{% endfor %}
+<meta name="twitter:card" content="summary">
+{% endmacro %}

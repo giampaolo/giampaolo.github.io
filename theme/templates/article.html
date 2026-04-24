@@ -2,6 +2,19 @@
 {% block html_lang %}{{ article.lang }}{% endblock %}
 {% block title %}{{ article.title|striptags }} - {{ SITENAME }}{% endblock %}
 
+{% import 'meta.html' as meta with context %}
+{% block meta %}
+{{ meta.og_tags(
+    article.title|striptags,
+    article.summary|striptags|truncate(200),
+    SITEURL + '/' + article.url,
+    og_type='article',
+    date=article.date,
+    modified=article.modified,
+    tags=article.tags,
+) }}
+{% endblock meta %}
+
 {% block extra_head %}
 {% import 'translations.html' as translations with context %}
 {% if translations.entry_hreflang(article) %}
