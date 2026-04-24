@@ -127,7 +127,7 @@ Given the growing number of platform-specific metrics, I added a set of constant
 Other fixes
 -----------
 
-The complete list of changes is available in the `changelog <https://psutil.readthedocs.io/en/latest/#id22>`__.
+The complete list of changes is available in the `changelog <https://psutil.readthedocs.io/latest/#id22>`__.
 
 Porting code
 ------------
