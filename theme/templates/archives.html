@@ -26,6 +26,9 @@
                 <li>
                 <span class="month">{{ article.date|month_abbr }}</span>:
                 <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a>
+                {% if article.tags|selectattr('name', 'equalto', 'featured')|list %}
+                    <a class="featured-badge" href="{{ SITEURL }}/tags/featured">Featured</a>
+                {% endif %}
                 </li>
             {% endfor %}
             </ul>
