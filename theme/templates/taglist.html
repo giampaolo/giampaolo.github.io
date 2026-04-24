@@ -1,6 +1,7 @@
-{% if article.tags %}
+{% set visible_tags = article.tags|rejectattr('name', 'equalto', 'featured')|list %}
+{% if visible_tags %}
     <span class="tags">Tags:
-    {% for tag in article.tags %}
+    {% for tag in visible_tags %}
         <a href="{{ SITEURL }}/{{ tag.url }}">{{ tag | escape }}</a>{% if not loop.last %},{% endif %}
     {% endfor %}
     </span>

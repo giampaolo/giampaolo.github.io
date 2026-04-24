@@ -19,6 +19,7 @@
                    title="Permalink to {{ article.title|striptags }}">{{ article.title }}</a></h1>
         </header>
         <div class="entry-content">
+            {% set show_featured_in_meta = true %}
             {% include 'article_infos.html' %}
             {{ article.content }}
         </div>

@@ -1,10 +1,10 @@
 <footer class="post-info">
-        <a class="published" title="{{ article.date.isoformat() }}">
-        Created: {{ article.locale_date }},
-        </a>
+        {% if show_featured_in_meta and article.tags|selectattr('name', 'equalto', 'featured')|list %}
+            <a class="featured-badge" href="{{ SITEURL }}/tags/featured">Featured</a>
+        {% endif %}
+        <a class="published" title="{{ article.date.isoformat() }}">{{ article.locale_date }}</a>
         {% if article.modified %}
-                <a class="modified" title="{{ article.modified.isoformat() }}">
-                Modified: {{ article.locale_modified }},</a>
+                <a class="modified" title="{{ article.modified.isoformat() }}">updated {{ article.locale_modified }}</a>
         {% endif %}
 {% include 'taglist.html' %}
 {% import 'translations.html' as translations with context %}
