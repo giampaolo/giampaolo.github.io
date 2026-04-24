@@ -5,7 +5,7 @@ About
 
     <div style="float:right; padding:10px">
         <a href="/images/me-chicago.jpg">
-        <img alt="me at Chicago in 2016" src="/images/me-chicago.jpg" style="width:220px; height:220px" />
+        <img alt="me in Chicago in 2016" src="/images/me-chicago.jpg" style="width:220px; height:220px" />
         </a>
         <br />
     </div>
@@ -15,7 +15,7 @@ My name is Giampaolo Rodola. I'm a passionate Python developer who loves writing
 Talks
 -----
 
-* `2019, Pycon China, Shanghai, Efficient I/O with zero-copy syscalls <static/efficient-io-with-zerocopy-syscalls.pdf>`_
+* `2019, PyCon China, Shanghai, Efficient I/O with zero-copy syscalls <static/efficient-io-with-zerocopy-syscalls.pdf>`_
 
 Interviews
 ----------
@@ -39,7 +39,7 @@ Projects
 * `pyftpdlib`_: a very fast, asynchronous, pure-python FTP server.  *(2006 - now)*
 
   .. image:: https://img.shields.io/github/stars/giampaolo/pyftpdlib.svg
-    :target: https://github.com/giampaolo/psutil/stargazers
+    :target: https://github.com/giampaolo/pyftpdlib/stargazers
     :alt: Github stars
 
   .. image:: https://static.pepy.tech/badge/pyftpdlib/month
@@ -53,7 +53,7 @@ Projects
 python-dev contributions
 ------------------------
 
-Starting from year `2010 <https://mail.python.org/pipermail/python-committers/2010-April/000891.html>`_ I've been given commit access against Python code repository. My `contributions <https://bugs.python.org/issue?%40search_text=&ignore=file%3Acontent&title=&%40columns=title&id=&%40columns=id&stage=&creation=&creator=giampaolo.rodola&activity=&%40columns=activity&%40sort=activity&actor=&nosy=&type=&components=&versions=&dependencies=&assignee=&keywords=&priority=&status=&%40columns=status&resolution=&nosy_count=&message_count=&%40group=&%40pagesize=50&%40startwith=0&%40sortdir=on&%40queryname=&%40old-queryname=&%40action=search>`__ are mainly focused against the Python standard library. Some I particularly care about:
+In `2010 <https://mail.python.org/pipermail/python-committers/2010-April/000891.html>`_ I was given commit access to the Python repository. My `contributions <https://bugs.python.org/issue?%40search_text=&ignore=file%3Acontent&title=&%40columns=title&id=&%40columns=id&stage=&creation=&creator=giampaolo.rodola&activity=&%40columns=activity&%40sort=activity&actor=&nosy=&type=&components=&versions=&dependencies=&assignee=&keywords=&priority=&status=&%40columns=status&resolution=&nosy_count=&message_count=&%40group=&%40pagesize=50&%40startwith=0&%40sortdir=on&%40queryname=&%40old-queryname=&%40action=search>`__ are mainly focused on the Python standard library. Some I particularly care about:
 
 .. list-table::
    :header-rows: 1
@@ -67,7 +67,7 @@ Starting from year `2010 <https://mail.python.org/pipermail/python-committers/20
      - use efficient event-driven process `wait()` on POSIX (`blog post <blog/2026/event-driven-process-waiting>`_)
    * - `33671`_
      - `shutil`_
-     - faster file copy with zero-copy syscalls (`pycon china talk`_)
+     - faster file copy with zero-copy syscalls (`PyCon China talk`_)
    * - `33695`_
      - `shutil`_
      - faster file copy by using os.scandir + caching
@@ -104,7 +104,7 @@ Python recipes
 --------------
 
 Whatever is not big enough to become an actual project I usually turn into an independent recipe.
-Here's the ones I like the most:
+Here are the ones I like the most:
 
 * `Log / directory watcher <http://code.activestate.com/recipes/577968-log-watcher-tail-f-log/?in=user-4178764>`__
 * `Handle exit context manager <https://gmpy.dev/blog/2016/how-to-always-execute-exit-functions-in-python>`__
@@ -118,11 +118,11 @@ Here's the ones I like the most:
 Abandoned projects
 ------------------
 
-These are from when I started taking my first steps with Python in 2005. Listed here mainly for historical / nostalgic reasons.
+These are from when I took my first steps with Python in 2005. Listed here mainly for historical / nostalgic reasons.
 
 * `soicmp`_: a remote shell using ICMP protocol instead of TCP. *(2005 - 2006)*
 * `pypk`_: a port knocker based on `libpcap`. *(2005 - 2006)*
-* pftpd: this is the ancestor of `pyftpdlib`_ (website is lost), a thread-based FTP server. *(2005 - 2006)*
+* pftpd: a thread-based FTP server, the ancestor of `pyftpdlib`_ (website is lost). *(2005 - 2006)*
 
 Contacts
 --------
@@ -131,7 +131,7 @@ Contacts
 * `X <https://x.com/grodola>`__
 * `LinkedIn <https://www.linkedin.com/in/grodola/>`__
 * `Medium <https://medium.com/@g.rodola>`__
-* Email: `g.rodola@gmail.com <g.rodola@gmail.com>`__ (`PGP public key
+* Email: `g.rodola@gmail.com <mailto:g.rodola@gmail.com>`__ (`PGP public key
   </static/pgp.txt>`__, `keybase.io <https://keybase.io/grodola>`__)
 
 .. _`10784`: https://bugs.python.org/issue10784
@@ -151,7 +151,7 @@ Contacts
 .. _`os.setpriority`: https://docs.python.org/3/library/os.html#os.setpriority
 .. _`psleak`: https://github.com/giampaolo/psleak
 .. _`psutil`: https://github.com/giampaolo/psutil
-.. _`pycon china talk`: static/efficient-io-with-zerocopy-syscalls.pdf
+.. _`PyCon China talk`: static/efficient-io-with-zerocopy-syscalls.pdf
 .. _`pyftpdlib`: https://github.com/giampaolo/pyftpdlib
 .. _`pypk`: https://sourceforge.net/projects/pypk/
 .. _`pysendfile`: https://github.com/giampaolo/pysendfile
