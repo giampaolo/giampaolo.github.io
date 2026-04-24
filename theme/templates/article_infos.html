@@ -6,15 +6,6 @@
                 <a class="modified" title="{{ article.modified.isoformat() }}">
                 Modified: {{ article.locale_modified }},</a>
         {% endif %}
-<!--
-        {% if article.authors %}
-        <address class="vcard author">
-                By {% for author in article.authors %}
-                        <a class="url fn" href="{{ SITEURL }}/{{ author.url }}">{{ author }}</a>
-                {% endfor %}
-        </address>
-        {% endif %}
--->
 {% include 'taglist.html' %}
 {% import 'translations.html' as translations with context %}
 {{ translations.translations_for(article) }}

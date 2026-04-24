@@ -60,10 +60,13 @@ DEFAULT_PAGINATION = 5
 PAGE_PATHS = [""]
 PAGE_URL = "{slug}"
 PAGE_SAVE_AS = "{slug}.html"
+# Categories are not used; disable per-category pages and the index.
+# Also stop auto-assigning a category from the folder name.
+USE_FOLDER_AS_CATEGORY = False
+CATEGORY_SAVE_AS = ""
+CATEGORIES_SAVE_AS = ""
 # Do not generate /author/* HTML files.
 AUTHOR_SAVE_AS = ""
-# Do not generate /categories.html
-CATEGORIES_SAVE_AS = ""
 
 # --- tags
 
@@ -103,7 +106,6 @@ STATIC_PATHS = [
     "static",
     "images",
     "extra",
-    "extra/CNAME",
 ]
 
 EXTRA_PATH_METADATA = {
@@ -148,5 +150,3 @@ JINJA_FILTERS = {
 }
 
 DEFAULT_DATE_FORMAT = "%d %b %Y"
-
-PYGMENTS_STYLE = "monokai"

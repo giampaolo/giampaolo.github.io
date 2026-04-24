@@ -145,8 +145,6 @@ cite, .literal {
 	font-size:15px;
 }
 
-q {}
-
 div.note {
    float: right;
    margin: 5px;
@@ -167,25 +165,8 @@ table, th, td {
 }
 
 
-/* Thead */
-thead th {
-	padding: .5em .4em; text-align: left;
-	/* background: #eaecef; */
-}
-thead td {
-}
-
-/* Tbody */
+thead th {padding: .5em .4em; text-align: left;}
 tbody td {padding: .5em .4em;}
-tbody th {
-}
-
-tbody .alt td {}
-tbody .alt th {}
-
-/* Tfoot */
-tfoot th {}
-tfoot td {}
 
 /* HTML5 tags */
 header, section, footer,
@@ -374,11 +355,6 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 			background-size: 16px 16px;
 		}
 
-/*
-	Footer
-*****************/
-#contentinfo {padding-bottom: 2em; text-align: right;}
-
 /***** Sections *****/
 /* Blog */
 .hentry {
@@ -390,15 +366,12 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 .hentry img{display : none ;}
 .entry-title {font-size: 3em; margin-bottom: 10px; margin-top: 0;}
 .entry-title a:link, .entry-title a:visited {text-decoration: none; color: #000;}
-.entry-title a:visited {background-color: #fff;}
 
 
 .hentry .post-info * {font-style: normal;}
 
 	/* Content */
 	.hentry footer {margin-bottom: 2em;}
-	.hentry footer address {display: inline;}
-	#posts-list footer address {display: block;}
 
 	/* Blog Index */
 	#posts-list {list-style: none; margin: 0;}
@@ -471,18 +444,6 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 	padding: 0 .25em;
 }
 
-input[type=button], input[type=submit], input[type=reset] {
-	height: 34px !important;
-}
-
-input[type=text] {
-	width:140px
-}
-
-#nav li {
-	padding:0px;
-}
-
 .blogposts-separator {
 	border-top: 3px solid #ccc;
 }
@@ -524,10 +485,8 @@ code {
     .body,
     #banner nav,
     #banner nav ul,
-    #featured,
     #content,
-    #extras,
-    #about {
+    #extras {
         width: auto;
         max-width: 100%;
         margin-left: 0;
@@ -543,8 +502,6 @@ code {
 
      #banner h1 strong {
          display: block;
-         /*font-size: 0.5em;*/
-         /*margin-top: 0.2em;*/
      }
 
     #content {
