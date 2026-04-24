@@ -4,8 +4,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!--<title>Reimplementing netstat in Python</title>-->
-    <title>Giampaolo Rodola</title>
+    <title>Reimplementing netstat in Python - Giampaolo Rodola</title>
+
+<link rel="canonical" href="https://gmpy.dev/blog/2014/reimplementing-netstat-in-python">
+<meta name="description" content="psutil 2.1.0 is out and with it I finally managed to implement something I've been wanting to have for a long time: netstat-like functionality (see ticket...">
+<meta property="og:site_name" content="Giampaolo Rodola">
+<meta property="og:title" content="Reimplementing netstat in Python">
+<meta property="og:description" content="psutil 2.1.0 is out and with it I finally managed to implement something I've been wanting to have for a long time: netstat-like functionality (see ticket...">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://gmpy.dev/blog/2014/reimplementing-netstat-in-python">
+<meta property="article:published_time" content="2014-03-10T00:00:00+01:00"><meta property="article:tag" content="python">
+<meta property="article:tag" content="network">
+<meta name="twitter:card" content="summary">
+
+
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
     <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
@@ -14,7 +26,7 @@
 
 <body id="index" class="home">
     <header id="banner" class="body">
-        <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+        <h1><a href="https://gmpy.dev/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
         <nav><ul>
             <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
@@ -32,19 +44,11 @@
     <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2014-03-10T00:00:00+01:00">
-        Created: 10 mar 2014,
+        Created: 10 Mar 2014,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/network">network</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/network">network</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->      <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.0 is out and with it I finally managed to implement something I've been wanting to have for a long time: netstat-like functionality (see ticket code.google.com/p/psutil/issues/detail?id=387). Similarly to <cite>&quot;netstat -antp&quot;</cite> on UNIX you can now list system-wide connections in pure python and also determine <strong>what process (PID) is using a particular connection</strong>:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span> <span class="k">as</span> <span class="n">pp</span>
@@ -117,24 +121,5 @@
     </section>
     <!-- /Footer -->
 
-    <footer id="contentinfo" class="body">
-        <!--
-            <address id="about" class="vcard body">
-            Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-            </address>
-
-            <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        -->
-    </footer>
-
-    <script type="text/javascript">
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-164357405-2', 'auto');
-    ga('send', 'pageview');
-    </script>
 </body>
 </html>

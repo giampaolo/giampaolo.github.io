@@ -4,8 +4,24 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!--<title>Detecting memory leaks in C extensions with psutil and psleak</title>-->
-    <title>Giampaolo Rodola</title>
+    <title>Detecting memory leaks in C extensions with psutil and psleak - Giampaolo Rodola</title>
+
+<link rel="canonical" href="https://gmpy.dev/blog/2025/psutil-heap-introspection-apis">
+<meta name="description" content="Memory leaks in Python are usually straightforward to diagnose. Just look at RSS, track Python object counts, follow reference graphs, etc. But leaks inside C extension modules are another story....">
+<meta property="og:site_name" content="Giampaolo Rodola">
+<meta property="og:title" content="Detecting memory leaks in C extensions with psutil and psleak">
+<meta property="og:description" content="Memory leaks in Python are usually straightforward to diagnose. Just look at RSS, track Python object counts, follow reference graphs, etc. But leaks inside C extension modules are another story....">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://gmpy.dev/blog/2025/psutil-heap-introspection-apis">
+<meta property="article:published_time" content="2025-12-23T00:00:00+01:00"><meta property="article:tag" content="psutil">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="memory">
+<meta property="article:tag" content="c">
+<meta property="article:tag" content="new-api">
+<meta property="article:tag" content="featured">
+<meta name="twitter:card" content="summary">
+
+
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
     <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
@@ -14,7 +30,7 @@
 
 <body id="index" class="home">
     <header id="banner" class="body">
-        <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+        <h1><a href="https://gmpy.dev/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
         <nav><ul>
             <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
@@ -32,19 +48,11 @@
     <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2025-12-23T00:00:00+01:00">
-        Created: 23 dic 2025,
+        Created: 23 Dec 2025,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/c">c</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/c">c</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->      <p>Memory leaks in Python are usually straightforward to diagnose. Just look at RSS, track Python object counts, follow reference graphs, etc. But leaks inside C extension modules are another story. Traditional memory metrics such as RSS and VMS fail to reveal them because Python's memory allocator (<a class="reference external" href="https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator">pymalloc</a>) sits above the platform's native heap. If something in an extension calls <tt class="docutils literal">malloc()</tt> without a corresponding <tt class="docutils literal">free()</tt>, that memory often won't show up in RSS / VMS. You have a leak, and you don't know.</p>
 <p>psutil 7.2.0 introduces two new APIs for <strong>C heap introspection</strong>, designed specifically to catch these kinds of native leaks. They give you a window directly into the underlying platform allocator (e.g. glibc's malloc), letting you track how much memory the C layer actually allocates. If your RSS is flat but your C heap usage climbs, you now have a way to see it.</p>
 <div class="section" id="why-native-heap-introspection-matters">
@@ -217,24 +225,5 @@ Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+19
     </section>
     <!-- /Footer -->
 
-    <footer id="contentinfo" class="body">
-        <!--
-            <address id="about" class="vcard body">
-            Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-            </address>
-
-            <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        -->
-    </footer>
-
-    <script type="text/javascript">
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-164357405-2', 'auto');
-    ga('send', 'pageview');
-    </script>
 </body>
 </html>

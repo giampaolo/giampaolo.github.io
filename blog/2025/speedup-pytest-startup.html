@@ -4,8 +4,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!--<title>Speeding up pytest startup</title>-->
-    <title>Giampaolo Rodola</title>
+    <title>Speeding up pytest startup - Giampaolo Rodola</title>
+
+<link rel="canonical" href="https://gmpy.dev/blog/2025/speedup-pytest-startup">
+<meta name="description" content="Preface: the migration to pytest¶ Last year, after 17 years of unittest, I started adopting pytest in psutil (see #2446). The two advantages I cared about most were plain assert statements and...">
+<meta property="og:site_name" content="Giampaolo Rodola">
+<meta property="og:title" content="Speeding up pytest startup">
+<meta property="og:description" content="Preface: the migration to pytest¶ Last year, after 17 years of unittest, I started adopting pytest in psutil (see #2446). The two advantages I cared about most were plain assert statements and...">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://gmpy.dev/blog/2025/speedup-pytest-startup">
+<meta property="article:published_time" content="2025-04-04T00:00:00+02:00"><meta property="article:tag" content="psutil">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="tests">
+<meta property="article:tag" content="performance">
+<meta name="twitter:card" content="summary">
+
+
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
     <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
@@ -14,7 +28,7 @@
 
 <body id="index" class="home">
     <header id="banner" class="body">
-        <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+        <h1><a href="https://gmpy.dev/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
         <nav><ul>
             <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
@@ -32,19 +46,11 @@
     <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2025-04-04T00:00:00+02:00">
-        Created: 04 apr 2025,
+        Created: 04 Apr 2025,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/tests">tests</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/tests">tests</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->      <div class="section" id="preface-the-migration-to-pytest">
 <h2>Preface: the migration to pytest<a class="headerlink" href="#preface-the-migration-to-pytest" title="Permalink to this headline">¶</a></h2>
 <p>Last year, after 17 years of <tt class="docutils literal">unittest</tt>, I started adopting pytest in psutil (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/2446">#2446</a>). The two advantages I cared about most were plain <tt class="docutils literal">assert</tt> statements and <a class="reference external" href="https://pypi.org/project/pytest-xdist/">pytest-xdist</a>'s free parallelism. Tests still inherit from <tt class="docutils literal">unittest.TestCase</tt> and there's no <tt class="docutils literal">conftest.py</tt> or fixture use (rationale in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2456">PR-2456</a>).</p>
@@ -203,24 +209,5 @@ real    0m0,369s
     </section>
     <!-- /Footer -->
 
-    <footer id="contentinfo" class="body">
-        <!--
-            <address id="about" class="vcard body">
-            Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-            </address>
-
-            <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        -->
-    </footer>
-
-    <script type="text/javascript">
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-164357405-2', 'auto');
-    ga('send', 'pageview');
-    </script>
 </body>
 </html>

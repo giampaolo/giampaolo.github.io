@@ -4,8 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!--<title>Giampaolo Rodola</title>-->
     <title>Giampaolo Rodola</title>
+
+    <link rel="canonical" href="https://gmpy.dev">
+<meta name="description" content="Python enthusiast, core developer, psutil author">
+<meta property="og:site_name" content="Giampaolo Rodola">
+<meta property="og:title" content="Giampaolo Rodola">
+<meta property="og:description" content="Python enthusiast, core developer, psutil author">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gmpy.dev">
+<meta name="twitter:card" content="summary">
+
+
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
     <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
@@ -14,7 +24,7 @@
 
 <body id="index" class="home">
     <header id="banner" class="body">
-        <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+        <h1><a href="https://gmpy.dev/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
         <nav><ul>
             <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
@@ -25,7 +35,7 @@
 <section id="content" class="body">
 
 <!-- blog posts -->
-        <ol id="posts-list" class="hfeed" start="4">
+        <ol id="posts-list" class="hfeed">
     <li><article class="hentry">
         <header>
             <h1><a href="https://gmpy.dev/blog/2015/zombie-processes" rel="bookmark"
@@ -34,19 +44,11 @@
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2015-06-13T00:00:00+02:00">
-        Created: 13 giu 2015,
+        Created: 13 Jun 2015,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->            <p>This is part of the psutil 3.0 release (see the full <a class="reference external" href="psutil-30-reimplement-ifconfig-in-python">release notes</a>).</p>
 <p>Except on Linux and Windows (which does not have them), support for <a class="reference external" href="http://askubuntu.com/a/48625">zombie processes</a> was broken. The full story is in <a class="reference external" href="https://github.com/giampaolo/psutil/issues/428">#428</a>.</p>
 <div class="section" id="the-problem">
@@ -111,19 +113,11 @@
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2014-09-21T00:00:00+02:00">
-        Created: 21 set 2014,
+        Created: 21 Sep 2014,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/wheels">wheels</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/personal">personal</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/wheels">wheels</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/personal">personal</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.1.2 is out. This release has been cooking for a while now, and that's because I've been travelling for the past 3 months between Spain, Japan and Germany. Hopefully I will be staying in Berlin for a while now, so I will have more time to dedicate to the project. The main new &quot;feature&quot; of this release is that other than the exe files, Windows users can now also benefit from <a class="reference external" href="http://pythonwheels.com/">Python wheels</a> (full story is <a class="reference external" href="https://github.com/giampaolo/psutil/issues/505">here</a>) which are available on PYPI. Frankly I don't know much about the new wheels packaging system but long story short is that Windows users can now install psutil via pip and therefore also include it as a dependency in requirements.txt. Other than this 2.1.2 can basically be considered a bug-fix release, including some important fixes amongst which:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/giampaolo/psutil/issues/506">#506</a>: restored Python 2.4 compatibility</li>
@@ -144,19 +138,11 @@
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2014-06-13T00:00:00+02:00">
-        Created: 13 giu 2014,
+        Created: 13 Jun 2014,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/python-dev">python-dev</a>,        <a href="https://gmpy.dev/tags/sendfile">sendfile</a>,        <a href="https://gmpy.dev/tags/zerocopy">zerocopy</a>,        <a href="https://gmpy.dev/tags/network">network</a>,        <a href="https://gmpy.dev/tags/recipe">recipe</a>,        <a href="https://gmpy.dev/tags/socket">socket</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/python-dev">python-dev</a>,        <a href="https://gmpy.dev/tags/sendfile">sendfile</a>,        <a href="https://gmpy.dev/tags/zerocopy">zerocopy</a>,        <a href="https://gmpy.dev/tags/network">network</a>,        <a href="https://gmpy.dev/tags/recipe">recipe</a>,        <a href="https://gmpy.dev/tags/socket">socket</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->            <p><a class="reference external" href="http://linux.die.net/man/2/sendfile">sendfile(2)</a> is a UNIX system call which provides a &quot;zero-copy&quot; way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, <cite>sendfile(2)</cite> is more efficient than the combination of <cite>file.read()</cite> and <cite>socket.send()</cite>, which requires transferring data to and from user space. This copying of the data twice imposes some performance and resource penalties which the <cite>sendfile(2)</cite> syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of <a class="reference external" href="http://linux.die.net/man/2/read">read(2)</a> / <a class="reference external" href="http://linux.die.net/man/2/write">write(2)</a> system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how <cite>sendfile(2)</cite> works is available <a class="reference external" href="http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/">here</a>, but long story short is that sending a file with <cite>sendfile()</cite> is usually <a class="reference external" href="https://github.com/giampaolo/pysendfile#a-simple-benchmark">twice as fast</a> as using plain <a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.socket.send">socket.send()</a>. Typical applications which can benefit from using <cite>sendfile()</cite> are FTP and HTTP servers.</p>
 <div class="section" id="socket-sendfile">
 <h2>socket.sendfile()<a class="headerlink" href="#socket-sendfile" title="Permalink to this headline">¶</a></h2>
@@ -390,19 +376,11 @@
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2014-05-26T00:00:00+02:00">
-        Created: 26 mag 2014,
+        Created: 26 May 2014,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/rant">rant</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/rant">rant</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->            <p>8 years ago I started hosting my first open source project (pyftpdlib, code.google.com/p/pyftpdlib) on Google Code and I later ended up also hosting psutil (code.google.com/p/psutil) and pysendfile (code.google.com/p/pysendfile). Back then GC had just been released and similarly to other Google products I appreciated the clean and minimalistic interface, the excellent bug tracker and the freedom to choose between different revision control systems (SVN, GIT and Mercurial, which is my favourite one). Unfortunately as the years passed Google completely lost interest in maintaining GC to the point that now GC can basically be considered an <a class="reference external" href="https://groups.google.com/forum/#!topic/google-code-hosting/PEhNMdtBGt4">abandoned project</a>. If you take a look at the GC bug tracker (code.google.com/p/support/issues/list) you can see literally hundreds of issues which have been open for years, even some apparently easy ones such as #60 (code.google.com/p/support/issues/detail?id=60) and #919 (code.google.com/p/support/issues/detail?id=919). The lack of interest from Google is absolutely astonishing and it is the main reason why I ultimately decided to change. After at least a couple of years of thinking about migrating to github I finally bit the bullet and as of today psutil is now <a class="reference external" href="https://github.com/giampaolo/psutil">hosted on github</a> (update: now also <a class="reference external" href="https://github.com/giampaolo/pyftpdlib">pyftpdlib</a> and <a class="reference external" href="https://github.com/giampaolo/pysendfile">pysendfile</a>).</p>
 <div class="section" id="what-i-will-miss-the-most-about-gc">
 <h2>What I will miss the most about GC<a class="headerlink" href="#what-i-will-miss-the-most-about-gc" title="Permalink to this headline">¶</a></h2>
@@ -441,19 +419,11 @@
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2014-03-10T00:00:00+01:00">
-        Created: 10 mar 2014,
+        Created: 10 Mar 2014,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->            <p><a class="reference external" href="https://github.com/giampaolo/psutil/">psutil</a> 2.0 is out. This is a major rewrite and reorganization of both the Python and C extension modules. It costed me four months of work and more than <strong>22,000 lines</strong> (the diff against old 1.2.1). Many of the changes are not backward compatible; I'm sure this will cause some pain, but I think it's for the better and needed to be done.</p>
 <div class="section" id="api-changes">
 <h2>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h2>
@@ -539,24 +509,5 @@
     </section>
     <!-- /Footer -->
 
-    <footer id="contentinfo" class="body">
-        <!--
-            <address id="about" class="vcard body">
-            Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-            </address>
-
-            <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        -->
-    </footer>
-
-    <script type="text/javascript">
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-164357405-2', 'auto');
-    ga('send', 'pageview');
-    </script>
 </body>
 </html>

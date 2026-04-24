@@ -166,4 +166,4 @@ always missed in other IDEs.&lt;/p&gt;
         &lt;span class="c1"&gt;# called when a file is opened&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;load_cursor_position&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-</content><category term="2022"></category><category term="sublime"></category><category term="python"></category></entry></feed>
+</content><category term="misc"></category><category term="sublime"></category><category term="python"></category></entry></feed>

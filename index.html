@@ -4,8 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!--<title>Giampaolo Rodola</title>-->
     <title>Giampaolo Rodola</title>
+
+    <link rel="canonical" href="https://gmpy.dev">
+<meta name="description" content="Python enthusiast, core developer, psutil author">
+<meta property="og:site_name" content="Giampaolo Rodola">
+<meta property="og:title" content="Giampaolo Rodola">
+<meta property="og:description" content="Python enthusiast, core developer, psutil author">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gmpy.dev">
+<meta name="twitter:card" content="summary">
+
+
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
     <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
@@ -14,7 +24,7 @@
 
 <body id="index" class="home">
     <header id="banner" class="body">
-        <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+        <h1><a href="https://gmpy.dev/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
         <nav><ul>
             <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
@@ -25,7 +35,7 @@
 <section id="content" class="body">
 
 <!-- blog posts -->
-        <ol id="posts-list" class="hfeed" start="4">
+        <ol id="posts-list" class="hfeed">
     <li><article class="hentry">
         <header>
             <h1><a href="https://gmpy.dev/blog/2026/event-driven-process-waiting" rel="bookmark"
@@ -34,19 +44,11 @@
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2026-01-28T00:00:00+01:00">
-        Created: 28 gen 2026,
+        Created: 28 Jan 2026,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->            <p>One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's <tt class="docutils literal">subprocess</tt> module has relied on a busy-loop polling approach since the <em>timeout</em> parameter was added to <tt class="docutils literal">subprocess.Popen.wait()</tt> in Python 3.3, around 15 years ago (see <a class="reference external" href="https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077">source</a>). And psutil's <tt class="docutils literal">Process.wait()</tt> method uses exactly the same technique (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160">source</a>).</p>
 <p>The logic is straightforward: check whether the process has exited using non-blocking <tt class="docutils literal">waitpid(WNOHANG)</tt>, sleep briefly, check again, sleep a bit longer, and so on.</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span>
@@ -208,19 +210,11 @@ $ (python3 -c 'import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.p
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2025-12-23T00:00:00+01:00">
-        Created: 23 dic 2025,
+        Created: 23 Dec 2025,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/c">c</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/c">c</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->            <p>Memory leaks in Python are usually straightforward to diagnose. Just look at RSS, track Python object counts, follow reference graphs, etc. But leaks inside C extension modules are another story. Traditional memory metrics such as RSS and VMS fail to reveal them because Python's memory allocator (<a class="reference external" href="https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator">pymalloc</a>) sits above the platform's native heap. If something in an extension calls <tt class="docutils literal">malloc()</tt> without a corresponding <tt class="docutils literal">free()</tt>, that memory often won't show up in RSS / VMS. You have a leak, and you don't know.</p>
 <p>psutil 7.2.0 introduces two new APIs for <strong>C heap introspection</strong>, designed specifically to catch these kinds of native leaks. They give you a window directly into the underlying platform allocator (e.g. glibc's malloc), letting you track how much memory the C layer actually allocates. If your RSS is flat but your C heap usage climbs, you now have a way to see it.</p>
 <div class="section" id="why-native-heap-introspection-matters">
@@ -377,19 +371,11 @@ Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+19
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2025-10-25T00:00:00+02:00">
-        Created: 25 ott 2025,
+        Created: 25 Oct 2025,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/wheels">wheels</a>,        <a href="https://gmpy.dev/tags/community">community</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/wheels">wheels</a>,        <a href="https://gmpy.dev/tags/community">community</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->            <p>With the release of psutil 7.1.2, wheels for free-threaded Python are now available. This milestone was achieved largely through a community effort, as several internal refactorings to the C code were required to make it possible (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/2565">#2565</a>). Many of these changes were contributed by <a class="reference external" href="https://github.com/lysnikolaou">Lysandros Nikolaou</a>. Thanks to him for the effort and for bearing with me in code reviews! ;-)</p>
 <div class="section" id="what-is-free-threaded-python">
 <h2>What is free-threaded Python?<a class="headerlink" href="#what-is-free-threaded-python" title="Permalink to this headline">¶</a></h2>
@@ -446,19 +432,11 @@ psutil-7.1.2-cp314-cp314t-win_arm64.whl
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2025-04-04T00:00:00+02:00">
-        Created: 04 apr 2025,
+        Created: 04 Apr 2025,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/tests">tests</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/tests">tests</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->            <div class="section" id="preface-the-migration-to-pytest">
 <h2>Preface: the migration to pytest<a class="headerlink" href="#preface-the-migration-to-pytest" title="Permalink to this headline">¶</a></h2>
 <p>Last year, after 17 years of <tt class="docutils literal">unittest</tt>, I started adopting pytest in psutil (see <a class="reference external" href="https://github.com/giampaolo/psutil/issues/2446">#2446</a>). The two advantages I cared about most were plain <tt class="docutils literal">assert</tt> statements and <a class="reference external" href="https://pypi.org/project/pytest-xdist/">pytest-xdist</a>'s free parallelism. Tests still inherit from <tt class="docutils literal">unittest.TestCase</tt> and there's no <tt class="docutils literal">conftest.py</tt> or fixture use (rationale in <a class="reference external" href="https://github.com/giampaolo/psutil/pull/2456">PR-2456</a>).</p>
@@ -601,19 +579,11 @@ real    0m0,369s
         <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2025-04-02T00:00:00+02:00">
-        Created: 02 apr 2025,
+        Created: 02 Apr 2025,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/js">js</a>,        <a href="https://gmpy.dev/tags/brave">brave</a>,        <a href="https://gmpy.dev/tags/dotfiles">dotfiles</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/js">js</a>,        <a href="https://gmpy.dev/tags/brave">brave</a>,        <a href="https://gmpy.dev/tags/dotfiles">dotfiles</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->            <p>While browsing, I almost always keep three tabs open: Gmail, Slack, and
 Microsoft Teams (for work). I find it convenient to have them always in the
 same position (1, 2, and 3), so I can quickly switch to them using keyboard
@@ -703,24 +673,5 @@ should also work for Chrome.</p>
     </section>
     <!-- /Footer -->
 
-    <footer id="contentinfo" class="body">
-        <!--
-            <address id="about" class="vcard body">
-            Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-            </address>
-
-            <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        -->
-    </footer>
-
-    <script type="text/javascript">
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-164357405-2', 'auto');
-    ga('send', 'pageview');
-    </script>
 </body>
 </html>

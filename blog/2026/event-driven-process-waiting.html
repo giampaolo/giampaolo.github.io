@@ -4,8 +4,23 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!--<title>From Python 3.3 to today: ending 15 years of subprocess polling</title>-->
-    <title>Giampaolo Rodola</title>
+    <title>From Python 3.3 to today: ending 15 years of subprocess polling - Giampaolo Rodola</title>
+
+<link rel="canonical" href="https://gmpy.dev/blog/2026/event-driven-process-waiting">
+<meta name="description" content="One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's subprocess module has relied on a busy-loop polling approach since...">
+<meta property="og:site_name" content="Giampaolo Rodola">
+<meta property="og:title" content="From Python 3.3 to today: ending 15 years of subprocess polling">
+<meta property="og:description" content="One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's subprocess module has relied on a busy-loop polling approach since...">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://gmpy.dev/blog/2026/event-driven-process-waiting">
+<meta property="article:published_time" content="2026-01-28T00:00:00+01:00"><meta property="article:tag" content="psutil">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="python-core">
+<meta property="article:tag" content="performance">
+<meta property="article:tag" content="featured">
+<meta name="twitter:card" content="summary">
+
+
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
     <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
@@ -14,7 +29,7 @@
 
 <body id="index" class="home">
     <header id="banner" class="body">
-        <h1><a href="https://gmpy.dev/about">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
+        <h1><a href="https://gmpy.dev/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
         <nav><ul>
             <li><a href="/">Blog</a></li>
             <li><a href="/archives">Archives</a></li>
@@ -32,19 +47,11 @@
     <div class="entry-content">
 <footer class="post-info">
         <a class="published" title="2026-01-28T00:00:00+01:00">
-        Created: 28 gen 2026,
+        Created: 28 Jan 2026,
         </a>
-<!--
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://gmpy.dev/author/giampaolo-rodola.html">Giampaolo Rodola</a>
-        </address>
--->
-    <a>Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </a>
+    <span class="tags">Tags:
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </span>
 
-<!--
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="grodola">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
--->
 </footer><!-- /.post-info -->      <p>One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's <tt class="docutils literal">subprocess</tt> module has relied on a busy-loop polling approach since the <em>timeout</em> parameter was added to <tt class="docutils literal">subprocess.Popen.wait()</tt> in Python 3.3, around 15 years ago (see <a class="reference external" href="https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077">source</a>). And psutil's <tt class="docutils literal">Process.wait()</tt> method uses exactly the same technique (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160">source</a>).</p>
 <p>The logic is straightforward: check whether the process has exited using non-blocking <tt class="docutils literal">waitpid(WNOHANG)</tt>, sleep briefly, check again, sleep a bit longer, and so on.</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span>
@@ -222,24 +229,5 @@ $ (python3 -c 'import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.p
     </section>
     <!-- /Footer -->
 
-    <footer id="contentinfo" class="body">
-        <!--
-            <address id="about" class="vcard body">
-            Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-            </address>
-
-            <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        -->
-    </footer>
-
-    <script type="text/javascript">
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-164357405-2', 'auto');
-    ga('send', 'pageview');
-    </script>
 </body>
 </html>
