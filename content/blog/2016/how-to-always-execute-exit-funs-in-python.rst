@@ -24,7 +24,7 @@ Many people erroneously think that any function registered via the `atexit modul
 
     os.kill(os.getpid(), signal.SIGTERM)
 
-It must be noted that the same thing would happen if instead of `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__ we used a "finally" clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__. That has a drawback though: in case a third-party module has already registered a function for that signal (``SIGTERM`` or whatever), your new function will **overwrite** the old one:
+Note that the same thing happens if instead of `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__ we used a "finally" clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__. That has a drawback though: in case a third-party module has already registered a function for that signal (``SIGTERM`` or whatever), your new function will **overwrite** the old one:
 
 .. code-block:: python
 
@@ -54,7 +54,7 @@ The code
 
     """
     Function / decorator which tries very hard to register a function to
-    be executed at importerer exit.
+    be executed at interpreter exit.
 
     Author: Giampaolo Rodola'
     License: MIT
@@ -224,7 +224,7 @@ Because of how different `signal.signal() <https://docs.python.org/3/library/sig
 Proposal for stdlib inclusion
 -----------------------------
 
-The fact that atexit module `does not handle signals <http://stackoverflow.com/a/2546397/376587>`__ and that `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ overwrites previously registered handlers is unfortunate. It is also `confusing <http://ambracode.com/index/show/92669>`__ because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the times you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__. To me this suggests there could be space for something like `atexit.register_w_signals <https://mail.python.org/pipermail/python-ideas/2016-February/038431.html>`__.
+The fact that atexit module `does not handle signals <http://stackoverflow.com/a/2546397/376587>`__ and that `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ overwrites previously registered handlers is unfortunate. It is also `confusing <http://ambracode.com/index/show/92669>`__ because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the time you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__. To me this suggests there could be space for something like `atexit.register_w_signals <https://mail.python.org/pipermail/python-ideas/2016-February/038431.html>`__.
 
 External discussions
 --------------------

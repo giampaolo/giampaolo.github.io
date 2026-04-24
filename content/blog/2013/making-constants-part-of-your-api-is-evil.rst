@@ -4,7 +4,7 @@ Making constants part of your API is evil
 :date: 2013-12-21
 :tags: python, api-design
 
-One of the initial features which were included in `psutil <https://github.com/giampaolo/psutil/>`__ since day one (5 years ago) were the system's boot time, number of CPUs and total physical memory. These metrics have one thing in common: they are (apparently) not supposed to change over time. That is why we (me and `Jay <http://www.jayloden.com/>`__) decided that exposing them as module constants calculated at import time was the way to go.
+One of the initial features which were included in `psutil <https://github.com/giampaolo/psutil/>`__ since day one (5 years ago) were the system's boot time, number of CPUs and total physical memory. These metrics have one thing in common: they are (apparently) not supposed to change over time. That is why `Jay <http://www.jayloden.com/>`__ and I decided that exposing them as module constants calculated at import time was the way to go.
 
 .. code-block:: python
 
@@ -16,14 +16,14 @@ One of the initial features which were included in `psutil <https://github.com/g
     >>> psutil.TOTAL_PHYMEM
     8374120448
 
-5 years later I regret that decision and I'm going to explain to you why you don't want to make the same mistake.
+Five years later I regret that decision, and I'll explain why you shouldn't make the same mistake.
 
 A constant should not change
 ----------------------------
 
 When we think of 'constants', our expectations are that they should not change over time. It may be obvious, but before thinking about introducing a constant be absolutely sure the value it represents is going to remain the same.
 Now, back then we thought these 3 metrics were not supposed to change, at least until the system is rebooted. Well, we were wrong: it turns out 2 of them actually can.
-Apparently virtualized systems can change physical installed memory at runtime (see code.google.com/p/psutil/issues/detail?id=140#c5 and `here <http://technet.microsoft.com/en-us/library/hh831766.aspx>`__) and system boot time can easily be altered every time you update the system clock.
+Apparently virtualized systems can change installed physical memory at runtime (see code.google.com/p/psutil/issues/detail?id=140#c5 and `here <http://technet.microsoft.com/en-us/library/hh831766.aspx>`__) and system boot time can easily be altered every time you update the system clock.
 In both of these cases, of course, the constants will not reflect the updated values.
 
 Doing things at import time is dangerous
@@ -37,8 +37,8 @@ That's when I started thinking about getting rid of those constants once and for
 Backward compatibility matters
 ------------------------------
 
-Now here's the crucial part: every time you deliver a library to someone else you just cannot remove an API all of a sudden, especially if they are 3 and have been around since day one.
-It should first be deprecated, possibly turned into an alias pointing to a newer API and finally be removed after 1 or 2 major releases. Also, you want the deprecated API to explicitly raise a DeprecationWarning informing the user they're relying on something which will eventually be removed. With a module constant you cannot do any of that. What you would need is a module property.
+Now here's the crucial part: every time you deliver a library to someone else you just cannot remove an API all of a sudden, especially if there are only three of them and they've been around since day one.
+It should first be deprecated, possibly turned into an alias pointing to a newer API and finally be removed after one or two major releases. Also, you want the deprecated API to explicitly raise a DeprecationWarning informing the user they're relying on something which will eventually be removed. With a module constant you cannot do any of that. What you would need is a module property.
 
 Module properties
 -----------------
