@@ -18,7 +18,6 @@
 
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
     <link href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate" title="Giampaolo Rodola Atom Feed" />
-    <link href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate" title="Giampaolo Rodola RSS Feed" />
     <link rel="icon" type="image/x-icon" href="https://gmpy.dev/favicon.ico">
 </head>
 
@@ -137,17 +136,15 @@
     <span class="k">pass</span>
 </pre></div>
 <p>We can measure the CPU context switching using <tt class="docutils literal">/usr/bin/time <span class="pre">-v</span></tt>. Before the patch (the busy-loop):</p>
-<pre class="literal-block">
-$ /usr/bin/time -v python3 test.py 2&gt;&amp;1 | grep context
+<div class="highlight"><pre><span></span>$ /usr/bin/time -v python3 test.py 2&gt;&amp;1 | grep context
     Voluntary context switches: 258
     Involuntary context switches: 4
-</pre>
+</pre></div>
 <p>After the patch (the event-driven approach):</p>
-<pre class="literal-block">
-$ /usr/bin/time -v python3 test.py 2&gt;&amp;1 | grep context
+<div class="highlight"><pre><span></span>$ /usr/bin/time -v python3 test.py 2&gt;&amp;1 | grep context
     Voluntary context switches: 2
     Involuntary context switches: 1
-</pre>
+</pre></div>
 <p>This shows that instead of spinning in userspace, the process blocks in <tt class="docutils literal">poll()</tt> / <tt class="docutils literal">kqueue()</tt>, and is woken up only when the kernel notifies it, resulting in just a few CPU context switches.</p>
 </div>
 <div class="section" id="sleeping-state">
@@ -157,19 +154,17 @@ $ /usr/bin/time -v python3 test.py 2&gt;&amp;1 | grep context
 <ul class="simple">
 <li><tt class="docutils literal">time.sleep</tt>:</li>
 </ul>
-<pre class="literal-block">
-$ (python3 -c 'import time; time.sleep(10)' &amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;&amp; fg &amp;&gt;/dev/null
+<div class="highlight"><pre><span></span>$ (python3 -c &#39;import time; time.sleep(10)&#39; &amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;&amp; fg &amp;&gt;/dev/null
     PID STAT COMMAND
  491573 S+   python3
-</pre>
+</pre></div>
 <ul class="simple">
 <li><tt class="docutils literal">select.poll</tt>:</li>
 </ul>
-<pre class="literal-block">
-$ (python3 -c 'import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)' &amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;&amp; fg &amp;&gt;/dev/null
+<div class="highlight"><pre><span></span>$ (python3 -c &#39;import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)&#39; &amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;&amp; fg &amp;&gt;/dev/null
     PID STAT COMMAND
  491748 S+   python3
-</pre>
+</pre></div>
 </div>
 <div class="section" id="cpython-contribution">
 <h2>CPython contribution<a class="headerlink" href="#cpython-contribution" title="Permalink to this headline">¶</a></h2>
@@ -347,10 +342,9 @@ psutil-7.1.2-cp314-cp314t-win_arm64.whl
         </div><!-- /.social -->
 
         <div class="feeds">
-            <h2>Feeds</h2>
+            <h2>Feed</h2>
             <ul>
                 <li><a href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate">atom</a></li>
-                <li><a href="https://gmpy.dev/feeds/rss.all.xml" type="application/rss+xml" rel="alternate">rss</a></li>
             </ul>
         </div>
     </div>

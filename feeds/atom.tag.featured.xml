@@ -86,17 +86,15 @@
     &lt;span class="k"&gt;pass&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;We can measure the CPU context switching using &lt;tt class="docutils literal"&gt;/usr/bin/time &lt;span class="pre"&gt;-v&lt;/span&gt;&lt;/tt&gt;. Before the patch (the busy-loop):&lt;/p&gt;
-&lt;pre class="literal-block"&gt;
-$ /usr/bin/time -v python3 test.py 2&amp;gt;&amp;amp;1 | grep context
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ /usr/bin/time -v python3 test.py 2&amp;gt;&amp;amp;1 | grep context
     Voluntary context switches: 258
     Involuntary context switches: 4
-&lt;/pre&gt;
+&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;After the patch (the event-driven approach):&lt;/p&gt;
-&lt;pre class="literal-block"&gt;
-$ /usr/bin/time -v python3 test.py 2&amp;gt;&amp;amp;1 | grep context
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ /usr/bin/time -v python3 test.py 2&amp;gt;&amp;amp;1 | grep context
     Voluntary context switches: 2
     Involuntary context switches: 1
-&lt;/pre&gt;
+&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;This shows that instead of spinning in userspace, the process blocks in &lt;tt class="docutils literal"&gt;poll()&lt;/tt&gt; / &lt;tt class="docutils literal"&gt;kqueue()&lt;/tt&gt;, and is woken up only when the kernel notifies it, resulting in just a few CPU context switches.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="sleeping-state"&gt;
@@ -106,19 +104,17 @@ $ /usr/bin/time -v python3 test.py 2&amp;gt;&amp;amp;1 | grep context
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;tt class="docutils literal"&gt;time.sleep&lt;/tt&gt;:&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre class="literal-block"&gt;
-$ (python3 -c 'import time; time.sleep(10)' &amp;amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;amp;&amp;amp; fg &amp;amp;&amp;gt;/dev/null
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ (python3 -c &amp;#39;import time; time.sleep(10)&amp;#39; &amp;amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;amp;&amp;amp; fg &amp;amp;&amp;gt;/dev/null
     PID STAT COMMAND
  491573 S+   python3
-&lt;/pre&gt;
+&lt;/pre&gt;&lt;/div&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;tt class="docutils literal"&gt;select.poll&lt;/tt&gt;:&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre class="literal-block"&gt;
-$ (python3 -c 'import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)' &amp;amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;amp;&amp;amp; fg &amp;amp;&amp;gt;/dev/null
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ (python3 -c &amp;#39;import os,select; fd = os.pidfd_open(os.getpid(),0); p = select.poll(); p.register(fd,select.POLLIN); p.poll(10_000)&amp;#39; &amp;amp; pid=$!; sleep 0.3; ps -o pid,stat,comm -p $pid) &amp;amp;&amp;amp; fg &amp;amp;&amp;gt;/dev/null
     PID STAT COMMAND
  491748 S+   python3
-&lt;/pre&gt;
+&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="cpython-contribution"&gt;
 &lt;h2&gt;CPython contribution&lt;a class="headerlink" href="#cpython-contribution" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
