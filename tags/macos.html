@@ -6,14 +6,18 @@
 
     <title>macos - Giampaolo Rodola</title>
 
-    <link rel="canonical" href="https://gmpy.dev">
+    <link rel="canonical" href="https://gmpy.dev/">
 <meta name="description" content="Python enthusiast, core developer, psutil author">
 <meta property="og:site_name" content="Giampaolo Rodola">
 <meta property="og:title" content="Giampaolo Rodola">
 <meta property="og:description" content="Python enthusiast, core developer, psutil author">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://gmpy.dev">
+<meta property="og:url" content="https://gmpy.dev/">
+<meta property="og:image" content="https://gmpy.dev/images/me-chicago.jpg">
+<meta property="og:image:width" content="960">
+<meta property="og:image:height" content="960">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gmpy.dev/images/me-chicago.jpg">
 
 
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
@@ -25,9 +29,10 @@
     <header id="banner" class="body">
         <h1><a href="https://gmpy.dev/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
         <nav><ul>
-            <li><a href="/">Blog</a></li>
-            <li><a href="/archives">Archives</a></li>
-            <li><a href="/about">About</a></li>
+            <li><a href="https://gmpy.dev/">Blog</a></li>
+            <li><a href="https://gmpy.dev/archives">Archives</a></li>
+            <li><a href="https://psutil.readthedocs.io/latest/funding.html">Donate</a></li>
+            <li><a href="https://gmpy.dev/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
 
@@ -137,9 +142,20 @@
                 <li><a href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate">atom</a></li>
             </ul>
         </div>
-    </div>
     </section>
     <!-- /Footer -->
 
+<!-- Open all external links in a new tab -->
+<script>
+    for (const a of document.querySelectorAll('a[href]')) {
+        try {
+            const u = new URL(a.href, location.href);
+            if (/^https?:$/.test(u.protocol) && u.host !== location.host) {
+                a.target = '_blank';
+                a.rel = (a.rel ? a.rel + ' ' : '') + 'noopener noreferrer';
+            }
+        } catch (e) {}
+    }
+</script>
 </body>
 </html>

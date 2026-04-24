@@ -174,14 +174,6 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://gmpy.dev/donate</loc>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://gmpy.dev/supporters</loc>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
     <loc>https://gmpy.dev/tags/psutil</loc>
     <changefreq>weekly</changefreq>
   </url>

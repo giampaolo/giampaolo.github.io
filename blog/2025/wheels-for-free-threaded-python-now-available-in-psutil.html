@@ -13,12 +13,16 @@
 <meta property="og:description" content="With the release of psutil 7.1.2, wheels for free-threaded Python are now available. This milestone was achieved largely through a community effort, as several internal refactorings to the C code...">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://gmpy.dev/blog/2025/wheels-for-free-threaded-python-now-available-in-psutil">
+<meta property="og:image" content="https://gmpy.dev/images/me-chicago.jpg">
+<meta property="og:image:width" content="960">
+<meta property="og:image:height" content="960">
 <meta property="article:published_time" content="2025-10-25T00:00:00+02:00"><meta property="article:tag" content="psutil">
 <meta property="article:tag" content="python">
 <meta property="article:tag" content="wheels">
 <meta property="article:tag" content="community">
 <meta property="article:tag" content="python-core">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gmpy.dev/images/me-chicago.jpg">
 
 
     <link rel="stylesheet" href="https://gmpy.dev/theme/css/main.css" />
@@ -30,9 +34,10 @@
     <header id="banner" class="body">
         <h1><a href="https://gmpy.dev/">Giampaolo Rodola <strong>Python enthusiast, core developer, psutil author</strong></a></h1>
         <nav><ul>
-            <li><a href="/">Blog</a></li>
-            <li><a href="/archives">Archives</a></li>
-            <li><a href="/about">About</a></li>
+            <li><a href="https://gmpy.dev/">Blog</a></li>
+            <li><a href="https://gmpy.dev/archives">Archives</a></li>
+            <li><a href="https://psutil.readthedocs.io/latest/funding.html">Donate</a></li>
+            <li><a href="https://gmpy.dev/about">About</a></li>
         </ul></nav>
     </header><!-- /#banner -->
 <section id="content" class="body">
@@ -118,9 +123,20 @@ psutil-7.1.2-cp314-cp314t-win_arm64.whl
                 <li><a href="https://gmpy.dev/feeds/atom.all.xml" type="application/atom+xml" rel="alternate">atom</a></li>
             </ul>
         </div>
-    </div>
     </section>
     <!-- /Footer -->
 
+<!-- Open all external links in a new tab -->
+<script>
+    for (const a of document.querySelectorAll('a[href]')) {
+        try {
+            const u = new URL(a.href, location.href);
+            if (/^https?:$/.test(u.protocol) && u.host !== location.host) {
+                a.target = '_blank';
+                a.rel = (a.rel ? a.rel + ' ' : '') + 'noopener noreferrer';
+            }
+        } catch (e) {}
+    }
+</script>
 </body>
 </html>
