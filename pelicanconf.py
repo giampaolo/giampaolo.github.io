@@ -11,6 +11,8 @@ THEME = "theme"
 PATH = "content"
 TIMEZONE = "Europe/Rome"
 DEFAULT_LANG = "en"
+# Force English date formatting regardless of build host locale.
+LOCALE = ("en_US.UTF-8", "en_US.utf8", "en_US", "C.UTF-8")
 # GA4 measurement ID (format: "G-XXXXXXXXXX"). Leave empty to disable.
 # Old UA-164357405-2 was Universal Analytics; sunset by Google in 2023.
 GOOGLE_ANALYTICS = ""
