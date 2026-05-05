@@ -48,11 +48,10 @@
         </header>
         <div class="entry-content">
 <footer class="post-info">
-        <a class="published" title="2025-12-23T00:00:00+01:00">
-        Created: 23 Dec 2025,
-        </a>
+            <a class="featured-badge" href="https://gmpy.dev/tags/featured">Featured</a>
+        <a class="published" title="2025-12-23T00:00:00+01:00">23 Dec 2025</a>
     <span class="tags">Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/c">c</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </span>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/c">c</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>    </span>
 
 </footer><!-- /.post-info -->            <p>Memory leaks in Python are usually straightforward to diagnose. Just look at RSS, track Python object counts, follow reference graphs, etc. But leaks inside C extension modules are another story. Traditional memory metrics such as RSS and VMS fail to reveal them because Python's memory allocator (<a class="reference external" href="https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator">pymalloc</a>) sits above the platform's native heap. If something in an extension calls <tt class="docutils literal">malloc()</tt> without a corresponding <tt class="docutils literal">free()</tt>, that memory often won't show up in RSS / VMS. You have a leak, and you don't know.</p>
 <p>psutil 7.2.0 introduces two new APIs for <strong>C heap introspection</strong>, designed specifically to catch these kinds of native leaks. They give you a window directly into the underlying platform allocator (e.g. glibc's malloc), letting you track how much memory the C layer actually allocates. If your RSS is flat but your C heap usage climbs, you now have a way to see it.</p>
@@ -209,9 +208,7 @@ Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+19
         </header>
         <div class="entry-content">
 <footer class="post-info">
-        <a class="published" title="2019-05-29T00:00:00+02:00">
-        Created: 29 May 2019,
-        </a>
+        <a class="published" title="2019-05-29T00:00:00+02:00">29 May 2019</a>
     <span class="tags">Tags:
         <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/windows">windows</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/personal">personal</a>    </span>
 
@@ -250,9 +247,7 @@ Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+19
         </header>
         <div class="entry-content">
 <footer class="post-info">
-        <a class="published" title="2019-03-05T00:00:00+01:00">
-        Created: 05 Mar 2019,
-        </a>
+        <a class="published" title="2019-03-05T00:00:00+01:00">05 Mar 2019</a>
     <span class="tags">Tags:
         <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/windows">windows</a>,        <a href="https://gmpy.dev/tags/macos">macos</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/compatibility">compatibility</a>,        <a href="https://gmpy.dev/tags/release">release</a>    </span>
 
@@ -285,7 +280,7 @@ Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+19
 </div>
 <div class="section" id="other-changes">
 <h2>Other changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h2>
-<p>See the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html">changelog</a>.</p>
+<p>See the <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">changelog</a>.</p>
 </div>
 
         </div>
@@ -298,13 +293,11 @@ Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+19
         </header>
         <div class="entry-content">
 <footer class="post-info">
-        <a class="published" title="2017-09-03T00:00:00+02:00">
-        Created: 03 Sep 2017,
-        </a>
+        <a class="published" title="2017-09-03T00:00:00+02:00">03 Sep 2017</a>
     <span class="tags">Tags:
         <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/api-design">api-design</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>    </span>
 
-</footer><!-- /.post-info -->            <p>This is part of the psutil 5.3.0 release (see the <a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html">changelog</a> for the full list of changes).</p>
+</footer><!-- /.post-info -->            <p>This is part of the psutil 5.3.0 release (see the <a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html">changelog</a> for the full list of changes).</p>
 <div class="section" id="the-old-pattern">
 <h2>The old pattern<a class="headerlink" href="#the-old-pattern" title="Permalink to this headline">¶</a></h2>
 <p>Iterating over processes and collecting attributes requires more boilerplate than it should. A process returned by <tt class="docutils literal">psutil.process_iter()</tt> may disappear before you access it, or require elevated privileges, so every lookup has to be guarded with a <tt class="docutils literal">try / except</tt>:</p>
@@ -365,9 +358,7 @@ Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+19
         </header>
         <div class="entry-content">
 <footer class="post-info">
-        <a class="published" title="2017-02-01T00:00:00+01:00">
-        Created: 01 Feb 2017,
-        </a>
+        <a class="published" title="2017-02-01T00:00:00+01:00">01 Feb 2017</a>
     <span class="tags">Tags:
         <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/release">release</a>,        <a href="https://gmpy.dev/tags/linux">linux</a>    </span>
 
@@ -482,5 +473,6 @@ Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+19
         } catch (e) {}
     }
 </script>
-</body>
+<script data-goatcounter="https://gmpy.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script></body>
 </html>

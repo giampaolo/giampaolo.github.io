@@ -103,6 +103,12 @@ li {
 	margin-bottom:0px;
 }
 
+.post-info > * + *::before {
+    content: "\00B7";
+    color: #bbb;
+    margin: 0 0.5em;
+}
+
 
 .readmore { float: right }
 
@@ -363,6 +369,28 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 .hentry img{display : none ;}
 .entry-title {font-size: 3em; margin-bottom: 10px; margin-top: 0;}
 .entry-title a:link, .entry-title a:visited {text-decoration: none; color: #000;}
+
+a.featured-badge,
+a.featured-badge:link,
+a.featured-badge:visited {
+    display: inline-block;
+    padding: 4px 14px;
+    background: rgba(154, 52, 18, 0.12);
+    border: 1px solid rgba(154, 52, 18, 0.28);
+    color: #9a3412;
+    font-size: 0.78em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.6;
+    border-radius: 999px;
+    text-decoration: none;
+}
+a.featured-badge:hover {
+    background: rgba(154, 52, 18, 0.22);
+    border-color: rgba(154, 52, 18, 0.5);
+    text-decoration: none;
+}
 
 
 .hentry .post-info * {font-style: normal;}

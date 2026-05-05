@@ -249,7 +249,7 @@ mem-maps      RSS      PATH
 &lt;/div&gt;
 &lt;div class="section" id="other-changes"&gt;
 &lt;h2&gt;Other changes&lt;a class="headerlink" href="#other-changes" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The full list is in the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The full list is in the &lt;a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 </content><category term="misc"></category><category term="psutil"></category><category term="python"></category><category term="memory"></category><category term="linux"></category><category term="release"></category></entry><entry><title>Real process memory and environ in Python</title><link href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python" rel="alternate"></link><published>2016-02-17T00:00:00+01:00</published><updated>2016-02-17T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2016-02-17:/blog/2016/real-process-memory-and-environ-in-python</id><summary type="html">&lt;p&gt;psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll get straight to the point and describe what's new.&lt;/p&gt;
 &lt;div class="section" id="real-process-memory-info"&gt;
@@ -354,7 +354,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 &lt;/div&gt;
 &lt;div class="section" id="other-fixes"&gt;
 &lt;h2&gt;Other fixes&lt;a class="headerlink" href="#other-fixes" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The complete list of changes is available in the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#id22"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The complete list of changes is available in the &lt;a class="reference external" href="https://psutil.readthedocs.io/latest/#id22"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="porting-code"&gt;
 &lt;h2&gt;Porting code&lt;a class="headerlink" href="#porting-code" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;

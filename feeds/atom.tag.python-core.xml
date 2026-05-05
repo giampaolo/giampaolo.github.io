@@ -237,6 +237,6 @@ psutil-7.1.2-cp314-cp314t-win_arm64.whl
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;The full journey was implemented in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/1052"&gt;PR-1052&lt;/a&gt;, and shipped in 5.3.0 (see the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html"&gt;changelog&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;The full journey was implemented in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/1052"&gt;PR-1052&lt;/a&gt;, and shipped in 5.3.0 (see the &lt;a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html"&gt;changelog&lt;/a&gt;).&lt;/p&gt;
 &lt;/div&gt;
 </content><category term="misc"></category><category term="psutil"></category><category term="python"></category><category term="api-design"></category><category term="compatibility"></category><category term="python-core"></category></entry></feed>

@@ -47,11 +47,10 @@
         </header>
         <div class="entry-content">
 <footer class="post-info">
-        <a class="published" title="2026-01-28T00:00:00+01:00">
-        Created: 28 Jan 2026,
-        </a>
+            <a class="featured-badge" href="https://gmpy.dev/tags/featured">Featured</a>
+        <a class="published" title="2026-01-28T00:00:00+01:00">28 Jan 2026</a>
     <span class="tags">Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </span>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>    </span>
 
 </footer><!-- /.post-info -->            <p>One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's <tt class="docutils literal">subprocess</tt> module has relied on a busy-loop polling approach since the <em>timeout</em> parameter was added to <tt class="docutils literal">subprocess.Popen.wait()</tt> in Python 3.3, around 15 years ago (see <a class="reference external" href="https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077">source</a>). And psutil's <tt class="docutils literal">Process.wait()</tt> method uses exactly the same technique (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160">source</a>).</p>
 <p>The logic is straightforward: check whether the process has exited using non-blocking <tt class="docutils literal">waitpid(WNOHANG)</tt>, sleep briefly, check again, sleep a bit longer, and so on.</p>
@@ -209,11 +208,10 @@
         </header>
         <div class="entry-content">
 <footer class="post-info">
-        <a class="published" title="2025-12-23T00:00:00+01:00">
-        Created: 23 Dec 2025,
-        </a>
+            <a class="featured-badge" href="https://gmpy.dev/tags/featured">Featured</a>
+        <a class="published" title="2025-12-23T00:00:00+01:00">23 Dec 2025</a>
     <span class="tags">Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/c">c</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </span>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/memory">memory</a>,        <a href="https://gmpy.dev/tags/c">c</a>,        <a href="https://gmpy.dev/tags/new-api">new-api</a>    </span>
 
 </footer><!-- /.post-info -->            <p>Memory leaks in Python are usually straightforward to diagnose. Just look at RSS, track Python object counts, follow reference graphs, etc. But leaks inside C extension modules are another story. Traditional memory metrics such as RSS and VMS fail to reveal them because Python's memory allocator (<a class="reference external" href="https://docs.python.org/3/c-api/memory.html#the-pymalloc-allocator">pymalloc</a>) sits above the platform's native heap. If something in an extension calls <tt class="docutils literal">malloc()</tt> without a corresponding <tt class="docutils literal">free()</tt>, that memory often won't show up in RSS / VMS. You have a leak, and you don't know.</p>
 <p>psutil 7.2.0 introduces two new APIs for <strong>C heap introspection</strong>, designed specifically to catch these kinds of native leaks. They give you a window directly into the underlying platform allocator (e.g. glibc's malloc), letting you track how much memory the C layer actually allocates. If your RSS is flat but your C heap usage climbs, you now have a way to see it.</p>
@@ -370,9 +368,7 @@ Run #10: heap=+2140624 | uss=+2179072 | rss=+2293760 | (calls=1100, avg/call=+19
         </header>
         <div class="entry-content">
 <footer class="post-info">
-        <a class="published" title="2025-10-25T00:00:00+02:00">
-        Created: 25 Oct 2025,
-        </a>
+        <a class="published" title="2025-10-25T00:00:00+02:00">25 Oct 2025</a>
     <span class="tags">Tags:
         <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/wheels">wheels</a>,        <a href="https://gmpy.dev/tags/community">community</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>    </span>
 
@@ -431,9 +427,7 @@ psutil-7.1.2-cp314-cp314t-win_arm64.whl
         </header>
         <div class="entry-content">
 <footer class="post-info">
-        <a class="published" title="2025-04-04T00:00:00+02:00">
-        Created: 04 Apr 2025,
-        </a>
+        <a class="published" title="2025-04-04T00:00:00+02:00">04 Apr 2025</a>
     <span class="tags">Tags:
         <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/tests">tests</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>    </span>
 
@@ -578,9 +572,7 @@ real    0m0,369s
         </header>
         <div class="entry-content">
 <footer class="post-info">
-        <a class="published" title="2025-04-02T00:00:00+02:00">
-        Created: 02 Apr 2025,
-        </a>
+        <a class="published" title="2025-04-02T00:00:00+02:00">02 Apr 2025</a>
     <span class="tags">Tags:
         <a href="https://gmpy.dev/tags/js">js</a>,        <a href="https://gmpy.dev/tags/brave">brave</a>,        <a href="https://gmpy.dev/tags/dotfiles">dotfiles</a>    </span>
 
@@ -683,5 +675,6 @@ should also work for Chrome.</p>
         } catch (e) {}
     }
 </script>
-</body>
+<script data-goatcounter="https://gmpy.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script></body>
 </html>

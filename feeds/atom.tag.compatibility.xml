@@ -104,7 +104,7 @@ Install it with: &amp;quot;pip2 install psutil==6.1.*&amp;quot;.
 &lt;/div&gt;
 &lt;div class="section" id="other-changes"&gt;
 &lt;h2&gt;Other changes&lt;a class="headerlink" href="#other-changes" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;See the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;See the &lt;a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 </content><category term="misc"></category><category term="psutil"></category><category term="python"></category><category term="windows"></category><category term="macos"></category><category term="new-api"></category><category term="compatibility"></category><category term="release"></category></entry><entry><title>Removing Process.memory_maps() on macOS</title><link href="https://gmpy.dev/blog/2019/removing-processmemory_maps-on-macos" rel="alternate"></link><published>2019-03-05T00:00:00+01:00</published><updated>2019-03-05T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2019-03-05:/blog/2019/removing-processmemory_maps-on-macos</id><summary type="html">&lt;p&gt;This is part of the psutil 5.6.0 release (see the full &lt;a class="reference external" href="psutil-560-and-process-parents"&gt;release notes&lt;/a&gt;).&lt;/p&gt;
 &lt;p&gt;As of 5.6.0, &lt;tt class="docutils literal"&gt;Process.memory_maps()&lt;/tt&gt; is no longer defined on macOS.&lt;/p&gt;
@@ -174,7 +174,7 @@ Install it with: &amp;quot;pip2 install psutil==6.1.*&amp;quot;.
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;The full journey was implemented in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/1052"&gt;PR-1052&lt;/a&gt;, and shipped in 5.3.0 (see the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html"&gt;changelog&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;The full journey was implemented in &lt;a class="reference external" href="https://github.com/giampaolo/psutil/pull/1052"&gt;PR-1052&lt;/a&gt;, and shipped in 5.3.0 (see the &lt;a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html"&gt;changelog&lt;/a&gt;).&lt;/p&gt;
 &lt;/div&gt;
 </content><category term="misc"></category><category term="psutil"></category><category term="python"></category><category term="api-design"></category><category term="compatibility"></category><category term="python-core"></category></entry><entry><title>Real process memory and environ in Python</title><link href="https://gmpy.dev/blog/2016/real-process-memory-and-environ-in-python" rel="alternate"></link><published>2016-02-17T00:00:00+01:00</published><updated>2016-02-17T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2016-02-17:/blog/2016/real-process-memory-and-environ-in-python</id><summary type="html">&lt;p&gt;psutil 4.0.0 is out, with some interesting news about process memory metrics. I'll get straight to the point and describe what's new.&lt;/p&gt;
 &lt;div class="section" id="real-process-memory-info"&gt;
@@ -279,7 +279,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 &lt;/div&gt;
 &lt;div class="section" id="other-fixes"&gt;
 &lt;h2&gt;Other fixes&lt;a class="headerlink" href="#other-fixes" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The complete list of changes is available in the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#id22"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The complete list of changes is available in the &lt;a class="reference external" href="https://psutil.readthedocs.io/latest/#id22"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="porting-code"&gt;
 &lt;h2&gt;Porting code&lt;a class="headerlink" href="#porting-code" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
@@ -363,7 +363,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 &lt;/div&gt;
 &lt;div class="section" id="removal-of-deprecated-apis"&gt;
 &lt;h2&gt;Removal of deprecated APIs&lt;a class="headerlink" href="#removal-of-deprecated-apis" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;All aliases deprecated in the &lt;a class="reference external" href="../2014/psutil-20-api-redesign"&gt;psutil 2.0 porting guide&lt;/a&gt; (January 2014) are gone. For the full list see the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#id23"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;All aliases deprecated in the &lt;a class="reference external" href="../2014/psutil-20-api-redesign"&gt;psutil 2.0 porting guide&lt;/a&gt; (January 2014) are gone. For the full list see the &lt;a class="reference external" href="https://psutil.readthedocs.io/latest/#id23"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="final-words"&gt;
 &lt;h2&gt;Final words&lt;a class="headerlink" href="#final-words" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;

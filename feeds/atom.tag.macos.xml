@@ -31,7 +31,7 @@
 &lt;/div&gt;
 &lt;div class="section" id="other-changes"&gt;
 &lt;h2&gt;Other changes&lt;a class="headerlink" href="#other-changes" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;See the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/changelog.html"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;See the &lt;a class="reference external" href="https://psutil.readthedocs.io/latest/changelog.html"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 </content><category term="misc"></category><category term="psutil"></category><category term="python"></category><category term="windows"></category><category term="macos"></category><category term="new-api"></category><category term="compatibility"></category><category term="release"></category></entry><entry><title>Removing Process.memory_maps() on macOS</title><link href="https://gmpy.dev/blog/2019/removing-processmemory_maps-on-macos" rel="alternate"></link><published>2019-03-05T00:00:00+01:00</published><updated>2019-03-05T00:00:00+01:00</updated><author><name>Giampaolo Rodola</name></author><id>tag:gmpy.dev,2019-03-05:/blog/2019/removing-processmemory_maps-on-macos</id><summary type="html">&lt;p&gt;This is part of the psutil 5.6.0 release (see the full &lt;a class="reference external" href="psutil-560-and-process-parents"&gt;release notes&lt;/a&gt;).&lt;/p&gt;
 &lt;p&gt;As of 5.6.0, &lt;tt class="docutils literal"&gt;Process.memory_maps()&lt;/tt&gt; is no longer defined on macOS.&lt;/p&gt;

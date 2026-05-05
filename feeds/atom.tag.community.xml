@@ -89,7 +89,7 @@ psutil-7.1.2-cp314-cp314t-win_arm64.whl
 &lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/708"&gt;#708&lt;/a&gt;: [Linux] &lt;tt class="docutils literal"&gt;psutil.net_connections()&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;Process.connections()&lt;/tt&gt; can be up to 3x faster when there are many connections.&lt;/li&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://github.com/giampaolo/psutil/issues/718"&gt;#718&lt;/a&gt;: &lt;tt class="docutils literal"&gt;psutil.process_iter()&lt;/tt&gt; is now thread safe.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;You can read the rest in the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#id23"&gt;changelog&lt;/a&gt;, as usual.&lt;/p&gt;
+&lt;p&gt;You can read the rest in the &lt;a class="reference external" href="https://psutil.readthedocs.io/latest/#id23"&gt;changelog&lt;/a&gt;, as usual.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="move-to-prague"&gt;
 &lt;h2&gt;Move to Prague&lt;a class="headerlink" href="#move-to-prague" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
@@ -205,7 +205,7 @@ PID     User    Cmdline                            USS     PSS    Swap     RSS
 &lt;/div&gt;
 &lt;div class="section" id="other-fixes"&gt;
 &lt;h2&gt;Other fixes&lt;a class="headerlink" href="#other-fixes" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The complete list of changes is available in the &lt;a class="reference external" href="https://psutil.readthedocs.io/en/latest/#id22"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The complete list of changes is available in the &lt;a class="reference external" href="https://psutil.readthedocs.io/latest/#id22"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="porting-code"&gt;
 &lt;h2&gt;Porting code&lt;a class="headerlink" href="#porting-code" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h2&gt;

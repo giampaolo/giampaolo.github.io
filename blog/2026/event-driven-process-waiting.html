@@ -50,11 +50,10 @@
 
     <div class="entry-content">
 <footer class="post-info">
-        <a class="published" title="2026-01-28T00:00:00+01:00">
-        Created: 28 Jan 2026,
-        </a>
+            <a class="featured-badge" href="https://gmpy.dev/tags/featured">Featured</a>
+        <a class="published" title="2026-01-28T00:00:00+01:00">28 Jan 2026</a>
     <span class="tags">Tags:
-        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>,        <a href="https://gmpy.dev/tags/featured">featured</a>    </span>
+        <a href="https://gmpy.dev/tags/psutil">psutil</a>,        <a href="https://gmpy.dev/tags/python">python</a>,        <a href="https://gmpy.dev/tags/python-core">python-core</a>,        <a href="https://gmpy.dev/tags/performance">performance</a>    </span>
 
 </footer><!-- /.post-info -->      <p>One of the less fun aspects of process management on POSIX systems is waiting for a process to terminate. The standard library's <tt class="docutils literal">subprocess</tt> module has relied on a busy-loop polling approach since the <em>timeout</em> parameter was added to <tt class="docutils literal">subprocess.Popen.wait()</tt> in Python 3.3, around 15 years ago (see <a class="reference external" href="https://github.com/python/cpython/blob/8def603d853c7f5e4ff57f95de289f99e1943669/Lib/subprocess.py#L2056-L2077">source</a>). And psutil's <tt class="docutils literal">Process.wait()</tt> method uses exactly the same technique (see <a class="reference external" href="https://github.com/giampaolo/psutil/blob/700b7e6a/psutil/_psposix.py#L95-L160">source</a>).</p>
 <p>The logic is straightforward: check whether the process has exited using non-blocking <tt class="docutils literal">waitpid(WNOHANG)</tt>, sleep briefly, check again, sleep a bit longer, and so on.</p>
@@ -239,5 +238,6 @@
         } catch (e) {}
     }
 </script>
-</body>
+<script data-goatcounter="https://gmpy.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script></body>
 </html>
