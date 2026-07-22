@@ -47,6 +47,16 @@ MENUITEMS = (
     ("About", "/about"),
 )
 
+# --- comments (giscus, backed by GitHub Discussions)
+
+# Threads live as Discussions in this repo. data-term keys off the
+# article path (blog/YYYY/slug), not the full URL, so a domain change
+# keeps them attached. IDs are public, not secrets.
+GISCUS_REPO = "giampaolo/giampaolo.github.io"
+GISCUS_REPO_ID = "MDEwOlJlcG9zaXRvcnkyNjczNzEyNzc="
+GISCUS_CATEGORY = "Blog comments"
+GISCUS_CATEGORY_ID = "DIC_kwDOD-_DDc4DBuBQ"
+
 # --- blog
 
 ARTICLE_PATHS = ["blog"]

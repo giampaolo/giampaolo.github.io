@@ -410,6 +410,16 @@ a.featured-badge:hover {
 	padding-bottom:20px;
 }
 
+.comments {
+	margin-top: 2em;
+	padding-top: 1em;
+	border-top: 1px solid #ddd;
+}
+
+.comments h2 {
+	margin-bottom: 0.5em;
+}
+
 .archives {
 	width: 100%;
 	height: 100%;
