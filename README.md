@@ -1,8 +1,8 @@
-Source code for <https://gmpy.dev/> / <https://giampaolo.github.io/>. Dev
-branch is
-[gh-pages](https://github.com/giampaolo/giampaolo.github.io/tree/gh-pages).
-`master` branch is never touched and only stores the auto-generated HTML
-content based off of `gh-pages` branch.
+Source code for <https://gmpy.dev/> / <https://giampaolo.github.io/>.
+
+Everything lives on the `master` branch. On every push a GitHub Actions
+workflow builds the Pelican site and deploys it to GitHub Pages, so no
+generated HTML is stored in the repo.
 
 Note: `content/extra/htaccess` is Apache-only and applies to
 <https://gmpy.dev/>. GitHub Pages ignores it; the `.github.io` mirror
@@ -24,8 +24,8 @@ make serve
 
 # Make a new blog post
 
-- under `gh-pages`, create a new file, e.g.
-  `content/blog/2020/new-blog-post.rst`; use `make create-blogpost`
+- create a new file, e.g. `content/blog/2020/new-blog-post.rst`; use
+  `make create-blogpost`
 
 ```
 New blog post
@@ -44,7 +44,7 @@ Hello world!
 make clean html serve
 ```
 
-- commit it:
+- commit and push it:
 
 ```bash
 git add content/blog/2020/new-blog-post.rst
@@ -52,14 +52,8 @@ git ci -am "new blog post"
 git push
 ```
 
-- publish it:
-
-```bash
-make github
-```
-
-- within 1 minute or something, GitHub will automatically update gmpy.dev
-  content.
+- the push triggers a GitHub Actions build that deploys to Pages; within a
+  minute or so gmpy.dev updates automatically.
 
 # Link to an internal blog post
 
