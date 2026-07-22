@@ -8,7 +8,6 @@ OUTPUTDIR=$(BASEDIR)/output
 CONFFILE=$(BASEDIR)/pelicanconf.py
 PUBLISHCONF=$(BASEDIR)/publishconf.py
 
-GITHUB_PAGES_BRANCH=master
 PYTEST_ARGS = -v -s --tb=short
 ARGS =
 
@@ -48,13 +47,6 @@ publish:  ## Publish
 
 serve:  ## HTTP serve in dev mode
 	$(PYTHON) -m pelican -lr $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
-
-github:  ## Git push and publish changes on GitHub.
-	${MAKE} clean
-	${MAKE} publish
-	git push
-	ghp-import -m "Generate Pelican site" -b $(GITHUB_PAGES_BRANCH) $(OUTPUTDIR)
-	git push origin $(GITHUB_PAGES_BRANCH)
 
 create-blogpost:  ## Create a new blog post template.
 	@$(PYTHON) scripts/create_blogpost.py
