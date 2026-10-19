@@ -133,6 +133,7 @@ Contacts
 * `Medium <https://medium.com/@g.rodola>`__
 * Email: `g.rodola@gmail.com <mailto:g.rodola@gmail.com>`__ (`PGP public key
   </static/pgp.txt>`__, `keybase.io <https://keybase.io/grodola>`__)
+* PGP fingerprint: ``94B5 05ED EAE6 0CD7 3A1A 56BE 0E22 73E7 308B CC35``
 
 .. _`10784`: https://bugs.python.org/issue10784
 .. _`10882`: https://bugs.python.org/issue10882
