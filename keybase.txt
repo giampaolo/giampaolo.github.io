@@ -1,0 +1,72 @@
+==================================================================
+https://keybase.io/grodola
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://gmpy.dev
+  * I am grodola (https://keybase.io/grodola) on keybase.
+  * I have a public key with fingerprint 94B5 05ED EAE6 0CD7 3A1A  56BE 0E22 73E7 308B CC35
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "010197819e836544d73358d0fdf907a9564eaf6f6f49ae4dced7da8697c87b3865c30a",
+      "fingerprint": "94b505edeae60cd73a1a56be0e2273e7308bcc35",
+      "host": "keybase.io",
+      "key_id": "0e2273e7308bcc35",
+      "kid": "010197819e836544d73358d0fdf907a9564eaf6f6f49ae4dced7da8697c87b3865c30a",
+      "uid": "9a6ba096bdc15d7d04322dcc58ade119",
+      "username": "grodola"
+    },
+    "service": {
+      "hostname": "gmpy.dev",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "ctime": 1792405169,
+  "expire_in": 157680000,
+  "prev": "863e5fe546855a7d65051dc0848ec0c0b066a5635e194aee73f3d44fec3894bf",
+  "seqno": 5,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+
+owGtUntQVFUcXl6DUAQWIISCXkoTGLh373sba2OMGUiJZCDAkeU+zu5egd1l74Lt
+sBDRTo6IIyQ0+BhSGAgjLIxIEx2HYkzWQSVWNMhIKVZHaSJMKR6da/FX/3bOH2fO
+N9/3/Z51QT6qQK+nEHkK3XuJ9HLd4VU73dNflSO8WbQjmnKkEDx+QJEIZJuuUBIR
+DYJiKMbSDMYCBqdIghBpHCcZEdWLehalOZakCMDpKXgJlgOEKACRFjmGYmmBoXmc
+oUgBRzkkAdFLJgOwWqySyQZtWYInURKIgAMUKkBTDuNIigcoUKtpHNA4yvCCgJNQ
+aDTLigImx3MySJTMEIMf3T/p/Zf/P+dd+tiO5SieQ1mKFwWMhEyUwNVqURBIhhMB
+hrEKUQZWE1cMINtgNYvmIg6pSEAgWCYJQOmrUsgyodhiTxRBGZRZrGabWTAXQdRo
+s1lkjaKy2S0KbRfgdf8a6HjJJMIWQkUZsMqS2YRoMMgUbJLiiNGsmkBJjGITEPCW
+RbICnaQwSJpiUHiUODCcBmEoHJB6QBIUQ2aSHC1ScA6YKKAMwQABFVAepSg4CpwE
+GEtwALZWj4sEoQcCzsCp6RGlphKTGdGQME/OAD1lyWDibKVWgFQE7vHGfVVegao1
+4et8G77wu3/3lydHNc9mn1teOz9vZedUgQEhy8goE7wQ6ti8v2y15Q16Q/fVam1R
+xaWx3gv584bsvMasQnVo+QT3fdzN+l87XHsHdX+scw+kXJM71hwPmNvd5JnaJ3+K
+vRp//c2L8gs9jucj7tXc2e1A2N+zHlGJ8y2vzS7110X3tOY4sgeLn/Hp76/ii8mP
+6193diV80utInpucC76qqtZOI13j8etzsoJ0T/9w4uXj+zxcYcNzvQmLax+6p1+k
+evyPZtzq9oxEihmpq/KZB5HtR4cbk7bV5G0piIrLbJ5ZUdsae3JjbKr36vNRsf0Z
+Vef02lZj5xkXetp/vqvvwY0L2e+edYdeXhE98XnvXNqQ3jl8rbNlnF5/ZFN4rm38
+cNCmVdyWSuRDNO7g2E9LfvGz6cZYry9vh3be7g1ru1yJvdIR0rRrxL7Q46JIn4OH
+PdQCxpW0lXkWm/hB086Xav+MmXk/zLpyICbqO+dowajzs41P2LN/6/N6Z8Y1XYJs
+CHem3mzPjNq6/f60f8ANg2fqm4j6tO2xwQ2TFxds30ZgvEeDu/d3u3xP9iU/vHfe
+9OjUgbMjwzlFa3d8pI1+rzQZj9l814+IO+2YrP7gCL64bajGXRVyKqyxIOXr+ZTr
+fW2FPx6aBRNX0iSxPbd5iU/KIwbKjyXmo3sO5DR4fNMz7E3GiROOQ81jP2tvGa/U
+OJLODLWk15KmHbnH/qqL1kZ0vF0Z6fwb
+=b89l
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/grodola
+
+==================================================================

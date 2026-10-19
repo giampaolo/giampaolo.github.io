@@ -122,6 +122,7 @@ EXTRA_PATH_METADATA = {
     "extra/htaccess": {"path": ".htaccess"},
     "extra/CNAME": {"path": "CNAME"},
     "extra/robots.txt": {"path": "robots.txt"},
+    "extra/keybase.txt": {"path": "keybase.txt"},
 }
 DIRECT_TEMPLATES = ["index", "tags", "categories", "archives", "sitemap"]
 TEMPLATE_EXTENSIONS = [".html", ".xml"]
