@@ -42,7 +42,7 @@ install-pydeps:  ## Install python deps
 html:  ## Generate html.
 	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
-publish:  ## Publish
+build-prod:  ## Generate html for production.
 	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)
 
 serve:  ## HTTP serve in dev mode
