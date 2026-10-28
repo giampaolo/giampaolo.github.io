@@ -32,8 +32,8 @@ Projects
     :target: https://github.com/giampaolo/psutil/stargazers
     :alt: Github stars
 
-  .. image:: https://static.pepy.tech/badge/psutil/month
-    :target: https://pepy.tech/project/psutil
+  .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fsql-clickhouse.clickhouse.com%2F%3Fuser%3Dplay%26query%3DWITH%2B%2528SELECT%2Bmax%2528date%2529%2BFROM%2Bpypi.pypi_downloads_per_day%2BWHERE%2Bproject%253D%2527psutil%2527%2529%2BAS%2Bm%2BSELECT%2Bconcat%2528toString%2528round%2528sum%2528count%2529%2B%252F%2B1e6%2529%2529%252C%2B%2527M%2527%2529%2BAS%2Bn%2BFROM%2Bpypi.pypi_downloads_per_day%2BWHERE%2Bproject%253D%2527psutil%2527%2BAND%2Bdate%2B%253E%2Bm%2B-%2BtoIntervalMonth%25281%2529%2BAND%2Bdate%2B%253C%253D%2Bm%2BFORMAT%2BJSONEachRow&query=%24.n&label=downloads%2Fmonth&color=blue&cacheSeconds=86400
+    :target: https://clickpy.clickhouse.com/dashboard/psutil
     :alt: Downloads
 
 * `pyftpdlib`_: a very fast, asynchronous, pure-python FTP server.  *(2006 - now)*
@@ -42,8 +42,8 @@ Projects
     :target: https://github.com/giampaolo/pyftpdlib/stargazers
     :alt: Github stars
 
-  .. image:: https://static.pepy.tech/badge/pyftpdlib/month
-    :target: https://pepy.tech/project/pyftpdlib
+  .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fsql-clickhouse.clickhouse.com%2F%3Fuser%3Dplay%26query%3DWITH%2B%2528SELECT%2Bmax%2528date%2529%2BFROM%2Bpypi.pypi_downloads_per_day%2BWHERE%2Bproject%253D%2527pyftpdlib%2527%2529%2BAS%2Bm%2BSELECT%2Bconcat%2528toString%2528round%2528sum%2528count%2529%2B%252F%2B1e3%2529%2529%252C%2B%2527K%2527%2529%2BAS%2Bn%2BFROM%2Bpypi.pypi_downloads_per_day%2BWHERE%2Bproject%253D%2527pyftpdlib%2527%2BAND%2Bdate%2B%253E%2Bm%2B-%2BtoIntervalMonth%25281%2529%2BAND%2Bdate%2B%253C%253D%2Bm%2BFORMAT%2BJSONEachRow&query=%24.n&label=downloads%2Fmonth&color=blue&cacheSeconds=86400
+    :target: https://clickpy.clickhouse.com/dashboard/pyftpdlib
     :alt: Downloads
 
 * `psleak`_: test framework to detect memory and resource leaks in Python C extensions.  *(2025 - now)*
