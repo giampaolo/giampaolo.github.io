@@ -1,5 +1,5 @@
-import unittest
 import subprocess
+import unittest
 
 
 def sh(cmd):
