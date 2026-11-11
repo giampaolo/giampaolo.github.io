@@ -55,6 +55,19 @@ git push
 - the push triggers a GitHub Actions build that deploys to Pages; within a
   minute or so gmpy.dev updates automatically.
 
+# Publish
+
+Just push to `master`.
+
+# Comments
+
+[giscus](https://giscus.app/) threads live in
+[giampaolo/psutil-blog-comments](https://github.com/giampaolo/psutil-blog-comments),
+shared with the [psutil blog](https://psutil.io/blog/). A thread is
+matched by post path (`blog/YYYY/slug`), so a post needs the same year
+and slug on both sites, and the `GISCUS_*` settings must match psutil's
+`docs/conf.py`.
+
 # Link to an internal blog post
 
 ```
