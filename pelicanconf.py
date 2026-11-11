@@ -49,8 +49,8 @@ MENUITEMS = (
 
 # --- comments (giscus, backed by GitHub Discussions)
 
-# Threads live as Discussions in the repo the psutil blog uses, so
-# both sites show the same comments. data-term keys off the
+# Threads live in the psutil blog's repo, so both sites show the
+# same comments. data-term keys off the
 # article path (blog/YYYY/slug), not the full URL, so a domain change
 # keeps them attached. IDs are public, not secrets.
 GISCUS_REPO = "giampaolo/psutil-blog-comments"
