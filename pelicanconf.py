@@ -7,6 +7,7 @@ AUTHOR = "Giampaolo Rodola"
 SITENAME = "Giampaolo Rodola"
 SITESUBTITLE = "Python enthusiast, core developer, psutil author"
 SITEURL = "http://127.0.0.1:8000"
+LIVERELOAD = True
 THEME = "theme"
 PATH = "content"
 TIMEZONE = "Europe/Rome"

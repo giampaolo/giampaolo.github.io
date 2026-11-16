@@ -9,6 +9,7 @@ from pelicanconf import *
 
 SITEURL = "https://gmpy.dev"
 RELATIVE_URLS = False
+LIVERELOAD = False
 DELETE_OUTPUT_DIRECTORY = True
 
 # Following items are often useful when publishing
