@@ -46,6 +46,7 @@ SOCIAL = (
 
 GITHUB_REPO = "https://github.com/giampaolo/giampaolo.github.io"
 EDIT_URL = f"{GITHUB_REPO}/edit/master/content"
+HISTORY_URL = f"{GITHUB_REPO}/commits/master/content"
 
 # --- menu
 

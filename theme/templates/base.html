@@ -74,7 +74,11 @@
     <footer id="extras" class="body">
         <div class="footer-text">
             <span>&copy; 2008-{{ CURRENT_YEAR }} {{ AUTHOR }}</span>
+            {% if content and HISTORY_URL %}
+            <span>Updated <a href="{{ HISTORY_URL }}/{{ content.get_relative_source_path() }}" title="View commit history on GitHub">{{ updated.strftime('%Y-%m-%d') }}</a></span>
+            {% else %}
             <span>Updated {{ updated.strftime('%Y-%m-%d') }}</span>
+            {% endif %}
             {% if content and EDIT_URL %}
             <span><a href="{{ EDIT_URL }}/{{ content.get_relative_source_path() }}">Edit on GitHub</a></span>
             {% endif %}
