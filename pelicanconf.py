@@ -52,7 +52,7 @@ EDIT_URL = f"{GITHUB_REPO}/edit/master/content"
 MENUITEMS = (
     ("Blog", "/"),
     ("Archives", "/archives"),
-    ("Donate", "https://psutil.readthedocs.io/latest/funding.html"),
+    ("Donate", "https://psutil.io/funding/"),
     ("About", "/about"),
 )
 

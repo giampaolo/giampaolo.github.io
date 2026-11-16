@@ -4,3 +4,4 @@ pelican[markdown]
 pytest
 rstcheck
 ruff
+toml-sort

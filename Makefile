@@ -73,11 +73,15 @@ lint-rst:  ## Lint rst files.
 lint-md:  ## Lint md files.
 	@git ls-files '*.md' | xargs mdl -c .mdlrc
 
+lint-toml:  ## Lint pyproject.toml.
+	@git ls-files '*.toml' | xargs toml-sort --check
+
 lint-all:  ## Run all linters
 	${MAKE} black
 	${MAKE} ruff
 	${MAKE} lint-rst
 	${MAKE} lint-md
+	${MAKE} lint-toml
 
 # ===================================================================
 # Fixers
@@ -89,9 +93,13 @@ fix-black:
 fix-ruff:
 	@git ls-files '*.py' | xargs $(PYTHON) -m ruff check --no-cache --fix --output-format=concise $(ARGS)
 
+fix-toml:
+	@git ls-files '*.toml' | xargs toml-sort
+
 fix-all:  ## Run all code fixers.
 	${MAKE} fix-ruff
 	${MAKE} fix-black
+	${MAKE} fix-toml
 
 # ===================================================================
 # Misc

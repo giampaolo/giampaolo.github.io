@@ -450,6 +450,10 @@ a.featured-badge:hover {
 	padding-top: .4em;
 }
 
+.entry-title + #posts-list > li:first-child {
+	padding-top: 1em;
+}
+
 #posts-list > li:last-child {
 	border-bottom: 0;
 }
