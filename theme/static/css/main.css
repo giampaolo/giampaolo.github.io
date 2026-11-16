@@ -23,7 +23,7 @@
     --text-faint: #bbb;
     --border: #eaecef;
     --border-strong: #d0d7de;
-    --link: #2980B9;
+    --link: #2273ab;
     --accent: #2980B9;
     --nav-bg: #000305;
     --nav-text: #fff;
@@ -72,7 +72,7 @@ body {
     color: var(--text);
     font-size: 18px;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
-    line-height: 1.429;
+    line-height: 1.6;
     margin: 0;
     padding: 0;
     text-align: left;
@@ -153,6 +153,21 @@ li {
     color: var(--text-muted);
 }
 
+.entry-content p a,
+.entry-content li a,
+.entry-content td a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+}
+
+.entry-content p a:hover,
+.entry-content li a:hover,
+.entry-content td a:hover {
+    text-decoration-color: currentColor;
+}
+
 .post-info p {
 	margin-top:0px;
 	margin-bottom:0px;
@@ -213,9 +228,8 @@ div.note {
 
 /* Tables */
 table {
-	margin: .5em auto 1.5em auto;
-	width: 98%;
-
+	margin: .5em 0 1.5em 0;
+	width: 100%;
 }
 
 table, th, td {
@@ -234,7 +248,7 @@ aside, nav, article, figure {
 }
 
 /***** Layout *****/
-.body {clear: both; margin: 0 auto; width: 920px;}
+.body {clear: both; margin: 0 auto; width: 900px;}
 img.right, figure.right, div.figure.align-right {
     float: right;
     margin: 0 0 2em 2em;
@@ -263,16 +277,16 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	/* Banner */
 	#banner h1 {
 		font-size: 3.571em;
-		line-height: 0;
-		margin-top: 40px;
-		margin-bottom: -3px;
+		line-height: 1;
+		margin: 28px 0 14px 0;
 		border-bottom: none;
 	}
 	#banner h1 a:link, #banner h1 a:visited {
 		color: var(--text);
 		display: block;
 		font-weight: bold;
-		margin: 0 0 .6em .2em;
+		margin: 0;
+		padding: 0;
 		text-decoration: none;
 	}
 
@@ -490,8 +504,6 @@ a.featured-badge:hover {
 	/* Blog Index */
 	#posts-list {list-style: none; margin: 0;}
 	#posts-list .hentry {
-		padding-left: 15px;
-		padding-right: 15px;
 		position: relative;
 	}
 
@@ -512,7 +524,6 @@ a.featured-badge:hover {
 .archives {
 	height: 100%;
 	margin: auto;
-	padding: 10px;
 }
 
 .archives-right {
@@ -643,9 +654,7 @@ code {
 
     /* Fix header text overlap */
      #banner h1 {
-		line-height: 1.0;
-		margin-top: 10px;
-		margin-bottom: -0.5em;
+		margin: 10px 10px 8px 10px;
      }
 
      #banner h1 strong {
@@ -659,6 +668,11 @@ code {
 
     #banner nav {
     	margin-bottom: 6px;
+    }
+
+    #extras {
+        padding-left: 10px;
+        padding-right: 10px;
     }
 
     #banner nav a:link, #banner nav a:visited {
