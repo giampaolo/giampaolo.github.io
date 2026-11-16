@@ -134,7 +134,14 @@ EXTRA_PATH_METADATA = {
     "extra/robots.txt": {"path": "robots.txt"},
     "extra/keybase.txt": {"path": "keybase.txt"},
 }
-DIRECT_TEMPLATES = ["index", "tags", "categories", "archives", "sitemap"]
+DIRECT_TEMPLATES = [
+    "index",
+    "tags",
+    "categories",
+    "archives",
+    "sitemap",
+    "404",
+]
 TEMPLATE_EXTENSIONS = [".html", ".xml"]
 SITEMAP_SAVE_AS = "sitemap.xml"
 

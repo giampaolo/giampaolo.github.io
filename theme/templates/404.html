@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Page not found - {{ SITENAME }}{% endblock %}
+{% block meta %}
+    <meta name="robots" content="noindex">
+{% endblock meta %}
+{% block content %}
+<section id="content" class="body">
+    <h1 class="entry-title">Page not found</h1>
+    <div class="entry-content">
+    <p>This page doesn't exist, or it moved. Try the <a href="{{ SITEURL }}/">blog</a> or the <a href="{{ SITEURL }}/archives">archives</a>.</p>
+    </div>
+</section>
+{% endblock %}

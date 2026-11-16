@@ -63,7 +63,7 @@ Most of these are from when I took my first steps with Python in 2005. Listed he
 * `pysendfile`_: a binding to the `sendfile(2)` syscall which lets you send a file twice as fast as with a common socket. *(2011 - deprecated)*
 * `soicmp`_: a remote shell using ICMP protocol instead of TCP. *(2005 - 2006)*
 * `pypk`_: a port knocker based on `libpcap`. *(2005 - 2006)*
-* pftpd: a thread-based FTP server, the ancestor of `pyftpdlib`_ (website is lost). *(2005 - 2006)*
+* `pftpd`_: a thread-based FTP server, the ancestor of `pyftpdlib`_. *(2005 - 2006)*
 * `ActiveState recipes <https://web.archive.org/web/20251124031558/https://code.activestate.com/recipes/users/4178764/>`__: whatever was not big enough to become an actual project I used to turn into a recipe.
 
 Contacts
@@ -81,7 +81,8 @@ Contacts
 .. _`psleak`: https://github.com/giampaolo/psleak
 .. _`psutil`: https://psutil.io
 .. _`pyftpdlib`: https://github.com/giampaolo/pyftpdlib
-.. _`pypk`: https://sourceforge.net/projects/pypk/
+.. _`pypk`: https://web.archive.org/web/20170313092008/http://billiejoex.altervista.org/Prj_Py_port_knock.htm
+.. _`pftpd`: https://web.archive.org/web/20110511030034/http://billiejoex.altervista.org/Prj_pftpd.htm
 .. _`pysendfile`: https://github.com/giampaolo/pysendfile
 .. _`shutil`: https://docs.python.org/3/library/shutil.html#shutil-platform-dependent-efficient-copy-operations
 .. _`subprocess.Popen.wait()`: https://docs.python.org/3/library/subprocess.html#subprocess.Popen.wait
