@@ -28,6 +28,41 @@
     --nav-bg: #000305;
     --nav-text: #fff;
     --featured: #9a3412;
+    --icon-link: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>');
+    color-scheme: light;
+}
+
+/* data-theme is set by the inline script in base.html */
+:root[data-theme="dark"] {
+    --bg: #1e1f22;
+    --surface: #2b2d30;
+    --surface-alt: #393b40;
+    --text: #dfe1e5;
+    --text-muted: #9da0a8;
+    --text-faint: #5a5d63;
+    --border: #3c3e43;
+    --border-strong: #4e5157;
+    --link: #6cb2eb;
+    --nav-bg: #131416;
+    --featured: #e8a064;
+    color-scheme: dark;
+}
+
+[data-theme="dark"] .highlight {
+    background: #1e1f22;
+}
+
+/* theme switch cross-fade, see theme.js */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: .35s;
+}
+
+/* black icons */
+[data-theme="dark"] #extras .feeds a[type$='atom+xml']::before,
+[data-theme="dark"] #extras .social a[href*='github.com']::before,
+[data-theme="dark"] #extras .social a[href*='x.com']::before {
+    filter: invert(1);
 }
 
 /***** Global *****/
@@ -231,6 +266,7 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 		line-height: 0;
 		margin-top: 40px;
 		margin-bottom: -3px;
+		border-bottom: none;
 	}
 	#banner h1 a:link, #banner h1 a:visited {
 		color: var(--text);
@@ -272,6 +308,38 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 		background: var(--accent);
 		color: var(--nav-text);
 		text-shadow: none !important;
+	}
+
+	#theme-toggle {
+		float: right;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 40px;
+		padding: 0;
+		border: 0;
+		border-radius: 0 5px 5px 0;
+		background: none;
+		color: var(--nav-text);
+		cursor: pointer;
+		position: relative;
+	}
+	#theme-toggle:hover {
+		background: var(--accent);
+	}
+	#theme-toggle svg {
+		position: absolute;
+		transition: opacity .3s, transform .3s;
+	}
+	#theme-toggle .icon-sun,
+	[data-theme="dark"] #theme-toggle .icon-moon {
+		opacity: 0;
+		transform: rotate(-90deg) scale(.5);
+	}
+	[data-theme="dark"] #theme-toggle .icon-sun {
+		opacity: 1;
+		transform: none;
 	}
 
 	#banner nav li:first-child a {
@@ -353,30 +421,32 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	text-decoration: underline;
 }
 
-#extras .feeds a[type$='atom+xml'] {
+#extras .feeds a[type$='atom+xml']::before,
+#extras .social a::before {
+	content: "";
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin-right: 6px;
+	vertical-align: -2px;
+	background: no-repeat center / 16px 16px;
+}
+
+#extras .feeds a[type$='atom+xml']::before {
 	background-image: url('../images/icons/feed.svg');
-	background-repeat: no-repeat;
-	background-position: 0 50%;
-	background-size: 16px 16px;
-	padding-left: 22px;
 }
 
-#extras div[class='social'] a {
-	background-repeat: no-repeat;
-	background-position: 0 50%;
-	padding-left: 22px;
+#extras .social a[href*='github.com']::before {
+	background-image: url('../images/icons/github.png');
 }
 
-		/* Icons */
-		.social a[href*='github.com'] {
-			background-image: url('../images/icons/github.png');
-			background-size: 16px 16px;
-		}
-		.social a[href*='linkedin.com'] {background-image: url('../images/icons/linkedin.png');}
-		.social a[href*='x.com'] {
-			background-image: url('../images/icons/x.svg');
-			background-size: 16px 16px;
-		}
+#extras .social a[href*='linkedin.com']::before {
+	background-image: url('../images/icons/linkedin.png');
+}
+
+#extras .social a[href*='x.com']::before {
+	background-image: url('../images/icons/x.svg');
+}
 
 /***** Sections *****/
 /* Blog */
@@ -510,10 +580,26 @@ a.featured-badge:hover {
 	border-top: 3px solid var(--border-strong);
 }
 
-a.headerlink {
+/* the pilcrow is hidden, a chain-link icon is shown on heading hover */
+a.headerlink,
+a.headerlink:visited,
+a.headerlink:hover {
+    margin-left: 0.5rem;
+    padding: 0;
+    font-size: 0;
+    text-decoration: none;
     opacity: 0;
-    padding-left: 5px;
-    transition: opacity 0.15s;
+    transition: opacity 0.15s ease;
+}
+
+a.headerlink::after {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: var(--text-muted);
+    -webkit-mask: var(--icon-link) no-repeat center / contain;
+    mask: var(--icon-link) no-repeat center / contain;
 }
 
 h1:hover > a.headerlink,
@@ -521,12 +607,12 @@ h2:hover > a.headerlink,
 h3:hover > a.headerlink,
 h4:hover > a.headerlink,
 h5:hover > a.headerlink,
-h6:hover > a.headerlink,
-dt:hover > a.headerlink,
-caption:hover > a.headerlink,
-p.caption:hover > a.headerlink,
-div.code-block-caption:hover > a.headerlink,
-a.headerlink:focus {
+h6:hover > a.headerlink {
+    opacity: 0.7;
+}
+
+a.headerlink:hover,
+a.headerlink:focus-visible {
     opacity: 1;
 }
 
