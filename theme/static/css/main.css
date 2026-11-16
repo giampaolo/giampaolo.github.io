@@ -421,7 +421,6 @@ a.featured-badge:hover {
 }
 
 .archives {
-	width: 100%;
 	height: 100%;
 	margin: auto;
 	padding: 10px;
@@ -568,12 +567,20 @@ code {
         text-align: center;
     }
 
+    .archives {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
     .archives-right {
-        display: none;
+        float: none;
+        width: auto;
     }
 
     .archives-left {
-        width: 100%;
+        width: auto;
+        border-right: 0;
+        padding-right: 0;
     }
 
     .archives {
