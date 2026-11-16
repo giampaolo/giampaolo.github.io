@@ -407,8 +407,6 @@ thead th {
 	display: block;
 	clear: both;
 }
-li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
-#content > .hentry {padding: 1em 0;}
 .entry-title {font-size: 3em; margin-bottom: 10px; margin-top: 0;}
 .entry-title a:link, .entry-title a:visited {text-decoration: none; color: var(--text);}
 
@@ -439,11 +437,38 @@ a.featured-badge:hover {
 
 .hentry .post-info * {font-style: normal;}
 
-	/* Content */
-	.hentry footer {margin-bottom: 2em;}
-
 	/* Blog Index */
 	#posts-list {list-style: none; margin: 0;}
+
+#posts-list > li {
+	margin: 0;
+	padding: 1em 0;
+	border-bottom: 1px solid var(--border);
+}
+
+#posts-list > li:first-child {
+	padding-top: .4em;
+}
+
+#posts-list > li:last-child {
+	border-bottom: 0;
+}
+
+.post-title {
+	font-size: 1.5em;
+	margin: 0 0 .2em 0;
+	border-bottom: 0;
+}
+
+.post-title a:link,
+.post-title a:visited {
+	color: var(--text);
+}
+
+.post-summary {
+	margin: .3em 0 0 0;
+	color: var(--text-muted);
+}
 
 .entry-content {
 	padding-bottom:20px;
@@ -569,10 +594,6 @@ a.featured-badge:hover {
 .paginator .paginator-info {
 	color: var(--text-muted);
 	padding: 0 .25em;
-}
-
-.blogposts-separator {
-	border-top: 3px solid var(--border-strong);
 }
 
 /* the pilcrow is hidden, a chain-link icon is shown on heading hover */
