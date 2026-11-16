@@ -3,9 +3,8 @@
 {% block content %}
 
 <section id="content" class="body">
-{% if page_name == 'index' %}
-{% else %}
-    <h1 class="entry-title">Blog posts for {{ page_name }}</h1>
+{% if tag %}
+    <h1 class="entry-title">Blog posts tagged "{{ tag }}"</h1>
 {% endif %}
 
 <!-- blog posts -->
