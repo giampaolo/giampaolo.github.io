@@ -523,7 +523,7 @@ code {
     Mobile
 *****************/
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 940px) {
     .body,
     #banner nav,
     #banner nav ul,
