@@ -1,5 +1,7 @@
 import shlex
+import shutil
 import subprocess
+import tempfile
 import unittest
 
 
@@ -9,14 +11,15 @@ def sh(cmd):
 
 class TestSuite(unittest.TestCase):
 
+    # don't touch output/, "make autoreload" serves from there
     def setUp(self):
-        sh("make clean")
+        self.outdir = tempfile.mkdtemp(prefix="pelican-test-")
 
     def tearDown(self):
-        sh("make clean")
+        shutil.rmtree(self.outdir)
 
     def test_make_html(self):
-        sh("make html")
+        sh(f"make html OUTPUTDIR={self.outdir}")
 
     def test_make_build_prod(self):
-        sh("make build-prod")
+        sh(f"make build-prod OUTPUTDIR={self.outdir}")
