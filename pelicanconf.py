@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import datetime
 import functools
 
 AUTHOR = "Giampaolo Rodola"
@@ -30,13 +31,21 @@ CATEGORY_FEED_RSS = None
 TRANSLATION_FEED_ATOM = None
 TRANSLATION_FEED_RSS = None
 
+# --- footer
+
+CURRENT_YEAR = datetime.date.today().year
+
 # --- social widget
 
 SOCIAL = (
     ("GitHub", "https://github.com/giampaolo"),
     ("LinkedIn", "https://www.linkedin.com/in/grodola/"),
     ("X", "https://x.com/grodola"),
+    ("Email", "mailto:g.rodola@gmail.com"),
 )
+
+GITHUB_REPO = "https://github.com/giampaolo/giampaolo.github.io"
+EDIT_URL = f"{GITHUB_REPO}/edit/master/content"
 
 # --- menu
 
@@ -87,7 +96,7 @@ TAG_URL = "tags/{slug}"
 
 PLUGIN_PATHS = ["plugins"]
 # headerid is for RST; Markdown posts use the `toc` extension below.
-PLUGINS = ["headerid"]
+PLUGINS = ["headerid", "gitdate"]
 
 MARKDOWN = {
     "extensions": [

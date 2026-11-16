@@ -45,7 +45,7 @@ html:  ## Generate html.
 build-prod:  ## Generate html for production.
 	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)
 
-serve:  ## HTTP serve in dev mode
+autoreload:  ## HTTP serve in dev mode
 	$(PYTHON) -m pelican -lr $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
 create-blogpost:  ## Create a new blog post template.

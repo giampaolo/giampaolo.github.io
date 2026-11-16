@@ -58,13 +58,6 @@
     animation-duration: .35s;
 }
 
-/* black icons */
-[data-theme="dark"] #extras .feeds a[type$='atom+xml']::before,
-[data-theme="dark"] #extras .social a[href*='github.com']::before,
-[data-theme="dark"] #extras .social a[href*='x.com']::before {
-    filter: invert(1);
-}
-
 /***** Global *****/
 /* Body */
 body {
@@ -386,89 +379,82 @@ div.figure p.caption, figure p.caption { /* margin provided by figure */
 	Extras
 *****************/
 #extras {
-	margin: 2em auto 3em auto;
-	padding: 1.5em 0 0 0;
-	border-top: 1px solid var(--border-strong);
-	font-size: 15px;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: .5em 12px;
+	margin: 0 auto 2em auto;
+	padding: 0 20px;
+	box-sizing: border-box;
+}
+
+.footer-text {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 2em 3em;
-	align-items: flex-start;
-	overflow: visible;
-}
-
-#extras > div {
+	gap: .3em .7em;
 	color: var(--text-muted);
-	float: none;
-	width: auto;
+	font-size: 14px;
+	line-height: 1.4;
 }
 
-#extras ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	display: flex;
-	flex-wrap: wrap;
-	gap: .25em 1.25em;
+/* on all but the last, so a wrapped row never starts with a dot */
+.footer-text > span:not(:last-child)::after {
+	content: "\00B7";
+	margin-left: .7em;
+	opacity: .7;
 }
 
-#extras ul li {
-	margin: 0;
-	width: auto;
-}
-
-#extras h2 {
+.footer-text a,
+.footer-text a:visited {
 	color: var(--text-muted);
-	font-size: .8em;
-	font-weight: 600;
-	letter-spacing: .06em;
-	text-transform: uppercase;
-	margin: 0 0 .75em 0;
-	padding: 0;
-	border-bottom: none;
+	text-decoration: underline;
+	text-decoration-color: var(--border-strong);
+	text-underline-offset: 3px;
 }
 
-#extras a,
-#extras a:link,
-#extras a:visited {
-	color: var(--text);
-	display: inline-block;
-	border-bottom: none;
-	padding: .15em 0;
+.footer-text a:hover {
+	color: var(--link);
+	text-decoration-color: currentColor;
+}
+
+.footer-icons {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	margin-left: auto;
+	/* icon glyph, not its 36px hit area, lines up with the card */
+	margin-right: -9px;
+}
+
+.footer-icons a,
+.footer-icons a:visited {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	color: var(--text-muted);
 	text-decoration: none;
 }
 
-#extras a:hover {
+.footer-icons a:hover {
 	color: var(--link);
-	text-decoration: underline;
 }
 
-#extras .feeds a[type$='atom+xml']::before,
-#extras .social a::before {
+.footer-icons a::before {
 	content: "";
-	display: inline-block;
-	width: 16px;
-	height: 16px;
-	margin-right: 6px;
-	vertical-align: -2px;
-	background: no-repeat center / 16px 16px;
+	width: 18px;
+	height: 18px;
+	background: currentColor;
+	-webkit-mask: var(--icon) no-repeat center / contain;
+	mask: var(--icon) no-repeat center / contain;
 }
 
-#extras .feeds a[type$='atom+xml']::before {
-	background-image: url('../images/icons/feed.svg');
-}
-
-#extras .social a[href*='github.com']::before {
-	background-image: url('../images/icons/github.png');
-}
-
-#extras .social a[href*='linkedin.com']::before {
-	background-image: url('../images/icons/linkedin.png');
-}
-
-#extras .social a[href*='x.com']::before {
-	background-image: url('../images/icons/x.svg');
-}
+.footer-icons a[href*='github.com'] {--icon: url('../images/icons/github.svg');}
+.footer-icons a[href*='linkedin.com'] {--icon: url('../images/icons/linkedin.svg');}
+.footer-icons a[href*='x.com'] {--icon: url('../images/icons/x.svg');}
+.footer-icons a[href^='mailto:'] {--icon: url('../images/icons/mail.svg');}
+.footer-icons a.feed {--icon: url('../images/icons/feed.svg');}
 
 /***** Sections *****/
 /* Blog */

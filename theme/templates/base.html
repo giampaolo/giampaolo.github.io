@@ -60,38 +60,32 @@
     {% endblock %}
 
     <!-- Footer -->
-    <section id="extras" class="body">
-    {% if LINKS %}
-        <div class="blogroll">
-            <h2>{{ LINKS_WIDGET_NAME | default('links') }}</h2>
-            <ul>
-            {% for name, link in LINKS %}
-                <li><a href="{{ link }}">{{ name }}</a></li>
-            {% endfor %}
-            </ul>
-        </div><!-- /.blogroll -->
+    {% set content = article or page %}
+    {# posts: their own metadata; pages: last git commit #}
+    {% if article %}
+        {% set updated = article.modified or article.date %}
+    {% elif page and page.git_updated %}
+        {% set updated = page.git_updated %}
+    {% else %}
+        {% set updated = articles[0].date %}
     {% endif %}
-
-    {% if SOCIAL %}
-        <div class="social">
-            <h2>Social</h2>
-            <ul>
-            {% for name, link in SOCIAL %}
-                <li><a href="{{ link }}">{{ name }}</a></li>
-            {% endfor %}
-            </ul>
-        </div><!-- /.social -->
-    {% endif %}
-
-    {% if FEED_ALL_ATOM %}
-        <div class="feeds">
-            <h2>Feed</h2>
-            <ul>
-                <li><a href="{{ FEED_DOMAIN }}/{% if FEED_ALL_ATOM_URL %}{{ FEED_ALL_ATOM_URL }}{% else %}{{ FEED_ALL_ATOM }}{% endif %}" type="application/atom+xml" rel="alternate">atom</a></li>
-            </ul>
+    <footer id="extras" class="body">
+        <div class="footer-text">
+            <span>&copy; 2008-{{ CURRENT_YEAR }} {{ AUTHOR }}</span>
+            <span>Updated {{ updated.strftime('%Y-%m-%d') }}</span>
+            {% if content and EDIT_URL %}
+            <span><a href="{{ EDIT_URL }}/{{ content.get_relative_source_path() }}">Edit on GitHub</a></span>
+            {% endif %}
         </div>
-    {% endif %}
-    </section>
+        <div class="footer-icons">
+        {% for name, link in SOCIAL %}
+            <a href="{{ link }}" title="{{ name }}" aria-label="{{ name }}"></a>
+        {% endfor %}
+        {% if FEED_ALL_ATOM %}
+            <a class="feed" href="{{ FEED_DOMAIN }}/{% if FEED_ALL_ATOM_URL %}{{ FEED_ALL_ATOM_URL }}{% else %}{{ FEED_ALL_ATOM }}{% endif %}" type="application/atom+xml" rel="alternate" title="Atom feed" aria-label="Atom feed"></a>
+        {% endif %}
+        </div>
+    </footer>
     <!-- /Footer -->
 
 <!-- Open all external links in a new tab -->
