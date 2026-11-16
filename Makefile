@@ -1,4 +1,5 @@
 PYTHON?=python3
+PIP?=$(PYTHON) -m pip
 PELICAN?=pelican
 PELICANOPTS=
 
@@ -37,7 +38,7 @@ install-sysdeps:  ## Install system deps
 	sudo apt install markdownlint
 
 install-pydeps:  ## Install python deps
-	$(PYTHON) -m pip install -r requirements.txt
+	$(PIP) install -r requirements.txt
 
 html:  ## Generate html.
 	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
