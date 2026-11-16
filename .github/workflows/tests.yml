@@ -3,45 +3,33 @@ name: tests
 concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.sha || '' }}
   cancel-in-progress: true
+permissions:
+  contents: read
 jobs:
-  # Run unit tests
   tests:
-    name: "py-${{ matrix.python-version }}, ${{ matrix.os }}"
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.11"]
-        os: [ubuntu-latest]
-
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Set up Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install pydeps ${{ matrix.os }}
-        run: |
-          make install-pydeps
-
-      - name: Tests
-        run: |
-          make test
-
-  # Run linters
-  linters:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
-      - name: "Run linters"
-        run: |
-          sudo apt install markdownlint
-          python3 -m pip install --upgrade black ruff rstcheck toml-sort
-          python3 -m pip freeze
-          make lint-all
+          cache: pip
+      - name: Install deps
+        run: make install-pydeps
+      - name: Tests
+        run: make test
+
+  linters:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install deps
+        run: make install-sysdeps install-pydeps
+      - name: Linters
+        run: make lint-all
