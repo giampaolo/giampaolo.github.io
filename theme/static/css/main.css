@@ -448,6 +448,11 @@ a.featured-badge:hover {
 	margin:4px;
 }
 
+.about-photo {
+	float: right;
+	padding: 10px;
+}
+
 .paginator {
 	display: flex;
 	gap: .5em;
@@ -555,6 +560,12 @@ code {
     table {
         display: block;
         overflow-x: auto;
+    }
+
+    .about-photo {
+        float: none;
+        padding: 0;
+        text-align: center;
     }
 
     .archives-right {

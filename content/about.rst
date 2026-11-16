@@ -3,7 +3,7 @@ About
 
 .. raw:: html
 
-    <div style="float:right; padding:10px">
+    <div class="about-photo">
         <a href="/images/me-chicago.jpg">
         <img alt="me in Chicago in 2016" src="/images/me-chicago.jpg" style="width:220px; height:220px" />
         </a>
