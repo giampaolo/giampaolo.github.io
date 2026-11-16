@@ -1,9 +1,10 @@
+import shlex
 import subprocess
 import unittest
 
 
 def sh(cmd):
-    subprocess.check_call(cmd, shell=True)
+    subprocess.check_call(shlex.split(cmd))
 
 
 class TestSuite(unittest.TestCase):

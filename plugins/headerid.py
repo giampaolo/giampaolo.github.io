@@ -1,7 +1,7 @@
-from pelican import readers
-from pelican.readers import PelicanHTMLTranslator
-from pelican import signals
 from docutils import nodes
+from pelican import readers
+from pelican import signals
+from pelican.readers import PelicanHTMLTranslator
 
 LINK_CHAR = "¶"
 
@@ -30,8 +30,9 @@ def register():
                 # add permalink anchor
                 if close_tag.startswith("</h"):
                     self.body.append(
-                        '<a class="headerlink" href="#%s" title="Permalink to'
-                        ' this headline">%s</a>' % (anchor_name, LINK_CHAR)
+                        f'<a class="headerlink" href="#{anchor_name}"'
+                        ' title="Permalink to this headline">'
+                        f"{LINK_CHAR}</a>"
                     )
             PelicanHTMLTranslator.depart_title(self, node)
 

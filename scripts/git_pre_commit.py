@@ -45,7 +45,7 @@ def hilite(s, ok=True, bold=False):
         attr.append("31")
     if bold:
         attr.append("1")
-    return "\x1b[%sm%s\x1b[0m" % (";".join(attr), s)
+    return "\x1b[{}m{}\x1b[0m".format(";".join(attr), s)
 
 
 def exit(msg):
@@ -67,8 +67,7 @@ def sh(cmd):
         raise RuntimeError(stderr)
     if stderr:
         print(stderr, file=sys.stderr)
-    if stdout.endswith("\n"):
-        stdout = stdout[:-1]
+    stdout = stdout.removesuffix("\n")
     return stdout
 
 
@@ -92,7 +91,7 @@ def git_commit_files():
 
 
 def black(files):
-    print("running black (%s)" % len(files))
+    print(f"running black ({len(files)})")
     cmd = [PYTHON, "-m", "black", "--check", "--safe"] + files
     if subprocess.call(cmd) != 0:
         return exit(
@@ -102,7 +101,7 @@ def black(files):
 
 
 def ruff(files):
-    print("running ruff (%s)" % len(files))
+    print(f"running ruff ({len(files)})")
     cmd = [PYTHON, "-m", "ruff", "check", "--no-cache"] + files
     if subprocess.call(cmd) != 0:
         return exit(
@@ -112,14 +111,14 @@ def ruff(files):
 
 
 def rstcheck(files):
-    print("running rst linter (%s)" % len(files))
+    print(f"running rst linter ({len(files)})")
     cmd = ["rstcheck", "--config=pyproject.toml"] + files
     if subprocess.call(cmd) != 0:
         return sys.exit("RST code didn't pass style check")
 
 
 def mdlint(files):
-    print("running md linter (%s)" % len(files))
+    print(f"running md linter ({len(files)})")
     cmd = ["mdl"] + files
     if subprocess.call(cmd) != 0:
         return sys.exit("MD code didn't pass style check")

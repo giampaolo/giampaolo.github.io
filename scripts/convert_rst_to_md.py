@@ -72,9 +72,10 @@ def rst_body_to_md(rst_body):
         input=rst_body,
         capture_output=True,
         text=True,
+        check=False,
     )
     if result.returncode != 0:
-        print("pandoc stderr: %s" % result.stderr, file=sys.stderr)
+        print(f"pandoc stderr: {result.stderr}", file=sys.stderr)
     return result.stdout
 
 
@@ -109,13 +110,13 @@ def convert_file(rst_path):
     # Build MD header
     header_lines = []
     if title:
-        header_lines.append("Title: %s" % title)
+        header_lines.append(f"Title: {title}")
     if "date" in metadata:
-        header_lines.append("Date: %s" % metadata["date"])
+        header_lines.append(f"Date: {metadata['date']}")
     if "tags" in metadata:
-        header_lines.append("Tags: %s" % metadata["tags"])
+        header_lines.append(f"Tags: {metadata['tags']}")
     if "slug" in metadata:
-        header_lines.append("Slug: %s" % metadata["slug"])
+        header_lines.append(f"Slug: {metadata['slug']}")
     header_lines.append("Authors: Giampaolo Rodola")
 
     md_content = "\n".join(header_lines) + "\n\n" + md_body.lstrip("\n")
@@ -125,7 +126,7 @@ def convert_file(rst_path):
     subprocess.check_call(["git", "mv", rst_path, md_path])
     with open(md_path, "w") as f:
         f.write(md_content)
-    print("%s -> %s" % (rst_path, md_path))
+    print(f"{rst_path} -> {md_path}")
 
 
 def main():
@@ -134,7 +135,7 @@ def main():
         sys.exit(1)
     rst_path = sys.argv[1]
     if not os.path.isfile(rst_path):
-        print("File not found: %s" % rst_path, file=sys.stderr)
+        print(f"File not found: {rst_path}", file=sys.stderr)
         sys.exit(1)
     convert_file(rst_path)
 

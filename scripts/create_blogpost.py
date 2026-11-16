@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import os
 import datetime
+import os
 
 MD_TEMPLATE = """\
 Title: My title

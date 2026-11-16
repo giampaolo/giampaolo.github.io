@@ -281,9 +281,9 @@ def is_major(pr):
 
 
 def minor_line(prs):
-    links = []
-    for pr in prs:
-        links.append(f"`{pr_label(pr)} <{pr['html_url']}>`__" + status(pr))
+    links = [
+        f"`{pr_label(pr)} <{pr['html_url']}>`__" + status(pr) for pr in prs
+    ]
     return "* Minor: " + ", ".join(links)
 
 
@@ -318,9 +318,7 @@ def render(prs):
         if not any(is_major(pr) for pr in repo_prs):
             continue
         title = f"`{repo} <https://github.com/{repo}>`__"
-        out.append(title)
-        out.append("-" * len(title))
-        out.append("")
+        out.extend((title, "-" * len(title), ""))
         out.extend(pr_block(repo_prs))
 
     return "\n".join(out)
