@@ -69,10 +69,11 @@ h1, h2, h3, h4, h5, h6 {
 	margin-top: 30px;
 	margin-bottom: 20px;
     font-family: 'Yanone Kaffeesatz', arial, serif;
-    border-bottom: 1px solid var(--border);
 }
 
-h3, h4, h5, h6 { margin-top: .8em; border-bottom: none; }
+h2 { border-bottom: 1px solid var(--border); }
+
+h3, h4, h5, h6 { margin-top: .8em; }
 
 hr { border: 2px solid var(--border); }
 
@@ -225,7 +226,6 @@ thead th {
 		font-size: 3.571em;
 		line-height: 1;
 		margin: 28px 0 14px 0;
-		border-bottom: none;
 	}
 	#banner h1 a:link, #banner h1 a:visited {
 		color: var(--text);
@@ -508,13 +508,25 @@ a.featured-badge:hover {
 	margin: 30px 0 .6rem 0;
 }
 
-.archives ul.tag-list {
+ul.tag-list {
 	list-style: none;
 	margin: 0;
 }
 
+.tag-columns {
+	columns: 200px;
+	column-gap: 48px;
+	margin-top: 1em;
+}
+
 .tag-list li {
 	margin: 2px 0;
+}
+
+.tag-columns li {
+	margin: 0;
+	padding: 2px 0;
+	break-inside: avoid;
 }
 
 .tag-list a,

@@ -1,16 +1,12 @@
 {% extends "base.html" %}
-
 {% block title %}Tags - {{ SITENAME }}{% endblock %}
-
 {% block content %}
-
 <section id="content" class="body">
-    <h1>Blog post tags</h1>
-    <ul>
-    {% for tag, articles in tags|sort %}
-        <li><a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a> ({{ articles|count }})</li>
+    <h1 class="entry-title">Tags</h1>
+    <ul class="tag-list tag-columns">
+    {% for tag, articles in tags|sort if tag.name != 'featured' %}
+        <li><a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}<span class="tag-count">{{ articles|count }}</span></a></li>
     {% endfor %}
     </ul>
 </section>
-
 {% endblock %}
