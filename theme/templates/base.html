@@ -23,8 +23,10 @@
     <header id="banner" class="body">
         <h1><a href="{{ SITEURL }}/">{{ SITENAME }} {% if SITESUBTITLE %}<strong>{{ SITESUBTITLE }}</strong>{% endif %}</a></h1>
         <nav><ul>
+        {% set path = '/' + output_file|replace('.html', '') %}
+        {% set is_blog = path.startswith(('/index', '/blog/', '/tags/')) %}
         {% for title, link in MENUITEMS %}
-            <li><a href="{{ link if '://' in link else SITEURL + link }}">{{ title }}</a></li>
+            <li{% if link == path or (link == '/' and is_blog) %} class="active"{% endif %}><a href="{{ link if '://' in link else SITEURL + link }}">{{ title }}</a></li>
         {% endfor %}
         </ul></nav>
     </header><!-- /#banner -->
