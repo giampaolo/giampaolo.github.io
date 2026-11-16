@@ -455,6 +455,10 @@ a.featured-badge:hover {
 	padding: 10px;
 }
 
+.about-photo ~ .section {
+	clear: right;
+}
+
 .paginator {
 	display: flex;
 	gap: .5em;
