@@ -11,7 +11,7 @@ Here we are. It's been a long time since my last blog post and my last `psutil <
 
     <div>
         <a href="/images/me-with-jay.jpg">
-        <img src="/images/me-with-jay.jpg" style="width:750px; height:500px" />
+        <img src="/images/me-with-jay.jpg" style="width:750px" />
         </a>
     </div>
 
