@@ -40,6 +40,6 @@ jobs:
       - name: "Run linters"
         run: |
           sudo apt install markdownlint
-          python3 -m pip install --upgrade black ruff rstcheck
+          python3 -m pip install --upgrade black ruff rstcheck toml-sort
           python3 -m pip freeze
           make lint-all
