@@ -552,6 +552,11 @@ code {
     	padding: 5px 0.5em;
     }
 
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+
     .archives-right {
         display: none;
     }
