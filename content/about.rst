@@ -100,6 +100,12 @@ In `2010 <https://mail.python.org/pipermail/python-committers/2010-April/000891.
      - Solaris `/dev/poll` support
 
 
+
+Contributions to other projects
+-------------------------------
+
+The pull requests I made to other people's projects on GitHub are listed `here </contributions>`__.
+
 Python recipes
 --------------
 

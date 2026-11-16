@@ -51,6 +51,9 @@ serve:  ## HTTP serve in dev mode
 create-blogpost:  ## Create a new blog post template.
 	@$(PYTHON) scripts/create_blogpost.py
 
+update-contributions:  ## Regenerate the contributions page from GitHub.
+	@$(PYTHON) scripts/update_contributions.py
+
 test:  ## Run tests.
 	$(PYTHON) -m pytest $(PYTEST_ARGS) $(ARGS) tests.py
 
