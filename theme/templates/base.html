@@ -55,7 +55,7 @@
         {% set path = '/' + output_file|replace('.html', '') %}
         {% set is_blog = path.startswith(('/index', '/blog/', '/tags/')) %}
         {% for title, link in MENUITEMS %}
-            <li{% if link == path or (link == '/' and is_blog) %} class="active"{% endif %}><a href="{{ link if '://' in link else SITEURL + link }}">{{ title }}</a></li>
+            <li{% if link == path or (link == '/' and is_blog) %} class="active"{% endif %}><a href="{{ link if '://' in link else SITEURL + link }}" data-text="{{ title }}">{{ title }}</a></li>
         {% endfor %}
         </ul></nav>
     </header><!-- /#banner -->
