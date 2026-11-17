@@ -55,6 +55,7 @@ MENUITEMS = (
     ("Blog", "/"),
     ("Archives", "/archives"),
     ("Donate", "https://psutil.io/funding/"),
+    ("Setup", "/setup"),
     ("About", "/about"),
 )
 
