@@ -8,8 +8,12 @@
 <ol id="posts-list" class="hfeed">
 {% for article in articles_page.object_list %}
     <li><article class="hentry">
-        <h2 class="post-title"><a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark">{{ article.title }}</a></h2>
-        {% set show_featured_in_meta = true %}
+        <div class="post-header">
+            <h2 class="post-title"><a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark">{{ article.title }}</a></h2>
+            {% if article.tags|selectattr('name', 'equalto', 'featured')|list %}
+                <a class="featured-badge" href="{{ SITEURL }}/tags/featured">Featured</a>
+            {% endif %}
+        </div>
         {% include 'article_infos.html' %}
         <p class="post-summary">{{ article.summary|replace('¶', '')|striptags|truncate(250) }}</p>
     </article></li>

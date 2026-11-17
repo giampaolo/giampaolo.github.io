@@ -7,7 +7,7 @@ minimalist, and my setup is extremely simple: I spend most of my day in 2
 programs, the editor and the terminal, and that's where most of the
 customization goes. The rest is just scripts to automate the Linux installation
 and a bunch of key bindings to switch desktops and resize windows, since I tend
-to avoid the mouse as much as I can.
+to avoid the mouse whenever I can.
 
 Hardware
 --------
