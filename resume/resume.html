@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ basics.name }} — Resume</title>
+<meta name="description" content="{{ basics.name }} — {{ basics.label }}">
+<meta property="og:title" content="{{ basics.name }} — Resume">
+<meta property="og:description" content="{{ basics.name }} — {{ basics.label }}">
 <base target="_blank">
 <style>{{ css }}</style>
 </head>
@@ -13,14 +17,15 @@
   <header class="head">
     <h1>{{ basics.name }}</h1>
     <p class="label">{{ basics.label }}</p>
-    <p class="contact">
-      <a href="mailto:{{ basics.email }}">{{ basics.email }}</a>
-      {% if basics.phone %}
-      · <a href="tel:{{ basics.phone | replace(' ', '') }}">{{ basics.phone }}</a>
+    <p class="contact links">
+      {% if basics.url %}
+      <a href="{{ basics.url }}">{{ icons.website }}{{ basics.url | strip_scheme }}</a>
       {% endif %}
       {% for p in basics.profiles %}
-      · <a href="{{ p.url }}">{{ p.url | strip_scheme }}</a>
+      <a href="{{ p.url }}">{{ icons[p.network | lower] }}{{ p.url | strip_scheme }}</a>
       {% endfor %}
+      <a href="mailto:{{ basics.email }}">{{ icons.mail }}{{ basics.email }}</a>
+      <a class="pdf" href="resume.pdf">{{ icons.pdf }}PDF version</a>
     </p>
     <p class="contact">
       {{ basics.location.city }}, {{ basics.location.country }}
@@ -41,41 +46,11 @@
 
   {% if projects %}
   <section class="projects">
-    <h2>Open source, writing and talks</h2>
+    <h2>Open source</h2>
     {% for p in projects %}
     <div class="entry">
       <span class="when">{{ p.when }}</span>
       <p><a class="name" href="{{ p.url }}">{{ p.name }}</a>: {{ p.summary | md_inline }}</p>
-    </div>
-    {% endfor %}
-    {% for w in writing %}
-    <div class="entry">
-      <span class="when">{{ w.year }}</span>
-      <p><a class="name" href="{{ w.url }}">{{ w.name }}</a>: blog post.</p>
-    </div>
-    {% endfor %}
-    {% for t in talks %}
-    <div class="entry">
-      <span class="when">{{ t.year }}</span>
-      <p><a class="name" href="{{ t.url }}">{{ t.name }}</a>: talk at {{ t.where }}.</p>
-    </div>
-    {% endfor %}
-    {% for i in interviews %}
-    <div class="entry">
-      <span class="when">{{ i.year }}</span>
-      <p><a class="name" href="{{ i.url }}">{{ i.name }}</a>: interview.</p>
-    </div>
-    {% endfor %}
-  </section>
-  {% endif %}
-
-  {% if endorsements %}
-  <section class="projects">
-    <h2>Sponsors and endorsements</h2>
-    {% for e in endorsements %}
-    <div class="entry">
-      <span class="when">{{ e.year or "" }}</span>
-      <p><a class="name" href="{{ e.url }}">{{ e.name }}</a>: {{ e.summary | md_inline }}</p>
     </div>
     {% endfor %}
   </section>
@@ -100,6 +75,42 @@
       <p class="stack"><strong>Stack:</strong> {{ w.stack | join(", ") }}</p>
       {% endif %}
     </article>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if writing or talks or interviews %}
+  <section class="projects">
+    <h2>Writing and talks</h2>
+    {% for w in writing %}
+    <div class="entry">
+      <span class="when">{{ w.year }}</span>
+      <p><a class="name" href="{{ w.url }}">{{ w.name }}</a>: blog post.</p>
+    </div>
+    {% endfor %}
+    {% for t in talks %}
+    <div class="entry">
+      <span class="when">{{ t.year }}</span>
+      <p><a class="name" href="{{ t.url }}">{{ t.name }}</a>: talk at {{ t.where }}.</p>
+    </div>
+    {% endfor %}
+    {% for i in interviews %}
+    <div class="entry">
+      <span class="when">{{ i.year }}</span>
+      <p><a class="name" href="{{ i.url }}">{{ i.name }}</a>: interview.</p>
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if endorsements %}
+  <section class="projects">
+    <h2>Open source support</h2>
+    {% for e in endorsements %}
+    <div class="entry">
+      <span class="when">{{ e.year or "" }}</span>
+      <p><a class="name" href="{{ e.url }}">{{ e.name }}</a>: {{ e.summary | md_inline }}</p>
+    </div>
     {% endfor %}
   </section>
   {% endif %}

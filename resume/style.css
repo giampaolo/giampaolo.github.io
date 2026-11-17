@@ -1,6 +1,29 @@
 /* Single column resume. Serif text, dates hanging in a left gutter. */
 
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Source+Sans+3:wght@400;600&display=swap');
+/* variable fonts, latin subset; build.py embeds them into the HTML */
+@font-face {
+    font-family: "Source Serif 4";
+    font-style: normal;
+    font-weight: 200 900;
+    font-display: swap;
+    src: url("fonts/source-serif-4.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Source Serif 4";
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url("fonts/source-serif-4-italic.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Source Sans 3";
+    font-style: normal;
+    font-weight: 200 900;
+    font-display: swap;
+    src: url("fonts/source-sans-3.woff2") format("woff2");
+}
 
 :root {
     --text: #1f2328;
@@ -8,7 +31,7 @@
     --accent: #111111;
     --link: #7a1f1f;
     --rule: #b9bcc0;
-    --gutter: 28mm;
+    --gutter: 8.722rem;
 }
 
 @page {
@@ -18,7 +41,7 @@
 
 html {
     font-family: "Source Serif 4", Georgia, serif;
-    font-size: 9.3pt;
+    font-size: 9.1pt;
     line-height: 1.35;
     color: var(--text);
 }
@@ -28,21 +51,77 @@ body {
 }
 
 @media screen {
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        background: #eaecef;
+    }
+
     .page {
-        max-width: 180mm;
-        margin: 0 auto;
-        padding: 12mm 15mm;
+        box-sizing: border-box;
+        max-width: 860px;
+        margin: 2rem auto;
+        padding: 2.8rem 3.5rem;
+        background: #fff;
+        border-radius: 10px;
+    }
+}
+
+@media print {
+    /* weasyprint's automatic optical size is wider: 3 pages */
+    html {
+        font-variation-settings: "opsz" 14;
+    }
+
+    /* weasyprint draws weight 400 with the default ExtraLight instance */
+    .head .contact,
+    .entry .when,
+    .job .stack {
+        font-variation-settings: "wght" 400;
+    }
+
+    .job .stack strong {
+        font-variation-settings: "wght" 600;
+    }
+
+    .head .links a.pdf {
+        display: none;
     }
 }
 
 a,
 a:visited {
     color: var(--link);
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-color: rgba(122, 31, 31, 0.35);
+    text-underline-offset: 2px;
 }
 
 a:hover {
+    text-decoration-color: var(--link);
+}
+
+.projects .name,
+.projects .name:visited,
+.job h3 a,
+.job h3 a:visited,
+.head .contact a,
+.head .contact a:visited {
+    text-decoration: none;
+}
+
+.projects .name:hover,
+.job h3 a:hover,
+.head .contact a:hover {
     text-decoration: underline;
+    text-decoration-color: var(--link);
+}
+
+a:focus-visible {
+    outline: 2px solid var(--link);
+    outline-offset: 2px;
 }
 
 p {
@@ -59,7 +138,7 @@ li {
 }
 
 code {
-    font-size: 8.6pt;
+    font-size: 0.945rem;
 }
 
 .head .contact,
@@ -71,12 +150,20 @@ code {
 /* ---------- Header ---------- */
 
 .head {
+    position: relative;
     border-bottom: 2.5pt solid var(--accent);
     padding-bottom: 0.7em;
 }
 
+.head .links a.pdf {
+    position: absolute;
+    top: 0.6rem;
+    right: 0;
+    margin-right: 0;
+}
+
 .head h1 {
-    font-size: 24pt;
+    font-size: 2.637rem;
     font-weight: 700;
     margin: 0;
     color: var(--accent);
@@ -86,19 +173,30 @@ code {
 
 .head .label {
     color: var(--muted);
-    font-size: 12.5pt;
+    font-size: 1.374rem;
     font-style: italic;
     margin: 0.25em 0 0 0;
 }
 
 .head .contact {
     color: var(--muted);
-    font-size: 9pt;
+    font-size: 0.989rem;
     margin: 0.4em 0 0 0;
 }
 
 .head .contact a {
     white-space: nowrap;
+}
+
+.head .links a {
+    margin-right: 1.1em;
+}
+
+.head .links svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
+    margin-right: 0.35em;
 }
 
 .head .contact + .contact {
@@ -107,12 +205,11 @@ code {
 
 .about {
     margin-top: 0.8em;
-    font-size: 10pt;
+    font-size: 1.099rem;
 }
 
 /* ---------- Sections ---------- */
 
-.about,
 .entry {
     margin-left: var(--gutter);
 }
@@ -124,14 +221,14 @@ code {
 }
 
 h2 {
-    font-size: 12.5pt;
+    font-size: 1.374rem;
     font-weight: 700;
     color: var(--accent);
     margin: 0.9em 0 0.4em 0;
 }
 
 .about .facts {
-    font-size: 9.3pt;
+    font-size: 1.022rem;
 }
 
 .entry {
@@ -150,37 +247,37 @@ h2 {
     font-weight: 700;
 }
 
-/* too many links in a row to colour them all */
-.projects p a:not(.name) {
-    color: inherit;
-    text-decoration: underline;
-    text-decoration-color: var(--rule);
-    text-underline-offset: 2px;
-}
-
 /* ---------- Jobs ---------- */
 
+/* a job may split across pages, but only between its blocks */
 .job {
     margin-bottom: 0.55em;
+}
+
+.job p,
+.job li {
     page-break-inside: avoid;
 }
 
-.job h3 {
-    font-size: 11pt;
-    font-weight: 700;
-    margin: 0;
-    color: var(--accent);
+.job-head {
+    page-break-after: avoid;
 }
 
-.job h3 a,
-.job h3 a:visited {
+.job .stack {
+    page-break-before: avoid;
+}
+
+.job h3 {
+    font-size: 1.209rem;
+    font-weight: 700;
+    margin: 0;
     color: var(--accent);
 }
 
 .job .role {
     font-weight: 400;
     font-style: italic;
-    font-size: 9.3pt;
+    font-size: 1.022rem;
     color: var(--muted);
     margin-left: 0.6em;
 }
@@ -190,9 +287,9 @@ h2 {
     position: absolute;
     left: calc(-1 * var(--gutter));
     top: 0.2em;
-    width: 26mm;
+    width: 8.099rem;
     color: var(--muted);
-    font-size: 8.6pt;
+    font-size: 0.945rem;
     line-height: 1.3;
 }
 
@@ -202,10 +299,44 @@ h2 {
 
 .job .stack {
     color: var(--muted);
-    font-size: 8.8pt;
+    font-size: 0.967rem;
 }
 
 .job .stack strong {
     color: var(--accent);
     font-weight: 600;
+}
+
+@media screen and (max-width: 600px) {
+    .page {
+        margin: 0;
+        padding: 1.5rem 1rem;
+        border-radius: 0;
+    }
+
+    .entry {
+        margin-left: 0;
+    }
+
+    .projects .entry {
+        margin-bottom: 0.7em;
+    }
+
+    .head .links a.pdf {
+        position: static;
+    }
+
+    .entry .when {
+        position: static;
+        display: block;
+        width: auto;
+    }
+
+    .job .where {
+        display: inline;
+    }
+
+    .job .where::before {
+        content: " · ";
+    }
 }

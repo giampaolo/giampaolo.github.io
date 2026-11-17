@@ -5,6 +5,7 @@ Reads:
     resume.yaml           data (JSON Resume-ish)
     resume.html           Jinja template
     style.css             stylesheet (embedded into the HTML)
+    fonts/*.woff2         fonts (embedded into the HTML)
 
 Writes:
     _build/resume.html    always
@@ -12,6 +13,7 @@ Writes:
 """
 
 import argparse
+import base64
 import re
 import sys
 from pathlib import Path
@@ -160,17 +162,36 @@ def load_avatar(path):
     return f"data:image/{mime};base64,{data}"
 
 
+def load_icons(path):
+    icons = {}
+    for f in sorted(path.glob("*.svg")):
+        svg = f.read_text().replace("<svg ", '<svg aria-hidden="true" ', 1)
+        icons[f.stem] = Markup(svg)
+    return icons
+
+
+def embed_fonts(css_text, base_dir):
+    def repl(m):
+        data = base64.b64encode((base_dir / m.group(1)).read_bytes()).decode()
+        return f'url("data:font/woff2;base64,{data}")'
+
+    return re.sub(r'url\("(fonts/[^"]+\.woff2)"\)', repl, css_text)
+
+
 def main():
     data = load_yaml(YAML_PATH)
     links = data.get("links") or {}
-    css_text = Path(CSS_PATH).read_text()
+    css_text = embed_fonts(Path(CSS_PATH).read_text(), Path(CSS_PATH).parent)
     avatar_uri = load_avatar(Path(TEMPLATE_PATH).parent / "me.jpg")
+    icons = load_icons(Path(TEMPLATE_PATH).parent / "icons")
 
     template_path = Path(TEMPLATE_PATH)
     env = build_env(template_path.parent, links=links)
     template = env.get_template(template_path.name)
 
-    html = template.render(css=Markup(css_text), avatar=avatar_uri, **data)
+    html = template.render(
+        css=Markup(css_text), avatar=avatar_uri, icons=icons, **data
+    )
     Path(HTML_OUT).parent.mkdir(parents=True, exist_ok=True)
     Path(HTML_OUT).write_text(html)
     print(f"Wrote {HTML_OUT}", file=sys.stderr)
