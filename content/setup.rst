@@ -35,9 +35,11 @@ Python
 
 * 🐞 **Shell**: `IPython`_, `pdb++`_, `colored-traceback`_
 * 🧪 **Tests**: `pytest`_, with `pytest-xdist`_ and `pytest-instafail`_
-* 🧹 **Linters / formatters** (on every project):
-    * Python: `black`_ + `ruff`_ everywhere, occasionally `vulture`_ (to delete dead code)
-    * Others: `clang-format`_ (C), `rstcheck`_ and `rstwrap`_ (reST, the latter written by me), `toml-sort`_ (TOML), `markdownlint`_ (Markdown), `shellcheck`_ and `shfmt`_ (shell), `dprint`_ (JSON, YAML)
+* 🧹 **Linters / formatters** (on every project): Python: `black`_ + `ruff`_
+  everywhere, occasionally `vulture`_ (to delete dead code). Others:
+  `clang-format`_ (C), `rstcheck`_ and `rstwrap`_ (reST, the latter written by
+  me), `toml-sort`_ (TOML), `markdownlint`_ (Markdown), `shellcheck`_ and
+  `shfmt`_ (shell), `dprint`_ (JSON, YAML).
 
 AI
 --
