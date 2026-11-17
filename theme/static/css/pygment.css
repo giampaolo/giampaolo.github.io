@@ -83,3 +83,4 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
 .highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
 .highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight .fn-call { color: #A6E22E } /* function calls (see highlight.js) */
