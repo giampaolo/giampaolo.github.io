@@ -168,6 +168,48 @@ dd {margin-left: 1.5em;}
 .highlight {
     border-radius: 6px;
     margin: 1em 0;
+    position: relative;
+}
+
+.copy-code {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, .15);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, .08);
+    color: #c9ccd1;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .2s, background .2s;
+}
+
+.highlight:hover .copy-code,
+.copy-code:focus-visible,
+.copy-code.copied {
+    opacity: 1;
+}
+
+.copy-code:hover {
+    background: rgba(255, 255, 255, .16);
+    color: #fff;
+}
+
+.copy-code.copied {
+    color: #7ee787;
+}
+
+/* touch screens have no hover */
+@media (hover: none) {
+    .copy-code {
+        opacity: .7;
+    }
 }
 
 .highlight pre {
