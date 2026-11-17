@@ -56,8 +56,9 @@ update-contributions:  ## Regenerate the contributions page from GitHub.
 	@$(PYTHON) scripts/update_contributions.py
 
 .PHONY: resume
-resume:  ## Build resume HTML + PDF into resume/_build/.
-	$(PYTHON) resume/build.py --pdf
+resume:  ## Build resume HTML into resume/_build/ and open it.
+	$(PYTHON) resume/build.py
+	xdg-open resume/_build/resume.html >/dev/null 2>&1 &
 
 test:  ## Run tests.
 	$(PYTHON) -m pytest $(PYTEST_ARGS) $(ARGS) tests.py

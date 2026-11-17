@@ -23,7 +23,7 @@ System
 * 🖥️ **Terminal**: `kitty`_ (since 2026), customized via Python plugins to make it work like Sublime Text (tabs, projects, sessions, same key bindings, etc.)
 * 💲 **Shell**: bash
 * 🛠️ **Build**: a ``Makefile`` in every project
-* 🔀 **Git**: the base CLI, with GPG-signed commits and tags, `delta`_ for diffs, and `git-crypt`_ for encrypting secrets. `gh`_ and `glab`_ CLI tools for GitHub and GitLab. Mostly used from Sublime Text, via my own plugins.
+* 🔀 **Git**: the base CLI, with GPG-signed commits and tags, `delta`_ for diffs, and `git-crypt`_ for encrypting secrets. Mostly used from Sublime Text, via my own plugins.
 * 📦 **Other OSes**: `VirtualBox`_ + `Vagrant`_ VMs to develop psutil on Windows, FreeBSD, NetBSD, OpenBSD and SunOS. For macOS and AIX I use `cfarm`_.
 * 🌐 **Browser**: `Brave`_ (since 2021)
 * 🧰 **CLI tools**: `bat`_, `duf`_ and `eza`_ (aliased to ``cat``, ``df`` and ``ls``), `ripgrep`_, `htop`_, `ncdu`_
@@ -33,7 +33,7 @@ System
 Python
 ------
 
-* 🐞 **Shell and debugging**: `IPython`_, `pdb++`_, `colored-traceback`_
+* 🐞 **Shell**: `IPython`_, `pdb++`_, `colored-traceback`_
 * 🧪 **Tests**: `pytest`_, with `pytest-xdist`_ and `pytest-instafail`_
 * 🧹 **Linters / formatters** (on every project):
     * Python: `black`_ + `ruff`_ everywhere, occasionally `vulture`_ (to delete dead code)
@@ -85,8 +85,6 @@ KDE desktop:
 .. _`eza`: https://github.com/eza-community/eza
 .. _`fanboy`: https://forum.sublimetext.com/t/does-sublime-text-reach-vlc-era/78415/3?u=giampaolo
 .. _`gave me 6 free months`: https://x.com/grodola/status/2029688743162957847
-.. _`gh`: https://cli.github.com/
-.. _`glab`: https://gitlab.com/gitlab-org/cli
 .. _`htop`: https://htop.dev/
 .. _`I happily pay for the license`: https://x.com/grodola/status/1511046542760845312
 .. _`IPython`: https://ipython.org/
