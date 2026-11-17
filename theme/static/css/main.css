@@ -2,12 +2,13 @@
     --bg: #eaecef;
     --surface: #fff;
     --surface-alt: #f0f1f2;
-    --text: #000305;
-    --text-muted: #57606a;
+    --text: #404040;
+    --headings: #404040;
+    --text-muted: #555;
     --text-faint: #bbb;
     --border: #eaecef;
     --border-strong: #d0d7de;
-    --link: #2273ab;
+    --link: #2371a8;
     --accent: #2980B9;
     --featured: #9a3412;
     --icon-link: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>');
@@ -16,21 +17,22 @@
 
 /* data-theme is set by the inline script in base.html */
 :root[data-theme="dark"] {
-    --bg: #1e1f22;
-    --surface: #2b2d30;
-    --surface-alt: #393b40;
-    --text: #dfe1e5;
-    --text-muted: #9da0a8;
-    --text-faint: #5a5d63;
-    --border: #3c3e43;
-    --border-strong: #4e5157;
-    --link: #6cb2eb;
+    --bg: #1e1e1e;
+    --surface: #2a2a2a;
+    --surface-alt: #383838;
+    --text: #c8c8c8;
+    --headings: #e0e0e0;
+    --text-muted: #9b9b9b;
+    --text-faint: #5a5a5a;
+    --border: #3c3c3c;
+    --border-strong: #4e4e4e;
+    --link: #6ab0de;
     --featured: #e8a064;
     color-scheme: dark;
 }
 
 [data-theme="dark"] .highlight {
-    background: #1e1f22;
+    background: #1e1e1e;
 }
 
 /* theme switch cross-fade, see theme.js */
@@ -54,13 +56,14 @@ body {
 
 /* Headings */
 h1 {font-size: 2em }
-h2 {font-size: 1.571em}	/* 22px */
-h3 {font-size: 1.429em}	/* 20px */
-h4 {font-size: 1.286em}	/* 18px */
-h5 {font-size: 1.143em}	/* 16px */
-h6 {font-size: 1em}		/* 14px */
+h2 {font-size: 1.6em}
+h3 {font-size: 1.35em}
+h4 {font-size: 1.15em}
+h5 {font-size: 1em}
+h6 {font-size: .9em}
 
 h1, h2, h3, h4, h5, h6 {
+	color: var(--headings);
 	font-weight: 600;
 	line-height: 1.1;
 	margin-top: 30px;
@@ -68,7 +71,7 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Yanone Kaffeesatz', arial, serif;
 }
 
-h2 { border-bottom: 1px solid var(--border); }
+h2 { border-bottom: 1px solid var(--border); margin-top: 1.6em; }
 
 h3, h4, h5, h6 { margin-top: .8em; }
 
@@ -90,7 +93,7 @@ a:hover {
 }
 
 h1 a:link, h1 a:visited {
-    color: var(--text);
+    color: var(--headings);
 }
 
 /* Paragraphs */
@@ -156,7 +159,7 @@ dd {margin-left: 1.5em;}
 .highlight pre code,
 .highlight pre span {
     font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", Courier, monospace !important;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.4 !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -220,8 +223,10 @@ li .highlight {
 
 /* Quotes */
 blockquote {
-    margin: 20px;
-    font-style: italic;
+    margin: 1em 0;
+    padding: 0 1em;
+    border-left: 3px solid var(--border-strong);
+    color: var(--text-muted);
 }
 cite, .literal {
 	padding: 2.5px;
@@ -230,13 +235,14 @@ cite, .literal {
 	border-radius: 6px;
 	font-style: normal;
 	font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
-	font-size:15px;
+	font-size: 14px;
 }
 
 /* Tables */
 table {
 	margin: .5em 0 1.5em 0;
 	width: 100%;
+	font-size: 16px;
 }
 
 th, td {
@@ -270,7 +276,7 @@ thead th {
 		margin: 28px 0 6px 0;
 	}
 	#banner h1 a:link, #banner h1 a:visited {
-		color: var(--text);
+		color: var(--headings);
 		display: block;
 		font-weight: bold;
 		margin: 0;
@@ -289,7 +295,7 @@ thead th {
 	/* Main Nav */
 	#banner nav {
 		display: flex;
-		font-size: 1.143em;
+		font-size: 1em;
 		font-family: 'Lucida Grande', Arial, sans-serif;
 		height: 40px;
 		line-height: 30px;
@@ -450,8 +456,8 @@ thead th {
 	display: block;
 	clear: both;
 }
-.entry-title {font-size: 3em; margin-bottom: 10px; margin-top: 0;}
-.entry-title a:link, .entry-title a:visited {text-decoration: none; color: var(--text);}
+.entry-title {font-size: 2.2em; margin-bottom: 10px; margin-top: 0;}
+.entry-title a:link, .entry-title a:visited {text-decoration: none; color: var(--headings);}
 
 a.featured-badge,
 a.featured-badge:link,
@@ -461,7 +467,7 @@ a.featured-badge:visited {
     background: color-mix(in srgb, var(--featured) 12%, transparent);
     border: 1px solid color-mix(in srgb, var(--featured) 28%, transparent);
     color: var(--featured);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -509,7 +515,7 @@ a.featured-badge:hover {
 
 .post-title a:link,
 .post-title a:visited {
-	color: var(--text);
+	color: var(--headings);
 }
 
 .post-summary {
@@ -580,7 +586,7 @@ ul.tag-list {
 	gap: .6em;
 	padding: .15rem 0;
 	color: var(--text-muted);
-	font-size: 15px;
+	font-size: 14px;
 	text-decoration: none;
 }
 
@@ -634,7 +640,7 @@ ul.tag-list {
 	align-items: center;
 	flex-wrap: wrap;
 	margin: 2em 0 0 0;
-	font-size: 15px;
+	font-size: 14px;
 }
 
 .paginator a,
@@ -698,7 +704,7 @@ a.headerlink:focus-visible {
 code {
 	background: var(--surface-alt);
 	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", Courier, monospace;
-	font-size: 90%;
+	font-size: 14px;
 }
 
 .highlight code {
@@ -732,6 +738,10 @@ code {
     #content {
     	padding: 10px;
     	font-size: 18px;
+    }
+
+    .entry-title {
+    	font-size: 2em;
     }
 
     #banner nav {
