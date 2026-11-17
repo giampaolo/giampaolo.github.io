@@ -598,13 +598,53 @@ a.featured-badge:hover {
 	width: 160px;
 }
 
-.tags-title {
+.archives-label {
 	color: var(--text-muted);
 	font-size: 11px;
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: .1em;
-	margin: 30px 0 .6rem 0;
+	margin: 0 0 .6rem 0;
+}
+
+.archives-left h3 {
+	margin: 1.2em 0 .4em 0;
+}
+
+.archives-left h3:first-child {
+	margin-top: 0;
+}
+
+ul.archives-posts {
+	list-style: none;
+	margin: 0;
+}
+
+.archives-posts li {
+	margin: 0;
+	padding: .25em 0;
+}
+
+.archives-posts a:not(.featured-badge),
+.archives-posts a:not(.featured-badge):visited {
+	color: var(--text);
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
+	text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.archives-posts a:not(.featured-badge):hover {
+	color: var(--link);
+	text-decoration-color: currentColor;
+}
+
+.archives-posts .month {
+	display: inline-block;
+	width: 2.6em;
+	color: var(--text-muted);
+	font-size: 14px;
+	font-variant-numeric: tabular-nums;
 }
 
 ul.tag-list {

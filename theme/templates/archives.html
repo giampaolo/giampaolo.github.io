@@ -7,7 +7,7 @@
 
 <div class="archives">
     <div class="archives-right">
-        <div class="tags-title">Tags</div>
+        <div class="archives-label">Tags</div>
         <ul class="tag-list">
         {% for tag, articles in tags|sort_by_tags if tag.name != 'featured' %}
             <li><a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}<span class="tag-count">{{ articles|count }}</span></a></li>
@@ -16,13 +16,12 @@
     </div>
 
     <div class="archives-left">
-        <h2>Posts</h2>
         {% for year, articles in dates|groupby('date.year')|sort(reverse=True) %}
             <h3>{{ year }}</h3>
-            <ul>
+            <ul class="archives-posts">
             {% for article in articles %}
                 <li>
-                <span class="month">{{ article.date|month_abbr }}</span>:
+                <span class="month">{{ article.date|month_abbr }}</span>
                 <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a>
                 {% if article.tags|selectattr('name', 'equalto', 'featured')|list %}
                     <a class="featured-badge" href="{{ SITEURL }}/tags/featured">Featured</a>
