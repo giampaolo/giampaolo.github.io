@@ -55,6 +55,10 @@ create-blogpost:  ## Create a new blog post template.
 update-contributions:  ## Regenerate the contributions page from GitHub.
 	@$(PYTHON) scripts/update_contributions.py
 
+.PHONY: resume
+resume:  ## Build resume HTML + PDF into resume/_build/.
+	$(PYTHON) resume/build.py --pdf
+
 test:  ## Run tests.
 	$(PYTHON) -m pytest $(PYTEST_ARGS) $(ARGS) tests.py
 

@@ -1,0 +1,211 @@
+/* Single column resume. Serif text, dates hanging in a left gutter. */
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Source+Sans+3:wght@400;600&display=swap');
+
+:root {
+    --text: #1f2328;
+    --muted: #5f6368;
+    --accent: #111111;
+    --link: #7a1f1f;
+    --rule: #b9bcc0;
+    --gutter: 28mm;
+}
+
+@page {
+    size: A4;
+    margin: 11mm 15mm;
+}
+
+html {
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 9.3pt;
+    line-height: 1.35;
+    color: var(--text);
+}
+
+body {
+    margin: 0;
+}
+
+@media screen {
+    .page {
+        max-width: 180mm;
+        margin: 0 auto;
+        padding: 12mm 15mm;
+    }
+}
+
+a,
+a:visited {
+    color: var(--link);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+p {
+    margin: 0.3em 0;
+}
+
+ul {
+    margin: 0.3em 0;
+    padding-left: 1.15em;
+}
+
+li {
+    margin-bottom: 0.12em;
+}
+
+code {
+    font-size: 8.6pt;
+}
+
+.head .contact,
+.entry .when,
+.job .stack {
+    font-family: "Source Sans 3", sans-serif;
+}
+
+/* ---------- Header ---------- */
+
+.head {
+    border-bottom: 2.5pt solid var(--accent);
+    padding-bottom: 0.7em;
+}
+
+.head h1 {
+    font-size: 24pt;
+    font-weight: 700;
+    margin: 0;
+    color: var(--accent);
+    line-height: 1.1;
+    letter-spacing: -0.4px;
+}
+
+.head .label {
+    color: var(--muted);
+    font-size: 12.5pt;
+    font-style: italic;
+    margin: 0.25em 0 0 0;
+}
+
+.head .contact {
+    color: var(--muted);
+    font-size: 9pt;
+    margin: 0.4em 0 0 0;
+}
+
+.head .contact a {
+    white-space: nowrap;
+}
+
+.head .contact + .contact {
+    margin-top: 0.1em;
+}
+
+.about {
+    margin-top: 0.8em;
+    font-size: 10pt;
+}
+
+/* ---------- Sections ---------- */
+
+.about,
+.entry {
+    margin-left: var(--gutter);
+}
+
+.projects,
+.experience {
+    border-top: 0.6pt solid var(--rule);
+    margin-top: 0.7em;
+}
+
+h2 {
+    font-size: 12.5pt;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 0.9em 0 0.4em 0;
+}
+
+.about .facts {
+    font-size: 9.3pt;
+}
+
+.entry {
+    position: relative;
+}
+
+.projects .entry {
+    margin-bottom: 0.3em;
+}
+
+.projects .entry p {
+    margin: 0;
+}
+
+.projects .name {
+    font-weight: 700;
+}
+
+/* too many links in a row to colour them all */
+.projects p a:not(.name) {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 2px;
+}
+
+/* ---------- Jobs ---------- */
+
+.job {
+    margin-bottom: 0.55em;
+    page-break-inside: avoid;
+}
+
+.job h3 {
+    font-size: 11pt;
+    font-weight: 700;
+    margin: 0;
+    color: var(--accent);
+}
+
+.job h3 a,
+.job h3 a:visited {
+    color: var(--accent);
+}
+
+.job .role {
+    font-weight: 400;
+    font-style: italic;
+    font-size: 9.3pt;
+    color: var(--muted);
+    margin-left: 0.6em;
+}
+
+/* dates sit in the gutter, next to the entry */
+.entry .when {
+    position: absolute;
+    left: calc(-1 * var(--gutter));
+    top: 0.2em;
+    width: 26mm;
+    color: var(--muted);
+    font-size: 8.6pt;
+    line-height: 1.3;
+}
+
+.job .where {
+    display: block;
+}
+
+.job .stack {
+    color: var(--muted);
+    font-size: 8.8pt;
+}
+
+.job .stack strong {
+    color: var(--accent);
+    font-weight: 600;
+}

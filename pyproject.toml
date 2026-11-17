@@ -108,6 +108,7 @@ ignore = [
 # T201 == print()
 # T203 == pprint()
 "scripts/*" = ["B904", "EM101", "EM102", "EM103", "T201", "T203"]
+"resume/*" = ["B904", "EM101", "EM102", "EM103", "T201", "T203"]
 "publishconf.py" = ["F403"]
 
 [tool.ruff.lint.isort]
