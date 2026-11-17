@@ -9,12 +9,12 @@ Announcing psutil 5.3.0
 Full Unicode support
 --------------------
 
-String-returning APIs (``Process.exe()``, ``Process.cwd()``, ``Process.username()``, etc.) are now Unicode-correct on both Python 2 and 3 (`#1040 <https://github.com/giampaolo/psutil/issues/1040>`__), see `detailed separate blog post </blog/2017/psutil-530-fixing-unicode.html>`__.
+String-returning APIs (``Process.exe()``, ``Process.cwd()``, ``Process.username()``, etc.) are now Unicode-correct on both Python 2 and 3 (`#1040 <https://github.com/giampaolo/psutil/issues/1040>`__), see `detailed separate blog post </blog/2017/fixing-unicode-in-psutil-across-python-2-and-3>`__.
 
 Improved process_iter()
 -----------------------
 
-`process_iter() <https://psutil.readthedocs.io/latest/#psutil.process_iter>`__ now accepts ``attrs`` and ``ad_value`` parameters, letting you pre-fetch process attributes in one shot and skip the ``try/except NoSuchProcess`` boilerplate, see `detailed separate blog post </blog/2017/psutil-530-improved-process-iter.html>`__.
+`process_iter() <https://psutil.readthedocs.io/latest/#psutil.process_iter>`__ now accepts ``attrs`` and ``ad_value`` parameters, letting you pre-fetch process attributes in one shot and skip the ``try/except NoSuchProcess`` boilerplate, see `detailed separate blog post </blog/2017/improved-process_iter>`__.
 
 Automatic overflow handling of numbers
 --------------------------------------
