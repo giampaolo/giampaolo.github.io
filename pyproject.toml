@@ -1,3 +1,15 @@
+[dependency-groups]
+dev = [
+    "black==26.10.1",
+    "pelican",
+    "pelican[markdown]",
+    "pytest",
+    "rstcheck",
+    "rstwrap",
+    "ruff",
+    "toml-sort",
+]
+
 [tool.black]
 target-version = ["py315"]
 line-length = 79
