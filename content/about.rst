@@ -50,10 +50,10 @@ A `list of the pull requests </contributions>`__ I made to other open source pro
 Writing, talks and interviews
 -----------------------------
 
-* `2026, From Python 3.3 to today: ending 15 years of subprocess polling </blog/2026/event-driven-process-waiting>`__
-* `2025, Detecting memory leaks in C extensions with psutil and psleak </blog/2025/psutil-heap-introspection-apis>`__
-* `2019, PyCon China, Shanghai, Efficient I/O with zero-copy syscalls <static/efficient-io-with-zerocopy-syscalls.pdf>`_
-* `2017, PyDev of the Week <https://www.blog.pythonlibrary.org/2017/10/09/pydev-of-the-week-giampaolo-rodola/>`_
+* 2026: `From Python 3.3 to today: ending 15 years of subprocess polling </blog/2026/event-driven-process-waiting>`__
+* 2025: `Detecting memory leaks in C extensions with psutil and psleak </blog/2025/psutil-heap-introspection-apis>`__
+* 2019: `PyCon China, Shanghai, Efficient I/O with zero-copy syscalls <static/efficient-io-with-zerocopy-syscalls.pdf>`_
+* 2017: `PyDev of the Week <https://www.blog.pythonlibrary.org/2017/10/09/pydev-of-the-week-giampaolo-rodola/>`_
 
 Abandoned projects
 ------------------

@@ -2,7 +2,7 @@ Reimplementing netstat in Python
 ################################
 
 :date: 2014-03-10
-:tags: python, network
+:tags: psutil, python, network, release, new-api
 
 `psutil <https://github.com/giampaolo/psutil/>`__ 2.1.0 is out and with it I finally managed to implement something I've been wanting to have for a long time: netstat-like functionality (see ticket code.google.com/p/psutil/issues/detail?id=387). Similarly to `"netstat -antp"` on UNIX you can now list system-wide connections in pure python and also determine **what process (PID) is using a particular connection**:
 

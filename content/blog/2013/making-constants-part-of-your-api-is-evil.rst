@@ -2,7 +2,7 @@ Making constants part of your API is evil
 #########################################
 
 :date: 2013-12-21
-:tags: python, api-design
+:tags: psutil, python, api-design, compatibility
 
 One of the initial features which were included in `psutil <https://github.com/giampaolo/psutil/>`__ since day one (5 years ago) were the system's boot time, number of CPUs and total physical memory. These metrics have one thing in common: they are (apparently) not supposed to change over time. That is why `Jay <http://www.jayloden.com/>`__ and I decided that exposing them as module constants calculated at import time was the way to go.
 

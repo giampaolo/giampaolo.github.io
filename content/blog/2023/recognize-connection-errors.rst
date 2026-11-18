@@ -2,7 +2,7 @@ Recognize connection errors
 ###########################
 
 :date: 2023-03-16
-:tags: python, socket, network
+:tags: python, socket, network, recipe
 
 Lately I've been dealing with an asynchronous TCP client app which sends
 messages to a remote server. Some of these messages are important, and cannot

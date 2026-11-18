@@ -2,7 +2,7 @@ Improved Linux memory metrics
 #############################
 
 :date: 2016-10-23
-:tags: psutil, python, memory, linux, release
+:tags: psutil, python, memory, linux, macos, release
 :slug: psutil-440-improved-linux-memory-metrics
 
 OK, another psutil release. The headline of 4.4.0 is more accurate memory metrics on Linux, plus a pile of macOS fixes I'd been sitting on for years.

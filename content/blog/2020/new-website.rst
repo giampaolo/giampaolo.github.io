@@ -2,7 +2,7 @@ New Pelican website
 ###################
 
 :date: 2020-06-26
-:tags: announce, python, pelican, psutil
+:tags: python, pelican, personal
 
 Hello there. Here is my new blog / personal website!
 This is something I've been wanting to do for a very long time, since the old blog hosted at https://grodola.blogspot.com/ was... well, too old. =)
