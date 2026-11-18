@@ -55,6 +55,10 @@ create-blogpost:  ## Create a new blog post template.
 update-contributions:  ## Regenerate the contributions page from GitHub.
 	@$(PYTHON) scripts/update_contributions.py
 
+update-inventories:  ## Refresh the Sphinx inventories used by RST roles.
+	@curl -sSfL -o plugins/inventories/psutil.inv https://psutil.io/objects.inv
+	@curl -sSfL -o plugins/inventories/python.inv https://docs.python.org/3/objects.inv
+
 .PHONY: resume
 resume:  ## Build resume HTML into resume/_build/ and open it.
 	$(PYTHON) resume/build.py

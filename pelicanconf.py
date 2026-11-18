@@ -96,7 +96,7 @@ TAG_URL = "tags/{slug}"
 
 PLUGIN_PATHS = ["plugins"]
 # headerid is for RST; Markdown posts use the `toc` extension below.
-PLUGINS = ["headerid", "gitdate"]
+PLUGINS = ["headerid", "gitdate", "sphinx_roles"]
 
 MARKDOWN = {
     "extensions": [

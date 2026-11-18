@@ -5,7 +5,16 @@ Porting your code to psutil 2.0
 :tags: psutil, python, api-design, compatibility
 :slug: psutil-20-api-redesign
 
-This blog post is going to be about `psutil <https://github.com/giampaolo/psutil/>`__ 2.0, a major release in which I decided to reorganize the existing API for the sake of consistency. At the time of writing, psutil 2.0 is still under development, and the intent of this blog post is to serve as an official reference that describes how you should port your existing code base. In doing so, I will also explain why I decided to make these changes. Even though many APIs will still be available as aliases pointing to the newer ones, the overall changes are numerous and many of them are not backward compatible. I'm sure many people will be sorely bitten, but I think this is for the better and it needed to be done, hopefully for the first and last time.
+This blog post is going to be about psutil 2.0, a major release in which I
+decided to reorganize the existing API for the sake of consistency. At the time
+of writing, psutil 2.0 is still under development, and the intent of this blog
+post is to serve as an official reference that describes how you should port
+your existing code base. In doing so, I will also explain why I decided to make
+these changes. Even though many APIs will still be available as aliases
+pointing to the newer ones, the overall changes are numerous and many of them
+are not backward compatible. I'm sure many people will be sorely bitten, but I
+think this is for the better and it needed to be done, hopefully for the first
+and last time.
 
 Module constants turned into functions
 --------------------------------------
@@ -24,7 +33,14 @@ Module constants turned into functions
 
 **Why I did it**
 
-I already talked about this more extensively in the previous `Making constants part of your API is evil <../2013/making-constants-part-of-your-api-is-evil>`_ blog post. In short: other than introducing unnecessary slowdowns, calculating a module-level constant at import time is dangerous because if something goes wrong the whole app will crash. Also, the represented values may be subject to change (think about the system clock), but the constant cannot be updated. Thanks to this hack, accessing the old constants still works and produces a ``DeprecationWarning``.
+I already talked about this more extensively in the previous
+`Making constants part of your API is evil <https://gmpy.dev/blog/2013/making-constants-part-of-your-api-is-evil>`__
+blog post. In short: other than introducing unnecessary slowdowns, calculating
+a module-level constant at import time is dangerous because if something goes
+wrong the whole app will crash. Also, the represented values may be subject to
+change (think about the system clock), but the constant cannot be updated.
+Thanks to this hack, accessing the old constants still works and produces a
+:exc:`DeprecationWarning`.
 
 Renamed module functions
 ------------------------
@@ -43,12 +59,15 @@ Renamed module functions
 
 **Why I did it**
 
-They were the only module-level functions with a ``get_`` prefix. None of the others had one.
+They were the only module-level functions with a ``get_`` prefix. None of the
+others had one.
 
-Renamed Process class methods
------------------------------
+Renamed :class:`Process` class methods
+--------------------------------------
 
-All methods lost their ``get_`` and ``set_`` prefixes. A single method can now be used for both getting and setting (if a value is passed). Assuming ``p = psutil.Process()``:
+All methods lost their ``get_`` and ``set_`` prefixes. A single method can now
+be used for both getting and setting (if a value is passed). Assuming
+``p = psutil.Process()``:
 
 +------------------------------+--------------------------+
 | Old name                     | Replacement              |
@@ -108,7 +127,9 @@ All methods lost their ``get_`` and ``set_`` prefixes. A single method can now b
 
 **Why I did it**
 
-I wanted to be consistent with system-wide module-level functions, which have no ``get_`` prefix. After I got rid of the ``get_`` prefixes, removing ``set_`` too seemed natural and helped reduce the number of methods.
+I wanted to be consistent with system-wide module-level functions, which have
+no ``get_`` prefix. After I got rid of the ``get_`` prefixes, removing ``set_``
+too seemed natural and helped reduce the number of methods.
 
 Process properties are now methods
 ----------------------------------
@@ -145,28 +166,42 @@ Assuming ``p = psutil.Process()``:
 
 Different reasons:
 
-* Having a mixed API that uses both properties and methods for no particular reason is confusing and messy, because you don't know whether to use ``()`` or not.
-* A property is usually expected not to perform heavy computations internally, whereas psutil invokes a function every time it is accessed. This has two drawbacks:
+* Having a mixed API that uses both properties and methods for no particular
+  reason is confusing and messy, because you don't know whether to use ``()``
+  or not.
+* A property is usually expected not to perform heavy computations internally,
+  whereas psutil invokes a function every time it is accessed. This has two
+  drawbacks:
 
-  * You may get an exception just by accessing the property (e.g. ``p.name`` may raise ``NoSuchProcess`` or ``AccessDenied``).
-  * You may erroneously think properties are cached, but this is true only for ``name``, ``exe``, and ``create_time``.
+  * You may get an exception just by accessing the property (e.g. ``p.name``
+    may raise :exc:`NoSuchProcess` or :exc:`AccessDenied`).
+  * You may erroneously think properties are cached, but this is true only for
+    ``name``, ``exe``, and ``create_time``.
 
 CPU percent intervals
 ---------------------
 
 **What changed**
 
-The timeout parameter of ``cpu_percent*`` functions now defaults to 0.0 instead of 0.1. The functions affected are:
+The timeout parameter of ``cpu_percent*`` functions now defaults to 0.0 instead
+of 0.1. The functions affected are:
 
-* ``Process.cpu_percent()``
-* ``psutil.cpu_percent()``
-* ``psutil.cpu_times_percent()``
+* :meth:`Process.cpu_percent`
+* :func:`psutil.cpu_percent`
+* :func:`psutil.cpu_times_percent`
 
 **Why I did it**
 
-I originally set 0.1 as the default timeout because you need to wait some time in order to get a meaningful percent value. Having an API that "sleeps" by default is risky, though, because it's easy to forget it does so. That is particularly problematic when calling ``Process.cpu_percent()`` for all processes: it's very easy to forget to specify ``timeout=0``, resulting in dramatic slowdowns that are hard to spot. For example, this code snippet might take a variable number of seconds to complete depending on the number of active processes:
+I originally set 0.1 as the default timeout because you need to wait some time
+in order to get a meaningful percent value. Having an API that "sleeps" by
+default is risky, though, because it's easy to forget it does so. That is
+particularly problematic when calling :meth:`Process.cpu_percent` for all
+processes: it's very easy to forget to specify ``timeout=0``, resulting in
+dramatic slowdowns that are hard to spot. For example, this code snippet might
+take a variable number of seconds to complete depending on the number of active
+processes:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> # this will be slow
     >>> for p in psutil.process_iter():
@@ -175,9 +210,16 @@ I originally set 0.1 as the default timeout because you need to wait some time i
 Migration strategy
 ------------------
 
-Except for ``Process`` properties (``name``, ``exe``, ``cmdline``, etc.), all the old APIs are still available as aliases pointing to the newer names and raising ``DeprecationWarning``. psutil will be very clear on what you should use instead of the deprecated API, as long as you start the interpreter with the ``-Wd`` option. This will enable deprecation warnings, which were `silenced in Python 2.7 <http://bugs.python.org/issue7319>`__ (IMHO, from a developer standpoint this was a bad decision).
+Except for :class:`Process` properties (:meth:`Process.name`,
+:meth:`Process.exe`, :meth:`Process.cmdline`, etc.), all the old APIs are still
+available as aliases pointing to the newer names and raising
+:exc:`DeprecationWarning`. psutil will be very clear on what you should use
+instead of the deprecated API, as long as you start the interpreter with the
+``-Wd`` option. This will enable deprecation warnings, which were
+`silenced in Python 2.7 <http://bugs.python.org/issue7319>`__ (IMHO, from a
+developer standpoint this was a bad decision).
 
-.. code-block:: none
+.. code-block:: pycon
 
     giampaolo@ubuntu:/tmp$ python -Wd
     Python 2.7.3 (default, Sep 26 2013, 20:03:06)
@@ -195,7 +237,10 @@ Except for ``Process`` properties (``name``, ``exe``, ``cmdline``, etc.), all th
     pcputimes(user=0.08, system=0.03)
     >>>
 
-If you have a solid test suite, you can run tests and fix the warnings one by one. As for the Process properties that were turned into methods, it's more difficult because, whereas psutil 1.2.1 returns the actual value, psutil 2.0.0 returns the bound method:
+If you have a solid test suite, you can run tests and fix the warnings one by
+one. As for the Process properties that were turned into methods, it's more
+difficult because, whereas psutil 1.2.1 returns the actual value, psutil 2.0.0
+returns the bound method:
 
 .. code-block:: pycon
 
@@ -209,20 +254,24 @@ If you have a solid test suite, you can run tests and fix the warnings one by on
     <bound method Process.name of psutil.Process(pid=19816, name='python') at 139845631328144>
     >>>
 
-What I would recommend, if you want to drop support for 1.2.1, is to grep for ``".name"``, ``".exe"``, etc. and just replace them with ``".exe()"`` and ``".name()"`` one by one. If, on the other hand, you want to write code that works with both versions, I see two possibilities:
+What I would recommend, if you want to drop support for 1.2.1, is to grep for
+``".name"``, ``".exe"``, etc. and just replace them with ``".exe()"`` and
+``".name()"`` one by one. If, on the other hand, you want to write code that
+works with both versions, I see two possibilities:
 
 * #1 check version info, like this:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> PSUTIL2 = psutil.version_info >= (2, 0)
     >>> p = psutil.Process()
     >>> name = p.name() if PSUTIL2 else p.name
     >>> exe = p.exe() if PSUTIL2 else p.exe
 
-* #2 get rid of all ``".name"``, ``".exe"`` occurrences you have in your code and use ``Process.as_dict()`` instead:
+* #2 get rid of all ``".name"``, ``".exe"`` occurrences you have in your code
+  and use :meth:`Process.as_dict` instead:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> p = psutil.Process()
     >>> pinfo = p.as_dict(attrs=["name", "exe"])
@@ -234,19 +283,25 @@ What I would recommend, if you want to drop support for 1.2.1, is to grep for ``
 New features introduced in 2.0.0
 --------------------------------
 
-psutil 2.0.0 is not only about code breakage. I also had the chance to integrate a bunch of interesting features.
+psutil 2.0.0 is not only about code breakage. I also had the chance to
+integrate a bunch of interesting features.
 
-* `#427 <https://github.com/giampaolo/psutil/issues/427>`__: you're now able to distinguish between the number of logical and physical CPUs:
+* :gh:`427`: you're now able to distinguish between the number of
+  :term:`logical <logical CPU>` and :term:`physical <physical CPU>` CPUs:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> psutil.cpu_count()  # logical
     4
     >>> psutil.cpu_count(logical=False)  # physical cores only
     2
 
-* `#452 <https://github.com/giampaolo/psutil/issues/452>`__: ``Process`` instances are now hashable and can be checked for equality. That means you can use ``Process`` objects with sets (finally!).
-* `#447 <https://github.com/giampaolo/psutil/issues/447>`__: the ``timeout`` parameter of ``psutil.wait_procs()`` is now optional.
-* `#461 <https://github.com/giampaolo/psutil/issues/461>`__: functions returning namedtuples are now picklable.
-* `#459 <https://github.com/giampaolo/psutil/issues/459>`__: a Makefile is now available to automate repetitive tasks such as build, install, running tests, etc. There's also a make.bat for Windows.
+* :gh:`452`: :class:`Process` instances are now hashable and can be checked for
+  equality. That means you can use :class:`Process` objects with sets
+  (finally!).
+* :gh:`447`: the ``timeout`` parameter of :func:`psutil.wait_procs` is now
+  optional.
+* :gh:`461`: functions returning namedtuples are now picklable.
+* :gh:`459`: a Makefile is now available to automate repetitive tasks such as
+  build, install, running tests, etc. There's also a make.bat for Windows.
 * Introduced the ``unittest2`` module as a requirement for running tests.

@@ -139,3 +139,32 @@ strict_markers = true
 python_files = ["tests.py"]
 
 [tool.rstcheck]
+# defined in plugins/sphinx_roles.py
+ignore_roles = [
+    "attr",
+    "bpo",
+    "c:func",
+    "class",
+    "commit",
+    "cpy",
+    "cpy-pr",
+    "data",
+    "doc",
+    "exc",
+    "field",
+    "func",
+    "gh",
+    "manpage",
+    "meth",
+    "mod",
+    "obj",
+    "pr",
+    "proc",
+    "pypi",
+    "ref",
+    "src",
+    "term",
+    "user",
+]
+# headings made only of an ignored role render as ""
+ignore_messages = 'Duplicate implicit target name: ""'

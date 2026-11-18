@@ -5,14 +5,18 @@ Proper zombie process handling
 :tags: psutil, python, api-design, compatibility
 :slug: zombie-processes
 
-This is part of the psutil 3.0 release (see the full `release notes <psutil-30-reimplement-ifconfig-in-python>`_).
+This is part of the psutil 3.0 release (see the full
+:doc:`release notes </blog/2015/reimplementing-ifconfig-in-python>`).
 
-Except on Linux and Windows (which does not have them), support for `zombie processes <http://askubuntu.com/a/48625>`__ was broken. The full story is in `#428 <https://github.com/giampaolo/psutil/issues/428>`__.
+Except on Linux and Windows (which does not have them), support for
+:term:`zombie processes <zombie process>` was broken. The full story is in
+:gh:`428`.
 
 The problem
 -----------
 
-Say you create a zombie process and instantiate a ``Process`` for it:
+Say you create a :term:`zombie process` and instantiate a
+:class:`~psutil.Process` for it:
 
 .. code-block:: python
 
@@ -28,7 +32,8 @@ Say you create a zombie process and instantiate a ``Process`` for it:
     pid = create_zombie()
     p = psutil.Process(pid)
 
-Up until psutil 2.X, every time you tried to query it you'd get a ``NoSuchProcess`` exception:
+Up until psutil 2.X, every time you tried to query it you'd get a
+:exc:`NoSuchProcess` exception:
 
 .. code-block:: pycon
 
@@ -51,15 +56,21 @@ Depending on the platform, some process information could still be retrieved:
     >>> p.cmdline()
     ['python']
 
-Worst of all, ``psutil.process_iter()`` didn't return zombies at all. That was a real problem, because identifying them is a legitimate use case: a zombie usually indicates a bug where a parent process spawns a child, kills it, but never calls ``wait()`` to reap it.
+Worst of all, :func:`psutil.process_iter` didn't return zombies at all. That
+was a real problem, because identifying them is a legitimate use case: a zombie
+usually indicates a bug where a parent process spawns a child, kills it, but
+never calls ``wait()`` to reap it.
 
 What changed
 ------------
 
-* A new ``ZombieProcess`` exception is raised whenever a process cannot be queried because it is a zombie.
-* It replaces ``NoSuchProcess``, which was incorrect and misleading.
-* ``ZombieProcess`` inherits from ``NoSuchProcess``, so existing code keeps working.
-* ``psutil.process_iter()`` now correctly includes zombie processes, so you can reliably identify them:
+* A new :exc:`ZombieProcess` exception is raised whenever a process cannot be
+  queried because it is a zombie.
+* It replaces :exc:`NoSuchProcess`, which was incorrect and misleading.
+* :exc:`ZombieProcess` inherits from :exc:`NoSuchProcess`, so existing code
+  keeps working.
+* :func:`psutil.process_iter` now correctly includes zombie processes, so you
+  can reliably identify them:
 
 .. code-block:: python
 

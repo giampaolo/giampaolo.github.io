@@ -5,15 +5,20 @@ Sensors: temperatures, battery, CPU frequency
 :tags: psutil, python, new-api, release, linux
 :slug: psutil-510-sensors-temperatures-battery-and-cpu-frequency
 
-`psutil <https://github.com/giampaolo/psutil/>`__ 5.1.0 is out. This release introduces new APIs to retrieve hardware temperatures, battery status, and CPU frequency information.
+psutil 5.1.0 is out. This release introduces new APIs to retrieve hardware
+temperatures, battery status, and CPU frequency information.
 
 Temperatures
 ------------
 
-You can now retrieve hardware temperatures (`PR-962 <https://github.com/giampaolo/psutil/pull/962>`__). This is currently available on Linux only.
+You can now retrieve hardware temperatures (:pr:`962`). This is currently
+available on Linux only.
 
-* On Windows it's hard to do in a hardware-agnostic way. I ran into 3 WMI-based approaches, none of which worked with my hardware, so I gave up.
-* On macOS it seems relatively easy, but my virtualized macOS box doesn't support sensors, so I gave up for lack of hardware. If someone wants to give it a try, `be my guest <https://github.com/giampaolo/psutil/issues/371>`__.
+* On Windows it's hard to do in a hardware-agnostic way. I ran into 3 WMI-based
+  approaches, none of which worked with my hardware, so I gave up.
+* On macOS it seems relatively easy, but my virtualized macOS box doesn't
+  support sensors, so I gave up for lack of hardware. If someone wants to give
+  it a try, be my guest (:gh:`371`).
 
 .. code-block:: pycon
 
@@ -30,7 +35,8 @@ You can now retrieve hardware temperatures (`PR-962 <https://github.com/giampaol
 Battery status
 --------------
 
-Battery status information is now available on Linux, Windows and FreeBSD (`PR-963 <https://github.com/giampaolo/psutil/pull/963>`__).
+Battery status information is now available on Linux, Windows and FreeBSD
+(:pr:`963`).
 
 .. code-block:: pycon
 
@@ -50,7 +56,9 @@ Battery status information is now available on Linux, Windows and FreeBSD (`PR-9
 CPU frequency
 -------------
 
-Available on Linux, Windows and macOS (`PR-952 <https://github.com/giampaolo/psutil/pull/952>`__). Only Linux reports the real-time value (always changing); other platforms return the nominal "fixed" value.
+Available on Linux, Windows and macOS (:pr:`952`). Only Linux reports the
+real-time value (always changing); other platforms return the nominal "fixed"
+value.
 
 .. code-block:: pycon
 
@@ -66,7 +74,10 @@ Available on Linux, Windows and macOS (`PR-952 <https://github.com/giampaolo/psu
 What CPU a process is on
 ------------------------
 
-Tells you which CPU a process is currently running on, somewhat related to ``Process.cpu_affinity()`` (`PR-954 <https://github.com/giampaolo/psutil/pull/954>`__). It's interesting for visualizing how the OS scheduler keeps evenly reassigning processes across CPUs (see the `cpu_distribution.py <https://github.com/giampaolo/psutil/blob/release-5.1.0/scripts/cpu_distribution.py>`__ script).
+Tells you which CPU a process is currently running on, somewhat related to
+:meth:`Process.cpu_affinity` (:pr:`954`). It's interesting for visualizing how
+the OS scheduler keeps evenly reassigning processes across CPUs (see the
+:src:`scripts/cpu_distribution.py` script).
 
 CPU affinity
 ------------
@@ -77,7 +88,8 @@ A new shorthand is available to set affinity against all eligible CPUs:
 
     Process().cpu_affinity([])
 
-This was added because on Linux (`#956 <https://github.com/giampaolo/psutil/issues/956>`__) it is not always possible to set affinity against all CPUs directly. It is equivalent to:
+This was added because on Linux (:gh:`956`) it is not always possible to set
+affinity against all CPUs directly. It is equivalent to:
 
 .. code-block:: python
 
@@ -86,4 +98,4 @@ This was added because on Linux (`#956 <https://github.com/giampaolo/psutil/issu
 Other bug fixes
 ---------------
 
-See the full list in the `changelog <https://psutil.readthedocs.io/latest/changelog.html>`__.
+See the full list in the :ref:`changelog <510>`.

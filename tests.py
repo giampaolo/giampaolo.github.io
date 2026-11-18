@@ -8,6 +8,8 @@ import tempfile
 import unittest
 import urllib.parse
 
+import docutils.core
+
 from pelicanconf import SITEURL
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -84,3 +86,24 @@ class TestSuite(unittest.TestCase):
         out = os.path.join(self.outdir, "resume.html")
         sh(f"{sys.executable} resume/build.py --html {out}")
         assert os.path.getsize(out) > 0
+
+
+class TestSphinxRoles(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        sys.path.insert(0, os.path.join(HERE, "plugins"))
+        import sphinx_roles
+
+        sphinx_roles.register()
+
+    def render(self, text):
+        return docutils.core.publish_parts(text, writer="html")["body"]
+
+    def test_py_role(self):
+        html = self.render(":meth:`Process.wait`")
+        assert 'href="https://psutil.io/api/#psutil.Process.wait"' in html
+
+    def test_manpage_role(self):
+        html = self.render(":manpage:`select(2)`")
+        assert 'href="https://manpages.debian.org/select(2)"' in html
