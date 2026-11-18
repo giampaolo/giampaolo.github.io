@@ -57,6 +57,7 @@ create-blogpost-md:  ## Create a new Markdown blog post template.
 
 update-contributions:  ## Regenerate the contributions page from GitHub.
 	@$(PYTHON) scripts/update_contributions.py
+	@rstwrap -q content/contributions.rst
 
 update-inventories:  ## Refresh the Sphinx inventories used by RST roles.
 	@curl -sSfL -o plugins/inventories/psutil.inv https://psutil.io/objects.inv
@@ -82,6 +83,7 @@ black:  ## Python files linting (via black)
 
 lint-rst:  ## Lint rst files.
 	@git ls-files '*.rst' | xargs rstcheck --config=pyproject.toml
+	@git ls-files '*.rst' | xargs rstwrap --check
 
 lint-md:  ## Lint md files.
 	@git ls-files '*.md' | xargs mdl -c .mdlrc
@@ -109,10 +111,14 @@ fix-ruff:
 fix-toml:
 	@git ls-files '*.toml' | xargs toml-sort
 
+fix-rst:  ## Re-wrap .rst files.
+	@git ls-files '*.rst' | xargs rstwrap
+
 fix-all:  ## Run all code fixers.
 	${MAKE} fix-ruff
 	${MAKE} fix-black
 	${MAKE} fix-toml
+	${MAKE} fix-rst
 
 # ===================================================================
 # Misc

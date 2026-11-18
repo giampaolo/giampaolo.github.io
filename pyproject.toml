@@ -168,3 +168,6 @@ ignore_roles = [
 ]
 # headings made only of an ignored role render as ""
 ignore_messages = 'Duplicate implicit target name: ""'
+
+[tool.rstwrap]
+width = 79

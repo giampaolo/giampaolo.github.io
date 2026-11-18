@@ -3,5 +3,6 @@ pelican
 pelican[markdown]
 pytest
 rstcheck
+rstwrap
 ruff
 toml-sort

@@ -117,6 +117,15 @@ def rstcheck(files):
         return sys.exit("RST code didn't pass style check")
 
 
+def rstwrap(files):
+    print(f"running rstwrap ({len(files)})")
+    cmd = ["rstwrap", "--check"] + files
+    if subprocess.call(cmd) != 0:
+        return sys.exit(
+            "RST files aren't wrapped. Try running 'make fix-rst'."
+        )
+
+
 def mdlint(files):
     print(f"running md linter ({len(files)})")
     cmd = ["mdl"] + files
@@ -131,6 +140,7 @@ def main():
         ruff(py_files)
     if rst_files:
         rstcheck(rst_files)
+        rstwrap(rst_files)
     if md_files:
         mdlint(md_files)
 
