@@ -45,7 +45,7 @@ Also, we would still have to use `atexit.register() <https://docs.python.org/3/l
 
 * the exit function is always executed :strike:`for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT)` on ``SIGTERM`` and on "clean" interpreter exit.
 * any exit function(s) previously registered via `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__ or `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ will be executed as well (after the new one).
-* It must be noted that the exit function will never be executed in case of ``SIGKILL``, ``SIGSTOP`` or ``os._exit()``.
+* It must be noted that the exit function will never be executed in case of ``SIGKILL``, ``SIGSTOP`` or :func:`os._exit`.
 
 The code
 --------

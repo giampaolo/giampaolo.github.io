@@ -9,7 +9,7 @@ Announcing psutil 5.3.0
 Full Unicode support
 --------------------
 
-String-returning APIs (``Process.exe()``, ``Process.cwd()``, ``Process.username()``, etc.) are now Unicode-correct on both Python 2 and 3 (`#1040 <https://github.com/giampaolo/psutil/issues/1040>`__), see `detailed separate blog post </blog/2017/fixing-unicode-in-psutil-across-python-2-and-3>`__.
+String-returning APIs (:meth:`Process.exe`, :meth:`Process.cwd`, :meth:`Process.username`, etc.) are now Unicode-correct on both Python 2 and 3 (`#1040 <https://github.com/giampaolo/psutil/issues/1040>`__), see `detailed separate blog post </blog/2017/fixing-unicode-in-psutil-across-python-2-and-3>`__.
 
 Improved process_iter()
 -----------------------
