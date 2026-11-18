@@ -7,8 +7,9 @@ and deploys it to GitHub Pages. No generated HTML is stored in the repo.
 
 ```bash
 make install-pydeps
-make autoreload        # serve on http://127.0.0.1:8000
-make create-blogpost   # new post template
+make autoreload            # serve on http://127.0.0.1:8000
+make create-blogpost-rst   # new post template (RST)
+make create-blogpost-md    # new post template (Markdown)
 make update-contributions
 make lint-all
 make test

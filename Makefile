@@ -49,8 +49,11 @@ build-prod:  ## Generate html for production.
 autoreload:  ## HTTP serve in dev mode
 	$(PYTHON) -m pelican -lr $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
-create-blogpost:  ## Create a new blog post template.
-	@$(PYTHON) scripts/create_blogpost.py
+create-blogpost-rst:  ## Create a new RST blog post template.
+	@$(PYTHON) scripts/create_blogpost.py rst
+
+create-blogpost-md:  ## Create a new Markdown blog post template.
+	@$(PYTHON) scripts/create_blogpost.py md
 
 update-contributions:  ## Regenerate the contributions page from GitHub.
 	@$(PYTHON) scripts/update_contributions.py
