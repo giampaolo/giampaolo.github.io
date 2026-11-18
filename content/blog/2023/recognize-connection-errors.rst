@@ -7,21 +7,20 @@ Recognize connection errors
 Lately I've been dealing with an asynchronous TCP client app which sends
 messages to a remote server. Some of these messages are important, and cannot
 get lost. Because the connection may drop at any time, I had to implement a
-mechanism to resend the message once the client reconnects. As such, I needed
-a way to identify what constitutes a **connection error**.
+mechanism to resend the message once the client reconnects. As such, I needed a
+way to identify what constitutes a **connection error**.
 
 Python provides a builtin ConnectionError_ exception precisely for this
 purpose, but it turns out it's not enough. After observing logs in production,
 I found some errors that were not related to the socket connection per se, but
-rather to the **system connectivity**, like `ENETUNREACH`
-("network unreachable") or `ENETDOWN` ("network down"). It's interesting to
-note how this distinction is reflected in the UNIX errno_ code prefixes:
-`ECONN*` (connection errors) vs. `ENET*` (network errors). I've noticed
-`ENET*` errors usually occur on a DHCP renewal, or more in general when the
-Wi-Fi signal is weak or absent. Because this code runs on a cleaning robot
-which constantly moves around the house, connection can become unstable when
-the robot gets far from the Wi-Fi Access Point, so it's pretty common to bump
-into errors like these:
+rather to the **system connectivity**, like `ENETUNREACH` ("network
+unreachable") or `ENETDOWN` ("network down"). It's interesting to note how this
+distinction is reflected in the UNIX errno_ code prefixes: `ECONN*` (connection
+errors) vs. `ENET*` (network errors). I've noticed `ENET*` errors usually occur
+on a DHCP renewal, or more in general when the Wi-Fi signal is weak or absent.
+Because this code runs on a cleaning robot which constantly moves around the
+house, connection can become unstable when the robot gets far from the Wi-Fi
+Access Point, so it's pretty common to bump into errors like these:
 
 .. code-block:: none
 
@@ -62,8 +61,9 @@ the Internet is, and how a network app must be ready to handle all sorts of
 unexpected error conditions which hardly show up during testing. To handle all
 of these cases I came up with this solution which I think is worth sharing, as
 it's generic enough to be reused in similar situations. If needed, this can
-easily be extended to include specific exceptions of third party libraries, like
-`requests.exceptions.ConnectionError` (*EDIT: 2026-02: done for requests + botocore*).
+easily be extended to include specific exceptions of third party libraries,
+like `requests.exceptions.ConnectionError`
+(*EDIT: 2026-02: done for requests + botocore*).
 
 .. code-block:: python
 

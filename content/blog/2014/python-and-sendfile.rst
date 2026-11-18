@@ -4,28 +4,75 @@ Python and sendfile
 :date: 2014-06-13
 :tags: python, python-core, performance, network, socket
 
-`sendfile(2) <http://linux.die.net/man/2/sendfile>`__ is a UNIX system call which provides a "zero-copy" way of copying data from one file descriptor (a file) to another (a socket). Because this copying is done entirely within the kernel, `sendfile(2)` is more efficient than the combination of `file.read()` and `socket.send()`, which requires transferring data to and from user space. This copying of the data twice imposes some performance and resource penalties which the `sendfile(2)` syscall avoids; it also results in a single system call (and thus only one context switch), rather than the series of `read(2) <http://linux.die.net/man/2/read>`__ / `write(2) <http://linux.die.net/man/2/write>`__ system calls (each system call requiring a context switch) used internally for the data copying. A more exhaustive explanation of how `sendfile(2)` works is available `here <http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/>`__, but long story short is that sending a file with `sendfile()` is usually `twice as fast <https://github.com/giampaolo/pysendfile#a-simple-benchmark>`__ as using plain `socket.send() <https://docs.python.org/3/library/socket.html#socket.socket.send>`__. Typical applications which can benefit from using `sendfile()` are FTP and HTTP servers.
+`sendfile(2) <http://linux.die.net/man/2/sendfile>`__ is a UNIX system call
+which provides a "zero-copy" way of copying data from one file descriptor (a
+file) to another (a socket). Because this copying is done entirely within the
+kernel, `sendfile(2)` is more efficient than the combination of `file.read()`
+and `socket.send()`, which requires transferring data to and from user space.
+This copying of the data twice imposes some performance and resource penalties
+which the `sendfile(2)` syscall avoids; it also results in a single system call
+(and thus only one context switch), rather than the series of
+`read(2) <http://linux.die.net/man/2/read>`__ /
+`write(2) <http://linux.die.net/man/2/write>`__ system calls (each system call
+requiring a context switch) used internally for the data copying. A more
+exhaustive explanation of how `sendfile(2)` works is available
+`here <http://www.techrepublic.com/article/use-sendfile-to-optimize-data-transfer/>`__,
+but long story short is that sending a file with `sendfile()` is usually
+`twice as fast <https://github.com/giampaolo/pysendfile#a-simple-benchmark>`__
+as using plain
+`socket.send() <https://docs.python.org/3/library/socket.html#socket.socket.send>`__.
+Typical applications which can benefit from using `sendfile()` are FTP and HTTP
+servers.
 
 socket.sendfile()
 -----------------
 
-I recently contributed a patch for Python's socket module which adds a high-level `socket.sendfile() <https://docs.python.org/3.5/library/socket.html#socket.socket.sendfile>`__ method (see full discussion at `BPO-17552 <http://bugs.python.org/issue17552>`__). `socket.sendfile()` will transmit a file until EOF is reached by attempting to use `os.sendfile() <https://docs.python.org/3/library/os.html#os.sendfile>`__, if available, else it falls back on using plain `socket.send()`. Internally, it takes care of handling socket timeouts and provides two optional parameters to move the file offset or to send only a limited amount of bytes. I came up with this idea because getting all of that right is a bit tricky, so a generic wrapper seemed useful. `socket.sendfile()` will make its appearance in Python 3.5.
+I recently contributed a patch for Python's socket module which adds a
+high-level
+`socket.sendfile() <https://docs.python.org/3.5/library/socket.html#socket.socket.sendfile>`__
+method (see full discussion at
+`BPO-17552 <http://bugs.python.org/issue17552>`__). `socket.sendfile()` will
+transmit a file until EOF is reached by attempting to use
+`os.sendfile() <https://docs.python.org/3/library/os.html#os.sendfile>`__, if
+available, else it falls back on using plain `socket.send()`. Internally, it
+takes care of handling socket timeouts and provides two optional parameters to
+move the file offset or to send only a limited amount of bytes. I came up with
+this idea because getting all of that right is a bit tricky, so a generic
+wrapper seemed useful. `socket.sendfile()` will make its appearance in Python
+3.5.
 
 sendfile and Python
 -------------------
 
-`sendfile(2)` made its first appearance into the Python stdlib kind of late: Python 3.3. It was contributed by Ross Lagerwall and me in `BPO-10882 <http://bugs.python.org/issue10882>`__. Since the patch didn't make it into Python 2.X and I wanted to use sendfile() in pyftpdlib (code.google.com/p/pyftpdlib/issues/detail?id=152), I later decided to release it as a stand alone module working with older (2.5+) Python versions (see `pysendfile <https://github.com/giampaolo/pysendfile>`__ project). Starting with version 3.5, Python will hopefully start using `sendfile()` more extensively, in detail:
+`sendfile(2)` made its first appearance into the Python stdlib kind of late:
+Python 3.3. It was contributed by Ross Lagerwall and me in
+`BPO-10882 <http://bugs.python.org/issue10882>`__. Since the patch didn't make
+it into Python 2.X and I wanted to use sendfile() in pyftpdlib
+(code.google.com/p/pyftpdlib/issues/detail?id=152), I later decided to release
+it as a stand alone module working with older (2.5+) Python versions (see
+`pysendfile <https://github.com/giampaolo/pysendfile>`__ project). Starting
+with version 3.5, Python will hopefully start using `sendfile()` more
+extensively, in detail:
 
 * `BPO-13563: ftplib <http://bugs.python.org/issue13564>`__
 * `BPO-13559: httplib <http://bugs.python.org/issue13559>`__
-* asyncio: there are some plans for this even though no actual patch yet, see `discussion <https://groups.google.com/d/msg/python-tulip/i4OHlIkExsA/eqaK5fzEfCAJ>`__ and `BDFL involvement <http://bugs.python.org/issue17552#msg217099>`__.
+* asyncio: there are some plans for this even though no actual patch yet, see
+  `discussion <https://groups.google.com/d/msg/python-tulip/i4OHlIkExsA/eqaK5fzEfCAJ>`__
+  and `BDFL involvement <http://bugs.python.org/issue17552#msg217099>`__.
 
-Also, Windows provides something similar to sendfile(2): `TransmitFile <http://msdn.microsoft.com/en-us/library/windows/desktop/ms740565(v=vs.85).aspx>`__. Now that socket.sendfile() is in place it seems natural to add support for it as well (see `BPO-21721 <http://bugs.python.org/issue21721>`__).
+Also, Windows provides something similar to sendfile(2):
+`TransmitFile <http://msdn.microsoft.com/en-us/library/windows/desktop/ms740565(v=vs.85).aspx>`__.
+Now that socket.sendfile() is in place it seems natural to add support for it
+as well (see `BPO-21721 <http://bugs.python.org/issue21721>`__).
 
 Backport to Python 2.6 and 2.7
 ------------------------------
 
-For those of you who are interested in using `socket.sendfile()` with older Python 2.6 and 2.7 versions here's a backport. It requires `pysendfile <https://github.com/giampaolo/pysendfile>`__ module to be installed. Full code including tests is hosted `here <https://code.activestate.com/recipes/578889-socketsendfile/>`__.
+For those of you who are interested in using `socket.sendfile()` with older
+Python 2.6 and 2.7 versions here's a backport. It requires
+`pysendfile <https://github.com/giampaolo/pysendfile>`__ module to be
+installed. Full code including tests is hosted
+`here <https://code.activestate.com/recipes/578889-socketsendfile/>`__.
 
 .. code-block:: python
 

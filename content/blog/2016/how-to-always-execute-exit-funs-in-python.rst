@@ -10,9 +10,22 @@ How to always execute exit functions in Python
 
 *...or why atexit.register() and signal.signal() are evil*
 
-* **UPDATE (2016-02-13)**: this recipe no longer handles ``SIGINT``, ``SIGQUIT`` and ``SIGABRT`` as aliases for "application exit" because it was a `bad idea <https://mail.python.org/pipermail/python-ideas/2016-February/038471.html>`__. It only handles ``SIGTERM``. Also it no longer supports Windows because `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ implementation is `too different <http://bugs.python.org/issue26350>`__ from POSIX.*
+* **UPDATE (2016-02-13)**: this recipe no longer handles ``SIGINT``,
+  ``SIGQUIT`` and ``SIGABRT`` as aliases for "application exit" because it was
+  a
+  `bad idea <https://mail.python.org/pipermail/python-ideas/2016-February/038471.html>`__.
+  It only handles ``SIGTERM``. Also it no longer supports Windows because
+  `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__
+  implementation is `too different <http://bugs.python.org/issue26350>`__ from
+  POSIX.*
 
-Many people erroneously think that any function registered via the `atexit module <https://docs.python.org/3/library/atexit.html>`__ is guaranteed to always be executed when the program terminates. You may have noticed this is not the case when, for example, you daemonize your app in production then try to stop it or restart it: the cleanup functions will not be executed. This is because functions registered with the atexit module are **not called** when the program is killed by a signal:
+Many people erroneously think that any function registered via the
+`atexit module <https://docs.python.org/3/library/atexit.html>`__ is guaranteed
+to always be executed when the program terminates. You may have noticed this is
+not the case when, for example, you daemonize your app in production then try
+to stop it or restart it: the cleanup functions will not be executed. This is
+because functions registered with the atexit module are **not called** when the
+program is killed by a signal:
 
 .. code-block:: python
 
@@ -24,7 +37,14 @@ Many people erroneously think that any function registered via the `atexit modul
 
     os.kill(os.getpid(), signal.SIGTERM)
 
-Note that the same thing happens if instead of `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__ we used a "finally" clause. It turns out the correct way to make sure the exit function is always called in case a signal is received is to register it via `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__. That has a drawback though: in case a third-party module has already registered a function for that signal (``SIGTERM`` or whatever), your new function will **overwrite** the old one:
+Note that the same thing happens if instead of
+`atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__
+we used a "finally" clause. It turns out the correct way to make sure the exit
+function is always called in case a signal is received is to register it via
+`signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__.
+That has a drawback though: in case a third-party module has already registered
+a function for that signal (``SIGTERM`` or whatever), your new function will
+**overwrite** the old one:
 
 .. code-block:: python
 
@@ -40,12 +60,22 @@ Note that the same thing happens if instead of `atexit.register() <https://docs.
     signal.signal(signal.SIGTERM, new)
     os.kill(os.getpid(), signal.SIGTERM)
 
+Also, we would still have to use
+`atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__
+so that the function is called also on "clean" interpreter exit
+:strike:`and take into account other signals other than SIGTERM which would cause the process to terminate`.
+This recipe attempts to address all these issues so that:
 
-Also, we would still have to use `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__ so that the function is called also on "clean" interpreter exit :strike:`and take into account other signals other than SIGTERM which would cause the process to terminate`. This recipe attempts to address all these issues so that:
-
-* the exit function is always executed :strike:`for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT)` on ``SIGTERM`` and on "clean" interpreter exit.
-* any exit function(s) previously registered via `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__ or `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ will be executed as well (after the new one).
-* It must be noted that the exit function will never be executed in case of ``SIGKILL``, ``SIGSTOP`` or :func:`os._exit`.
+* the exit function is always executed
+  :strike:`for all exit signals (SIGTERM, SIGINT, SIGQUIT, SIGABRT)` on
+  ``SIGTERM`` and on "clean" interpreter exit.
+* any exit function(s) previously registered via
+  `atexit.register() <https://docs.python.org/3/library/atexit.html#atexit.register>`__
+  or
+  `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__
+  will be executed as well (after the new one).
+* It must be noted that the exit function will never be executed in case of
+  ``SIGKILL``, ``SIGSTOP`` or :func:`os._exit`.
 
 The code
 --------
@@ -212,19 +242,37 @@ As a decorator:
 Unit tests
 ----------
 
-This recipe is hosted on `ActiveState <https://code.activestate.com/recipes/580672-register-exit-function/>`__ and has a full set of unittests. It works with Python 2 and 3.
+This recipe is hosted on
+`ActiveState <https://code.activestate.com/recipes/580672-register-exit-function/>`__
+and has a full set of unittests. It works with Python 2 and 3.
 
 Notes about Windows
 -------------------
 
 :strike:`On Windows signals are only partially supported meaning a function which was previously registered via signal.signal() will be executed only on interpreter exit, but not if the process receives a signal. Apparently this is a limitation either of Windows or the signal module.`
 
-Because of how different `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ behaves on Windows, this code is UNIX only, see `BPO-26350 <https://bugs.python.org/issue26350>`__.
+Because of how different
+`signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__
+behaves on Windows, this code is UNIX only, see
+`BPO-26350 <https://bugs.python.org/issue26350>`__.
 
 Proposal for stdlib inclusion
 -----------------------------
 
-The fact that atexit module `does not handle signals <http://stackoverflow.com/a/2546397/376587>`__ and that `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__ overwrites previously registered handlers is unfortunate. It is also `confusing <http://ambracode.com/index/show/92669>`__ because it is not immediately clear which one you are supposed to use (and it turns out you're supposed to use both). Most of the time you have no idea (or don't care) that you're overwriting another exit function. As a user, I would just want to execute an exit function, no matter what, possibly without messing with whatever a module I've previously imported has done with `signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__. To me this suggests there could be space for something like `atexit.register_w_signals <https://mail.python.org/pipermail/python-ideas/2016-February/038431.html>`__.
+The fact that atexit module
+`does not handle signals <http://stackoverflow.com/a/2546397/376587>`__ and
+that
+`signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__
+overwrites previously registered handlers is unfortunate. It is also
+`confusing <http://ambracode.com/index/show/92669>`__ because it is not
+immediately clear which one you are supposed to use (and it turns out you're
+supposed to use both). Most of the time you have no idea (or don't care) that
+you're overwriting another exit function. As a user, I would just want to
+execute an exit function, no matter what, possibly without messing with
+whatever a module I've previously imported has done with
+`signal.signal() <https://docs.python.org/3/library/signal.html#signal.signal>`__.
+To me this suggests there could be space for something like
+`atexit.register_w_signals <https://mail.python.org/pipermail/python-ideas/2016-February/038431.html>`__.
 
 External discussions
 --------------------

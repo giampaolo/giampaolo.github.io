@@ -4,25 +4,26 @@ Sublime Text: remember cursor position plugin
 :date: 2022-03-18
 :tags: sublime, python
 
-My editor of choice for Python development is Sublime Text.
-It has been for a very long time (10 years).
-It's fast, minimalist and straight to the point, which is why I always resisted
-the temptation to use more advanced and modern IDEs such as PyCharm or VS code,
-which admittedly have superior auto-completion and refactoring tools.
+My editor of choice for Python development is Sublime Text. It has been for a
+very long time (10 years). It's fast, minimalist and straight to the point,
+which is why I always resisted the temptation to use more advanced and modern
+IDEs such as PyCharm or VS code, which admittedly have superior auto-completion
+and refactoring tools.
 
-There is a very simple feature I've always missed in ST: the
-possibility to "remember" / save the cursor position when a file is closed.
-The only plugin promising to do such a thing is called
+There is a very simple feature I've always missed in ST: the possibility to
+"remember" / save the cursor position when a file is closed. The only plugin
+promising to do such a thing is called
 `BufferScroll <https://github.com/titoBouzout/BufferScroll>`__, but for some
-reason it ceased working for me at some point.
-I spent a considerable amount of time Googling for an alternative but, to my
-surprise, I couldn't find any plugin which implements such a simple feature.
-Therefore today I decided to bite the bullet and try to implement this myself,
-by writing my first ST plugin, which I paste below.
+reason it ceased working for me at some point. I spent a considerable amount of
+time Googling for an alternative but, to my surprise, I couldn't find any
+plugin which implements such a simple feature. Therefore today I decided to
+bite the bullet and try to implement this myself, by writing my first ST
+plugin, which I paste below.
 
 What it does is this:
 
-* every time a file is closed, save the cursor position (x and y axes) to a JSON file
+* every time a file is closed, save the cursor position (x and y axes) to a
+  JSON file
 * if that same file is re-opened, restore the cursor at that position
 
 What's neat about ST plugins is that they are just Python files which you can

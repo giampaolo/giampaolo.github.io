@@ -12,23 +12,36 @@ to avoid the mouse whenever I can.
 Hardware
 --------
 
-* 💻 **Laptop**: `ASUS Zenbook Pro 16X`_ (UX7602VI), Intel i9-13900H, 32 GB RAM, NVIDIA RTX 4070
+* 💻 **Laptop**: `ASUS Zenbook Pro 16X`_ (UX7602VI), Intel i9-13900H, 32 GB RAM,
+  NVIDIA RTX 4070
 * ⌨️ **Keyboard**: `Keychron Q1 V2`_, US ANSI layout, blue (clicky) switches
 
 System
 ------
 
-* 🐧 **OS**: Linux Mint + KDE, fully automated and reproducible via my (still unpublished) dotfiles repo. Linux user since 2008, always on Debian-based distros.
-* ✏️ **Editor**: `Sublime Text`_ (since 2010), heavily customized (about 31k lines of my own Python plugins). I'm a `fanboy`_. I think it's the best piece of software ever written, and `I happily pay for the license`_.
-* 🖥️ **Terminal**: `kitty`_ (since 2026), customized via Python plugins to make it work like Sublime Text (tabs, projects, sessions, same key bindings, etc.)
+* 🐧 **OS**: Linux Mint + KDE, fully automated and reproducible via my (still
+  unpublished) dotfiles repo. Linux user since 2008, always on Debian-based
+  distros.
+* ✏️ **Editor**: `Sublime Text`_ (since 2010), heavily customized (about 31k
+  lines of my own Python plugins). I'm a `fanboy`_. I think it's the best piece
+  of software ever written, and `I happily pay for the license`_.
+* 🖥️ **Terminal**: `kitty`_ (since 2026), customized via Python plugins to make
+  it work like Sublime Text (tabs, projects, sessions, same key bindings, etc.)
 * 💲 **Shell**: bash
 * 🛠️ **Build**: a ``Makefile`` in every project
-* 🔀 **Git**: the base CLI, with GPG-signed commits and tags, `delta`_ for diffs, and `git-crypt`_ for encrypting secrets. Mostly used from Sublime Text, via my own plugins.
-* 📦 **Other OSes**: `VirtualBox`_ + `Vagrant`_ VMs to develop psutil on Windows, FreeBSD, NetBSD, OpenBSD and SunOS. For macOS and AIX I use `cfarm`_.
+* 🔀 **Git**: the base CLI, with GPG-signed commits and tags, `delta`_ for
+  diffs, and `git-crypt`_ for encrypting secrets. Mostly used from Sublime
+  Text, via my own plugins.
+* 📦 **Other OSes**: `VirtualBox`_ + `Vagrant`_ VMs to develop psutil on
+  Windows, FreeBSD, NetBSD, OpenBSD and SunOS. For macOS and AIX I use
+  `cfarm`_.
 * 🌐 **Browser**: `Brave`_ (since 2021)
-* 🧰 **CLI tools**: `bat`_, `duf`_ and `eza`_ (aliased to ``cat``, ``df`` and ``ls``), `ripgrep`_, `htop`_, `ncdu`_
-* ⚙️ **CI**: GitHub Actions + `cibuildwheel`_, plus a few psutil bots (`issue triage`_, `anti AI slop`_, `changelog`_)
-* 📚 **Docs**: reStructuredText + `Sphinx`_ with a custom theme and `custom plugins`_ (see `psutil.io`_). `Pelican`_ for this site.
+* 🧰 **CLI tools**: `bat`_, `duf`_ and `eza`_ (aliased to ``cat``, ``df`` and
+  ``ls``), `ripgrep`_, `htop`_, `ncdu`_
+* ⚙️ **CI**: GitHub Actions + `cibuildwheel`_, plus a few psutil bots
+  (`issue triage`_, `anti AI slop`_, `changelog`_)
+* 📚 **Docs**: reStructuredText + `Sphinx`_ with a custom theme and
+  `custom plugins`_ (see `psutil.io`_). `Pelican`_ for this site.
 
 Python
 ------
@@ -46,7 +59,8 @@ AI
 
 * 💬 **First AI ever tried**: Grok and ChatGPT via web, November 2025
 * 🤖 **First coding agent**: Claude Code, January 2026 (€18/month subscription)
-* ⚡ **Now using**: Claude Code Max (5x). Anthropic `gave me 6 free months`_ of Max 20x for psutil.
+* ⚡ **Now using**: Claude Code Max (5x). Anthropic `gave me 6 free months`_ of
+  Max 20x for psutil.
 
 Screenshots
 -----------
