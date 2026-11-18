@@ -286,6 +286,36 @@ cite, .literal {
 	font-size: 14px;
 }
 
+/* code links: color and underline already say "link" */
+.entry-content p a .literal,
+.entry-content li a .literal,
+.entry-content td a .literal {
+    padding: 0;
+    background: none;
+}
+
+.entry-content h1 .literal,
+.entry-content h2 .literal,
+.entry-content h3 .literal,
+.entry-content h4 .literal {
+    font-size: .75em;
+    color: var(--headings);
+}
+
+.entry-content h1 a:hover:has(> .literal),
+.entry-content h2 a:hover:has(> .literal),
+.entry-content h3 a:hover:has(> .literal),
+.entry-content h4 a:hover:has(> .literal) {
+    text-decoration: none;
+}
+
+.entry-content h1 a:hover .literal,
+.entry-content h2 a:hover .literal,
+.entry-content h3 a:hover .literal,
+.entry-content h4 a:hover .literal {
+    color: var(--link);
+}
+
 /* Tables */
 table {
 	margin: .5em 0 1.5em 0;
@@ -538,7 +568,7 @@ a.featured-badge,
 a.featured-badge:link,
 a.featured-badge:visited {
     display: inline-block;
-    padding: 3px 7px;
+    padding: 3.25px 7px 2.75px;
     background: color-mix(in srgb, var(--featured) 12%, transparent);
     border: 1px solid color-mix(in srgb, var(--featured) 28%, transparent);
     color: var(--featured);
