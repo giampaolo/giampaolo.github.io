@@ -1,8 +1,8 @@
 @font-face {
-	font-family: 'Yanone Kaffeesatz';
-	font-style: normal;
-	font-weight: 200 700;
-	font-display: swap;
-	/* from https://fonts.gstatic.com/s/yanonekaffeesatz/v34/3y976aknfjLm_3lMKjiMgmUUYBs04Y8bH-o.woff2 */
-	src: url('../fonts/Yanone_Kaffeesatz.woff2') format('woff2');
+    font-family: "Yanone Kaffeesatz";
+    font-style: normal;
+    font-weight: 200 700;
+    font-display: swap;
+    /* from https://fonts.gstatic.com/s/yanonekaffeesatz/v34/3y976aknfjLm_3lMKjiMgmUUYBs04Y8bH-o.woff2 */
+    src: url("../fonts/Yanone_Kaffeesatz.woff2") format("woff2");
 }

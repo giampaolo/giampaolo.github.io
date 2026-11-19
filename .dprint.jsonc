@@ -33,13 +33,25 @@
             "**/*.js",
         ],
     },
+    // css
+    "malva": {
+        "indentWidth": 4,
+        "printWidth": 79,
+        "quotes": "preferDouble",
+        "associations": [
+            "**/*.css",
+        ],
+    },
     "excludes": [
         "resume/resume.yaml",
+        "theme/static/css/pygment.css",
+        "theme/static/css/reset.css",
     ],
     "plugins": [
         "npm:@dprint/markdown@0.26.0",
         "npm:@dprint/json@0.25.2",
         "npm:dprint-plugin-yaml@0.6.0",
         "npm:@dprint/typescript@0.96.1",
+        "npm:dprint-plugin-malva@0.16.0",
     ],
 }
