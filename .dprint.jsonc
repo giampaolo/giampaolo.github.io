@@ -3,7 +3,26 @@
         "lineWidth": 79,
         "textWrap": "always",
     },
+    "json": {
+        "indentWidth": 4,
+        "associations": [
+            "**/*.json",
+            "**/*.jsonc",
+        ],
+    },
+    "yaml": {
+        "printWidth": 120,
+        "associations": [
+            "**/*.yml",
+            "**/*.yaml",
+        ],
+    },
+    "excludes": [
+        "resume/resume.yaml",
+    ],
     "plugins": [
         "npm:@dprint/markdown@0.26.0",
+        "npm:@dprint/json@0.25.2",
+        "npm:dprint-plugin-yaml@0.6.0",
     ],
 }

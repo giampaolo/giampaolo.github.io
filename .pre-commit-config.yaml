@@ -15,7 +15,7 @@ repos:
         name: dprint
         entry: sh -c 'make -s dprint FILES="$*"' --
         language: system
-        types: [markdown]
+        files: '\.(md|jsonc?|ya?ml)$'
       - id: lint-toml
         name: toml-sort
         entry: sh -c 'make -s lint-toml FILES="$*"' --
