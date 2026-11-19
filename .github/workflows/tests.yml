@@ -31,6 +31,13 @@ jobs:
         with:
           python-version: "3.15"
           activate-environment: true
+      - name: Cache dprint
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.dprint
+            ~/.cache/dprint
+          key: dprint-${{ hashFiles('.dprint.jsonc') }}
       - name: Install deps
         run: make install-sysdeps install-pydeps
       - name: Linters

@@ -1,7 +1,9 @@
+---
 Title: A Brave / Chrome extension to reorder new tabs
 Date: 2025-04-02
 Tags: js, brave, dotfiles
 Authors: Giampaolo Rodola
+---
 
 While browsing, I almost always keep three tabs open: Gmail, Slack, and
 Microsoft Teams (for work). I find it convenient to have them always in the

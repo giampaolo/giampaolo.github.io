@@ -11,6 +11,8 @@ PUBLISHCONF=$(BASEDIR)/publishconf.py
 
 PYTEST_ARGS = -v -s --tb=short
 ARGS =
+DPRINT = ~/.dprint/bin/dprint
+DPRINT_FILES = '*.md'
 
 DEBUG ?= 0
 ifeq ($(DEBUG), 1)
@@ -32,7 +34,8 @@ clean:  ## Remove build files
 		.ruff_cache/
 
 install-sysdeps:  ## Install system deps
-	sudo apt install markdownlint
+	test -x $(DPRINT) || curl -fsSL https://dprint.dev/install.sh | sh
+	$(DPRINT) --version
 
 install-pydeps:  ## Install python deps
 	$(PIP) install --group dev
@@ -87,8 +90,8 @@ lint-rst:  ## Lint rst files.
 	@$(call _ls,'*.rst') | xargs rstcheck --config=pyproject.toml
 	@$(call _ls,'*.rst') | xargs rstwrap --check
 
-lint-md:  ## Lint md files.
-	@$(call _ls,'*.md') | xargs mdl -c .mdlrc
+dprint:  ## Run linter for .md files.
+	@$(call _ls,$(DPRINT_FILES)) | xargs $(DPRINT) check
 
 lint-toml:  ## Lint pyproject.toml.
 	@$(call _ls,'*.toml') | xargs toml-sort --check
@@ -97,7 +100,7 @@ lint-all:  ## Run all linters
 	${MAKE} black
 	${MAKE} ruff
 	${MAKE} lint-rst
-	${MAKE} lint-md
+	${MAKE} dprint
 	${MAKE} lint-toml
 
 # ===================================================================
@@ -116,11 +119,15 @@ fix-toml:
 fix-rst:  ## Re-wrap .rst files.
 	@$(call _ls,'*.rst') | xargs rstwrap
 
+fix-dprint:  ## Reformat .md files.
+	@$(call _ls,$(DPRINT_FILES)) | xargs $(DPRINT) fmt
+
 fix-all:  ## Run all code fixers.
 	${MAKE} fix-ruff
 	${MAKE} fix-black
 	${MAKE} fix-toml
 	${MAKE} fix-rst
+	${MAKE} fix-dprint
 
 # ===================================================================
 # Misc

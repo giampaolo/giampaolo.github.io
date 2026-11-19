@@ -1,0 +1,9 @@
+{
+    "markdown": {
+        "lineWidth": 79,
+        "textWrap": "always",
+    },
+    "plugins": [
+        "npm:@dprint/markdown@0.26.0",
+    ],
+}

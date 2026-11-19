@@ -11,9 +11,9 @@ repos:
         entry: sh -c 'make -s lint-rst FILES="$*"' --
         language: system
         types: [rst]
-      - id: lint-md
-        name: markdownlint
-        entry: sh -c 'make -s lint-md FILES="$*"' --
+      - id: dprint
+        name: dprint
+        entry: sh -c 'make -s dprint FILES="$*"' --
         language: system
         types: [markdown]
       - id: lint-toml

@@ -1,7 +1,7 @@
 Source code for <https://gmpy.dev/> website.
 
-On every push to `master` a GitHub Actions workflow builds the Pelican site
-and deploys it to GitHub Pages. No generated HTML is stored in the repo.
+On every push to `master` a GitHub Actions workflow builds the Pelican site and
+deploys it to GitHub Pages. No generated HTML is stored in the repo.
 
 # Development
 
@@ -19,7 +19,6 @@ make test
 
 [giscus](https://giscus.app/) threads live in
 [giampaolo/psutil-blog-comments](https://github.com/giampaolo/psutil-blog-comments),
-shared with the [psutil blog](https://psutil.io/blog/). A thread is
-matched by post path (`blog/YYYY/slug`), so a post needs the same year
-and slug on both sites, and the `GISCUS_*` settings must match psutil's
-`docs/conf.py`.
+shared with the [psutil blog](https://psutil.io/blog/). A thread is matched by
+post path (`blog/YYYY/slug`), so a post needs the same year and slug on both
+sites, and the `GISCUS_*` settings must match psutil's `docs/conf.py`.
