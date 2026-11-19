@@ -40,8 +40,8 @@ install-sysdeps:  ## Install system deps
 install-pydeps:  ## Install python deps
 	$(PIP) install --group dev
 
-install-git-hooks:  ## Install pre-commit hooks, which reject badly formatted commits.
-	pre-commit install
+install-git-hooks:  ## Install the git pre-commit hook, which rejects badly formatted commits.
+	ln -sf ../../scripts/git_pre_commit.sh .git/hooks/pre-commit
 
 html:  ## Generate html.
 	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
@@ -78,23 +78,27 @@ test:  ## Run tests.
 # Linters
 # ===================================================================
 
-_ls = $(if $(FILES), printf '%s\n' $(FILES), git ls-files $(1)) | sed 's/.*/"&"/'
+# Usage: $(call _ls,'*.c' '*.h'). List the tracked files matching the
+# given glob(s), quoted for xargs. With STAGED=1 (set by the git hook)
+# list only the staged ones, minus deletions.
+_git_files = git $(if $(STAGED),diff --cached --name-only --diff-filter=d,ls-files)
+_ls = $(_git_files) -- $(1) | sed 's/.*/"&"/'
 
 ruff:  ## Run ruff linter.
-	@$(call _ls,'*.py') | xargs $(PYTHON) -m ruff check --no-cache --output-format=concise
+	@$(call _ls,'*.py') | xargs -r $(PYTHON) -m ruff check --no-cache --output-format=concise
 
 black:  ## Python files linting (via black)
-	@$(call _ls,'*.py') | xargs $(PYTHON) -m black --check --safe
+	@$(call _ls,'*.py') | xargs -r $(PYTHON) -m black --check --safe
 
 lint-rst:  ## Lint rst files.
-	@$(call _ls,'*.rst') | xargs rstcheck --config=pyproject.toml
-	@$(call _ls,'*.rst') | xargs rstwrap --check
+	@$(call _ls,'*.rst') | xargs -r rstcheck --config=pyproject.toml
+	@$(call _ls,'*.rst') | xargs -r rstwrap --check
 
 dprint:  ## Run linter for .md / .json / .yml / .js / .css files.
-	@$(call _ls,$(DPRINT_FILES)) | xargs $(DPRINT) check --allow-no-files
+	@$(call _ls,$(DPRINT_FILES)) | xargs -r $(DPRINT) check --allow-no-files
 
 lint-toml:  ## Lint pyproject.toml.
-	@$(call _ls,'*.toml') | xargs toml-sort --check
+	@$(call _ls,'*.toml') | xargs -r toml-sort --check
 
 lint-all:  ## Run all linters
 	${MAKE} black
@@ -108,19 +112,19 @@ lint-all:  ## Run all linters
 # ===================================================================
 
 fix-black:
-	@$(call _ls,'*.py') | xargs $(PYTHON) -m black
+	@$(call _ls,'*.py') | xargs -r $(PYTHON) -m black
 
 fix-ruff:
-	@$(call _ls,'*.py') | xargs $(PYTHON) -m ruff check --no-cache --fix --output-format=concise $(ARGS)
+	@$(call _ls,'*.py') | xargs -r $(PYTHON) -m ruff check --no-cache --fix --output-format=concise $(ARGS)
 
 fix-toml:
-	@$(call _ls,'*.toml') | xargs toml-sort
+	@$(call _ls,'*.toml') | xargs -r toml-sort
 
 fix-rst:  ## Re-wrap .rst files.
-	@$(call _ls,'*.rst') | xargs rstwrap
+	@$(call _ls,'*.rst') | xargs -r rstwrap
 
 fix-dprint:  ## Reformat .md / .json / .yml / .js / .css files.
-	@$(call _ls,$(DPRINT_FILES)) | xargs $(DPRINT) fmt --allow-no-files
+	@$(call _ls,$(DPRINT_FILES)) | xargs -r $(DPRINT) fmt --allow-no-files
 
 fix-all:  ## Run all code fixers.
 	${MAKE} fix-ruff

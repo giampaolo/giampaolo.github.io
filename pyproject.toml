@@ -3,7 +3,6 @@ dev = [
     "black==26.10.1",
     "pelican",
     "pelican[markdown]",
-    "pre-commit",
     "pytest",
     "rstcheck",
     "rstwrap",
