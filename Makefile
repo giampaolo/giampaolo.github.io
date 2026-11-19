@@ -12,7 +12,7 @@ PUBLISHCONF=$(BASEDIR)/publishconf.py
 PYTEST_ARGS = -v -s --tb=short
 ARGS =
 DPRINT = ~/.dprint/bin/dprint
-DPRINT_FILES = '*.md' '*.json' '*.jsonc' '*.yml' '*.yaml'
+DPRINT_FILES = '*.md' '*.json' '*.jsonc' '*.yml' '*.yaml' '*.js'
 
 DEBUG ?= 0
 ifeq ($(DEBUG), 1)
@@ -90,7 +90,7 @@ lint-rst:  ## Lint rst files.
 	@$(call _ls,'*.rst') | xargs rstcheck --config=pyproject.toml
 	@$(call _ls,'*.rst') | xargs rstwrap --check
 
-dprint:  ## Run linter for .md / .json / .yml files.
+dprint:  ## Run linter for .md / .json / .yml / .js files.
 	@$(call _ls,$(DPRINT_FILES)) | xargs $(DPRINT) check --allow-no-files
 
 lint-toml:  ## Lint pyproject.toml.
@@ -119,7 +119,7 @@ fix-toml:
 fix-rst:  ## Re-wrap .rst files.
 	@$(call _ls,'*.rst') | xargs rstwrap
 
-fix-dprint:  ## Reformat .md / .json / .yml files.
+fix-dprint:  ## Reformat .md / .json / .yml / .js files.
 	@$(call _ls,$(DPRINT_FILES)) | xargs $(DPRINT) fmt --allow-no-files
 
 fix-all:  ## Run all code fixers.

@@ -45,10 +45,19 @@ function move_tab(tab, index) {
 }
 
 function move_new_tabs(changeInfo, tab) {
-    if ((changeInfo.status === "loading" || changeInfo.status === "complete") && tab.url) {
-        if (tab.url.includes("mail.google.com")) { move_tab(tab, 0); }
-        if (tab.url.includes("app.slack.com")) { move_tab(tab, 1); }
-        if (tab.url.includes("teams.microsoft.com")) { move_tab(tab, 2); }
+    if (
+        (changeInfo.status === "loading" ||
+            changeInfo.status === "complete") && tab.url
+    ) {
+        if (tab.url.includes("mail.google.com")) {
+            move_tab(tab, 0);
+        }
+        if (tab.url.includes("app.slack.com")) {
+            move_tab(tab, 1);
+        }
+        if (tab.url.includes("teams.microsoft.com")) {
+            move_tab(tab, 2);
+        }
     }
 }
 

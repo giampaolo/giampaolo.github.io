@@ -10,7 +10,7 @@ function setGiscusTheme(theme) {
     if (!iframe) {
         return;
     }
-    const msg = {giscus: {setConfig: {theme: theme}}};
+    const msg = { giscus: { setConfig: { theme: theme } } };
     iframe.contentWindow.postMessage(msg, GISCUS_ORIGIN);
 }
 
@@ -22,12 +22,14 @@ function toggleTheme() {
         document.startViewTransition(() => {
             root.dataset.theme = theme;
         });
-    } else {
+    }
+    else {
         root.dataset.theme = theme;
     }
     try {
         localStorage.setItem("theme", theme);
-    } catch (e) {
+    }
+    catch (e) {
         console.warn("can't save theme", e);
     }
     setGiscusTheme(theme);

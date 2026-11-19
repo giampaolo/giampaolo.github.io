@@ -5,13 +5,14 @@ let lastModified = null;
 setInterval(async () => {
     let resp;
     try {
-        resp = await fetch(location.href, {cache: "no-store"});
-    } catch (e) {
-        return;  // server restarting
+        resp = await fetch(location.href, { cache: "no-store" });
+    }
+    catch (e) {
+        return; // server restarting
     }
     const lm = resp.headers.get("Last-Modified");
     if (!resp.ok || !lm) {
-        return;  // page being rebuilt
+        return; // page being rebuilt
     }
     if (lastModified !== null && lm !== lastModified) {
         location.reload();

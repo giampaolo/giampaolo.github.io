@@ -17,6 +17,22 @@
             "**/*.yaml",
         ],
     },
+    // js
+    "typescript": {
+        "indentWidth": 4,
+        "lineWidth": 79,
+        "quoteStyle": "preferDouble",
+        "useBraces": "always",
+        "singleBodyPosition": "nextLine",
+        "nextControlFlowPosition": "nextLine",
+        "operatorPosition": "sameLine",
+        "conditionalExpression.operatorPosition": "nextLine",
+        "functionExpression.spaceBeforeParentheses": true,
+        "trailingCommas": "onlyMultiLine",
+        "associations": [
+            "**/*.js",
+        ],
+    },
     "excludes": [
         "resume/resume.yaml",
     ],
@@ -24,5 +40,6 @@
         "npm:@dprint/markdown@0.26.0",
         "npm:@dprint/json@0.25.2",
         "npm:dprint-plugin-yaml@0.6.0",
+        "npm:@dprint/typescript@0.96.1",
     ],
 }
