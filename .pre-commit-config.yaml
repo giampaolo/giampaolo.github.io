@@ -3,21 +3,21 @@ repos:
     hooks:
       - id: lint-py
         name: ruff, black
-        entry: sh -c 'make -s ruff black FILES="$*"' --
+        entry: bash -c 'make -s ruff black FILES="$(printf "%q " "$@")"' --
         language: system
         types: [python]
       - id: lint-rst
         name: rstcheck, rstwrap
-        entry: sh -c 'make -s lint-rst FILES="$*"' --
+        entry: bash -c 'make -s lint-rst FILES="$(printf "%q " "$@")"' --
         language: system
         types: [rst]
       - id: dprint
         name: dprint
-        entry: sh -c 'make -s dprint FILES="$*"' --
+        entry: bash -c 'make -s dprint FILES="$(printf "%q " "$@")"' --
         language: system
         files: '\.(md|jsonc?|ya?ml|js|css)$'
       - id: lint-toml
         name: toml-sort
-        entry: sh -c 'make -s lint-toml FILES="$*"' --
+        entry: bash -c 'make -s lint-toml FILES="$(printf "%q " "$@")"' --
         language: system
         types: [toml]

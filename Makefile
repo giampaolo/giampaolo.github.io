@@ -78,7 +78,7 @@ test:  ## Run tests.
 # Linters
 # ===================================================================
 
-_ls = $(if $(FILES), printf '%s\n' $(FILES), git ls-files $(1))
+_ls = $(if $(FILES), printf '%s\n' $(FILES), git ls-files $(1)) | sed 's/.*/"&"/'
 
 ruff:  ## Run ruff linter.
 	@$(call _ls,'*.py') | xargs $(PYTHON) -m ruff check --no-cache --output-format=concise
