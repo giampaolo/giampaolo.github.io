@@ -19,6 +19,8 @@ jobs:
           activate-environment: true
       - name: Install deps
         run: make install-pydeps
+      - name: Build site
+        run: make build-prod PELICANOPTS="--fatal warnings"
       - name: Tests
         run: make test
 
