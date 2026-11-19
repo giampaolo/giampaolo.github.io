@@ -45,7 +45,6 @@
     "excludes": [
         "resume/resume.yaml",
         "theme/static/css/pygment.css",
-        "theme/static/css/reset.css",
     ],
     "plugins": [
         "npm:@dprint/markdown@0.26.0",
