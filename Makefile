@@ -22,9 +22,6 @@ ifeq ($(RELATIVE), 1)
 	PELICANOPTS += --relative-urls
 endif
 
-# install git hook
-_ := $(shell mkdir -p .git/hooks/ && ln -sf ../../scripts/git_pre_commit.py .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit)
-
 clean:  ## Remove build files
 	rm -rf $(OUTPUTDIR)
 	@rm -rfv `find . \
@@ -39,6 +36,9 @@ install-sysdeps:  ## Install system deps
 
 install-pydeps:  ## Install python deps
 	$(PIP) install --group dev
+
+install-git-hooks:  ## Install pre-commit hooks, which reject badly formatted commits.
+	pre-commit install
 
 html:  ## Generate html.
 	$(PYTHON) -m pelican $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
@@ -75,21 +75,23 @@ test:  ## Run tests.
 # Linters
 # ===================================================================
 
+_ls = $(if $(FILES), printf '%s\n' $(FILES), git ls-files $(1))
+
 ruff:  ## Run ruff linter.
-	@git ls-files '*.py' | xargs $(PYTHON) -m ruff check --no-cache --output-format=concise
+	@$(call _ls,'*.py') | xargs $(PYTHON) -m ruff check --no-cache --output-format=concise
 
 black:  ## Python files linting (via black)
-	@git ls-files '*.py' | xargs $(PYTHON) -m black --check --safe
+	@$(call _ls,'*.py') | xargs $(PYTHON) -m black --check --safe
 
 lint-rst:  ## Lint rst files.
-	@git ls-files '*.rst' | xargs rstcheck --config=pyproject.toml
-	@git ls-files '*.rst' | xargs rstwrap --check
+	@$(call _ls,'*.rst') | xargs rstcheck --config=pyproject.toml
+	@$(call _ls,'*.rst') | xargs rstwrap --check
 
 lint-md:  ## Lint md files.
-	@git ls-files '*.md' | xargs mdl -c .mdlrc
+	@$(call _ls,'*.md') | xargs mdl -c .mdlrc
 
 lint-toml:  ## Lint pyproject.toml.
-	@git ls-files '*.toml' | xargs toml-sort --check
+	@$(call _ls,'*.toml') | xargs toml-sort --check
 
 lint-all:  ## Run all linters
 	${MAKE} black
@@ -103,16 +105,16 @@ lint-all:  ## Run all linters
 # ===================================================================
 
 fix-black:
-	@git ls-files '*.py' | xargs $(PYTHON) -m black
+	@$(call _ls,'*.py') | xargs $(PYTHON) -m black
 
 fix-ruff:
-	@git ls-files '*.py' | xargs $(PYTHON) -m ruff check --no-cache --fix --output-format=concise $(ARGS)
+	@$(call _ls,'*.py') | xargs $(PYTHON) -m ruff check --no-cache --fix --output-format=concise $(ARGS)
 
 fix-toml:
-	@git ls-files '*.toml' | xargs toml-sort
+	@$(call _ls,'*.toml') | xargs toml-sort
 
 fix-rst:  ## Re-wrap .rst files.
-	@git ls-files '*.rst' | xargs rstwrap
+	@$(call _ls,'*.rst') | xargs rstwrap
 
 fix-all:  ## Run all code fixers.
 	${MAKE} fix-ruff

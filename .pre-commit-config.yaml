@@ -1,0 +1,23 @@
+repos:
+  - repo: local
+    hooks:
+      - id: lint-py
+        name: ruff, black
+        entry: sh -c 'make -s ruff black FILES="$*"' --
+        language: system
+        types: [python]
+      - id: lint-rst
+        name: rstcheck, rstwrap
+        entry: sh -c 'make -s lint-rst FILES="$*"' --
+        language: system
+        types: [rst]
+      - id: lint-md
+        name: markdownlint
+        entry: sh -c 'make -s lint-md FILES="$*"' --
+        language: system
+        types: [markdown]
+      - id: lint-toml
+        name: toml-sort
+        entry: sh -c 'make -s lint-toml FILES="$*"' --
+        language: system
+        types: [toml]
