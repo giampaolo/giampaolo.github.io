@@ -4,10 +4,12 @@ dev = [
     "pelican",
     "pelican[markdown]",
     "pytest",
+    "pyyaml",
     "rstcheck",
     "rstwrap",
     "ruff",
     "toml-sort",
+    "weasyprint",
 ]
 
 [tool.black]

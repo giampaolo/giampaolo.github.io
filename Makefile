@@ -1,9 +1,12 @@
+BASEDIR=$(CURDIR)
+VENV=$(BASEDIR)/.venv
+export PATH:=$(VENV)/bin:$(PATH)
+
 PYTHON?=python3
 PIP?=$(PYTHON) -m pip
 PELICAN?=pelican
 PELICANOPTS=
 
-BASEDIR=$(CURDIR)
 INPUTDIR=$(BASEDIR)/content
 OUTPUTDIR=$(BASEDIR)/output
 CONFFILE=$(BASEDIR)/pelicanconf.py
@@ -37,7 +40,8 @@ install-sysdeps:  ## Install system deps
 	test -x $(DPRINT) || curl -fsSL https://dprint.dev/install.sh | sh
 	$(DPRINT) --version
 
-install-pydeps:  ## Install python deps
+install-pydeps:  ## Install python deps into .venv
+	test -d $(VENV) || python3 -m venv --upgrade-deps $(VENV)
 	$(PIP) install --group dev
 
 install-git-hooks:  ## Install the git pre-commit hook, which rejects badly formatted commits.
