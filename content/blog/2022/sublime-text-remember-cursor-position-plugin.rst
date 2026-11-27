@@ -2,7 +2,7 @@ Sublime Text: remember cursor position plugin
 #############################################
 
 :date: 2022-03-18
-:tags: sublime, python
+:tags: sublime, python, minimalism
 
 My editor of choice for Python development is Sublime Text. It has been for a
 very long time (10 years). It's fast, minimalist and straight to the point,
