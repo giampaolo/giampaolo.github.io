@@ -67,7 +67,7 @@
       </header>
       {% if w.summary %}{{ w.summary | md }}{% endif %}
       {% if w.highlights %}
-      <ul class="highlights">
+      <ul>
         {% for h in w.highlights %}<li>{{ h | md_inline }}</li>{% endfor %}
       </ul>
       {% endif %}

@@ -211,6 +211,7 @@ code {
 /* ---------- Sections ---------- */
 
 .entry {
+    position: relative;
     margin-left: var(--gutter);
 }
 
@@ -229,10 +230,6 @@ h2 {
 
 .about .facts {
     font-size: 1.022rem;
-}
-
-.entry {
-    position: relative;
 }
 
 .projects .entry {
