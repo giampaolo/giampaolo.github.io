@@ -4,12 +4,6 @@
     border-top: 1px solid var(--border-strong);
 }
 
-.comments h2 {
-    margin-top: 0;
-    margin-bottom: 0.6em;
-    border-bottom: 0;
-}
-
 /* giscus sizes its own iframe, keep it inside the column */
 .comments iframe.giscus-frame {
     width: 100%;

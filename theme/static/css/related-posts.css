@@ -3,10 +3,14 @@
  */
 
 .related-posts {
-    margin-top: 1.5em;
+    /* .entry-content above already has 20px of bottom padding */
+    margin-top: 1em;
+    padding-top: 1em;
+    border-top: 1px solid var(--border-strong);
 }
 
-.related-posts h2 {
+.related-posts h2,
+.comments h2 {
     margin: 0 0 10px 0;
     border: 0;
     color: var(--text-muted);
