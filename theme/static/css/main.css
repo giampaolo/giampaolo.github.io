@@ -967,6 +967,22 @@ a.headerlink:focus-visible {
     opacity: 1;
 }
 
+/* flash the heading a #fragment link points to */
+@keyframes anchor-flash {
+    from {
+        background-color: color-mix(in srgb, var(--accent) 25%, transparent);
+    }
+}
+
+:target > h2,
+:target > h3,
+:target > h4,
+h2:target,
+h3:target,
+h4:target {
+    animation: anchor-flash 1.8s ease-out;
+}
+
 code {
     background: var(--surface-alt);
     font-family:
