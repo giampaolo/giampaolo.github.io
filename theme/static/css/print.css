@@ -1,0 +1,78 @@
+@media print {
+    /* print light even when the dark theme is on */
+    :root,
+    :root[data-theme="dark"] {
+        --bg: #fff;
+        --surface: #fff;
+        --surface-alt: #f0f1f2;
+        --text: #000;
+        --headings: #000;
+        --text-muted: #555;
+        --text-faint: #999;
+        --border: #eaecef;
+        --divider: #dcdfe3;
+        --border-strong: #d0d7de;
+        --link: #2371a8;
+        --featured: #9a3412;
+        color-scheme: light;
+    }
+
+    #banner nav,
+    #extras,
+    .comments,
+    .related-posts,
+    .copy-code,
+    .jump-up,
+    a.headerlink {
+        display: none !important;
+    }
+
+    body {
+        font-size: 12pt;
+    }
+
+    .body,
+    #content {
+        width: auto;
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+    }
+
+    /* monokai is light-on-dark: go dark-on-white */
+    .highlight {
+        border: 1px solid #ccc;
+        background: #fff;
+        color: #000;
+    }
+
+    .highlight span {
+        color: inherit !important;
+    }
+
+    .highlight .c,
+    .highlight .c1,
+    .highlight .cm,
+    .highlight .ch,
+    .highlight .cs,
+    .highlight .go {
+        color: #666 !important;
+        font-style: italic;
+    }
+
+    .highlight pre {
+        white-space: pre-wrap;
+        overflow: visible;
+    }
+
+    h2,
+    h3,
+    h4 {
+        break-after: avoid;
+    }
+
+    .highlight,
+    img {
+        break-inside: avoid;
+    }
+}
