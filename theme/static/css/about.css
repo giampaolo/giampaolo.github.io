@@ -1,0 +1,25 @@
+#projects p {
+    margin: 4px;
+}
+
+.about-photo {
+    float: right;
+    padding: 10px;
+}
+
+.entry-content .about-photo img {
+    border-radius: 6px;
+    margin: 0 auto;
+}
+
+.about-photo ~ .section {
+    clear: right;
+}
+
+@media only screen and (max-width: 940px) {
+    .about-photo {
+        float: none;
+        padding: 0;
+        text-align: center;
+    }
+}

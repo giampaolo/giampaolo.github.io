@@ -1,0 +1,46 @@
+/* Design tokens: colors for the light and dark theme. */
+
+:root {
+    --bg: #eaecef;
+    --surface: #fff;
+    --surface-alt: #f0f1f2;
+    --text: #333;
+    --headings: #222;
+    --text-muted: #555;
+    --text-faint: #999;
+    --border: #eaecef;
+    --divider: #dcdfe3;
+    --border-strong: #d0d7de;
+    --code-bg: #272822;
+    --code-border: #1c1d19;
+    --link: #2371a8;
+    --accent: #2980b9;
+    --featured: #9a3412;
+    --icon-link: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>');
+    color-scheme: light;
+}
+
+/* data-theme is set by the inline script in base.html */
+:root[data-theme="dark"] {
+    --bg: #1e1e1e;
+    --surface: #2f2f2f;
+    --surface-alt: #3d3d3d;
+    --text: #c8c8c8;
+    --headings: #e0e0e0;
+    --text-muted: #aaa;
+    --text-faint: #777;
+    --border: #3c3c3c;
+    --divider: #505050;
+    --border-strong: #4e4e4e;
+    --code-bg: #141414;
+    --code-border: #4e4e4e;
+    --link: #6ab0de;
+    --featured: #e8a064;
+    color-scheme: dark;
+}
+
+/* theme switch cross-fade, see theme.js */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 0.35s;
+}

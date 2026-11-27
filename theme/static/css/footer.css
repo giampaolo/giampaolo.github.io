@@ -1,0 +1,96 @@
+#extras {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5em 12px;
+    margin: 0 auto 2em auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.footer-text {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3em 0.7em;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* on all but the last, so a wrapped row never starts with a dot */
+.footer-text > span:not(:last-child)::after {
+    content: "\00B7";
+    margin-left: 0.7em;
+    opacity: 0.7;
+}
+
+.footer-text a,
+.footer-text a:visited {
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-decoration-color: var(--border-strong);
+    text-underline-offset: 3px;
+}
+
+.footer-text a:hover {
+    color: var(--link);
+    text-decoration-color: currentColor;
+}
+
+.footer-icons {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    /* icon glyph, not its 36px hit area, lines up with the card */
+    margin-right: -9px;
+}
+
+.footer-icons a,
+.footer-icons a:visited {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.footer-icons a:hover {
+    color: var(--link);
+}
+
+.footer-icons a::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    background: currentColor;
+    -webkit-mask: var(--icon) no-repeat center / contain;
+    mask: var(--icon) no-repeat center / contain;
+}
+
+.footer-icons a[href*="github.com"] {
+    --icon: url("../images/icons/github.svg");
+}
+.footer-icons a[href*="linkedin.com"] {
+    --icon: url("../images/icons/linkedin.svg");
+}
+.footer-icons a[href*="x.com"] {
+    --icon: url("../images/icons/x.svg");
+}
+.footer-icons a[href^="mailto:"] {
+    --icon: url("../images/icons/mail.svg");
+}
+.footer-icons a.feed {
+    --icon: url("../images/icons/feed.svg");
+}
+
+@media only screen and (max-width: 940px) {
+    #extras {
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}

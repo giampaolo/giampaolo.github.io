@@ -1,0 +1,160 @@
+/* Archives and tags pages. */
+
+.archives {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 20px;
+    margin-top: 1.5em;
+}
+
+.archives-right {
+    flex: none;
+    width: 160px;
+}
+
+.archives-label {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0 0 0.6rem 0;
+}
+
+.archives-left h3 {
+    margin: 1.6em 0 0.2em 0;
+}
+
+.archives-left h3:first-child {
+    margin-top: 0;
+}
+
+ul.archives-posts {
+    list-style: none;
+    margin: 0;
+}
+
+.archives-posts li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5em;
+    margin: 0;
+    padding: 0.25em 0;
+}
+
+.archives-posts .featured-badge {
+    margin-left: auto;
+}
+
+.archives-posts a:not(.featured-badge),
+.archives-posts a:not(.featured-badge):visited {
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.archives-posts a:not(.featured-badge):hover {
+    color: var(--link);
+    text-decoration-color: currentColor;
+}
+
+.archives-posts .month {
+    flex: none;
+    width: 2.6em;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+}
+
+ul.tag-list {
+    list-style: none;
+    margin: 0;
+}
+
+.tag-columns {
+    columns: 200px;
+    column-gap: 48px;
+    margin-top: 1em;
+}
+
+.tag-list li {
+    margin: 2px 0;
+}
+
+.tag-columns li {
+    margin: 0;
+    padding: 2px 0;
+    break-inside: avoid;
+}
+
+.tag-list a,
+.tag-list a:visited {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6em;
+    padding: 0.15rem 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.tag-list a:hover {
+    color: var(--link);
+    text-decoration: none;
+}
+
+.tag-count {
+    flex: none;
+    min-width: 1.6em;
+    padding: 0.05em 0.5em;
+    border-radius: 999px;
+    background: var(--surface-alt);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+}
+
+.archives-left {
+    flex: 1;
+    border-right: 1px solid var(--border);
+    padding-right: 20px;
+}
+
+@media only screen and (max-width: 940px) {
+    .archives {
+        flex-direction: column-reverse;
+    }
+
+    .archives-right {
+        width: auto;
+    }
+
+    .archives-left {
+        border-right: 0;
+        padding-right: 0;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .archives-posts li {
+        display: grid;
+        grid-template-columns: calc(2.6 * 14px) 1fr;
+        column-gap: 0.5em;
+        row-gap: 0.25em;
+    }
+
+    .archives-posts .featured-badge {
+        grid-column: 2;
+        margin-left: 0;
+        justify-self: start;
+    }
+
+    .tag-list a,
+    .tag-list a:visited {
+        padding: 0.35rem 0;
+    }
+}

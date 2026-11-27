@@ -1,0 +1,290 @@
+/* Text, links, lists, images and inline code. */
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-size: 18px;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        Segoe UI,
+        Helvetica,
+        Arial,
+        sans-serif,
+        Apple Color Emoji,
+        Segoe UI Emoji;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+/* Headings */
+h1 {
+    font-size: 2em;
+}
+h2 {
+    font-size: 1.6em;
+}
+h3 {
+    font-size: 1.35em;
+}
+h4 {
+    font-size: 1.15em;
+}
+h5 {
+    font-size: 1em;
+}
+h6 {
+    font-size: 0.9em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--headings);
+    font-weight: 600;
+    line-height: 1.1;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-family: "Yanone Kaffeesatz", arial, serif;
+}
+
+h2 {
+    border-bottom: 1px solid var(--divider);
+    margin-top: 1.6em;
+}
+
+h3, h4, h5, h6 {
+    margin-top: 0.8em;
+}
+
+hr {
+    border: 2px solid var(--border);
+}
+
+/* Anchors */
+a:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--link) 50%, transparent);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+img {
+    max-width: 100%;
+    height: auto;
+}
+a:link, a:visited {
+    color: var(--link);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1 a:link, h1 a:visited {
+    color: var(--headings);
+}
+
+/* Paragraphs */
+p {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+strong, b {
+    font-weight: bold;
+}
+em, i {
+    font-style: italic;
+}
+
+/* Lists */
+ul {
+    list-style: outside disc;
+    margin: 0em 0 0 1.5em;
+    padding: 0;
+}
+
+ol {
+    list-style: outside decimal;
+    margin: 0em 0 0 1.5em;
+    padding: 0;
+}
+
+li {
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+}
+
+.entry-content p a,
+.entry-content li a,
+.entry-content td a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+}
+
+/* badges */
+.entry-content a.image-reference {
+    text-decoration: none;
+}
+
+.entry-content p a:hover,
+.entry-content li a:hover,
+.entry-content td a:hover {
+    text-decoration-color: currentColor;
+}
+
+dl {
+    margin: 0 0 1.5em 0;
+}
+dt {
+    font-weight: bold;
+}
+dd {
+    margin-left: 1.5em;
+}
+
+/* Quotes */
+blockquote {
+    margin: 1em 0;
+    padding: 0 1em;
+    border-left: 3px solid var(--border-strong);
+    color: var(--text-muted);
+}
+cite, .literal, :not(pre) > code {
+    padding: 2.5px;
+    margin: 0;
+    background-color: var(--surface-alt);
+    border-radius: 6px;
+    font-style: normal;
+    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+    font-size: 14px;
+}
+
+/* code links: color and underline already say "link" */
+.entry-content p a .literal,
+.entry-content li a .literal,
+.entry-content td a .literal {
+    padding: 0;
+    background: none;
+}
+
+.entry-content h1 .literal,
+.entry-content h2 .literal,
+.entry-content h3 .literal,
+.entry-content h4 .literal {
+    font-size: 0.75em;
+    color: var(--headings);
+}
+
+.entry-content h1 a:hover:has(> .literal),
+.entry-content h2 a:hover:has(> .literal),
+.entry-content h3 a:hover:has(> .literal),
+.entry-content h4 a:hover:has(> .literal) {
+    text-decoration: none;
+}
+
+.entry-content h1 a:hover .literal,
+.entry-content h2 a:hover .literal,
+.entry-content h3 a:hover .literal,
+.entry-content h4 a:hover .literal {
+    color: var(--link);
+}
+
+/* Images */
+/* skip badges */
+.entry-content :not(.image-reference) > img {
+    display: block;
+    margin: 1.5em auto;
+    border-radius: 6px;
+}
+
+[data-theme="dark"] .entry-content :not(.image-reference) > img {
+    box-shadow: 0 0 0 1px var(--border);
+}
+
+::selection {
+    background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.entry-title {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+
+.strike {
+    text-decoration: line-through;
+}
+
+/* the pilcrow is hidden, a chain-link icon is shown on heading hover */
+a.headerlink,
+a.headerlink:visited {
+    margin-left: 0.5rem;
+    padding: 0;
+    font-size: 0;
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+a.headerlink::after {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: var(--text-muted);
+    -webkit-mask: var(--icon-link) no-repeat center / contain;
+    mask: var(--icon-link) no-repeat center / contain;
+}
+
+h1:hover > a.headerlink,
+h2:hover > a.headerlink,
+h3:hover > a.headerlink,
+h4:hover > a.headerlink,
+h5:hover > a.headerlink,
+h6:hover > a.headerlink {
+    opacity: 0.7;
+}
+
+/* must beat h1:hover > a.headerlink above */
+:is(h1, h2, h3, h4, h5, h6) > a.headerlink:is(:hover, :focus-visible) {
+    opacity: 1;
+}
+
+/* flash the heading a #fragment link points to */
+@keyframes anchor-flash {
+    from {
+        background-color: color-mix(in srgb, var(--accent) 25%, transparent);
+    }
+}
+
+:target > h2,
+:target > h3,
+:target > h4,
+h2:target,
+h3:target,
+h4:target {
+    animation: anchor-flash 1.8s ease-out;
+}
+
+code {
+    background: var(--surface-alt);
+    font-family:
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        "Liberation Mono",
+        "Courier New",
+        Courier,
+        monospace;
+    font-size: 14px;
+}
+
+@media only screen and (max-width: 940px) {
+    .entry-title {
+        font-size: 2em;
+    }
+}

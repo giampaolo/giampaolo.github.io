@@ -1,0 +1,132 @@
+/* Site header: name, nav and the dark mode toggle. */
+
+#banner {
+    display: flex;
+    align-items: flex-end;
+    margin: 0 auto 1em auto;
+}
+
+#banner h1 {
+    font-size: 2.6em;
+    line-height: 1;
+    margin: 28px 0 6px 0;
+}
+#banner h1 a:link, #banner h1 a:visited {
+    display: block;
+    font-weight: bold;
+}
+
+#banner h1 strong {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.42em;
+    font-weight: normal;
+    color: color-mix(in srgb, var(--text-muted) 65%, var(--text));
+}
+
+/* Main Nav */
+#banner nav {
+    display: flex;
+    height: 40px;
+    line-height: 30px;
+    margin: 0 0 0 auto;
+    padding: 0;
+    border-bottom: 1px solid var(--border-strong);
+}
+
+#banner nav ul {
+    display: flex;
+    gap: 1.5em;
+    list-style: none;
+    margin: 0;
+}
+#banner nav li {
+    margin: 0;
+}
+
+#banner nav a:link, #banner nav a:visited {
+    color: var(--text-muted);
+    display: inline-block;
+    height: 30px;
+    padding: 5px 0;
+    text-decoration: none;
+    transition: color 0.15s;
+}
+#banner nav a:hover,
+#banner nav .active a:link,
+#banner nav .active a:visited {
+    color: var(--text);
+}
+#banner nav .active a:link, #banner nav .active a:visited {
+    box-shadow: inset 0 -3px 0 var(--headings);
+    font-weight: 600;
+}
+#banner nav a::after {
+    content: attr(data-text);
+    display: block;
+    font-weight: 600;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+#theme-toggle {
+    order: 1;
+    margin-left: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.15s;
+}
+#theme-toggle:hover {
+    color: var(--text);
+}
+#theme-toggle svg {
+    position: absolute;
+    transition: opacity 0.3s, transform 0.3s;
+}
+#theme-toggle .icon-sun,
+[data-theme="dark"] #theme-toggle .icon-moon {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+}
+[data-theme="dark"] #theme-toggle .icon-sun {
+    opacity: 1;
+    transform: none;
+}
+
+@media only screen and (max-width: 940px) {
+    #banner {
+        display: block;
+        margin-bottom: 0;
+    }
+
+    /* Fix header text overlap */
+    #banner h1 {
+        margin: 10px 12px 8px 12px;
+    }
+
+    #banner nav {
+        margin: 0 12px 6px 12px;
+        font-size: 0.9em;
+    }
+
+    #banner nav ul {
+        gap: 0.9em;
+    }
+
+    #theme-toggle {
+        width: 32px;
+        margin-left: auto;
+        flex-shrink: 0;
+        justify-content: flex-end;
+    }
+}

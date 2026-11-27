@@ -1,0 +1,30 @@
+.paginator {
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 2em 0 0 0;
+    font-size: 14px;
+}
+
+.paginator a,
+.paginator a:link,
+.paginator a:visited {
+    display: inline-block;
+    padding: 0.25em 0.7em;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text);
+    line-height: 1.2;
+}
+
+.paginator a:hover {
+    background: var(--surface-alt);
+    text-decoration: none;
+}
+
+.paginator .paginator-info {
+    color: var(--text-muted);
+    padding: 0 0.25em;
+}

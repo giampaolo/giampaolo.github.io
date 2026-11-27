@@ -27,7 +27,24 @@
         })();
     </script>
     <link rel="preload" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/fonts/Yanone_Kaffeesatz.woff2" as="font" type="font/woff2" crossorigin />
-    {% for css in ('pygment.css', 'fonts.css', CSS_FILE, 'print.css') %}
+    {% for css in (
+        'pygment.css',
+        'fonts.css',
+        'base.css',
+        'typography.css',
+        'tables.css',
+        'code.css',
+        'layout.css',
+        'banner.css',
+        'posts.css',
+        'archives.css',
+        'about.css',
+        'pagination.css',
+        'comments.css',
+        'footer.css',
+        'backtotop.css',
+        'print.css',
+    ) %}
     <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/{{ css }}" />
     {% endfor %}
     {% if FEED_ALL_ATOM %}

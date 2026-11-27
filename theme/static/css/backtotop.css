@@ -1,0 +1,61 @@
+/* Floating "back to top" button, see backtotop.js. */
+
+.jump-up {
+    position: fixed;
+    /* in the gutter right of the 900px column */
+    right: max(16px, calc((100vw - 900px) / 2 - 56px));
+    bottom: 24px;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: #555;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, box-shadow 0.15s;
+}
+
+[data-theme="dark"] .jump-up {
+    background: #5a5a5a;
+    color: #f5f5f5;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.jump-up.is-visible {
+    opacity: 0.6;
+    pointer-events: auto;
+}
+
+[data-theme="dark"] .jump-up.is-visible {
+    opacity: 1;
+}
+
+.jump-up.is-visible:hover,
+.jump-up:focus-visible {
+    opacity: 1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.jump-up:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+@media only screen and (max-width: 940px) {
+    .jump-up {
+        right: 14px;
+        bottom: 14px;
+    }
+
+    .jump-up.is-visible {
+        opacity: 1;
+    }
+}
