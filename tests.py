@@ -1,3 +1,4 @@
+import datetime
 import html.parser
 import os
 import shlex
@@ -5,6 +6,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import types
 import unittest
 import urllib.parse
 
@@ -107,3 +109,38 @@ class TestSphinxRoles(unittest.TestCase):
     def test_manpage_role(self):
         html = self.render(":manpage:`select(2)`")
         assert 'href="https://manpages.debian.org/select(2)"' in html
+
+
+class TestRelatedPosts(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        sys.path.insert(0, os.path.join(HERE, "plugins"))
+
+    def make_posts(self, *tag_lists):
+        posts = []
+        for i, tags in enumerate(tag_lists):
+            post = types.SimpleNamespace(
+                tags=[types.SimpleNamespace(name=t) for t in tags],
+                date=datetime.datetime(2020, 1, 1 + i),
+            )
+            posts.append(post)
+        return posts
+
+    def test_rare_tag_wins(self):
+        import related_posts
+
+        # "python" is on every post, "bsd" only on two
+        filler = [["python", f"tag{i}"] for i in range(18)]
+        posts = self.make_posts(["python", "bsd"], ["python", "bsd"], *filler)
+        related_posts.set_related(types.SimpleNamespace(articles=posts))
+        assert posts[0].related_posts == [posts[1]]
+        assert posts[2].related_posts == []
+
+    def test_ignored_tags(self):
+        import related_posts
+
+        filler = [[f"tag{i}"] for i in range(18)]
+        posts = self.make_posts(["release"], ["release"], *filler)
+        related_posts.set_related(types.SimpleNamespace(articles=posts))
+        assert posts[0].related_posts == []
