@@ -5,5 +5,14 @@
 }
 
 .comments h2 {
-    margin-bottom: 0.5em;
+    margin-top: 0;
+    margin-bottom: 0.6em;
+    border-bottom: 0;
+}
+
+/* giscus sizes its own iframe, keep it inside the column */
+.comments iframe.giscus-frame {
+    width: 100%;
+    max-width: 100%;
+    border: none;
 }

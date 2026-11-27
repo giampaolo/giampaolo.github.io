@@ -1,18 +1,7 @@
 /*
  * Dark / light toggle. The initial theme is set by an inline script
- * in base.html, this handles the nav button and giscus.
+ * in base.html, this handles the nav button.
  */
-
-const GISCUS_ORIGIN = "https://giscus.app";
-
-function setGiscusTheme(theme) {
-    const iframe = document.querySelector("iframe.giscus-frame");
-    if (!iframe) {
-        return;
-    }
-    const msg = { giscus: { setConfig: { theme: theme } } };
-    iframe.contentWindow.postMessage(msg, GISCUS_ORIGIN);
-}
 
 function toggleTheme() {
     const root = document.documentElement;
@@ -32,7 +21,6 @@ function toggleTheme() {
     catch (e) {
         console.warn("can't save theme", e);
     }
-    setGiscusTheme(theme);
 }
 
 document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
@@ -49,11 +37,4 @@ document.addEventListener("keydown", (event) => {
         return;
     }
     toggleTheme();
-});
-
-// giscus posts a message once its iframe is up
-window.addEventListener("message", (event) => {
-    if (event.origin === GISCUS_ORIGIN) {
-        setGiscusTheme(document.documentElement.dataset.theme);
-    }
 });

@@ -2,28 +2,20 @@
   Blog comments (giscus, backed by GitHub Discussions). Included from
   article.html, so it only shows on posts.
 
-  data-term keys off the article path (blog/YYYY/slug), not the full
-  URL, so a domain change keeps threads attached. Without data-strict
-  giscus would match by a fuzzy title search.
+  Hidden until js/giscus.js has the widget up, so a reader with JS
+  off gets nothing rather than an empty box. data-term keys off the
+  article path (blog/YYYY/slug), not the full URL, so a domain change
+  keeps threads attached.
 -#}
 {% if GISCUS_REPO %}
-<section class="comments">
-  <script src="https://giscus.app/client.js"
-          data-repo="{{ GISCUS_REPO }}"
-          data-repo-id="{{ GISCUS_REPO_ID }}"
-          data-category="{{ GISCUS_CATEGORY }}"
-          data-category-id="{{ GISCUS_CATEGORY_ID }}"
-          data-mapping="specific"
-          data-term="{{ article.url }}"
-          data-strict="1"
-          data-reactions-enabled="1"
-          data-emit-metadata="0"
-          data-input-position="top"
-          data-theme="preferred_color_scheme"
-          data-lang="en"
-          data-loading="lazy"
-          crossorigin="anonymous"
-          async>
-  </script>
+<section class="comments" aria-labelledby="comments-heading" hidden>
+  <h2 id="comments-heading">Comments</h2>
+  <div class="giscus"
+       data-repo="{{ GISCUS_REPO }}"
+       data-repo-id="{{ GISCUS_REPO_ID }}"
+       data-category="{{ GISCUS_CATEGORY }}"
+       data-category-id="{{ GISCUS_CATEGORY_ID }}"
+       data-term="{{ article.url }}"
+       data-theme-url="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/giscus.css"></div>
 </section>
 {% endif %}
