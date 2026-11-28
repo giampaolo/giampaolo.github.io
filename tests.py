@@ -111,6 +111,20 @@ class TestSphinxRoles(unittest.TestCase):
         assert 'href="https://manpages.debian.org/select(2)"' in html
 
 
+class TestReadtime(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        sys.path.insert(0, os.path.join(HERE, "plugins"))
+
+    def test_code_not_counted(self):
+        import readtime
+
+        text = "<p>" + "word " * 401 + "</p>"
+        code = "<pre><code>" + "x " * 10000 + "</code></pre>"
+        assert readtime.reading_minutes(text + code) == 3
+
+
 class TestRelatedPosts(unittest.TestCase):
 
     @classmethod

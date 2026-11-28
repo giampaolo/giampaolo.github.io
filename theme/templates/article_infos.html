@@ -6,6 +6,9 @@
         {% if article.modified %}
                 <a class="modified" title="{{ article.modified.isoformat() }}">updated {{ article.locale_modified }}</a>
         {% endif %}
+        {% if article.reading_time %}
+            <span class="reading-time">{{ article.reading_time }} min read</span>
+        {% endif %}
 {% include 'taglist.html' %}
 {% import 'translations.html' as translations with context %}
 {{ translations.translations_for(article) }}
