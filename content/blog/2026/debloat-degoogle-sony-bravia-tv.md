@@ -65,9 +65,7 @@ package:com.google.android.ext.services
 The only app I installed myself is VLC. Aside from Android itself and the Sony
 packages which make it a TV (tuner, inputs, picture settings), there's a whole
 lot of other stuff: Sony's own ads, a demo mode, Netflix, YouView, Google Play
-Movies, Play Games, YouTube Music, voice assistants, recommendation services
-and [Samba TV](https://en.wikipedia.org/wiki/Samba_TV), which collects your
-data for advertising purposes.
+Movies, Play Games, YouTube Music, voice assistants, etc.
 
 None of this is stuff I ever asked for or use.
 
@@ -111,11 +109,9 @@ entries:
 - Sony's "recommendations" (`discovery`): 32 MB
 - Chromecast (`mediashell`): 25 MB
 
-That's roughly 470 MB of RAM occupied by stuff I don't need.
-
-With Prime Video open (281 MB) it gets worse: 1.52 GB used, and **only about
-290 MB left for apps**, which probably explains why I often can't even navigate
-the app.
+That's roughly 470 MB of RAM occupied by stuff I don't need. With Prime Video
+open (281 MB) it gets worse: 1.52 GB used, and **only about 290 MB left**,
+which probably explains why I often can't even navigate the app.
 
 ## What to remove
 
@@ -148,10 +144,10 @@ it did.
 
 ## Replacing Google
 
-After removing the bloat I decided to also remove Google stuff, including
+After removing the bloat I decided to also remove Google apps, including
 Google's home screen, the Play Store and YouTube. The tricky one here is the
-home screen: the new one has to be installed **before** removing Google's,
-otherwise the TV boots into an empty screen.
+home screen: the new home screen has to be installed **before** removing
+Google's, otherwise the TV boots into an empty screen.
 
 I replaced:
 
@@ -215,9 +211,8 @@ list of apps.
 ![Debloated home screen](/images/bravia-debloated-home.webp)
 
 Does it feel faster? **Yes**, noticeably faster. With the stock firmware, apps
-like Prime Video and VLC were slow and sometimes completely unresponsive,
-presumably due to the little available RAM. Even navigating between menus was a
-pain.
+like Prime Video and VLC were slow and sometimes completely unresponsive due to
+the little available RAM. Even navigating between menus was a pain.
 
 It turns out the hardware itself is still perfectly adequate, even 10 years
 later. It was the software that made the TV feel old and sluggish.
